@@ -61,19 +61,24 @@
     .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; }
 
     /* Auth Wrapper */
-    .auth-wrapper { max-width: 450px; margin: 2rem auto; background: var(--surface-white); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm); width: 100%; border: 1px solid var(--border-color); }
+    .auth-wrapper { max-width: 480px; margin: 2rem auto; background: var(--surface-white); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm); width: 100%; border: 1px solid var(--border-color); }
     .auth-header { text-align: center; margin-bottom: 2rem; }
     .auth-tabs { display: flex; background: var(--bg-color); border-radius: var(--radius-md); padding: 0.25rem; margin-bottom: 1.5rem; }
     .auth-tab { flex: 1; text-align: center; padding: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.9rem; transition: background 0.2s; }
     .auth-tab.active { background: var(--primary-navy); color: var(--accent-yellow); box-shadow: var(--shadow-sm); }
 
-    /* Form Design */
-    .form-group { margin-bottom: 1.25rem; }
+    /* Form Design & Password Toggles */
+    .form-group { margin-bottom: 1.25rem; position: relative; }
     .form-label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
     .form-input, .form-select, .form-textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
     .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1); }
     .form-textarea { resize: vertical; min-height: 100px; }
     .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    
+    .password-wrapper { position: relative; }
+    .password-wrapper input { padding-right: 2.5rem; }
+    .password-toggle { position: absolute; right: 1rem; top: 38px; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; }
+    .password-toggle:hover { color: var(--primary-navy); }
 
     /* Sidebar Navigation (Desktop) */
     .sidebar { width: 250px; display: none; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
@@ -119,7 +124,6 @@
       .app-container { padding: 1rem; padding-bottom: 85px; }
       .grid-2-col { grid-template-columns: 1fr; }
       
-      /* Mobile Footer Navigation */
       .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: none; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; box-shadow: 0 -4px 10px rgba(0,0,0,0.15); top: auto; }
       .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
       .sidebar-item i { font-size: 1.25rem; }
@@ -133,8 +137,8 @@
   <!-- FIREBASE SDK (Modular v9) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     // TODO: Replace with your actual Firebase Config
     const firebaseConfig = {
@@ -146,14 +150,13 @@
       appId: "YOUR_APP_ID"
     };
 
-    // Make Firebase globally available for the UI scripts to trigger
     window.initFirebaseSetup = function() {
       try {
         const app = initializeApp(firebaseConfig);
         window.auth = getAuth(app);
         window.db = getFirestore(app);
       } catch (e) {
-        console.warn("Firebase config missing/invalid. Running in simulation mode for UI demonstration.");
+        console.warn("Firebase config missing. Running in simulation mode.");
         window.auth = null; 
       }
     };
@@ -164,7 +167,6 @@
 
   <div id="toast-container"></div>
 
-  <!-- Header Navigation -->
   <header>
     <a href="#" class="brand-logo">
       <i class="fa-solid fa-graduation-cap"></i> TeacherBee
@@ -193,9 +195,13 @@
           <label class="form-label">Email Address</label>
           <input type="email" id="login-email" class="form-input" required>
         </div>
-        <div class="form-group">
+        <div class="form-group password-wrapper">
           <label class="form-label">Password</label>
           <input type="password" id="login-password" class="form-input" required>
+          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+        </div>
+        <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
+          <a href="#" style="font-size: 0.85rem; color: var(--primary-navy); font-weight: 600; text-decoration: none;" onclick="handleForgotPassword()">Forgot Password?</a>
         </div>
         <button type="submit" class="btn btn-primary btn-block" id="btn-login">Sign In</button>
       </form>
@@ -206,42 +212,52 @@
           <label class="form-label">Full Name</label>
           <input type="text" id="reg-name" class="form-input" required>
         </div>
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" id="reg-email" class="form-input" required>
+        
+        <div class="grid-2-col">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="reg-email" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" id="reg-dob" class="form-input" required>
+          </div>
         </div>
         
-        <!-- Country with Datalist -->
+        <!-- Standard Select Element for Countries (Ensures it shows up everywhere) -->
         <div class="form-group">
           <label class="form-label">Country of Residence</label>
-          <input list="countries-list" id="reg-country" class="form-input" placeholder="Type or select a country" required>
-          <datalist id="countries-list">
-            <option value="Zimbabwe">
-            <option value="South Africa">
-            <option value="Zambia">
-            <option value="Botswana">
-            <option value="Namibia">
-            <option value="Nigeria">
-            <option value="United Kingdom">
-            <option value="United States">
-            <option value="Canada">
-            <option value="Australia">
-            <option value="China">
-            <option value="Japan">
-            <option value="South Korea">
-            <option value="United Arab Emirates">
-            <!-- User can type any other existing country -->
-          </datalist>
+          <select id="reg-country" class="form-select" required>
+            <option value="" disabled selected>Select your country</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+            <option value="South Africa">South Africa</option>
+            <option value="Zambia">Zambia</option>
+            <option value="Botswana">Botswana</option>
+            <option value="Namibia">Namibia</option>
+            <option value="Nigeria">Nigeria</option>
+            <option value="Kenya">Kenya</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="United States">United States</option>
+            <option value="Canada">Canada</option>
+            <option value="Australia">Australia</option>
+            <option value="China">China</option>
+            <option value="Japan">Japan</option>
+            <option value="South Korea">South Korea</option>
+            <option value="United Arab Emirates">United Arab Emirates</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
 
         <div class="grid-2-col">
-          <div class="form-group">
+          <div class="form-group password-wrapper">
             <label class="form-label">Password</label>
             <input type="password" id="reg-password" class="form-input" required>
+            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-password', this)"></i>
           </div>
-          <div class="form-group">
+          <div class="form-group password-wrapper">
             <label class="form-label">Confirm Password</label>
             <input type="password" id="reg-confirm-password" class="form-input" required>
+            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-confirm-password', this)"></i>
           </div>
         </div>
         <button type="submit" class="btn btn-primary btn-block" id="btn-register">Create Account</button>
@@ -283,7 +299,7 @@
           </div>
 
           <form onsubmit="event.preventDefault(); showToast('Profile Saved!', 'success');">
-            <h3>Update Profile</h3>
+            <h3>Update Personal Details</h3>
             <div class="grid-2-col">
               <div class="form-group"><label class="form-label">Username</label><input type="text" class="form-input"></div>
               <div class="form-group"><label class="form-label">Years of Experience</label><input type="number" class="form-input"></div>
@@ -316,8 +332,28 @@
                 </div>
               </div>
             </div>
-
             <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;">Save Details</button>
+          </form>
+        </div>
+
+        <!-- NEW: SECURITY & PASSWORD SECTION -->
+        <div class="card">
+          <form onsubmit="handleChangePassword(event)">
+            <h3>Security & Password</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Update your account password securely.</p>
+            <div class="grid-2-col">
+              <div class="form-group password-wrapper">
+                <label class="form-label">New Password</label>
+                <input type="password" id="profile-new-pass" class="form-input" required minlength="6">
+                <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('profile-new-pass', this)"></i>
+              </div>
+              <div class="form-group password-wrapper">
+                <label class="form-label">Confirm New Password</label>
+                <input type="password" id="profile-confirm-pass" class="form-input" required minlength="6">
+                <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('profile-confirm-pass', this)"></i>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-outline" id="btn-change-pass">Update Password</button>
           </form>
         </div>
       </section>
@@ -326,7 +362,6 @@
       <section id="jobs-view" class="view-panel">
         <h2 style="margin-bottom: 1rem;">Job Opportunities</h2>
         
-        <!-- Search & Filter -->
         <div class="filter-bar">
           <input type="text" id="search-jobs" class="form-input" placeholder="Search by keyword..." oninput="filterJobBoard()">
           <select id="filter-type" class="form-select" onchange="filterJobBoard()" style="flex: 1; min-width: 150px;">
@@ -395,7 +430,6 @@
             <i class="fa-regular fa-envelope-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
             <p>No messages yet.</p>
           </div>
-          <!-- Messages will inject here -->
         </div>
       </section>
 
@@ -434,7 +468,20 @@
       setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
     };
 
-    // UI Switching
+    // UI Switching & Password Toggle
+    window.togglePassword = function(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = "password";
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    };
+
     window.switchAuthTab = function(type) {
       document.getElementById('tab-login').classList.toggle('active', type === 'login');
       document.getElementById('tab-register').classList.toggle('active', type === 'register');
@@ -451,14 +498,13 @@
       document.getElementById(viewId).classList.add('active');
       if (element) element.classList.add('active');
       
-      // Clear badge if opening messages
       if(viewId === 'messages-view') {
         unreadMessages = 0;
         updateBadge();
       }
     };
 
-    // AUTHENTICATION LOGIC (With simulated Firebase Fallback)
+    // AUTHENTICATION LOGIC
     window.handleLogin = async function(e) {
       e.preventDefault();
       const email = document.getElementById('login-email').value;
@@ -472,12 +518,16 @@
             finalizeLogin("User", email, userCredential.user.emailVerified);
           }).catch((error) => {
             btn.innerHTML = 'Sign In';
-            showToast("Invalid login credentials. " + error.message, 'error');
+            // Suppress long codes, show generic incorrect credential message
+            if(error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+               showToast("Incorrect email or password.", 'error');
+            } else {
+               showToast("Login failed. Please try again.", 'error');
+            }
           });
         });
       } else {
-        // Simulation Mode if Firebase config is empty
-        setTimeout(() => { finalizeLogin("Demo User", email, true); }, 1000);
+        setTimeout(() => { finalizeLogin("Demo User", email, true); }, 1000); // Simulation
       }
     };
 
@@ -487,6 +537,7 @@
       const email = document.getElementById('reg-email').value;
       const pass = document.getElementById('reg-password').value;
       const confirmPass = document.getElementById('reg-confirm-password').value;
+      const dob = document.getElementById('reg-dob').value;
       
       if (pass !== confirmPass) {
         showToast("Passwords do not match!", 'error');
@@ -505,15 +556,81 @@
             });
           }).catch((error) => {
             btn.innerHTML = 'Create Account';
-            showToast(error.message, 'error');
+            // Specific catch for already in use
+            if(error.code === 'auth/email-already-in-use') {
+               showToast("Email already exists. Please log in.", 'error');
+               switchAuthTab('login');
+               document.getElementById('login-email').value = email;
+            } else {
+               showToast("Registration Error. Please check details.", 'error');
+            }
           });
         });
       } else {
-        // Simulation
         setTimeout(() => {
           showToast("Account created! Verification email simulated.", "success");
-          finalizeLogin(name, email, false); // Demo sets false to show verification restriction
+          finalizeLogin(name, email, false); 
         }, 1200);
+      }
+    };
+
+    window.handleForgotPassword = function() {
+      const email = document.getElementById('login-email').value;
+      if (!email) {
+        showToast("Please enter your email address in the field above first.", "error");
+        document.getElementById('login-email').focus();
+        return;
+      }
+
+      if (window.auth) {
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ sendPasswordResetEmail }) => {
+          sendPasswordResetEmail(window.auth, email).then(() => {
+             showToast("Password reset link sent to your email!", "success");
+          }).catch((error) => {
+             showToast("Error sending reset link. Please try again.", "error");
+          });
+        });
+      } else {
+         showToast("Simulated: Password reset link sent to your email!", "success");
+      }
+    };
+
+    window.handleChangePassword = function(e) {
+      e.preventDefault();
+      const newPass = document.getElementById('profile-new-pass').value;
+      const confirmPass = document.getElementById('profile-confirm-pass').value;
+      const btn = document.getElementById('btn-change-pass');
+
+      if (newPass !== confirmPass) {
+        showToast("New passwords do not match!", "error");
+        return;
+      }
+      
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
+
+      if (window.auth && window.auth.currentUser) {
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ updatePassword }) => {
+          updatePassword(window.auth.currentUser, newPass).then(() => {
+            showToast("Password updated successfully!", "success");
+            btn.innerHTML = 'Update Password';
+            document.getElementById('profile-new-pass').value = '';
+            document.getElementById('profile-confirm-pass').value = '';
+          }).catch((error) => {
+            btn.innerHTML = 'Update Password';
+            if (error.code === 'auth/requires-recent-login') {
+              showToast("Security require you to log out and log back in to change your password.", "error");
+            } else {
+              showToast("Error updating password.", "error");
+            }
+          });
+        });
+      } else {
+        setTimeout(() => {
+          showToast("Simulated: Password updated successfully!", "success");
+          btn.innerHTML = 'Update Password';
+          document.getElementById('profile-new-pass').value = '';
+          document.getElementById('profile-confirm-pass').value = '';
+        }, 1000);
       }
     };
 
@@ -539,7 +656,6 @@
         vBadge.style.color = 'white';
       }
 
-      // Add Logout to Header
       document.getElementById('nav-actions').innerHTML = `
         <div style="display:flex; align-items:center; gap:1rem;">
           <span style="font-weight:600; color:var(--surface-white);" class="hide-mobile">${name}</span>
@@ -556,6 +672,7 @@
       document.getElementById('app-sidebar').style.display = 'none';
       document.getElementById('app-content').style.display = 'none';
       document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>`;
+      
       document.getElementById('btn-login').innerHTML = 'Sign In';
       document.getElementById('btn-register').innerHTML = 'Create Account';
       showToast('Logged out.', 'info');
@@ -569,7 +686,6 @@
       }
       showToast(`Application sent for ${jobTitle}`, "success");
       
-      // Simulate system message received
       setTimeout(() => {
         receiveMessage(
           "Application Received", 
@@ -592,13 +708,12 @@
         else card.style.display = 'none';
       });
 
-      // Sorting
       const container = document.getElementById('job-list-container');
       cards.sort((a, b) => {
         if(sortOrder === 'salary') return parseInt(b.getAttribute('data-salary')) - parseInt(a.getAttribute('data-salary'));
-        return 0; // default newest order (DOM order)
+        return 0; 
       });
-      cards.forEach(card => container.appendChild(card)); // Re-append in sorted order
+      cards.forEach(card => container.appendChild(card)); 
     };
 
     // INBOX & MESSAGING
