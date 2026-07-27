@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Bee Connect - Teacher Portal</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary-navy: #0F172A;
+      --secondary-navy: #1E293B;
+      --accent-yellow: #FFB800;
+      --accent-yellow-hover: #E5A600;
+      --bg-light: #F8FAFC;
+      --surface-white: #FFFFFF;
+      --text-dark: #0F172A;
+      --text-muted: #64748B;
+      --border-color: #E2E8F0;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-dark); display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Header Bar */
+    header {
+      background-color: var(--primary-navy);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .brand-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: white; font-weight: 700; font-size: 1.25rem; }
+    .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
+    .nav-actions { display: flex; align-items: center; gap: 1rem; }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
+    .btn-primary:hover { background-color: var(--accent-yellow-hover); }
+    .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+    /* Main Dynamic Layout */
+    .app-container { display: flex; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; padding: 1.5rem; gap: 1.5rem; }
+
+    /* Auth Container (Initially Visible) */
+    .auth-wrapper {
+      max-width: 480px;
+      margin: 3rem auto;
+      background: var(--surface-white);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-md);
+      width: 100%;
+    }
+    .auth-tabs { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; }
+    .auth-tab { flex: 1; text-align: center; padding: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; }
+    .auth-tab.active { color: var(--primary-navy); border-bottom: 3px solid var(--accent-yellow); margin-bottom: -2px; }
+
+    /* Dashboard Sidebar Navigation */
+    .sidebar {
+      width: 280px;
+      background: var(--surface-white);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      height: fit-content;
+      display: none; /* Hidden during Auth */
+    }
+    .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .sidebar-item {
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.2s;
+    }
+    .sidebar-item:hover, .sidebar-item.active { background-color: #F1F5F9; color: var(--primary-navy); }
+    .sidebar-item.active i { color: var(--accent-yellow); }
+
+    /* Dynamic Content View Area */
+    .content-area { flex: 1; display: none; flex-direction: column; gap: 1.5rem; }
+    .view-panel { display: none; background: var(--surface-white); border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-sm); }
+    .view-panel.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Form Design */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.5rem; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--primary-navy); }
+
+    /* Upload Drag & Drop Box */
+    .upload-zone {
+      border: 2px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg-light);
+      margin-top: 0.5rem;
+      transition: border-color 0.2s;
+    }
+    .upload-zone:hover { border-color: var(--accent-yellow); }
+    .upload-zone i { font-size: 1.75rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+    /* Cards Grid */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1rem; }
+    .card { border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--surface-white); }
+    .badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: #E2E8F0; }
+    .badge-yellow { background: #FEF3C7; color: #92400E; }
+
+    /* Responsive Drawer */
+    @media (max-width: 900px) {
+      .app-container { flex-direction: column; }
+      .sidebar { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <a href="#" class="brand-logo">
+      <i class="fa-solid fa-brands fa-hive"></i> TeacherBee <span style="font-weight:300; opacity:0.8;">Connect</span>
+    </a>
+    <div class="nav-actions" id="nav-actions">
+      <button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>
+      <button class="btn btn-primary" onclick="toggleAuthMode('register')">Join Free</button>
+    </div>
+  </header>
+
+  <!-- App Wrapper -->
+  <div class="app-container">
+
+    <!-- AUTHENTICATION CONTAINER (LOGIN / REGISTER) -->
+    <div class="auth-wrapper" id="auth-panel">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+        <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Teacher Registration</div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" onsubmit="handleAuthSubmit(event, 'login')">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="teacher@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Access Teacher Portal</button>
+      </form>
+
+      <!-- Registration Form -->
+      <form id="register-form" style="display: none;" onsubmit="handleAuthSubmit(event, 'register')">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" placeholder="e.g. Jane Doe" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="teacher@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" placeholder="At least 8 characters" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Free Account</button>
+      </form>
+    </div>
+
+    <!-- SIDEBAR NAVIGATION (Dashboard View) -->
+    <aside class="sidebar" id="app-sidebar">
+      <ul class="sidebar-menu">
+        <li class="sidebar-item active" onclick="switchView('profile-view', this)">
+          <i class="fa-solid fa-user-gear"></i> Profile & Uploads
+        </li>
+        <li class="sidebar-item" onclick="switchView('jobs-view', this)">
+          <i class="fa-solid fa-briefcase"></i> Job Opportunities
+        </li>
+        <li class="sidebar-item" onclick="switchView('workshops-view', this)">
+          <i class="fa-solid fa-chalkboard-user"></i> Training & Workshops
+        </li>
+        <li class="sidebar-item" onclick="switchView('tefl-view', this)">
+          <i class="fa-solid fa-certificate"></i> TEFL Support
+        </li>
+        <li class="sidebar-item" onclick="switchView('messages-view', this)">
+          <i class="fa-solid fa-comments"></i> Messages
+        </li>
+        <li class="sidebar-item" style="color: #EF4444; margin-top: 1rem;" onclick="logout()">
+          <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+        </li>
+      </ul>
+    </aside>
+
+    <!-- MAIN DYNAMIC CONTENT PANELS -->
+    <main class="content-area" id="app-content">
+
+      <!-- 1. PROFILE & UPLOADS VIEW -->
+      <section id="profile-view" class="view-panel active">
+        <h2 style="margin-bottom: 0.5rem;">Teacher Profile & Media</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Recruiters view your profile to make direct offers. Contact details remain protected.</p>
+
+        <form onsubmit="event.preventDefault(); alert('Profile Updated!');">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Native Speaker Status / English Proficiency</label>
+              <select class="form-select">
+                <option>Native Speaker (US, UK, CA, AU, NZ, SA, IE)</option>
+                <option>Fluent / C2 Proficient</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Weekly Availability (Hours)</label>
+              <input type="number" class="form-input" value="20" placeholder="e.g. 20">
+            </div>
+          </div>
+
+          <!-- Document Uploads -->
+          <h3 style="font-size: 1rem; margin: 1.5rem 0 0.75rem 0;">Qualifications & Media Uploads</h3>
+          <div class="cards-grid">
+            <div class="upload-zone">
+              <i class="fa-solid fa-file-pdf"></i>
+              <p style="font-weight: 600; font-size: 0.85rem;">Upload Resume / CV</p>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">PDF or DOCX (Max 5MB)</span>
+            </div>
+            <div class="upload-zone">
+              <i class="fa-solid fa-circle-play"></i>
+              <p style="font-weight: 600; font-size: 0.85rem;">Intro Video (1-2 mins)</p>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">MP4 link or file</span>
+            </div>
+            <div class="upload-zone">
+              <i class="fa-solid fa-video"></i>
+              <p style="font-weight: 600; font-size: 0.85rem;">Demo Class Sample</p>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Link to unlisted recording</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">Save Profile Settings</button>
+        </form>
+      </section>
+
+      <!-- 2. JOB BOARD & APPLICATIONS VIEW -->
+      <section id="jobs-view" class="view-panel">
+        <h2>Global Online Teaching Jobs</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Apply directly with your Teacher Bee Connect profile.</p>
+
+        <div class="cards-grid">
+          <div class="card">
+            <span class="badge badge-yellow">Full Time</span>
+            <h3 style="margin: 0.5rem 0 0.25rem 0; font-size: 1.1rem;">Online ESL Tutor (K-12)</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">$18 - $24 / hour • Asian Timezones</p>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="alert('Application Sent!')">Quick Apply</button>
+          </div>
+          <div class="card">
+            <span class="badge">Part Time</span>
+            <h3 style="margin: 0.5rem 0 0.25rem 0; font-size: 1.1rem;">Business English Instructor</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">$22 - $30 / hour • Flexible Hours</p>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="alert('Application Sent!')">Quick Apply</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. WORKSHOPS VIEW -->
+      <section id="workshops-view" class="view-panel">
+        <h2>Online Teaching Training & Workshops</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Enhance your teaching skills and interview preparation.</p>
+        <div class="card" style="margin-bottom: 1rem;">
+          <span class="badge badge-yellow">Live Seminar</span>
+          <h3 style="margin-top:0.5rem;">Mastering the Demo Lesson & Interview Prep</h3>
+          <p style="font-size:0.9rem; color:var(--text-muted); margin: 0.5rem 0;">Learn how to pass recruiters' mock classes with top marks.</p>
+          <button class="btn btn-primary" onclick="alert('Registered for Workshop!')">Reserve Free Spot</button>
+        </div>
+      </section>
+
+      <!-- 4. TEFL ENQUIRIES VIEW -->
+      <section id="tefl-view" class="view-panel">
+        <h2>TEFL Certification Support</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Get qualified with accredited 120-hour partner TEFL courses.</p>
+        <div class="card">
+          <h3>Partner 120-Hour Accredited TEFL Course</h3>
+          <p style="font-size:0.875rem; color: var(--text-muted); margin: 0.5rem 0;">Get enrollment assistance and discounted rates for Teacher Bee members.</p>
+          <button class="btn btn-outline" style="background: var(--primary-navy);" onclick="alert('Enquiry Sent to TEFL Advisor')">Request Information & Discount</button>
+        </div>
+      </section>
+
+      <!-- 5. INTERNAL MESSAGING VIEW -->
+      <section id="messages-view" class="view-panel">
+        <h2>Platform Messaging</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Secure recruiter communication. Personal contacts are protected.</p>
+        <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; text-align: center; color: var(--text-muted);">
+          <i class="fa-regular fa-comments" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+          <p>No active recruiter interview invitations yet.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // --- Dynamic Navigation & State Engine ---
+
+    // Toggle between Login & Registration Forms
+    function switchAuthTab(type) {
+      document.getElementById('tab-login').classList.toggle('active', type === 'login');
+      document.getElementById('tab-register').classList.toggle('active', type === 'register');
+      document.getElementById('login-form').style.display = (type === 'login') ? 'block' : 'none';
+      document.getElementById('register-form').style.display = (type === 'register') ? 'block' : 'none';
+    }
+
+    // Header Trigger for Auth Mode
+    function toggleAuthMode(type) {
+      logout();
+      switchAuthTab(type);
+    }
+
+    // Handle Form Submit & Enter Dashboard View
+    function handleAuthSubmit(event, type) {
+      event.preventDefault();
+      
+      // Simulate Successful Login / Auth State Change
+      document.getElementById('auth-panel').style.display = 'none';
+      document.getElementById('app-sidebar').style.display = 'block';
+      document.getElementById('app-content').style.display = 'flex';
+      
+      // Update Navbar State
+      document.getElementById('nav-actions').innerHTML = `
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <i class="fa-solid fa-circle-user" style="font-size:1.5rem; color:var(--accent-yellow);"></i>
+          <span style="font-weight:600; font-size:0.9rem;">Jane Doe (Teacher)</span>
+        </div>
+      `;
+    }
+
+    // Dynamic SPA View Switcher
+    function switchView(viewId, element) {
+      // Hide all dynamic views
+      const panels = document.querySelectorAll('.view-panel');
+      panels.forEach(panel => panel.classList.remove('active'));
+
+      // Remove active states from sidebar menu items
+      const menuItems = document.querySelectorAll('.sidebar-item');
+      menuItems.forEach(item => item.classList.remove('active'));
+
+      // Show targeted view and set active tab
+      document.getElementById(viewId).classList.add('active');
+      element.classList.add('active');
+    }
+
+    // Reset View / Sign Out
+    function logout() {
+      document.getElementById('auth-panel').style.display = 'block';
+      document.getElementById('app-sidebar').style.display = 'none';
+      document.getElementById('app-content').style.display = 'none';
+      document.getElementById('nav-actions').innerHTML = `
+        <button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>
+        <button class="btn btn-primary" onclick="toggleAuthMode('register')">Join Free</button>
+      `;
+    }
+  </script>
+</body>
+</html>
