@@ -98,12 +98,16 @@
     .qual-item-info a { font-size: 0.85rem; color: var(--primary-navy); text-decoration: underline; }
     .qual-actions { display: flex; gap: 0.5rem; }
     
-    #add-qual-form { background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--border-color); margin-bottom: 1rem; }
+    #add-qual-form { background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--border-color); margin-bottom: 1rem; display: none; }
+    
+    /* Clickable Qualifications in Recruiter View */
+    .qual-doc-link { cursor: pointer; transition: background 0.2s; }
+    .qual-doc-link:hover { background: #E5E7EB !important; }
 
     /* Progress Bar */
     .progress-bar-container { width: 100%; background-color: #E5E7EB; border-radius: 8px; margin-top: 0.5rem; overflow: hidden; display: none; }
     .progress-bar-fill { height: 8px; background-color: var(--success-green); width: 0%; transition: width 0.3s; }
-    .progress-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; display: none; }
+    .progress-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; display: none; flex: 1; }
 
     /* --- SIDEBAR & CONTENT VISIBILITY --- */
     .sidebar { width: 250px; display: none; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
@@ -443,13 +447,17 @@
 
             <div class="form-group" style="margin-top:1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
               <label class="form-label"><i class="fa-solid fa-video"></i> Introduction Video Upload</label>
-              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Upload a short 1-3 minute intro video. We automatically compress it for you.</p>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Upload a short 1-3 minute intro video.</p>
               <input type="file" id="prof-video-file" accept="video/mp4,video/webm" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem;">
               
               <div class="progress-bar-container" id="video-progress-bar">
                 <div class="progress-bar-fill" id="video-progress-fill"></div>
               </div>
-              <p class="progress-text" id="video-progress-text">Compressing... 0%</p>
+              
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;" id="video-progress-wrapper">
+                <p class="progress-text" id="video-progress-text" style="display:none; margin:0;">Compressing... 0%</p>
+                <button type="button" id="btn-cancel-video" class="btn btn-danger btn-small" style="padding:0.2rem 0.5rem; display:none;" onclick="cancelVideoUpload()">Cancel Upload</button>
+              </div>
 
               <video id="prof-video-preview" controls style="display:none; width:100%; max-height:300px; margin-top:10px; border-radius:8px;"></video>
             </div>
@@ -458,7 +466,7 @@
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
               <h3>My Qualifications</h3>
-              <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm()"><i class="fa-solid fa-plus"></i> Add Qualification</button>
+              <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm(false)"><i class="fa-solid fa-plus"></i> Add Qualification</button>
             </div>
             
             <div id="add-qual-form">
@@ -467,15 +475,16 @@
                 <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. 120-Hour TEFL, BSc Mathematics">
               </div>
               <div class="form-group">
-                <label class="form-label">Upload Certificate (Image/PDF)</label>
-                <input type="file" id="new-qual-file" class="form-input" accept="image/*,application/pdf">
+                <label class="form-label">Upload Certificate/Document</label>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-5px; margin-bottom:5px;">Accepts Images, PDFs, and Word Documents</p>
+                <input type="file" id="new-qual-file" class="form-input" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
               </div>
               <div class="progress-bar-container" id="qual-progress-bar">
                 <div class="progress-bar-fill" id="qual-progress-fill"></div>
               </div>
               <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-                <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewQualification()">Save & Upload</button>
-                <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm()">Cancel</button>
+                <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewQualification()">Save Qualification</button>
+                <button type="button" class="btn btn-outline btn-small" onclick="cancelQualificationUpload()">Cancel</button>
               </div>
             </div>
 
@@ -661,6 +670,7 @@
 
       <div id="rv-qual-section" style="margin-top:2rem;">
         <h3 class="section-title-elegant">Certifications & Degrees</h3>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Click on a qualification to view the attached document.</p>
         <div id="rv-qual-list" style="display:flex; flex-direction:column; gap:0.5rem;">
           <!-- Injected dynamically -->
         </div>
@@ -682,6 +692,11 @@
     let unreadMessages = 0;
     let currentCropper = null;
     let editQualIndex = -1;
+    
+    // Globals for Upload Tasks Cancellation
+    window.currentQualUploadTask = null;
+    window.currentVideoUploadTask = null;
+    window.isVideoUploadCancelled = false;
 
     const jobsData = {
       'job1': { title: 'Online ESL Tutor (K-12)', pay: '$18-$24/hr', loc: 'Online - Global', type: 'Full Time', desc: 'Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor\'s degree.\n\nRequirements:\n- Native-level English proficiency\n- 120-Hour TEFL or equivalent\n- Fast internet connection\n\nResponsibilities:\nDeliver 25-minute engaging 1-on-1 lessons using our proprietary platform. Full lesson materials provided.' },
@@ -972,32 +987,52 @@
     };
 
     // --- VIDEO COMPRESSION & UPLOAD ---
+    window.cancelVideoUpload = function() {
+      window.isVideoUploadCancelled = true;
+      if (window.currentVideoUploadTask) {
+        window.currentVideoUploadTask.cancel();
+        window.currentVideoUploadTask = null;
+      }
+      document.getElementById('video-progress-bar').style.display = 'none';
+      document.getElementById('video-progress-text').style.display = 'none';
+      document.getElementById('btn-cancel-video').style.display = 'none';
+      document.getElementById('prof-video-file').value = '';
+      showToast("Video upload canceled.", "info");
+    };
+
     window.handleVideoUpload = async function(input) {
       const file = input.files[0];
       if(!file || !window.auth.currentUser) return;
       
+      window.isVideoUploadCancelled = false;
       const pContainer = document.getElementById('video-progress-bar');
       const pFill = document.getElementById('video-progress-fill');
       const pText = document.getElementById('video-progress-text');
+      const cancelBtn = document.getElementById('btn-cancel-video');
       
       pContainer.style.display = 'block';
       pText.style.display = 'block';
+      cancelBtn.style.display = 'block';
       pText.innerText = 'Compressing video... 0%';
       pFill.style.width = '0%';
 
-      // Simulate compression phase
+      // Simulate compression phase - checking for cancellation inside loop
       for(let i=10; i<=100; i+=15) {
+        if(window.isVideoUploadCancelled) return;
         await new Promise(r => setTimeout(r, 200));
         pText.innerText = `Compressing video... ${Math.min(i, 100)}%`;
         pFill.style.width = `${Math.min(i, 100)}%`;
       }
       
+      if(window.isVideoUploadCancelled) return;
+
       pText.innerText = `Uploading to secure storage... 0%`;
       pFill.style.width = `0%`;
       
       import("https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js").then(({ ref, uploadBytesResumable, getDownloadURL }) => {
         const storageRef = ref(window.storage, `users/${window.auth.currentUser.uid}/videos/${Date.now()}_${file.name}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
+        window.currentVideoUploadTask = uploadTask;
         
         uploadTask.on('state_changed', 
           (snapshot) => {
@@ -1006,8 +1041,11 @@
             pText.innerText = `Uploading... ${Math.round(prog)}%`;
           }, 
           (error) => {
-             showToast("Video upload failed. File might be too large.", "error");
-             pContainer.style.display = 'none'; pText.style.display = 'none';
+             if (error.code !== 'storage/canceled') {
+                showToast("Video upload failed. File might be too large.", "error");
+             }
+             pContainer.style.display = 'none'; pText.style.display = 'none'; cancelBtn.style.display = 'none';
+             window.currentVideoUploadTask = null;
           }, 
           async () => {
              const url = await getDownloadURL(uploadTask.snapshot.ref);
@@ -1018,7 +1056,8 @@
              vPreview.src = url;
              vPreview.style.display = 'block';
              
-             pContainer.style.display = 'none'; pText.style.display = 'none';
+             pContainer.style.display = 'none'; pText.style.display = 'none'; cancelBtn.style.display = 'none';
+             window.currentVideoUploadTask = null;
              showToast("Video compressed and saved permanently!", "success");
              input.value = '';
           }
@@ -1026,17 +1065,29 @@
       });
     };
 
-    // --- DYNAMIC QUALIFICATIONS (REAL SAVING) ---
+    // --- DYNAMIC QUALIFICATIONS ---
     window.toggleAddQualForm = function() {
       const form = document.getElementById('add-qual-form');
       if(form.style.display === 'none' || form.style.display === '') {
         form.style.display = 'block';
         document.getElementById('new-qual-title').value = '';
         document.getElementById('new-qual-file').value = '';
+        document.getElementById('btn-save-qual').innerHTML = 'Save Qualification';
         editQualIndex = -1;
       } else {
         form.style.display = 'none';
       }
+    };
+
+    window.cancelQualificationUpload = function() {
+      if (window.currentQualUploadTask) {
+        window.currentQualUploadTask.cancel();
+        window.currentQualUploadTask = null;
+      }
+      document.getElementById('qual-progress-bar').style.display = 'none';
+      document.getElementById('btn-save-qual').innerHTML = 'Save Qualification';
+      document.getElementById('new-qual-file').value = '';
+      toggleAddQualForm();
     };
 
     window.saveNewQualification = async function() {
@@ -1057,15 +1108,26 @@
         import("https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js").then(({ ref, uploadBytesResumable, getDownloadURL }) => {
           const storageRef = ref(window.storage, `users/${window.auth.currentUser.uid}/quals/${Date.now()}_${file.name}`);
           const uploadTask = uploadBytesResumable(storageRef, file);
+          window.currentQualUploadTask = uploadTask;
           
           uploadTask.on('state_changed', 
             (snap) => { pFill.style.width = `${(snap.bytesTransferred / snap.totalBytes) * 100}%`; },
-            (err) => { showToast("Upload failed.", "error"); btn.innerHTML = 'Save & Upload'; pContainer.style.display = 'none'; },
+            (error) => { 
+              if (error.code === 'storage/canceled') {
+                showToast("Upload canceled.", "info");
+              } else {
+                showToast("Upload failed.", "error"); 
+              }
+              btn.innerHTML = 'Save Qualification'; 
+              pContainer.style.display = 'none'; 
+              window.currentQualUploadTask = null;
+            },
             async () => {
               const url = await getDownloadURL(uploadTask.snapshot.ref);
               finalizeSaveQual(title, url, file.name);
-              btn.innerHTML = 'Save & Upload';
+              btn.innerHTML = 'Save Qualification';
               pContainer.style.display = 'none';
+              window.currentQualUploadTask = null;
             }
           );
         });
@@ -1123,6 +1185,7 @@
       const q = window.currentUser.quals[index];
       document.getElementById('add-qual-form').style.display = 'block';
       document.getElementById('new-qual-title').value = q.title;
+      document.getElementById('btn-save-qual').innerHTML = 'Update Qualification';
       editQualIndex = index;
     };
 
@@ -1200,7 +1263,11 @@
       qualList.innerHTML = '';
       if(window.currentUser.quals && window.currentUser.quals.length > 0) {
         window.currentUser.quals.forEach(q => {
-             qualList.insertAdjacentHTML('beforeend', `<div style="padding:0.75rem; background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; display:flex; align-items:center; gap:1rem;"><i class="fa-solid fa-certificate" style="color:var(--primary-navy); font-size:1.5rem;"></i> <span style="font-weight:600; font-size:0.9rem;">${q.title}</span> </div>`);
+             const clickableAttr = q.url ? `onclick="window.open('${q.url}', '_blank')"` : '';
+             const linkClass = q.url ? `qual-doc-link` : ``;
+             const iconMarkup = q.url ? `<i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.85rem; color:var(--text-muted); margin-left:auto;"></i>` : ``;
+             
+             qualList.insertAdjacentHTML('beforeend', `<div class="${linkClass}" ${clickableAttr} style="padding:0.75rem; background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; display:flex; align-items:center; gap:1rem;"><i class="fa-solid fa-certificate" style="color:var(--primary-navy); font-size:1.5rem;"></i> <span style="font-weight:600; font-size:0.9rem;">${q.title}</span> ${iconMarkup} </div>`);
         });
       } else {
         qualList.innerHTML = '<p class="elegant-text">No qualifications attached.</p>';
