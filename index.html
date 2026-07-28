@@ -139,24 +139,28 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
 
-    // TODO: Replace with your actual Firebase Config
+    // Replaced with your exact config parameters
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+      authDomain: "teacherbee-connect.firebaseapp.com",
+      projectId: "teacherbee-connect",
+      storageBucket: "teacherbee-connect.firebasestorage.app",
+      messagingSenderId: "345613317767",
+      appId: "1:345613317767:web:555713e479f9837e84aa22",
+      measurementId: "G-L91S0WTVLG"
     };
 
     window.initFirebaseSetup = function() {
       try {
         const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         window.auth = getAuth(app);
         window.db = getFirestore(app);
+        console.log("Firebase connected successfully to teacherbee-connect!");
       } catch (e) {
-        console.warn("Firebase config missing. Running in simulation mode.");
+        console.error("Firebase connection error:", e);
         window.auth = null; 
       }
     };
@@ -224,7 +228,7 @@
           </div>
         </div>
         
-        <!-- Standard Select Element for Countries (Ensures it shows up everywhere) -->
+        <!-- Standard Select Element for Countries -->
         <div class="form-group">
           <label class="form-label">Country of Residence</label>
           <select id="reg-country" class="form-select" required>
@@ -336,7 +340,7 @@
           </form>
         </div>
 
-        <!-- NEW: SECURITY & PASSWORD SECTION -->
+        <!-- SECURITY & PASSWORD SECTION -->
         <div class="card">
           <form onsubmit="handleChangePassword(event)">
             <h3>Security & Password</h3>
@@ -518,7 +522,6 @@
             finalizeLogin("User", email, userCredential.user.emailVerified);
           }).catch((error) => {
             btn.innerHTML = 'Sign In';
-            // Suppress long codes, show generic incorrect credential message
             if(error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
                showToast("Incorrect email or password.", 'error');
             } else {
@@ -526,8 +529,6 @@
             }
           });
         });
-      } else {
-        setTimeout(() => { finalizeLogin("Demo User", email, true); }, 1000); // Simulation
       }
     };
 
@@ -556,7 +557,6 @@
             });
           }).catch((error) => {
             btn.innerHTML = 'Create Account';
-            // Specific catch for already in use
             if(error.code === 'auth/email-already-in-use') {
                showToast("Email already exists. Please log in.", 'error');
                switchAuthTab('login');
@@ -566,11 +566,6 @@
             }
           });
         });
-      } else {
-        setTimeout(() => {
-          showToast("Account created! Verification email simulated.", "success");
-          finalizeLogin(name, email, false); 
-        }, 1200);
       }
     };
 
@@ -590,8 +585,6 @@
              showToast("Error sending reset link. Please try again.", "error");
           });
         });
-      } else {
-         showToast("Simulated: Password reset link sent to your email!", "success");
       }
     };
 
@@ -624,13 +617,6 @@
             }
           });
         });
-      } else {
-        setTimeout(() => {
-          showToast("Simulated: Password updated successfully!", "success");
-          btn.innerHTML = 'Update Password';
-          document.getElementById('profile-new-pass').value = '';
-          document.getElementById('profile-confirm-pass').value = '';
-        }, 1000);
       }
     };
 
