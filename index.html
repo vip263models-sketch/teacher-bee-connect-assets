@@ -1513,6 +1513,16 @@
       renderInbox();
     };
 
+    function updateBadge() {
+      const badge = document.getElementById('msg-badge');
+      if (unreadMessages > 0) {
+        badge.innerText = unreadMessages;
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
     window.renderInbox = function() {
       const container = document.getElementById('inbox-container');
       const empty = document.getElementById('empty-inbox');
@@ -1602,53 +1612,86 @@
       }
       
       document.getElementById('inbox-list-view').style.display = 'none';
-      document.getElementById('chat-window').style.display = 'flex';
-      document.getElementById('chat-title').innerText = title || 'Recruiter Chat';
-      
+      const chatWin = document.getElementById('chat-window');
+      chatWin.style.display = 'flex';
+      document.getElementById('chat-title').innerText = title || (msg ? msg.subject : 'Recruiter Chat');
+
       if (msg) {
         renderChatHistory(msg);
-      } else {
-        const hist = document.getElementById('chat-history');
-        hist.innerHTML = `
-          <div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;">Chat started</div>
-          <div class="chat-bubble bubble-in">Hello! We received your application. Feel free to leave any questions or document attachments here.</div>
-        `;
       }
-      
-      if (pushToHistory) history.pushState({ view: 'chat', title: title, msgId: msgId }, '', '#chat');
+
+      if (pushToHistory) {
+        history.pushState({ view: 'chat', title, msgId }, '', '#chat');
+      }
     };
 
-    window.closeChat = function(goBack = false) {
-      if (goBack && history.state && history.state.view === 'chat') {
+    window.closeChat = function(pushToHistory = true) {
+      document.getElementById('chat-window').style.display = 'none';
+      document.getElementById('inbox-list-view').style.display = 'block';
+      window.activeChatMsgId = null;
+      if (pushToHistory && history.state && history.state.view === 'chat') {
         history.back();
-      } else {
-        document.getElementById('chat-window').style.display = 'none';
-        document.getElementById('inbox-list-view').style.display = 'block';
       }
     };
 
     window.sendChatMessage = function() {
       const input = document.getElementById('chat-input-box');
       const text = input.value.trim();
-      if(!text) return;
+      if (!text) return;
 
-      const activeMsgId = window.activeChatMsgId;
-      let targetMsg = window.currentUser.messages.find(m => m.id === activeMsgId);
+      let targetMsg = window.currentUser.messages.find(m => m.id === window.activeChatMsgId);
       if (!targetMsg && window.currentUser.messages.length > 0) {
         targetMsg = window.currentUser.messages[0];
       }
-      if (!targetMsg) return;
+      if (!targetMsg) {
+        targetMsg = {
+          id: 'msg-' + Date.now(),
+          subject: 'Recruiter Chat',
+          body: text,
+          date: new Date().toISOString(),
+          read: true,
+          chatHistory: []
+        };
+        window.currentUser.messages.unshift(targetMsg);
+        window.activeChatMsgId = targetMsg.id;
+      }
 
       if (!targetMsg.chatHistory) targetMsg.chatHistory = [];
 
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      targetMsg.chatHistory.push({ sender: 'me', text: text, time: timeStr, type: 'text' });
+      targetMsg.chatHistory.push({
+        sender: 'me',
+        text: text,
+        time: timeStr,
+        type: 'text'
+      });
 
-      saveProfileToFirestore();
       input.value = '';
       renderChatHistory(targetMsg);
+      saveProfileToFirestore();
     };
 
+    window.autoRegisterWorkshop = function(workshopTitle) {
+      if (!window.currentUser.isVerified) {
+        showToast("Please verify your email address to register.", "error");
+        return;
+      }
+      showToast(`Seat reserved for: ${workshopTitle}`, "success");
+      receiveMessage(
+        `Workshop Confirmation: ${workshopTitle}`,
+        `You are registered for "${workshopTitle}". Check your inbox for preparation notes and meeting link details.`
+      );
+    };
+
+    window.autoSubmitTeflEnquiry = function() {
+      showToast("TEFL enquiry sent! Our advisor will reach out shortly.", "success");
+      receiveMessage(
+        "TEFL Course Information",
+        "Thank you for your interest in our 120-Hour TEFL Course. An academic advisor has been assigned to assist you with enrollment options."
+      );
+    };
+
+    // Keyboard support for chat input
     document.addEventListener('DOMContentLoaded', () => {
       const chatInput = document.getElementById('chat-input-box');
       if (chatInput) {
@@ -1657,20 +1700,6 @@
         });
       }
     });
-
-    window.autoRegisterWorkshop = async function(workshopName) {
-      showToast("Spot reserved for the workshop!", "success");
-    };
-
-    window.autoSubmitTeflEnquiry = async function() {
-      showToast("TEFL enquiry saved automatically!", "success");
-    };
-
-    function updateBadge() {
-      const badge = document.getElementById('msg-badge');
-      if(unreadMessages > 0) { badge.style.display = 'inline-block'; badge.innerText = unreadMessages; } 
-      else { badge.style.display = 'none'; }
-    }
   </script>
 </body>
 </html>
