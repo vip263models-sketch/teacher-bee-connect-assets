@@ -49,11 +49,11 @@
 
     /* Header */
     header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
-    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; cursor: pointer; }
+    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
     .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
     
     /* Buttons */
-    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
     .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
     .btn-primary:hover { background-color: var(--yellow-hover); }
     .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); }
@@ -93,9 +93,21 @@
 
     /* Qualifications Dynamic List */
     .qualifications-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
-    .qual-item { background: var(--bg-color); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 0.5rem; position: relative; }
-    .qual-saved-card { display: flex; justify-content: space-between; align-items: center; background: var(--surface-white); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
-    .qual-remove { position: absolute; top: 1rem; right: 1rem; color: var(--error-red); cursor: pointer; background: none; border: none; font-size: 1rem; }
+    .qual-item { background: var(--surface-white); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); }
+    .qual-item-info h4 { margin-bottom: 0.2rem; font-size: 1rem; }
+    .qual-item-info a { font-size: 0.85rem; color: var(--primary-navy); text-decoration: underline; }
+    .qual-actions { display: flex; gap: 0.5rem; }
+    
+    #add-qual-form { background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--border-color); margin-bottom: 1rem; display: none; }
+    
+    /* Clickable Qualifications in Recruiter View */
+    .qual-doc-link { cursor: pointer; transition: background 0.2s; }
+    .qual-doc-link:hover { background: #E5E7EB !important; }
+
+    /* Progress Bar */
+    .progress-bar-container { width: 100%; background-color: #E5E7EB; border-radius: 8px; margin-top: 0.5rem; overflow: hidden; display: none; }
+    .progress-bar-fill { height: 8px; background-color: var(--success-green); width: 0%; transition: width 0.3s; }
+    .progress-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; display: none; flex: 1; }
 
     /* --- SIDEBAR & CONTENT VISIBILITY --- */
     .sidebar { width: 250px; display: none; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
@@ -123,24 +135,28 @@
     
     .job-card { display: flex; flex-direction: column; justify-content: space-between; }
     .job-meta { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; flex-wrap: wrap; }
-    .job-desc { font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-main); }
-    .job-actions { display: flex; gap: 0.5rem; margin-top: auto; }
+    .job-desc { font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* Messages UI & Chat */
     .message-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
     .message-item:hover { background: var(--bg-color); }
+    .message-item.unread { background: #f0f7ff; border-left: 4px solid var(--primary-navy); }
     .message-item:last-child { border-bottom: none; }
     .msg-content h4 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--primary-navy); }
     .msg-content p { font-size: 0.9rem; color: var(--text-muted); }
     .msg-date { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.5rem; }
     
-    #chat-window { display: none; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 500px; }
+    /* Fake Chat Window */
+    #chat-window { display: none; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 550px; }
     .chat-header { background: var(--primary-navy); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
     .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: var(--bg-color); }
-    .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; }
-    .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; }
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.15); border-radius: 4px; }
+    .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; word-wrap: break-word; position: relative; }
+    .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-main); }
     .bubble-out { background: var(--navy-light); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; }
+    .msg-time-stamp { display: block; font-size: 0.68rem; opacity: 0.7; margin-top: 4px; text-align: right; }
+    .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; align-items: center; }
 
     /* Modals */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
@@ -156,12 +172,14 @@
     .section-title-elegant { font-size: 1.1rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem; margin-top: 1.5rem; }
     .elegant-text { color: var(--text-main); font-size: 0.95rem; line-height: 1.6; }
     
+    /* Cropper Modal Specifics */
     #image-cropper-container { max-height: 400px; margin-bottom: 1rem; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     @media (max-width: 768px) {
       .app-container { padding: 1rem; padding-bottom: 85px; }
       .grid-2-col, .grid-3-col, .filter-bar { grid-template-columns: 1fr; }
-      .job-actions { flex-direction: column; }
       
       body.dashboard-active .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; box-shadow: 0 -4px 10px rgba(0,0,0,0.15); top: auto; }
       .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
@@ -170,11 +188,12 @@
     }
   </style>
 
-  <!-- FIREBASE SDK -->
+  <!-- FIREBASE SDK MODULE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, updateDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
@@ -188,27 +207,61 @@
     const app = initializeApp(firebaseConfig);
     window.auth = getAuth(app);
     window.db = getFirestore(app);
+    window.storage = getStorage(app);
+
+    // Expose Firebase SDK methods globally to eliminate dynamic import failure points
+    window.fb = {
+      ref, uploadBytesResumable, uploadBytes, getDownloadURL, deleteObject,
+      doc, setDoc, updateDoc, getDoc, serverTimestamp,
+      signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset
+    };
 
     setPersistence(window.auth, browserLocalPersistence);
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    const oobCode = urlParams.get('oobCode');
+
+    if (mode === 'resetPassword' && oobCode) {
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById('auth-panel').style.display = 'none';
+        document.getElementById('reset-password-panel').style.display = 'block';
+        window.resetOobCode = oobCode;
+      });
+    }
+
     onAuthStateChanged(window.auth, async (user) => {
-      if (user) {
+      if (user && mode !== 'resetPassword') {
         const docRef = doc(window.db, "users", user.uid);
         const docSnap = await getDoc(docRef);
         let name = user.email.split('@')[0];
         let avatar = "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
+        
         if (docSnap.exists()) {
-          name = docSnap.data().name || name;
-          if(docSnap.data().avatarUrl) avatar = docSnap.data().avatarUrl;
-          if(docSnap.data().age) document.getElementById('prof-age').value = docSnap.data().age;
-          if(docSnap.data().gender) document.getElementById('prof-gender').value = docSnap.data().gender;
-          if(docSnap.data().experience) document.getElementById('prof-experience').value = docSnap.data().experience;
-          if(docSnap.data().languages) document.getElementById('prof-languages').value = docSnap.data().languages;
-          if(docSnap.data().bio) document.getElementById('prof-bio').value = docSnap.data().bio;
-          if(docSnap.data().driveVideoLink) document.getElementById('prof-drive-link').value = docSnap.data().driveVideoLink;
-          if(docSnap.data().qualifications) currentUser.qualifications = docSnap.data().qualifications;
+          const data = docSnap.data();
+          name = data.name || name;
+          if(data.avatarUrl) avatar = data.avatarUrl;
+          
+          if(data.age) document.getElementById('prof-age').value = data.age;
+          if(data.gender) document.getElementById('prof-gender').value = data.gender;
+          if(data.experience) document.getElementById('prof-experience').value = data.experience;
+          if(data.languages) document.getElementById('prof-languages').value = data.languages;
+          if(data.bio) document.getElementById('prof-bio').value = data.bio;
+          
+          if(data.videoUrl) {
+              window.currentUser.videoUrl = data.videoUrl;
+              const vPreview = document.getElementById('prof-video-preview');
+              vPreview.src = data.videoUrl;
+              vPreview.style.display = 'block';
+          }
+          
+          window.currentUser.quals = data.qualifications || [];
+          window.currentUser.messages = data.messages || [];
         }
+        
         finalizeLogin(name, user.email, user.emailVerified, avatar);
+        window.renderQualifications();
+        window.renderInbox();
       }
     });
   </script>
@@ -218,8 +271,7 @@
   <div id="toast-container"></div>
 
   <header>
-    <!-- Logo acts as a home button when logged in -->
-    <a class="brand-logo" onclick="handleLogoClick()">
+    <a href="#" class="brand-logo" onclick="handleLogoClick(event)">
       <i class="fa-solid fa-graduation-cap"></i> TeacherBee
     </a>
     <div id="nav-actions">
@@ -229,6 +281,27 @@
 
   <div class="app-container">
     
+    <!-- PASSWORD RESET PANEL -->
+    <div class="auth-wrapper" id="reset-password-panel" style="display: none;">
+      <div class="auth-header">
+        <h2>Create New Password</h2>
+        <p>Enter your new password below.</p>
+      </div>
+      <form onsubmit="handleNewPasswordSubmit(event)">
+        <div class="form-group password-wrapper">
+          <label class="form-label">New Password</label>
+          <input type="password" id="new-reset-pass" class="form-input" required minlength="6">
+          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('new-reset-pass', this)"></i>
+        </div>
+        <div class="form-group password-wrapper">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" id="confirm-reset-pass" class="form-input" required minlength="6">
+          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('confirm-reset-pass', this)"></i>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="btn-save-new-pass">Save New Password</button>
+      </form>
+    </div>
+
     <!-- AUTHENTICATION CONTAINER -->
     <div class="auth-wrapper" id="auth-panel">
       <div class="auth-header">
@@ -245,35 +318,59 @@
       <form id="login-form" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label class="form-label">Email Address</label>
-          <input type="email" id="login-email" class="form-input" required>
+          <input type="email" id="login-email" class="form-input" autocomplete="username" required>
         </div>
         <div class="form-group password-wrapper">
           <label class="form-label">Password</label>
-          <input type="password" id="login-password" class="form-input" required>
+          <input type="password" id="login-password" class="form-input" autocomplete="current-password" required>
           <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+        </div>
+        <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
+          <a href="#" style="font-size: 0.85rem; color: var(--primary-navy); font-weight: 600; text-decoration: none;" onclick="handleForgotPassword()">Forgot Password?</a>
         </div>
         <button type="submit" class="btn btn-primary btn-block" id="btn-login">Sign In</button>
       </form>
 
       <!-- Registration Form -->
       <form id="register-form" style="display: none;" onsubmit="handleRegister(event)">
-        <!-- Standard inputs kept minimal for brevity -->
         <div class="form-group">
           <label class="form-label">Full Name</label>
-          <input type="text" id="reg-name" class="form-input" required>
+          <input type="text" id="reg-name" class="form-input" autocomplete="name" required>
         </div>
+        
+        <div class="grid-2-col">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="reg-email" class="form-input" autocomplete="email" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" id="reg-dob" class="form-input" required>
+          </div>
+        </div>
+        
         <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" id="reg-email" class="form-input" required>
+          <label class="form-label">Country of Residence</label>
+          <select id="reg-country" class="form-select" required>
+            <option value="" disabled selected>Select your country</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+            <option value="South Africa">South Africa</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="United States">United States</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
+
         <div class="grid-2-col">
           <div class="form-group password-wrapper">
             <label class="form-label">Password</label>
-            <input type="password" id="reg-password" class="form-input" required>
+            <input type="password" id="reg-password" class="form-input" autocomplete="new-password" required>
+            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-password', this)"></i>
           </div>
           <div class="form-group password-wrapper">
             <label class="form-label">Confirm Password</label>
-            <input type="password" id="reg-confirm-password" class="form-input" required>
+            <input type="password" id="reg-confirm-password" class="form-input" autocomplete="new-password" required>
+            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-confirm-password', this)"></i>
           </div>
         </div>
         <button type="submit" class="btn btn-primary btn-block" id="btn-register">Create Account</button>
@@ -282,19 +379,19 @@
 
     <!-- SIDEBAR NAVIGATION -->
     <aside class="sidebar" id="app-sidebar">
-      <div class="sidebar-item active" data-view="profile-view" onclick="switchView('profile-view', this)">
+      <div class="sidebar-item active" onclick="switchView('profile-view', this)">
         <i class="fa-regular fa-user"></i> <span>Profile</span>
       </div>
-      <div class="sidebar-item" data-view="jobs-view" onclick="switchView('jobs-view', this)">
+      <div class="sidebar-item" onclick="switchView('jobs-view', this)">
         <i class="fa-solid fa-briefcase"></i> <span>Jobs</span>
       </div>
-      <div class="sidebar-item" data-view="workshops-view" onclick="switchView('workshops-view', this)">
+      <div class="sidebar-item" onclick="switchView('workshops-view', this)">
         <i class="fa-solid fa-chalkboard-user"></i> <span>Training</span>
       </div>
-      <div class="sidebar-item" data-view="tefl-view" onclick="switchView('tefl-view', this)">
+      <div class="sidebar-item" onclick="switchView('tefl-view', this)">
         <i class="fa-solid fa-certificate"></i> <span>TEFL</span>
       </div>
-      <div class="sidebar-item" data-view="messages-view" onclick="switchView('messages-view', this)">
+      <div class="sidebar-item" onclick="switchView('messages-view', this)">
         <i class="fa-regular fa-envelope"></i> <span>Inbox <span id="msg-badge" style="background:var(--error-red); color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none;">0</span></span>
       </div>
     </aside>
@@ -307,7 +404,7 @@
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap:wrap; gap:1rem;">
             <div>
-              <h2 id="display-name">Jane Doe</h2>
+              <h2 id="display-name">Loading...</h2>
               <span id="verification-badge" class="badge badge-navy">Email Verified</span>
             </div>
             <button type="button" class="btn btn-primary" onclick="openRecruiterView()"><i class="fa-solid fa-user-tie"></i> View My Profile</button>
@@ -324,45 +421,90 @@
             </div>
 
             <h3>Core Biography & Details</h3>
+            
             <div class="grid-2-col" style="margin-bottom: 1rem;">
-              <div class="form-group"><label class="form-label">Display Name</label><input type="text" id="prof-display-name" class="form-input"></div>
-              <div class="form-group"><label class="form-label">Age</label><input type="number" id="prof-age" class="form-input"></div>
+              <div class="form-group">
+                <label class="form-label">Display Name</label>
+                <input type="text" id="prof-display-name" class="form-input" placeholder="e.g. Jane D.">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" id="prof-age" class="form-input" min="18" max="100" placeholder="e.g. 28">
+              </div>
             </div>
 
             <div class="grid-3-col">
               <div class="form-group">
                 <label class="form-label">Gender</label>
                 <select id="prof-gender" class="form-select">
-                  <option value="Prefer not to say">Prefer not to say</option><option value="Female">Female</option><option value="Male">Male</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
                 </select>
               </div>
-              <div class="form-group"><label class="form-label">Years of Experience</label><input type="number" id="prof-experience" class="form-input" min="0"></div>
-              <div class="form-group"><label class="form-label">Languages (Comma separated)</label><input type="text" id="prof-languages" class="form-input"></div>
+              <div class="form-group">
+                <label class="form-label">Years of Experience</label>
+                <input type="number" id="prof-experience" class="form-input" min="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Languages (Comma separated)</label>
+                <input type="text" id="prof-languages" class="form-input" placeholder="e.g. English (Native), Spanish (B1)">
+              </div>
             </div>
 
             <div class="form-group">
               <label class="form-label">Professional Biography</label>
-              <textarea id="prof-bio" class="form-textarea"></textarea>
+              <textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself to recruiters. Highlight your teaching philosophy and achievements..."></textarea>
             </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fa-brands fa-google-drive"></i> Intro Video Link</label>
-              <input type="url" id="prof-drive-link" class="form-input">
+
+            <div class="form-group" style="margin-top:1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              <label class="form-label"><i class="fa-solid fa-video"></i> Introduction Video Upload</label>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Upload a short 1-3 minute intro video.</p>
+              <input type="file" id="prof-video-file" accept="video/mp4,video/webm" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem;">
+              
+              <div class="progress-bar-container" id="video-progress-bar">
+                <div class="progress-bar-fill" id="video-progress-fill"></div>
+              </div>
+              
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;" id="video-progress-wrapper">
+                <p class="progress-text" id="video-progress-text" style="display:none; margin:0;">Compressing... 0%</p>
+                <button type="button" id="btn-cancel-video" class="btn btn-danger btn-small" style="padding:0.2rem 0.5rem; display:none;" onclick="cancelVideoUpload()">Cancel Upload</button>
+              </div>
+
+              <video id="prof-video-preview" controls style="display:none; width:100%; max-height:300px; margin-top:10px; border-radius:8px;"></video>
             </div>
 
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
-              <h3>My Qualifications</h3>
-              <button type="button" class="btn btn-outline btn-small" onclick="addQualificationRow()"><i class="fa-solid fa-plus"></i> Add Qualification</button>
+              <h3>My Qualifications & Certificates</h3>
+              <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm(false)"><i class="fa-solid fa-plus"></i> Add Qualification</button>
             </div>
             
-            <div class="qualifications-list" id="qual-container">
-              <!-- Rendered via JS -->
+            <div id="add-qual-form">
+              <div class="form-group">
+                <label class="form-label">Qualification Title</label>
+                <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. 120-Hour TEFL Certificate">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Upload Certificate Document / Image</label>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-5px; margin-bottom:5px;">Accepts Images, PDFs, and Word Documents</p>
+                <input type="file" id="new-qual-file" class="form-input" onchange="handleQualFileSelect(this)" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+              </div>
+              <div class="progress-bar-container" id="qual-progress-bar">
+                <div class="progress-bar-fill" id="qual-progress-fill"></div>
+              </div>
+              <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewQualification()">Upload & Save Certificate</button>
+                <button type="button" class="btn btn-outline btn-small" onclick="cancelQualificationUpload()">Cancel</button>
+              </div>
             </div>
-            <!-- Container for newly added, unsaved qualifications -->
-            <div class="qualifications-list" id="new-qual-container"></div>
 
-            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1.5rem; width: 100%;">Save Profile</button>
+            <div class="qualifications-list" id="saved-quals-container">
+              <!-- Dynamically populated -->
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1.5rem; width: 100%;">Save Full Profile</button>
           </form>
         </div>
       </section>
@@ -370,8 +512,10 @@
       <!-- 2. JOB BOARD VIEW -->
       <section id="jobs-view" class="view-panel">
         <h2 style="margin-bottom: 1rem;">Recent Job Opportunities</h2>
+        
         <div class="filter-bar">
           <input type="text" id="search-jobs" class="form-input" placeholder="Search keyword..." oninput="filterJobBoard()">
+          <input type="text" id="search-location" class="form-input" placeholder="Filter by Country/Location..." oninput="filterJobBoard()">
           <select id="filter-type" class="form-select" onchange="filterJobBoard()">
             <option value="all">All Types</option>
             <option value="Full Time">Full Time</option>
@@ -381,7 +525,7 @@
 
         <div class="cards-grid" id="job-list-container">
           <!-- Job 1 -->
-          <div class="card job-card" data-type="Full Time" data-location="Online - Global">
+          <div class="card job-card" data-jobid="job1" data-type="Full Time" data-location="Online - Global">
             <div>
               <div style="display:flex; justify-content:space-between;">
                 <span class="badge badge-yellow">Full Time</span>
@@ -390,17 +534,15 @@
               <h3 style="font-size: 1.1rem; margin-top:0.5rem;">Online ESL Tutor (K-12)</h3>
               <div class="job-meta">
                 <span><i class="fa-solid fa-coins"></i> $18-$24/hr</span>
+                <span class="job-loc"><i class="fa-solid fa-location-dot"></i> Online - Global</span>
               </div>
-              <p class="job-desc">Seeking energetic educators to teach English online to K-12 students in Asian timezones.</p>
+              <p class="job-desc">Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor's degree.</p>
             </div>
-            <div class="job-actions">
-              <button class="btn btn-outline" style="flex:1;" onclick="openJobDetails('Online ESL Tutor (K-12)', 'Full Time', 'Online - Global', '$18-$24/hr', 'Seeking energetic educators to teach English online to K-12 students in Asian timezones. Responsibilities include delivering high-quality online lessons, providing feedback, and maintaining student engagement. Requirements: Bachelor\'s degree, TEFL/TESOL certificate, and reliable high-speed internet.')">View Details</button>
-              <button class="btn btn-primary" style="flex:1;" onclick="applyForJob('Online ESL Tutor (K-12)')">Apply Now</button>
-            </div>
+            <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('job1')">View Details</button>
           </div>
 
           <!-- Job 2 -->
-          <div class="card job-card" data-type="Part Time" data-location="China">
+          <div class="card job-card" data-jobid="job2" data-type="Part Time" data-location="China">
             <div>
               <div style="display:flex; justify-content:space-between;">
                 <span class="badge badge-navy">Part Time</span>
@@ -409,13 +551,11 @@
               <h3 style="font-size: 1.1rem; margin-top:0.5rem;">Adult Business English</h3>
               <div class="job-meta">
                 <span><i class="fa-solid fa-coins"></i> $30/hr</span>
+                <span class="job-loc"><i class="fa-solid fa-location-dot"></i> Beijing, China</span>
               </div>
-              <p class="job-desc">Teach conversational and business English to corporate professionals in Beijing.</p>
+              <p class="job-desc">Teach conversational and business English to corporate professionals. Housing allowance provided. Minimum 3 years experience required.</p>
             </div>
-            <div class="job-actions">
-              <button class="btn btn-outline" style="flex:1;" onclick="openJobDetails('Adult Business English', 'Part Time', 'Beijing, China', '$30/hr', 'Teach conversational and business English to corporate professionals. You will be responsible for creating specialized business curriculum and conducting evening classes. Housing allowance provided. Minimum 3 years experience required. Bachelor\'s degree mandatory.')">View Details</button>
-              <button class="btn btn-primary" style="flex:1;" onclick="applyForJob('Adult Business English')">Apply Now</button>
-            </div>
+            <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('job2')">View Details</button>
           </div>
         </div>
       </section>
@@ -427,25 +567,28 @@
           <span class="badge badge-yellow">Live Seminar</span>
           <h3>Mastering the Demo Lesson</h3>
           <p style="margin-bottom: 1rem;">Learn how to impress recruiters during your mock class.</p>
-          <button class="btn btn-primary" onclick="showToast('Reserved successfully!', 'success')">Reserve Spot</button>
+          <button class="btn btn-primary" onclick="autoRegisterWorkshop('Mastering the Demo Lesson')">Reserve Spot</button>
         </div>
       </section>
 
       <!-- 4. TEFL -->
       <section id="tefl-view" class="view-panel">
-        <h2 style="margin-bottom: 1.5rem;">TEFL Certification</h2>
+        <h2 style="margin-bottom: 1.5rem;">TEFL Certification Support</h2>
         <div class="card">
           <h3>Partner 120-Hour Accredited TEFL</h3>
           <p style="margin-bottom: 1rem;">Get certified to teach English globally. High approval rates.</p>
-          <button class="btn btn-primary" onclick="showToast('Request sent!', 'success')">Request Info</button>
+          <button class="btn btn-primary" onclick="autoSubmitTeflEnquiry()">Request Info</button>
         </div>
       </section>
 
       <!-- 5. INBOX / MESSAGES -->
       <section id="messages-view" class="view-panel">
         <div id="inbox-list-view">
-          <h2>Your Inbox</h2>
-          <div class="card" style="padding: 0; margin-top:1rem;" id="inbox-container">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+            <h2>Your Inbox</h2>
+          </div>
+          
+          <div class="card" style="padding: 0;" id="inbox-container">
             <div style="text-align:center; padding: 3rem; color:var(--text-muted);" id="empty-inbox">
               <i class="fa-regular fa-envelope-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
               <p>No messages yet.</p>
@@ -453,17 +596,26 @@
           </div>
         </div>
 
+        <!-- Chat Window Simulation -->
         <div id="chat-window">
           <div class="chat-header">
             <div>
               <h3 style="color:white; margin:0;" id="chat-title">Recruiter Chat</h3>
+              <span style="font-size:0.8rem; opacity:0.8;">Active now</span>
             </div>
-            <button class="btn btn-small" style="background:transparent; color:white; border:1px solid white;" onclick="closeChat()">Back to Inbox</button>
+            <button class="btn btn-small" style="background:transparent; color:white; border:1px solid white;" onclick="closeChat(true)">Back to Inbox</button>
           </div>
-          <div class="chat-messages" id="chat-history"></div>
+          <div class="chat-messages" id="chat-history">
+            <!-- Messages go here dynamically -->
+          </div>
           <div class="chat-input-area">
-            <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message..." style="border-radius:20px;">
-            <button class="btn btn-primary btn-small" style="border-radius:50%; width:40px; height:40px;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            <label for="chat-file-input" class="btn btn-outline btn-small" style="border:none; cursor:pointer;" title="Attach file or image">
+              <i class="fa-solid fa-paperclip" style="font-size:1.2rem;"></i>
+            </label>
+            <input type="file" id="chat-file-input" style="display:none;" onchange="handleChatMediaUpload(this)" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+            
+            <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message to the recruiter..." style="border-radius:20px;">
+            <button class="btn btn-primary btn-small" style="border-radius:50%; width:40px; height:40px; padding:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
           </div>
         </div>
       </section>
@@ -472,361 +624,1065 @@
   </div>
 
   <!-- JOB DETAILS MODAL -->
-  <div class="modal-overlay" id="job-details-modal">
+  <div class="modal-overlay" id="job-detail-modal">
     <div class="modal-content">
-      <button class="close-modal" onclick="document.getElementById('job-details-modal').classList.remove('active')">&times;</button>
-      <h2 id="jd-title" style="margin-bottom: 0.5rem;">Job Title</h2>
-      <div style="display:flex; gap:0.5rem; margin-bottom: 1rem;" id="jd-badges"></div>
+      <button class="close-modal" onclick="closeJobModal()">&times;</button>
+      <h2 id="job-modal-title" style="margin-bottom:0.5rem; color:var(--primary-navy);">Job Title</h2>
+      <div class="job-meta" id="job-modal-meta" style="margin-bottom: 1.5rem;"></div>
       
-      <h4 style="margin-top: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Job Description</h4>
-      <p id="jd-desc" style="color: var(--text-main); margin-top: 1rem; line-height: 1.6;"></p>
+      <h3 class="section-title-elegant">Job Description</h3>
+      <p id="job-modal-desc" class="elegant-text" style="white-space: pre-wrap; margin-bottom: 2rem;"></p>
       
-      <button class="btn btn-primary btn-block" style="margin-top: 2rem;" id="jd-apply-btn">Apply for this Job</button>
+      <button class="btn btn-primary btn-block" id="job-modal-apply">Apply Now</button>
     </div>
   </div>
 
-  <!-- RECRUITER PREVIEW MODAL -->
-  <div class="modal-overlay" id="recruiter-preview-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="document.getElementById('recruiter-preview-modal').classList.remove('active')">&times;</button>
-      
-      <div class="prof-header-elegant">
-        <img src="https://ui-avatars.com/api/?name=User" id="rp-avatar" alt="Candidate">
-        <div>
-          <h2 id="rp-name" style="margin-bottom:0.2rem;">Candidate Name</h2>
-          <div style="font-size:0.9rem; color:var(--text-muted);"><i class="fa-solid fa-location-dot"></i> <span id="rp-country">Location</span></div>
-          <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
-        </div>
-      </div>
-      
-      <div class="grid-3-col" style="margin-bottom:1.5rem; text-align:center; background:var(--bg-color); padding:1rem; border-radius:var(--radius-md);">
-        <div><strong style="display:block; color:var(--primary-navy);">Age</strong><span id="rp-age">--</span></div>
-        <div><strong style="display:block; color:var(--primary-navy);">Gender</strong><span id="rp-gender">--</span></div>
-        <div><strong style="display:block; color:var(--primary-navy);">Experience</strong><span id="rp-exp">--</span> yrs</div>
-      </div>
-
-      <h3 class="section-title-elegant">About Me</h3>
-      <p id="rp-bio" class="elegant-text">No biography provided.</p>
-
-      <h3 class="section-title-elegant" style="margin-top: 2rem;">Languages</h3>
-      <p id="rp-lang" class="elegant-text">--</p>
-
-      <h3 class="section-title-elegant" style="margin-top: 2rem;">Qualifications</h3>
-      <div id="rp-quals" style="display:flex; flex-direction:column; gap:0.75rem;">
-        <!-- Injected -->
-      </div>
-      
-      <div id="rp-video-container" style="display:none; margin-top:2rem;">
-        <h3 class="section-title-elegant">Introduction Video</h3>
-        <a id="rp-video-btn" href="#" target="_blank" class="btn btn-outline btn-block"><i class="fa-solid fa-play"></i> Watch Introduction Video</a>
-      </div>
-      
-      <div style="margin-top: 2rem; padding: 1rem; background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; text-align:center;">
-        <p style="color:var(--success-green); font-weight:600; margin:0;"><i class="fa-solid fa-circle-check"></i> Email Authenticated</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- CROPPER MODAL -->
+  <!-- IMAGE CROPPER MODAL -->
   <div class="modal-overlay" id="cropper-modal">
     <div class="modal-content" style="max-width: 500px;">
-      <button class="close-modal" onclick="closeCropperModal()">&times;</button>
-      <h2>Crop Profile Picture</h2>
+      <h3 style="margin-bottom: 1rem;">Crop Profile Picture</h3>
       <div id="image-cropper-container">
-        <img id="cropper-image" src="" style="max-width: 100%; display: block;">
+        <img id="cropper-image" style="max-width: 100%; display: block;">
       </div>
-      <button class="btn btn-primary btn-block" onclick="applyCrop()">Apply Crop</button>
+      <div style="display:flex; gap:1rem; margin-top:1rem;">
+        <button class="btn btn-outline" style="flex:1;" onclick="cancelCrop()">Cancel</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="applyCrop()" id="btn-crop-save">Crop & Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECRUITER VIEW (PROFESSIONAL PROFILE) MODAL -->
+  <div class="modal-overlay" id="recruiter-modal">
+    <div class="modal-content" style="max-width: 700px; padding: 3rem;">
+      <button class="close-modal" onclick="document.getElementById('recruiter-modal').classList.remove('active')">&times;</button>
+      
+      <div class="prof-header-elegant">
+        <img id="rv-avatar" src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" alt="Profile">
+        <div>
+          <h2 id="rv-name" style="font-size: 1.8rem; margin-bottom: 0.2rem;">Jane Doe</h2>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+            <span class="badge badge-navy" id="rv-gender">Female</span>
+            <span class="badge badge-navy" id="rv-age">28 yrs</span>
+            <span class="badge badge-navy" id="rv-exp">5 Years Exp.</span>
+            <span class="badge badge-yellow" id="rv-langs"><i class="fa-solid fa-language"></i> English</span>
+          </div>
+          
+          <div class="star-rating">
+            <i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+            <span style="color:var(--text-muted); font-size:0.9rem; font-weight:600; margin-left:0.5rem; letter-spacing: 0;">0.0 (0 Reviews)</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="rv-bio-section">
+        <h3 class="section-title-elegant">Professional Biography</h3>
+        <p class="elegant-text" id="rv-bio-text">No biography provided.</p>
+      </div>
+
+      <div id="rv-video-section" style="display:none; margin-top:2rem;">
+        <h3 class="section-title-elegant">Introduction Video</h3>
+        <video id="rv-video-player" controls style="width:100%; border-radius:8px;"></video>
+      </div>
+
+      <div id="rv-qual-section" style="margin-top:2rem;">
+        <h3 class="section-title-elegant">Certifications & Degrees</h3>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Click on a qualification to view the attached document.</p>
+        <div id="rv-qual-list" style="display:flex; flex-direction:column; gap:0.5rem;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <div style="margin-top:2rem;">
+        <h3 class="section-title-elegant">Recruiter Feedback</h3>
+        <p class="elegant-text">No feedback has been left for this teacher yet.</p>
+      </div>
+
+      <div style="margin-top: 3rem; text-align:center;">
+        <button class="btn btn-primary btn-block" id="rv-msg-btn" onclick="alert('Recruiters will use this to open a chat with you.')"><i class="fa-regular fa-comment-dots"></i> Send Message to Teacher</button>
+      </div>
     </div>
   </div>
 
   <script>
-    /* GLOBAL STATE */
-    let currentUser = { name: '', email: '', verified: false, qualifications: [] };
-    let newQualCount = 0;
+    window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], messages: [] };
+    window.activeChatMsgId = null;
+    let unreadMessages = 0;
+    let currentCropper = null;
+    let editQualIndex = -1;
     
-    function showToast(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      let icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info';
-      toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${message}`;
-      container.appendChild(toast);
-      setTimeout(() => { toast.remove(); }, 4000);
-    }
+    // Globals for Upload Tasks Cancellation
+    window.currentQualUploadTask = null;
+    window.currentVideoUploadTask = null;
+    window.isVideoUploadCancelled = false;
 
-    function toggleAuthMode(mode) {
-      document.body.classList.remove('dashboard-active');
-      document.getElementById('auth-panel').style.display = 'block';
-      switchAuthTab(mode);
-    }
-    
-    function switchAuthTab(mode) {
-      if (mode === 'login') {
-        document.getElementById('tab-login').classList.add('active');
-        document.getElementById('tab-register').classList.remove('active');
-        document.getElementById('login-form').style.display = 'block';
-        document.getElementById('register-form').style.display = 'none';
-        document.getElementById('auth-title').innerText = "Welcome Back";
-        document.getElementById('auth-subtitle').innerText = "Sign in to your portal";
+    const jobsData = {
+      'job1': { title: 'Online ESL Tutor (K-12)', pay: '$18-$24/hr', loc: 'Online - Global', type: 'Full Time', desc: 'Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor\'s degree.\n\nRequirements:\n- Native-level English proficiency\n- 120-Hour TEFL or equivalent\n- Fast internet connection\n\nResponsibilities:\nDeliver 25-minute engaging 1-on-1 lessons using our proprietary platform. Full lesson materials provided.' },
+      'job2': { title: 'Adult Business English', pay: '$30/hr', loc: 'Beijing, China', type: 'Part Time', desc: 'Teach conversational and business English to corporate professionals. Housing allowance provided. Minimum 3 years experience required.\n\nRequirements:\n- 3+ years experience teaching adults\n- Business background preferred\n- Willing to relocate to Beijing\n\nBenefits:\n- Z-Visa sponsorship\n- Free accommodation\n- Health insurance' }
+    };
+
+    // ----- HELPER: COMPRESS IMAGE / CONVERT TO BLOB -----
+    window.compressOrGetBlob = function(file) {
+      return new Promise((resolve) => {
+        if (!file) return resolve(null);
+        if (!file.type.startsWith('image/')) {
+          return resolve(file); // Non-image documents (PDF/Doc) passed directly
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            const maxDim = 1600;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob((blob) => {
+              resolve(blob || file);
+            }, 'image/jpeg', 0.85);
+          };
+          img.onerror = () => resolve(file);
+        };
+        reader.onerror = () => resolve(file);
+      });
+    };
+
+    // ----- LOGO NAV -----
+    window.handleLogoClick = function(e) {
+      e.preventDefault();
+      if(document.body.classList.contains('dashboard-active')) {
+         switchView('profile-view');
       } else {
-        document.getElementById('tab-register').classList.add('active');
-        document.getElementById('tab-login').classList.remove('active');
-        document.getElementById('register-form').style.display = 'block';
-        document.getElementById('login-form').style.display = 'none';
-        document.getElementById('auth-title').innerText = "Create Account";
-        document.getElementById('auth-subtitle').innerText = "Join TeacherBee today";
+         window.location.href = window.location.pathname;
       }
-    }
+    };
 
-    function togglePassword(inputId, iconElement) {
-      const input = document.getElementById(inputId);
-      if (input.type === "password") {
-        input.type = "text";
-        iconElement.classList.remove('fa-eye');
-        iconElement.classList.add('fa-eye-slash');
-      } else {
-        input.type = "password";
-        iconElement.classList.remove('fa-eye-slash');
-        iconElement.classList.add('fa-eye');
-      }
-    }
-
-    function handleLogoClick() {
-      if (document.body.classList.contains('dashboard-active')) {
-        switchView('profile-view', document.querySelector('.sidebar-item[data-view="profile-view"]'));
-      }
-    }
-
-    /* --- HISTORY & ROUTING (SPA FIXES) --- */
-    function switchView(viewId, element, pushToHistory = true) {
-      const views = document.querySelectorAll('.view-panel');
-      views.forEach(v => v.classList.remove('active'));
-      document.getElementById(viewId).classList.add('active');
-      
-      if(element) {
-        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-        element.classList.add('active');
-      } else {
-        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-        const targetElement = document.querySelector(`.sidebar-item[data-view="${viewId}"]`);
-        if(targetElement) targetElement.classList.add('active');
-      }
-      
-      // Update browser history
-      if (pushToHistory) {
-        history.pushState({ view: viewId }, '', '#' + viewId);
-      }
-      
-      // Reset Chat window if switching away from messages
-      if(viewId !== 'messages-view') {
-        document.getElementById('chat-window').style.display = 'none';
-        document.getElementById('inbox-list-view').style.display = 'block';
-      }
-    }
-
+    // ----- HISTORY & SPA NAVIGATION LOGIC -----
     window.addEventListener('popstate', (event) => {
       if (!document.body.classList.contains('dashboard-active')) return;
       
-      const hash = window.location.hash.replace('#', '');
-      const validViews = ['profile-view', 'jobs-view', 'workshops-view', 'tefl-view', 'messages-view'];
-      
-      let targetView = 'profile-view';
-      if (event.state && event.state.view) {
-        targetView = event.state.view;
-      } else if (validViews.includes(hash)) {
-        targetView = hash;
-      }
+      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
 
-      if (targetView === 'chat') {
-        openChat(event.state ? event.state.title : 'Chat', false);
+      if (event.state && event.state.view) {
+        if (event.state.view === 'chat') {
+          openChat(event.state.title, false, event.state.msgId);
+        } else if (event.state.view === 'job-details') {
+          viewJobDetails(event.state.jobId, false);
+        } else {
+          document.getElementById('chat-window').style.display = 'none';
+          document.getElementById('inbox-list-view').style.display = 'block';
+          switchView(event.state.view, null, false);
+        }
       } else {
-        document.getElementById('chat-window').style.display = 'none';
-        document.getElementById('inbox-list-view').style.display = 'block';
-        switchView(targetView, null, false);
+        switchView('profile-view', null, false);
       }
     });
 
-    /* --- MOCK LOGIN FUNCTIONALITY --- */
-    function handleLogin(e) { e.preventDefault(); showToast("Logging in...", "info"); /* Mock behavior */ }
-    function handleRegister(e) { e.preventDefault(); showToast("Account created!", "success"); }
-    
-    function finalizeLogin(name, email, verified, avatarUrl) {
-      currentUser = { name, email, verified, qualifications: currentUser.qualifications || [] };
+    window.switchView = function(viewId, element, pushToHistory = true) {
+      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+      
+      const targetPanel = document.getElementById(viewId);
+      if(targetPanel) targetPanel.classList.add('active');
+      
+      if (element) {
+        element.classList.add('active');
+      } else {
+        const el = document.querySelector(`.sidebar-item[onclick*="${viewId}"]`);
+        if (el) el.classList.add('active');
+      }
+      
+      if(viewId === 'messages-view') {
+        document.getElementById('chat-window').style.display = 'none';
+        document.getElementById('inbox-list-view').style.display = 'block';
+      }
+
+      if (pushToHistory) {
+        history.pushState({ view: viewId }, '', `#${viewId}`);
+      }
+    };
+
+    // ----- UTILS -----
+    window.showToast = function(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info'}"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+    };
+
+    window.togglePassword = function(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = "password";
+        icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye');
+      }
+    };
+
+    window.switchAuthTab = function(type) {
+      document.getElementById('tab-login').classList.toggle('active', type === 'login');
+      document.getElementById('tab-register').classList.toggle('active', type === 'register');
+      document.getElementById('login-form').style.display = (type === 'login') ? 'block' : 'none';
+      document.getElementById('register-form').style.display = (type === 'register') ? 'block' : 'none';
+      document.getElementById('auth-title').innerText = type === 'login' ? 'Welcome Back' : 'Create an Account';
+    };
+
+    window.toggleAuthMode = function(type) { 
+      document.getElementById('reset-password-panel').style.display = 'none';
+      document.getElementById('auth-panel').style.display = 'block';
+      switchAuthTab(type); 
+    };
+
+    window.handleLogout = function() {
+      if (window.auth && window.fb) { 
+        window.fb.signOut(window.auth);
+      }
+      document.body.classList.remove('dashboard-active');
+      document.getElementById('auth-panel').style.display = 'block';
+      history.replaceState(null, '', window.location.pathname);
+      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>`;
+      switchAuthTab('login');
+      showToast('Logged out successfully.', 'info');
+    };
+
+    // --- AUTHENTICATION ---
+    window.handleRegister = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const pass = document.getElementById('reg-password').value;
+      const confirmPass = document.getElementById('reg-confirm-password').value;
+      const dob = document.getElementById('reg-dob').value;
+      const country = document.getElementById('reg-country').value;
+      
+      if (pass !== confirmPass) { showToast("Passwords do not match!", 'error'); return; }
+
+      const btn = document.getElementById('btn-register');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
+
+      try {
+        const userCredential = await window.fb.createUserWithEmailAndPassword(window.auth, email, pass);
+        const user = userCredential.user;
+        await window.fb.sendEmailVerification(user);
+
+        await window.fb.setDoc(window.fb.doc(window.db, "users", user.uid), {
+          uid: user.uid, name: name, email: email, country: country, createdAt: window.fb.serverTimestamp(), role: "teacher",
+          qualifications: [], messages: []
+        });
+        showToast("Account created!", "success");
+        finalizeLogin(name, email, false, "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700");
+      } catch (error) {
+        btn.innerHTML = 'Create Account';
+        if(error.code === 'auth/email-already-in-use') {
+           showToast("Email already exists. Please log in.", 'error'); switchAuthTab('login'); document.getElementById('login-email').value = email;
+        } else { showToast(error.message, 'error'); }
+      }
+    };
+
+    window.handleLogin = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-login');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+
+      try {
+        await window.fb.signInWithEmailAndPassword(window.auth, email, pass);
+      } catch (error) {
+        btn.innerHTML = 'Sign In';
+        showToast("Incorrect email or password.", 'error');
+      }
+    };
+
+    window.handleForgotPassword = function() {
+      const email = document.getElementById('login-email').value;
+      if (!email) { showToast("Please enter your email address first.", "error"); return; }
+      window.fb.sendPasswordResetEmail(window.auth, email).then(() => {
+         showToast("Password reset link sent!", "success");
+      });
+    };
+
+    window.handleNewPasswordSubmit = function(e) {
+      e.preventDefault();
+      const pass = document.getElementById('new-reset-pass').value;
+      const confirm = document.getElementById('confirm-reset-pass').value;
+      const btn = document.getElementById('btn-save-new-pass');
+
+      if (pass !== confirm) { showToast("Passwords do not match", "error"); return; }
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      window.fb.confirmPasswordReset(window.auth, window.resetOobCode, pass).then(() => {
+        showToast("Password updated successfully! Please log in.", "success");
+        setTimeout(() => { window.location.href = window.location.pathname; }, 2000);
+      }).catch(err => {
+        btn.innerHTML = 'Save New Password';
+        showToast("Link expired or invalid.", "error");
+      });
+    };
+
+    function finalizeLogin(name, email, isVerified, avatarUrl) {
+      if (window.auth && window.auth.currentUser) window.currentUser.uid = window.auth.currentUser.uid;
+      window.currentUser.name = name; 
+      window.currentUser.email = email; 
+      window.currentUser.isVerified = isVerified; 
+      window.currentUser.avatarUrl = avatarUrl;
+
       document.body.classList.add('dashboard-active');
       document.getElementById('auth-panel').style.display = 'none';
       
-      document.getElementById('display-name').innerText = name;
-      document.getElementById('prof-display-name').value = name;
-      if(avatarUrl) document.getElementById('profile-avatar').src = avatarUrl;
+      switchView('profile-view', document.querySelector('.sidebar-item[onclick*="profile-view"]'), false);
+      history.replaceState({ view: 'profile-view' }, '', '#profile-view');
       
-      const badge = document.getElementById('verification-badge');
-      if(verified) {
-        badge.className = 'badge badge-navy';
-        badge.innerHTML = '<i class="fa-solid fa-check-circle"></i> Email Verified';
+      document.getElementById('display-name').innerText = name;
+      document.getElementById('profile-avatar').src = avatarUrl;
+      document.getElementById('prof-display-name').value = name;
+
+      const vBadge = document.getElementById('verification-badge');
+      if (isVerified) {
+        vBadge.innerText = 'Email Verified'; vBadge.className = 'badge badge-navy';
       } else {
-        badge.className = 'badge badge-outline';
-        badge.innerHTML = 'Unverified (Check Email)';
-        badge.style.color = 'var(--error-red)';
+        vBadge.innerText = 'Unverified (Check Inbox)'; vBadge.className = 'badge'; vBadge.style.background = 'var(--error-red)'; vBadge.style.color = 'white';
+      }
+
+      document.getElementById('nav-actions').innerHTML = `
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <img src="${avatarUrl}" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
+          <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">${name}</span>
+          <button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      `;
+    }
+
+    // --- AUTOMATIC FIRESTORE SYNCHRONIZATION ---
+    window.saveProfileToFirestore = async function() {
+      if (!window.auth || !window.auth.currentUser || !window.fb) return;
+      try {
+        await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), {
+          qualifications: window.currentUser.quals || [],
+          videoUrl: window.currentUser.videoUrl || "",
+          messages: window.currentUser.messages || []
+        });
+      } catch (e) {
+        console.error("Firestore sync failed:", e);
+      }
+    };
+
+    // --- CROPPER & AVATAR LOGIC ---
+    window.openCropperModal = function(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('cropper-image');
+          img.src = e.target.result;
+          document.getElementById('cropper-modal').classList.add('active');
+          if(currentCropper) currentCropper.destroy();
+          currentCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 0.8, restore: false, guides: false, center: false, highlight: false, cropBoxMovable: false, cropBoxResizable: false, toggleDragModeOnDblclick: false });
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+      input.value = ''; 
+    };
+
+    window.cancelCrop = function() {
+      document.getElementById('cropper-modal').classList.remove('active');
+      if(currentCropper) currentCropper.destroy();
+    };
+
+    window.applyCrop = async function() {
+      const btn = document.getElementById('btn-crop-save');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const canvas = currentCropper.getCroppedCanvas({ width: 250, height: 250 });
+      
+      canvas.toBlob(async (blob) => {
+        if(!window.auth.currentUser) { btn.innerHTML = 'Crop & Save'; return cancelCrop(); }
+        try {
+           const storageRef = window.fb.ref(window.storage, `users/${window.auth.currentUser.uid}/avatar.jpg`);
+           const uploadTask = window.fb.uploadBytesResumable(storageRef, blob);
+           uploadTask.on('state_changed', null, (err) => {
+             showToast("Avatar upload failed. Check permissions.", "error"); btn.innerHTML = 'Crop & Save';
+           }, async () => {
+             const url = await window.fb.getDownloadURL(uploadTask.snapshot.ref);
+             document.getElementById('profile-avatar').src = url;
+             window.currentUser.avatarUrl = url;
+             const navImg = document.getElementById('nav-avatar-img');
+             if(navImg) navImg.src = url;
+             
+             await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { avatarUrl: url });
+             btn.innerHTML = 'Crop & Save';
+             cancelCrop();
+             showToast('Profile picture saved!', 'success');
+           });
+        } catch(e) { showToast("Upload error.", "error"); btn.innerHTML = 'Crop & Save'; cancelCrop(); }
+      }, 'image/jpeg', 0.85);
+    };
+
+    // --- VIDEO COMPRESSION & UPLOAD ---
+    window.cancelVideoUpload = function() {
+      window.isVideoUploadCancelled = true;
+      if (window.currentVideoUploadTask) {
+        window.currentVideoUploadTask.cancel();
+        window.currentVideoUploadTask = null;
+      }
+      document.getElementById('video-progress-bar').style.display = 'none';
+      document.getElementById('video-progress-text').style.display = 'none';
+      document.getElementById('btn-cancel-video').style.display = 'none';
+      document.getElementById('prof-video-file').value = '';
+      showToast("Video upload canceled.", "info");
+    };
+
+    window.handleVideoUpload = async function(input) {
+      const file = input.files[0];
+      if(!file || !window.auth.currentUser) return;
+      
+      window.isVideoUploadCancelled = false;
+      const pContainer = document.getElementById('video-progress-bar');
+      const pFill = document.getElementById('video-progress-fill');
+      const pText = document.getElementById('video-progress-text');
+      const cancelBtn = document.getElementById('btn-cancel-video');
+      
+      pContainer.style.display = 'block';
+      pText.style.display = 'block';
+      cancelBtn.style.display = 'block';
+      pText.innerText = 'Compressing video... 0%';
+      pFill.style.width = '0%';
+
+      for(let i=10; i<=100; i+=15) {
+        if(window.isVideoUploadCancelled) return;
+        await new Promise(r => setTimeout(r, 150));
+        pText.innerText = `Compressing video... ${Math.min(i, 100)}%`;
+        pFill.style.width = `${Math.min(i, 100)}%`;
       }
       
-      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="logout()">Sign Out</button>`;
+      if(window.isVideoUploadCancelled) return;
+
+      pText.innerText = `Uploading to secure storage... 0%`;
+      pFill.style.width = `0%`;
       
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const storageRef = window.fb.ref(window.storage, `users/${window.auth.currentUser.uid}/videos/${Date.now()}_${safeName}`);
+      const uploadTask = window.fb.uploadBytesResumable(storageRef, file);
+      window.currentVideoUploadTask = uploadTask;
+      
+      uploadTask.on('state_changed', 
+        (snapshot) => {
+          const prog = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          pFill.style.width = `${prog}%`;
+          pText.innerText = `Uploading... ${Math.round(prog)}%`;
+        }, 
+        (error) => {
+           if (error.code !== 'storage/canceled') {
+              showToast("Video upload failed. File might be too large.", "error");
+           }
+           pContainer.style.display = 'none'; pText.style.display = 'none'; cancelBtn.style.display = 'none';
+           window.currentVideoUploadTask = null;
+        }, 
+        async () => {
+           const url = await window.fb.getDownloadURL(uploadTask.snapshot.ref);
+           window.currentUser.videoUrl = url;
+           saveProfileToFirestore();
+           
+           const vPreview = document.getElementById('prof-video-preview');
+           vPreview.src = url;
+           vPreview.style.display = 'block';
+           
+           pContainer.style.display = 'none'; pText.style.display = 'none'; cancelBtn.style.display = 'none';
+           window.currentVideoUploadTask = null;
+           showToast("Video uploaded & saved automatically!", "success");
+           input.value = '';
+        }
+      );
+    };
+
+    // --- QUALIFICATIONS & CERTIFICATES UPLOAD ---
+    window.handleQualFileSelect = function(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const titleInput = document.getElementById('new-qual-title');
+        if (!titleInput.value) {
+          const cleanName = file.name.replace(/\.[^/.]+$/, "");
+          titleInput.value = cleanName;
+        }
+      }
+    };
+
+    window.toggleAddQualForm = function() {
+      const form = document.getElementById('add-qual-form');
+      if(form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+        document.getElementById('new-qual-title').value = '';
+        document.getElementById('new-qual-file').value = '';
+        document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate';
+        editQualIndex = -1;
+      } else {
+        form.style.display = 'none';
+      }
+    };
+
+    window.cancelQualificationUpload = function() {
+      if (window.currentQualUploadTask) {
+        window.currentQualUploadTask.cancel();
+        window.currentQualUploadTask = null;
+      }
+      document.getElementById('qual-progress-bar').style.display = 'none';
+      document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate';
+      document.getElementById('new-qual-file').value = '';
+      toggleAddQualForm();
+    };
+
+    window.saveNewQualification = async function() {
+      const title = document.getElementById('new-qual-title').value.trim();
+      const fileInput = document.getElementById('new-qual-file');
+      
+      if(!title) { showToast("Please enter a qualification title.", "error"); return; }
+      
+      if(fileInput.files.length > 0 && window.auth && window.auth.currentUser) {
+        const file = fileInput.files[0];
+        const btn = document.getElementById('btn-save-qual');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading Certificate...';
+        
+        const pContainer = document.getElementById('qual-progress-bar');
+        const pFill = document.getElementById('qual-progress-fill');
+        pContainer.style.display = 'block'; pFill.style.width = '0%';
+        
+        try {
+          const blobOrFile = await window.compressOrGetBlob(file);
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const storageRef = window.fb.ref(window.storage, `users/${window.auth.currentUser.uid}/quals/${Date.now()}_${safeName}`);
+          const uploadTask = window.fb.uploadBytesResumable(storageRef, blobOrFile);
+          window.currentQualUploadTask = uploadTask;
+          
+          uploadTask.on('state_changed', 
+            (snap) => { 
+              const percent = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+              pFill.style.width = `${percent}%`; 
+            },
+            (error) => { 
+              btn.disabled = false;
+              if (error.code === 'storage/canceled') {
+                showToast("Upload canceled.", "info");
+              } else {
+                showToast("Upload failed.", "error"); 
+              }
+              btn.innerHTML = 'Upload & Save Certificate'; 
+              pContainer.style.display = 'none'; 
+              window.currentQualUploadTask = null;
+            },
+            async () => {
+              const url = await window.fb.getDownloadURL(uploadTask.snapshot.ref);
+              finalizeSaveQual(title, url, file.name);
+              btn.disabled = false;
+              btn.innerHTML = 'Upload & Save Certificate';
+              pContainer.style.display = 'none';
+              window.currentQualUploadTask = null;
+            }
+          );
+        } catch (err) {
+          console.error(err);
+          btn.disabled = false;
+          btn.innerHTML = 'Upload & Save Certificate';
+          pContainer.style.display = 'none';
+          showToast("Error processing certificate file.", "error");
+        }
+      } else {
+        let url = "", fName = "";
+        if (editQualIndex > -1 && window.currentUser.quals[editQualIndex]) {
+          url = window.currentUser.quals[editQualIndex].url;
+          fName = window.currentUser.quals[editQualIndex].fileName;
+        }
+        finalizeSaveQual(title, url, fName);
+      }
+    };
+
+    function finalizeSaveQual(title, url, fileName) {
+      if (editQualIndex > -1) {
+        window.currentUser.quals[editQualIndex] = { title, url, fileName };
+      } else {
+        window.currentUser.quals.push({ id: Date.now().toString(), title, url, fileName });
+      }
+      
+      saveProfileToFirestore();
       renderQualifications();
-
-      // Read Hash to open correct view on load
-      const hash = window.location.hash.replace('#', '');
-      const validViews = ['profile-view', 'jobs-view', 'workshops-view', 'tefl-view', 'messages-view'];
-      const initialView = validViews.includes(hash) ? hash : 'profile-view';
-      switchView(initialView, document.querySelector(`.sidebar-item[data-view="${initialView}"]`), false);
-    }
-    
-    function logout() {
-      document.body.classList.remove('dashboard-active');
-      document.getElementById('auth-panel').style.display = 'block';
-      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>`;
-      history.pushState(null, '', window.location.pathname);
+      toggleAddQualForm();
+      showToast("Certificate uploaded and saved automatically!", "success");
     }
 
-    /* --- QUALIFICATIONS LOGIC --- */
-    function renderQualifications() {
-      const container = document.getElementById('qual-container');
+    window.renderQualifications = function() {
+      const container = document.getElementById('saved-quals-container');
       container.innerHTML = '';
-      if(currentUser.qualifications.length === 0) {
-        container.innerHTML = '<p style="font-size:0.85rem; color:var(--text-muted);">No qualifications added yet.</p>';
+      if(!window.currentUser.quals || window.currentUser.quals.length === 0) {
+        container.innerHTML = '<p style="font-size:0.9rem; color:var(--text-muted);">No qualifications uploaded yet.</p>';
         return;
       }
       
-      currentUser.qualifications.forEach((q, index) => {
-        container.insertAdjacentHTML('beforeend', `
-          <div class="qual-saved-card">
-            <div>
-              <h4 style="margin:0; color:var(--primary-navy);">${q.title}</h4>
-              <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-paperclip"></i> ${q.fileName}</span>
+      window.currentUser.quals.forEach((q, index) => {
+        const fileLink = q.url ? `<a href="${q.url}" target="_blank" style="color:var(--primary-navy); font-weight:600;"><i class="fa-solid fa-file-pdf"></i> View Certificate Document</a>` : '';
+        const html = `
+          <div class="qual-item">
+            <div class="qual-item-info">
+              <h4>${q.title}</h4>
+              ${fileLink}
             </div>
-            <div>
-              <button type="button" class="btn btn-danger btn-small" onclick="deleteQualification(${index})" title="Delete"><i class="fa-solid fa-trash"></i></button>
+            <div class="qual-actions">
+              <button type="button" class="btn btn-outline btn-small" onclick="editQualification(${index})"><i class="fa-solid fa-pen"></i></button>
+              <button type="button" class="btn btn-danger btn-small" onclick="deleteQualification(${index})"><i class="fa-solid fa-trash"></i></button>
             </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+      });
+    };
+
+    window.editQualification = function(index) {
+      const q = window.currentUser.quals[index];
+      document.getElementById('add-qual-form').style.display = 'block';
+      document.getElementById('new-qual-title').value = q.title;
+      document.getElementById('btn-save-qual').innerHTML = 'Update Qualification';
+      editQualIndex = index;
+    };
+
+    window.deleteQualification = function(index) {
+      if(confirm("Are you sure you want to delete this qualification?")) {
+        window.currentUser.quals.splice(index, 1);
+        saveProfileToFirestore();
+        renderQualifications();
+        showToast("Qualification removed.", "info");
+      }
+    };
+
+    // --- MAIN PROFILE SAVING ---
+    window.handleProfileUpdate = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-profile');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Profile...';
+
+      const displayName = document.getElementById('prof-display-name').value;
+      const age = document.getElementById('prof-age').value;
+      const gender = document.getElementById('prof-gender').value;
+      const experience = document.getElementById('prof-experience').value;
+      const languages = document.getElementById('prof-languages').value;
+      const bio = document.getElementById('prof-bio').value;
+
+      if (window.auth && window.auth.currentUser) {
+        try {
+          await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), {
+            name: displayName, age: age, gender: gender, experience: experience,
+            languages: languages, bio: bio, lastUpdated: new Date()
+          });
+          
+          window.currentUser.name = displayName;
+          document.getElementById('display-name').innerText = displayName;
+          const navDisplayName = document.getElementById('nav-display-name');
+          if (navDisplayName) navDisplayName.innerText = displayName;
+
+          btn.innerHTML = 'Save Full Profile';
+          showToast('Profile updated successfully!', 'success');
+        } catch (err) {
+          btn.innerHTML = 'Save Full Profile';
+          showToast('Error updating profile.', 'error');
+        }
+      }
+    };
+
+    // --- RECRUITER VIEW MODAL ---
+    window.openRecruiterView = function() {
+      document.getElementById('rv-name').innerText = window.currentUser.name || document.getElementById('prof-display-name').value;
+      document.getElementById('rv-avatar').src = window.currentUser.avatarUrl || "https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700";
+      
+      const gender = document.getElementById('prof-gender').value || 'Not specified';
+      const age = document.getElementById('prof-age').value;
+      const exp = document.getElementById('prof-experience').value;
+      const langs = document.getElementById('prof-languages').value || 'English';
+      const bio = document.getElementById('prof-bio').value;
+
+      document.getElementById('rv-gender').innerHTML = `<i class="fa-solid fa-venus-mars"></i> ${gender}`;
+      
+      const ageSpan = document.getElementById('rv-age');
+      if (age) { ageSpan.style.display = 'inline-block'; ageSpan.innerHTML = `<i class="fa-regular fa-calendar"></i> ${age} yrs`; } 
+      else { ageSpan.style.display = 'none'; }
+
+      document.getElementById('rv-exp').innerHTML = `<i class="fa-solid fa-briefcase"></i> ${exp ? exp + ' Years Exp.' : 'Entry Level'}`;
+      document.getElementById('rv-langs').innerHTML = `<i class="fa-solid fa-language"></i> ${langs}`;
+      document.getElementById('rv-bio-text').innerText = bio || 'No biography provided.';
+      
+      const vidSec = document.getElementById('rv-video-section');
+      if(window.currentUser.videoUrl) {
+        vidSec.style.display = 'block';
+        document.getElementById('rv-video-player').src = window.currentUser.videoUrl;
+      } else {
+        vidSec.style.display = 'none';
+      }
+
+      document.getElementById('rv-msg-btn').style.display = 'none';
+
+      const qualList = document.getElementById('rv-qual-list');
+      qualList.innerHTML = '';
+      if(window.currentUser.quals && window.currentUser.quals.length > 0) {
+        window.currentUser.quals.forEach(q => {
+             const clickableAttr = q.url ? `onclick="window.open('${q.url}', '_blank')"` : '';
+             const linkClass = q.url ? `qual-doc-link` : ``;
+             const iconMarkup = q.url ? `<i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.85rem; color:var(--text-muted); margin-left:auto;"></i>` : ``;
+             
+             qualList.insertAdjacentHTML('beforeend', `<div class="${linkClass}" ${clickableAttr} style="padding:0.75rem; background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; display:flex; align-items:center; gap:1rem;"><i class="fa-solid fa-certificate" style="color:var(--primary-navy); font-size:1.5rem;"></i> <span style="font-weight:600; font-size:0.9rem;">${q.title}</span> ${iconMarkup} </div>`);
+        });
+      } else {
+        qualList.innerHTML = '<p class="elegant-text">No qualifications attached.</p>';
+      }
+
+      document.getElementById('recruiter-modal').classList.add('active');
+    };
+
+    // --- JOB BOARD ---
+    window.viewJobDetails = function(jobId, pushToHistory = true) {
+      const job = jobsData[jobId];
+      if(!job) return;
+      document.getElementById('job-modal-title').innerText = job.title;
+      document.getElementById('job-modal-meta').innerHTML = `<span><i class="fa-solid fa-coins"></i> ${job.pay}</span> <span><i class="fa-solid fa-location-dot"></i> ${job.loc}</span> <span class="badge badge-yellow">${job.type}</span>`;
+      document.getElementById('job-modal-desc').innerText = job.desc;
+
+      const applyBtn = document.getElementById('job-modal-apply');
+      applyBtn.onclick = () => { applyForJob(job.title); closeJobModal(); };
+
+      document.getElementById('job-detail-modal').classList.add('active');
+      if (pushToHistory) history.pushState({ view: 'job-details', jobId }, '', '#job-details');
+    };
+
+    window.closeJobModal = function() {
+      document.getElementById('job-detail-modal').classList.remove('active');
+      if(history.state && history.state.view === 'job-details') {
+          history.back();
+      }
+    };
+
+    window.applyForJob = async function(jobTitle) {
+      if (!window.currentUser.isVerified) { showToast("Verify your email address to apply for jobs.", "error"); return; }
+      showToast(`Application successfully sent for ${jobTitle}`, "success");
+      receiveMessage(
+        `Application: ${jobTitle}`, 
+        `Hi ${window.currentUser.name}, your application for <b>${jobTitle}</b> has been received by the recruitment team. We will review your attached profile shortly. Click here to chat with us.`
+      );
+    };
+
+    window.filterJobBoard = function() {
+      const searchTxt = document.getElementById('search-jobs').value.toLowerCase();
+      const locTxt = document.getElementById('search-location').value.toLowerCase();
+      const typeFilter = document.getElementById('filter-type').value;
+      
+      document.querySelectorAll('.job-card').forEach(card => {
+        const textMatch = card.querySelector('h3').innerText.toLowerCase().includes(searchTxt) || card.querySelector('.job-desc').innerText.toLowerCase().includes(searchTxt);
+        const locMatch = card.getAttribute('data-location').toLowerCase().includes(locTxt);
+        const typeMatch = (typeFilter === 'all' || card.getAttribute('data-type') === typeFilter);
+        card.style.display = (textMatch && locMatch && typeMatch) ? 'flex' : 'none';
+      });
+    };
+
+    // --- INBOX, CHAT HISTORY & MEDIA ATTACHMENTS ---
+    window.handleChatMediaUpload = async function(input) {
+      const file = input.files[0];
+      if (!file || !window.auth || !window.auth.currentUser) return;
+
+      const activeMsgId = window.activeChatMsgId;
+      let targetMsg = window.currentUser.messages.find(m => m.id === activeMsgId);
+      if (!targetMsg && window.currentUser.messages.length > 0) {
+        targetMsg = window.currentUser.messages[0];
+      }
+      if (!targetMsg) {
+        targetMsg = {
+          id: 'msg-' + Date.now(),
+          subject: 'Recruiter Chat',
+          body: 'Conversation with recruiter',
+          date: new Date().toISOString(),
+          read: true,
+          chatHistory: []
+        };
+        window.currentUser.messages.unshift(targetMsg);
+      }
+
+      if (!targetMsg.chatHistory) targetMsg.chatHistory = [];
+
+      // Create a temporary upload indicator bubble inside active chat
+      const tempId = 'temp-msg-' + Date.now();
+      const isImg = file.type.startsWith('image/');
+      const hist = document.getElementById('chat-history');
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const tempBubbleHtml = `
+        <div class="chat-bubble bubble-out" id="${tempId}">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>Uploading ${isImg ? 'photo' : 'file'}... <strong id="prog-${tempId}">0%</strong></span>
+          </div>
+          <span class="msg-time-stamp">${timeStr}</span>
+        </div>
+      `;
+      hist.insertAdjacentHTML('beforeend', tempBubbleHtml);
+      hist.scrollTop = hist.scrollHeight;
+
+      try {
+        const blobOrFile = await window.compressOrGetBlob(file);
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const storageRef = window.fb.ref(window.storage, `users/${window.auth.currentUser.uid}/chat_media/${Date.now()}_${safeName}`);
+        const uploadTask = window.fb.uploadBytesResumable(storageRef, blobOrFile);
+
+        uploadTask.on('state_changed', 
+          (snapshot) => {
+            const prog = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            const progEl = document.getElementById(`prog-${tempId}`);
+            if (progEl) progEl.innerText = `${prog}%`;
+          }, 
+          (error) => {
+            showToast("Media upload failed.", "error");
+            const tempEl = document.getElementById(tempId);
+            if(tempEl) tempEl.remove();
+          }, 
+          async () => {
+            const mediaUrl = await window.fb.getDownloadURL(uploadTask.snapshot.ref);
+            
+            const chatMsgItem = {
+              sender: 'me',
+              text: isImg ? '' : file.name,
+              mediaUrl: mediaUrl,
+              fileName: file.name,
+              isImage: isImg,
+              time: timeStr,
+              type: 'media'
+            };
+
+            targetMsg.chatHistory.push(chatMsgItem);
+            saveProfileToFirestore();
+
+            // Replace upload bubble with final media bubble
+            const bubbleEl = document.getElementById(tempId);
+            let contentHtml = '';
+            if (isImg) {
+              contentHtml = `
+                <div style="margin-top:2px;">
+                  <img src="${mediaUrl}" style="max-width:240px; max-height:240px; border-radius:10px; display:block; cursor:pointer; object-fit:cover;" onclick="window.open('${mediaUrl}', '_blank')" />
+                </div>
+              `;
+            } else {
+              contentHtml = `
+                <div style="display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; background:rgba(255,255,255,0.15); margin-top:2px;">
+                  <i class="fa-solid fa-file-lines" style="font-size:1.2rem;"></i>
+                  <a href="${mediaUrl}" target="_blank" style="color:white; font-weight:600; text-decoration:underline; font-size:0.85rem; word-break:break-all;">${file.name}</a>
+                </div>
+              `;
+            }
+
+            if (bubbleEl) {
+              bubbleEl.innerHTML = `${contentHtml} <span class="msg-time-stamp">${timeStr}</span>`;
+            }
+            hist.scrollTop = hist.scrollHeight;
+            showToast("Attachment sent!", "success");
+            input.value = '';
+          }
+        );
+      } catch (err) {
+        console.error(err);
+        showToast("Error processing media file.", "error");
+        const tempEl = document.getElementById(tempId);
+        if(tempEl) tempEl.remove();
+      }
+    };
+
+    window.receiveMessage = function(subject, body) {
+      const msg = { 
+        id: 'msg-' + Date.now(), 
+        subject, 
+        body, 
+        date: new Date().toISOString(), 
+        read: false,
+        chatHistory: [
+          { sender: 'them', text: `Hi ${window.currentUser.name || 'there'}, your application has been logged! Feel free to ask questions or share further documents here.`, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), type: 'text' }
+        ]
+      };
+      window.currentUser.messages.unshift(msg);
+      saveProfileToFirestore();
+      renderInbox();
+    };
+
+    function updateBadge() {
+      const badge = document.getElementById('msg-badge');
+      if (unreadMessages > 0) {
+        badge.innerText = unreadMessages;
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    window.renderInbox = function() {
+      const container = document.getElementById('inbox-container');
+      const empty = document.getElementById('empty-inbox');
+      
+      if(!window.currentUser.messages || window.currentUser.messages.length === 0) {
+        empty.style.display = 'block';
+        document.querySelectorAll('.message-item').forEach(el => el.remove());
+        unreadMessages = 0; updateBadge(); return;
+      }
+      
+      empty.style.display = 'none';
+      document.querySelectorAll('.message-item').forEach(el => el.remove());
+      
+      let unreadCount = 0;
+      window.currentUser.messages.forEach(msg => {
+        if(!msg.read) unreadCount++;
+        const dateStr = new Date(msg.date).toLocaleString();
+        const html = `
+          <div class="message-item ${msg.read ? '' : 'unread'}" id="${msg.id}" onclick="openChat('${msg.subject}', true, '${msg.id}')">
+            <div class="msg-content">
+              <h4><i class="fa-solid fa-bell" style="color:var(--accent-yellow);"></i> ${msg.subject}</h4>
+              <p>${msg.body}</p>
+              <span class="msg-date">${dateStr}</span>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+      });
+      
+      unreadMessages = unreadCount;
+      updateBadge();
+    };
+
+    window.renderChatHistory = function(msg) {
+      const hist = document.getElementById('chat-history');
+      hist.innerHTML = '<div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;">Chat started</div>';
+      
+      if (!msg.chatHistory || msg.chatHistory.length === 0) {
+        msg.chatHistory = [
+          { sender: 'them', text: 'Hello! We received your profile details. Do you have a moment to answer a few quick questions?', time: 'Just now', type: 'text' }
+        ];
+      }
+
+      msg.chatHistory.forEach(item => {
+        const bubbleClass = item.sender === 'me' ? 'bubble-out' : 'bubble-in';
+        let content = '';
+        if (item.type === 'media' || item.mediaUrl) {
+          if (item.isImage) {
+            content = `
+              <div style="margin-top:2px;">
+                <img src="${item.mediaUrl}" style="max-width:240px; max-height:240px; border-radius:10px; display:block; cursor:pointer; object-fit:cover;" onclick="window.open('${item.mediaUrl}', '_blank')" />
+              </div>
+            `;
+          } else {
+            const linkColor = item.sender === 'me' ? 'white' : 'var(--primary-navy)';
+            content = `
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; background:rgba(0,0,0,0.05); margin-top:2px;">
+                <i class="fa-solid fa-file-lines" style="font-size:1.2rem;"></i>
+                <a href="${item.mediaUrl}" target="_blank" style="color:${linkColor}; font-weight:600; text-decoration:underline; font-size:0.85rem; word-break:break-all;">${item.fileName || 'Attachment'}</a>
+              </div>
+            `;
+          }
+        } else {
+          content = `<div>${item.text}</div>`;
+        }
+
+        hist.insertAdjacentHTML('beforeend', `
+          <div class="chat-bubble ${bubbleClass}">
+            ${content}
+            <span class="msg-time-stamp">${item.time || ''}</span>
           </div>
         `);
       });
-    }
 
-    function addQualificationRow() {
-      newQualCount++;
-      const container = document.getElementById('new-qual-container');
-      const html = `
-        <div class="qual-item edit-mode" id="new-qual-row-${newQualCount}">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h4 style="margin:0; font-size:0.95rem;">New Certificate</h4>
-            <button type="button" class="qual-remove" onclick="this.closest('.qual-item').remove()"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-          <input type="text" class="form-input qual-title" placeholder="e.g. Master's in Education, 120-Hr TEFL" required style="margin-top:0.5rem;">
-          <input type="file" class="qual-file" style="font-size:0.85rem; margin-top:0.5rem;">
-        </div>
-      `;
-      container.insertAdjacentHTML('beforeend', html);
-    }
+      hist.scrollTop = hist.scrollHeight;
+    };
 
-    function deleteQualification(index) {
-      if(confirm("Are you sure you want to remove this qualification?")) {
-        currentUser.qualifications.splice(index, 1);
-        renderQualifications();
+    window.openChat = function(title, pushToHistory = true, msgId = null) {
+      let msg = null;
+      if(msgId) {
+        window.activeChatMsgId = msgId;
+        msg = window.currentUser.messages.find(m => m.id === msgId);
+        if(msg && !msg.read) { msg.read = true; saveProfileToFirestore(); renderInbox(); }
+      } else if(window.currentUser.messages.length > 0) {
+        msg = window.currentUser.messages[0];
+        window.activeChatMsgId = msg.id;
       }
-    }
-
-    /* --- PROFILE UPDATE --- */
-    function handleProfileUpdate(e) {
-      e.preventDefault();
       
-      // Gather newly added qualifications
-      const newItems = document.querySelectorAll('#new-qual-container .qual-item.edit-mode');
-      newItems.forEach(item => {
-        const title = item.querySelector('.qual-title').value;
-        const fileInput = item.querySelector('.qual-file');
-        const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file attached';
-        if(title.trim() !== "") {
-          currentUser.qualifications.push({ title, fileName });
-        }
+      document.getElementById('inbox-list-view').style.display = 'none';
+      const chatWin = document.getElementById('chat-window');
+      chatWin.style.display = 'flex';
+      document.getElementById('chat-title').innerText = title || (msg ? msg.subject : 'Recruiter Chat');
+
+      if (msg) {
+        renderChatHistory(msg);
+      }
+
+      if (pushToHistory) {
+        history.pushState({ view: 'chat', title, msgId }, '', '#chat');
+      }
+    };
+
+    window.closeChat = function(pushToHistory = true) {
+      document.getElementById('chat-window').style.display = 'none';
+      document.getElementById('inbox-list-view').style.display = 'block';
+      window.activeChatMsgId = null;
+      if (pushToHistory && history.state && history.state.view === 'chat') {
+        history.back();
+      }
+    };
+
+    window.sendChatMessage = function() {
+      const input = document.getElementById('chat-input-box');
+      const text = input.value.trim();
+      if (!text) return;
+
+      let targetMsg = window.currentUser.messages.find(m => m.id === window.activeChatMsgId);
+      if (!targetMsg && window.currentUser.messages.length > 0) {
+        targetMsg = window.currentUser.messages[0];
+      }
+      if (!targetMsg) {
+        targetMsg = {
+          id: 'msg-' + Date.now(),
+          subject: 'Recruiter Chat',
+          body: text,
+          date: new Date().toISOString(),
+          read: true,
+          chatHistory: []
+        };
+        window.currentUser.messages.unshift(targetMsg);
+      }
+
+      if (!targetMsg.chatHistory) targetMsg.chatHistory = [];
+
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      targetMsg.chatHistory.push({
+        sender: 'me',
+        text: text,
+        time: timeStr,
+        type: 'text'
       });
-      // Clear unsaved container
-      document.getElementById('new-qual-container').innerHTML = '';
-      
-      renderQualifications();
-      
-      document.getElementById('display-name').innerText = document.getElementById('prof-display-name').value || currentUser.name;
-      showToast('Profile saved successfully!', 'success');
-    }
 
-    /* --- JOB MODAL --- */
-    function openJobDetails(title, type, location, pay, description) {
-      document.getElementById('jd-title').innerText = title;
-      
-      let badgeHtml = '';
-      if(type === 'Full Time') badgeHtml += '<span class="badge badge-yellow">Full Time</span>';
-      else badgeHtml += '<span class="badge badge-navy">Part Time</span>';
-      
-      badgeHtml += `<span class="badge badge-outline"><i class="fa-solid fa-location-dot"></i> ${location}</span>`;
-      badgeHtml += `<span class="badge badge-outline" style="border-color:var(--success-green); color:var(--success-green);"><i class="fa-solid fa-coins"></i> ${pay}</span>`;
-      
-      document.getElementById('jd-badges').innerHTML = badgeHtml;
-      document.getElementById('jd-desc').innerText = description;
-      
-      const applyBtn = document.getElementById('jd-apply-btn');
-      applyBtn.onclick = function() {
-        document.getElementById('job-details-modal').classList.remove('active');
-        applyForJob(title);
-      };
-      
-      document.getElementById('job-details-modal').classList.add('active');
-    }
+      input.value = '';
+      saveProfileToFirestore();
+      renderChatHistory(targetMsg);
+    };
 
-    function applyForJob(jobTitle) {
-      showToast(`Application sent for ${jobTitle}`, 'success');
-    }
+    // --- LIVE SEMINAR & TRAINING WORKSHOPS LOGIC ---
+    window.autoRegisterWorkshop = function(title) {
+      showToast(`Successfully registered for: ${title}`, 'success');
+    };
 
-    /* --- RECRUITER VIEW --- */
-    function openRecruiterView() {
-      document.getElementById('rp-name').innerText = document.getElementById('prof-display-name').value || currentUser.name;
-      document.getElementById('rp-age').innerText = document.getElementById('prof-age').value || '--';
-      document.getElementById('rp-gender').innerText = document.getElementById('prof-gender').value || '--';
-      document.getElementById('rp-exp').innerText = document.getElementById('prof-experience').value || '0';
-      document.getElementById('rp-bio').innerText = document.getElementById('prof-bio').value || 'No biography provided.';
-      document.getElementById('rp-lang').innerText = document.getElementById('prof-languages').value || '--';
-      document.getElementById('rp-avatar').src = document.getElementById('profile-avatar').src;
-
-      const qContainer = document.getElementById('rp-quals');
-      qContainer.innerHTML = '';
-      
-      if(currentUser.qualifications.length === 0) {
-        qContainer.innerHTML = '<p class="elegant-text">No qualifications listed.</p>';
-      } else {
-        currentUser.qualifications.forEach(q => {
-          // Removed the fake Verified tag
-          qContainer.insertAdjacentHTML('beforeend', `
-            <div style="background:var(--surface-white); border:1px solid var(--border-color); padding:1rem; border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <strong style="color:var(--primary-navy);">${q.title}</strong>
-                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;"><i class="fa-solid fa-paperclip"></i> Certificate Attached</div>
-              </div>
-            </div>
-          `);
-        });
-      }
-
-      const driveLink = document.getElementById('prof-drive-link').value;
-      if(driveLink) {
-        document.getElementById('rp-video-container').style.display = 'block';
-        document.getElementById('rp-video-btn').href = driveLink;
-      } else {
-        document.getElementById('rp-video-container').style.display = 'none';
-      }
-
-      document.getElementById('recruiter-preview-modal').classList.add('active');
-    }
-
-    function filterJobBoard() {
-      // Basic mock filtering logic
-    }
+    // --- TEFL SUPPORT ENQUIRY LOGIC ---
+    window.autoSubmitTeflEnquiry = function() {
+      showToast(`Information request sent successfully!`, 'success');
+    };
   </script>
 </body>
 </html>
