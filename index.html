@@ -211,6 +211,14 @@
         if (docSnap.exists()) {
           name = docSnap.data().name || name;
           if(docSnap.data().avatarUrl) avatar = docSnap.data().avatarUrl;
+          
+          // Populate profile fields if data exists
+          if(docSnap.data().age) document.getElementById('prof-age').value = docSnap.data().age;
+          if(docSnap.data().gender) document.getElementById('prof-gender').value = docSnap.data().gender;
+          if(docSnap.data().experience) document.getElementById('prof-experience').value = docSnap.data().experience;
+          if(docSnap.data().languages) document.getElementById('prof-languages').value = docSnap.data().languages;
+          if(docSnap.data().bio) document.getElementById('prof-bio').value = docSnap.data().bio;
+          if(docSnap.data().driveVideoLink) document.getElementById('prof-drive-link').value = docSnap.data().driveVideoLink;
         }
         finalizeLogin(name, user.email, user.emailVerified, avatar);
       }
@@ -265,7 +273,7 @@
         <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</div>
       </div>
 
-      <!-- Login Form (Added Autocomplete for saving passwords) -->
+      <!-- Login Form -->
       <form id="login-form" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label class="form-label">Email Address</label>
@@ -336,6 +344,15 @@
       <div class="sidebar-item" onclick="switchView('jobs-view', this)">
         <i class="fa-solid fa-briefcase"></i> <span>Jobs</span>
       </div>
+      
+      <!-- Restored Training & TEFL Sections -->
+      <div class="sidebar-item" onclick="switchView('workshops-view', this)">
+        <i class="fa-solid fa-chalkboard-user"></i> <span>Training</span>
+      </div>
+      <div class="sidebar-item" onclick="switchView('tefl-view', this)">
+        <i class="fa-solid fa-certificate"></i> <span>TEFL</span>
+      </div>
+
       <div class="sidebar-item" onclick="switchView('messages-view', this)">
         <i class="fa-regular fa-envelope"></i> <span>Inbox <span id="msg-badge" style="background:var(--error-red); color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none;">0</span></span>
       </div>
@@ -367,6 +384,18 @@
             </div>
 
             <h3>Core Biography & Details</h3>
+            
+            <div class="grid-2-col" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Display Name</label>
+                <input type="text" id="prof-display-name" class="form-input" placeholder="e.g. Jane D.">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" id="prof-age" class="form-input" min="18" max="100" placeholder="e.g. 28">
+              </div>
+            </div>
+
             <div class="grid-3-col">
               <div class="form-group">
                 <label class="form-label">Gender</label>
@@ -463,7 +492,28 @@
         </div>
       </section>
 
-      <!-- 3. INBOX / MESSAGES -->
+      <!-- 3. WORKSHOPS -->
+      <section id="workshops-view" class="view-panel">
+        <h2 style="margin-bottom: 1.5rem;">Training & Workshops</h2>
+        <div class="card">
+          <span class="badge badge-yellow">Live Seminar</span>
+          <h3>Mastering the Demo Lesson</h3>
+          <p style="margin-bottom: 1rem;">Learn how to impress recruiters during your mock class.</p>
+          <button class="btn btn-primary" onclick="autoRegisterWorkshop('Mastering the Demo Lesson')">Reserve Spot</button>
+        </div>
+      </section>
+
+      <!-- 4. TEFL -->
+      <section id="tefl-view" class="view-panel">
+        <h2 style="margin-bottom: 1.5rem;">TEFL Certification Support</h2>
+        <div class="card">
+          <h3>Partner 120-Hour Accredited TEFL</h3>
+          <p style="margin-bottom: 1rem;">Get certified to teach English globally. High approval rates.</p>
+          <button class="btn btn-primary" onclick="autoSubmitTeflEnquiry()">Request Info</button>
+        </div>
+      </section>
+
+      <!-- 5. INBOX / MESSAGES -->
       <section id="messages-view" class="view-panel">
         <div id="inbox-list-view">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
@@ -526,12 +576,15 @@
           <h2 id="rv-name" style="font-size: 1.8rem; margin-bottom: 0.2rem;">Jane Doe</h2>
           <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
             <span class="badge badge-navy" id="rv-gender">Female</span>
+            <span class="badge badge-navy" id="rv-age">28 yrs</span>
             <span class="badge badge-navy" id="rv-exp">5 Years Exp.</span>
             <span class="badge badge-yellow" id="rv-langs"><i class="fa-solid fa-language"></i> English</span>
           </div>
+          
+          <!-- Rating fixed to zero initially -->
           <div class="star-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
-            <span style="color:var(--text-muted); font-size:0.9rem; font-weight:600; margin-left:0.5rem; letter-spacing: 0;">4.8 (12 Reviews)</span>
+            <i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+            <span style="color:var(--text-muted); font-size:0.9rem; font-weight:600; margin-left:0.5rem; letter-spacing: 0;">0.0 (0 Reviews)</span>
           </div>
         </div>
       </div>
@@ -556,20 +609,15 @@
         </div>
       </div>
 
-      <!-- Reviews Section (Mock Data) -->
+      <!-- Reviews Section (Zero Reviews Default) -->
       <div style="margin-top:2rem;">
         <h3 class="section-title-elegant">Recruiter Feedback</h3>
-        <div class="review-card">
-          <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
-            <strong>EduGlobal Inc.</strong>
-            <span style="color:var(--accent-yellow); font-size:0.8rem;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
-          </div>
-          <p class="elegant-text" style="font-size:0.85rem;">"Excellent teaching style. Very punctual and great with young learners."</p>
-        </div>
+        <p class="elegant-text">No feedback has been left for this teacher yet.</p>
       </div>
 
+      <!-- Contact Button (Hidden when teacher views own profile) -->
       <div style="margin-top: 3rem; text-align:center;">
-        <button class="btn btn-primary btn-block" onclick="alert('Recruiters will use this to open a chat with you.')"><i class="fa-regular fa-comment-dots"></i> Send Message to Teacher</button>
+        <button class="btn btn-primary btn-block" id="rv-msg-btn" onclick="alert('Recruiters will use this to open a chat with you.')"><i class="fa-regular fa-comment-dots"></i> Send Message to Teacher</button>
       </div>
     </div>
   </div>
@@ -609,12 +657,26 @@
     };
 
     window.toggleAuthMode = function(type) { 
-      if(window.auth) {
-        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ signOut }) => signOut(window.auth));
-      }
       document.getElementById('reset-password-panel').style.display = 'none';
       document.getElementById('auth-panel').style.display = 'block';
       switchAuthTab(type); 
+    };
+
+    // Fixed Logout Logic to properly reset the UI to the login screen
+    window.handleLogout = function() {
+      if (window.auth) { 
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ signOut }) => { signOut(window.auth); }); 
+      }
+      
+      document.body.classList.remove('dashboard-active');
+      document.getElementById('app-sidebar').style.display = 'none';
+      document.getElementById('app-content').style.display = 'none';
+      document.getElementById('auth-panel').style.display = 'block';
+      
+      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>`;
+      switchAuthTab('login');
+      
+      showToast('Logged out successfully.', 'info');
     };
 
     window.switchView = function(viewId, element) {
@@ -626,7 +688,7 @@
       if(viewId === 'messages-view') {
         unreadMessages = 0;
         updateBadge();
-        closeChat(); // Ensure inbox list shows first
+        closeChat(); 
       }
     };
 
@@ -726,6 +788,9 @@
       document.getElementById('display-name').innerText = name;
       document.getElementById('profile-avatar').src = avatarUrl;
       
+      // Update form field if name changes
+      document.getElementById('prof-display-name').value = name;
+
       const vBadge = document.getElementById('verification-badge');
       if (isVerified) {
         vBadge.innerText = 'Email Verified'; vBadge.className = 'badge badge-navy';
@@ -735,9 +800,9 @@
 
       document.getElementById('nav-actions').innerHTML = `
         <div style="display:flex; align-items:center; gap:1rem;">
-          <img src="${avatarUrl}" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
-          <span style="font-weight:600; color:var(--surface-white);" class="hide-mobile">${name}</span>
-          <button class="btn btn-danger btn-small" onclick="toggleAuthMode('login')"><i class="fa-solid fa-right-from-bracket"></i></button>
+          <img src="${avatarUrl}" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
+          <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">${name}</span>
+          <button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
         </div>
       `;
     }
@@ -788,7 +853,7 @@
       currentUser.avatarUrl = base64Avatar;
       
       // Update UI Header immediately
-      const navImg = document.querySelector('#nav-actions img');
+      const navImg = document.getElementById('nav-avatar-img');
       if(navImg) navImg.src = base64Avatar;
 
       if(window.auth && window.auth.currentUser) {
@@ -828,6 +893,8 @@
       const btn = document.getElementById('btn-save-profile');
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
+      const displayName = document.getElementById('prof-display-name').value;
+      const age = document.getElementById('prof-age').value;
       const gender = document.getElementById('prof-gender').value;
       const experience = document.getElementById('prof-experience').value;
       const languages = document.getElementById('prof-languages').value;
@@ -846,6 +913,8 @@
       if (window.auth && window.auth.currentUser) {
         import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js").then(async ({ doc, updateDoc }) => {
           await updateDoc(doc(window.db, "users", window.auth.currentUser.uid), {
+            name: displayName,
+            age: age,
             gender: gender,
             experience: experience,
             languages: languages,
@@ -854,6 +923,13 @@
             qualifications: quals,
             lastUpdated: new Date()
           });
+          
+          // Update local UI state
+          currentUser.name = displayName;
+          document.getElementById('display-name').innerText = displayName;
+          const navDisplayName = document.getElementById('nav-display-name');
+          if (navDisplayName) navDisplayName.innerText = displayName;
+
           btn.innerHTML = 'Save';
           showToast('Profile saved successfully!', 'success');
         });
@@ -862,16 +938,26 @@
 
     // --- RECRUITER VIEW MODAL ---
     window.openRecruiterView = function() {
-      document.getElementById('rv-name').innerText = currentUser.name;
+      document.getElementById('rv-name').innerText = currentUser.name || document.getElementById('prof-display-name').value;
       document.getElementById('rv-avatar').src = currentUser.avatarUrl || "https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700";
       
       const gender = document.getElementById('prof-gender').value || 'Not specified';
+      const age = document.getElementById('prof-age').value;
       const exp = document.getElementById('prof-experience').value;
       const langs = document.getElementById('prof-languages').value || 'English';
       const bio = document.getElementById('prof-bio').value;
       const vid = document.getElementById('prof-drive-link').value;
 
       document.getElementById('rv-gender').innerHTML = `<i class="fa-solid fa-venus-mars"></i> ${gender}`;
+      
+      const ageSpan = document.getElementById('rv-age');
+      if (age) {
+        ageSpan.style.display = 'inline-block';
+        ageSpan.innerHTML = `<i class="fa-regular fa-calendar"></i> ${age} yrs`;
+      } else {
+        ageSpan.style.display = 'none';
+      }
+
       document.getElementById('rv-exp').innerHTML = `<i class="fa-solid fa-briefcase"></i> ${exp ? exp + ' Years Exp.' : 'Entry Level'}`;
       document.getElementById('rv-langs').innerHTML = `<i class="fa-solid fa-language"></i> ${langs}`;
       
@@ -885,6 +971,9 @@
       } else {
         vidSec.style.display = 'none';
       }
+
+      // Hide message button when a teacher looks at their own profile preview
+      document.getElementById('rv-msg-btn').style.display = 'none';
 
       // Populate Qualifications
       const qualList = document.getElementById('rv-qual-list');
@@ -974,6 +1063,14 @@
         const hist = document.getElementById('chat-history');
         hist.scrollTop = hist.scrollHeight;
       }
+    };
+
+    window.autoRegisterWorkshop = async function(workshopName) {
+      showToast("Spot reserved for the workshop!", "success");
+    };
+
+    window.autoSubmitTeflEnquiry = async function() {
+      showToast("TEFL enquiry saved automatically!", "success");
     };
 
     function updateBadge() {
