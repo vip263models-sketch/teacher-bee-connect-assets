@@ -700,9 +700,8 @@
   </div>
 
   <script>
-    // ImageKit Credentials
-    const IMAGEKIT_PUBLIC_KEY = "public_kXg5X6kA6gX7Wpmi4Ou2uGJUi+g=";
-    const IMAGEKIT_URL_ENDPOINT = "https://ik.imagekit.io/liegv0cs1";
+    // Google Drive Web App Deployment URL
+    const GOOGLE_DRIVE_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzp3d1nSePEysnTeHCR4G0q8p3g6vydHNVgE7qzcI7-GxsuI9azPKPtKIyAKcCF08J9/exec";
 
     window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], messages: [] };
     window.activeChatMsgId = null;
@@ -710,44 +709,59 @@
     let currentCropper = null;
     let editQualIndex = -1;
 
-    const jobsData = {
-      'job1': { title: 'Online ESL Tutor (K-12)', pay: '$18-$24/hr', loc: 'Online - Global', type: 'Full Time', desc: 'Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor\'s degree.\n\nRequirements:\n- Native-level English proficiency\n- 120-Hour TEFL or equivalent\n- Fast internet connection\n\nResponsibilities:\nDeliver 25-minute engaging 1-on-1 lessons using our proprietary platform. Full lesson materials provided.' },
-      'job2': { title: 'Adult Business English', pay: '$30/hr', loc: 'Beijing, China', type: 'Part Time', desc: 'Teach conversational and business English to corporate professionals. Housing allowance provided. Minimum 3 years experience required.\n\nRequirements:\n- 3+ years experience teaching adults\n- Business background preferred\n- Willing to relocate to Beijing\n\nBenefits:\n- Z-Visa sponsorship\n- Free accommodation\n- Health insurance' }
-    };
-
-    // ----- REUSABLE IMAGEKIT UPLOADER -----
-    async function uploadToImageKit(fileOrBlob, fileName, folder = "/", onProgress = null) {
+    // ----- REUSABLE GOOGLE DRIVE UPLOADER -----
+    async function uploadToGoogleDrive(fileOrBlob, fileName, folder = "/", onProgress = null) {
       return new Promise((resolve, reject) => {
-        const formData = new FormData();
-        formData.append("file", fileOrBlob);
-        formData.append("fileName", fileName);
-        formData.append("publicKey", IMAGEKIT_PUBLIC_KEY);
-        formData.append("folder", folder);
-        formData.append("useUniqueFileName", "true");
+        const reader = new FileReader();
+        reader.readAsDataURL(fileOrBlob);
+        reader.onload = () => {
+          // Extract purely the base64 string
+          const base64Data = reader.result.split(',')[1];
+          const mimeType = fileOrBlob.type || 'application/octet-stream';
+          
+          // Using JSON payload to avoid CORS preflight issues common with GAS FormData
+          const payload = {
+            fileName: fileName,
+            mimeType: mimeType,
+            fileData: base64Data,
+            folder: folder
+          };
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://upload.imagekit.io/api/v1/files/upload");
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", GOOGLE_DRIVE_WEBAPP_URL, true);
+          
+          // Using text/plain prevents the browser from sending a CORS preflight request
+          // Note: The Apps Script doPost(e) needs to read JSON.parse(e.postData.contents)
+          xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
 
-        if (onProgress && xhr.upload) {
-          xhr.upload.onprogress = (e) => {
-            if (e.lengthComputable) {
-              const percent = Math.round((e.loaded / e.total) * 100);
-              onProgress(percent);
+          if (onProgress && xhr.upload) {
+            xhr.upload.onprogress = (e) => {
+              if (e.lengthComputable) {
+                const percent = Math.round((e.loaded / e.total) * 100);
+                onProgress(percent);
+              }
+            };
+          }
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                const resp = JSON.parse(xhr.responseText);
+                resolve(resp.url || resp.link || xhr.responseText);
+              } catch (e) {
+                // In case the script just returns the raw URL text instead of JSON
+                resolve(xhr.responseText);
+              }
+            } else {
+              reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText}`));
             }
           };
-        }
 
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            const resp = JSON.parse(xhr.responseText);
-            resolve(resp.url);
-          } else {
-            reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText}`));
-          }
+          xhr.onerror = () => reject(new Error("Network error during Google Drive upload."));
+          
+          xhr.send(JSON.stringify(payload));
         };
-
-        xhr.onerror = () => reject(new Error("Network error during ImageKit upload."));
-        xhr.send(formData);
+        reader.onerror = (error) => reject(error);
       });
     }
 
@@ -1014,7 +1028,7 @@
       }
     };
 
-    // --- 1. PROFILE PICTURE UPLOAD VIA IMAGEKIT ---
+    // --- 1. PROFILE PICTURE UPLOAD VIA GOOGLE DRIVE ---
     window.openCropperModal = function(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -1044,7 +1058,7 @@
         if(!window.auth.currentUser) { btn.innerHTML = 'Crop & Save'; return cancelCrop(); }
         try {
            const fileName = `avatar_${window.auth.currentUser.uid}.jpg`;
-           const url = await uploadToImageKit(blob, fileName, "/avatars");
+           const url = await uploadToGoogleDrive(blob, fileName, "/avatars");
            
            document.getElementById('profile-avatar').src = url;
            window.currentUser.avatarUrl = url;
@@ -1057,14 +1071,14 @@
            showToast('Profile picture saved!', 'success');
         } catch(e) { 
            console.error(e);
-           showToast("ImageKit upload error.", "error"); 
+           showToast("Google Drive upload error.", "error"); 
            btn.innerHTML = 'Crop & Save'; 
            cancelCrop(); 
         }
       }, 'image/jpeg', 0.85);
     };
 
-    // --- VIDEO UPLOAD VIA IMAGEKIT ---
+    // --- VIDEO UPLOAD VIA GOOGLE DRIVE ---
     window.handleVideoUpload = async function(input) {
       const file = input.files[0];
       if(!file || !window.auth.currentUser) return;
@@ -1080,7 +1094,7 @@
 
       try {
         const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const url = await uploadToImageKit(file, `${Date.now()}_${safeName}`, "/videos", (percent) => {
+        const url = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, "/videos", (percent) => {
           pFill.style.width = `${percent}%`;
           pText.innerText = `Uploading video... ${percent}%`;
         });
@@ -1104,7 +1118,7 @@
       }
     };
 
-    // --- 2. QUALIFICATIONS & CERTIFICATES VIA IMAGEKIT ---
+    // --- 2. QUALIFICATIONS & CERTIFICATES VIA GOOGLE DRIVE ---
     window.handleQualFileSelect = function(input) {
       if (input.files && input.files[0]) {
         const file = input.files[0];
@@ -1156,7 +1170,7 @@
           const blobOrFile = await window.compressOrGetBlob(file);
           const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
           
-          const url = await uploadToImageKit(blobOrFile, `${Date.now()}_${safeName}`, "/qualifications", (percent) => {
+          const url = await uploadToGoogleDrive(blobOrFile, `${Date.now()}_${safeName}`, "/qualifications", (percent) => {
             pFill.style.width = `${percent}%`;
           });
 
@@ -1363,7 +1377,7 @@
       });
     };
 
-    // --- 3. INBOX MEDIA ATTACHMENTS VIA IMAGEKIT ---
+    // --- 3. INBOX MEDIA ATTACHMENTS VIA GOOGLE DRIVE ---
     window.handleChatMediaUpload = async function(input) {
       const file = input.files[0];
       if (!file || !window.auth || !window.auth.currentUser) return;
@@ -1408,7 +1422,7 @@
         const blobOrFile = await window.compressOrGetBlob(file);
         const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
 
-        const mediaUrl = await uploadToImageKit(blobOrFile, `${Date.now()}_${safeName}`, "/chat_media", (percent) => {
+        const mediaUrl = await uploadToGoogleDrive(blobOrFile, `${Date.now()}_${safeName}`, "/chat_media", (percent) => {
           const progEl = document.getElementById(`prog-${tempId}`);
           if (progEl) progEl.innerText = `${percent}%`;
         });
@@ -1451,7 +1465,7 @@
         input.value = '';
       } catch (err) {
         console.error(err);
-        showToast("Error uploading file to ImageKit.", "error");
+        showToast("Error uploading file to Google Drive.", "error");
         const tempEl = document.getElementById(tempId);
         if(tempEl) tempEl.remove();
       }
@@ -1642,5 +1656,3 @@
   </script>
 </body>
 </html>
-
-
