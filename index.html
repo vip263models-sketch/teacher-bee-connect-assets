@@ -193,7 +193,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, updateDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { getStorage, ref, uploadBytesResumable, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
@@ -207,11 +206,9 @@
     const app = initializeApp(firebaseConfig);
     window.auth = getAuth(app);
     window.db = getFirestore(app);
-    window.storage = getStorage(app);
 
-    // Expose Firebase SDK methods globally to eliminate dynamic import failure points
+    // Expose Firebase SDK methods globally
     window.fb = {
-      ref, uploadBytesResumable, uploadBytes, getDownloadURL, deleteObject,
       doc, setDoc, updateDoc, getDoc, serverTimestamp,
       signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset
     };
@@ -467,8 +464,7 @@
               </div>
               
               <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;" id="video-progress-wrapper">
-                <p class="progress-text" id="video-progress-text" style="display:none; margin:0;">Compressing... 0%</p>
-                <button type="button" id="btn-cancel-video" class="btn btn-danger btn-small" style="padding:0.2rem 0.5rem; display:none;" onclick="cancelVideoUpload()">Cancel Upload</button>
+                <p class="progress-text" id="video-progress-text" style="display:none; margin:0;">Uploading video... 0%</p>
               </div>
 
               <video id="prof-video-preview" controls style="display:none; width:100%; max-height:300px; margin-top:10px; border-radius:8px;"></video>
@@ -704,21 +700,56 @@
   </div>
 
   <script>
+    // ImageKit Credentials
+    const IMAGEKIT_PUBLIC_KEY = "public_kXg5X6kA6gX7Wpmi4Ou2uGJUi+g=";
+    const IMAGEKIT_URL_ENDPOINT = "https://ik.imagekit.io/liegv0cs1";
+
     window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], messages: [] };
     window.activeChatMsgId = null;
     let unreadMessages = 0;
     let currentCropper = null;
     let editQualIndex = -1;
-    
-    // Globals for Upload Tasks Cancellation
-    window.currentQualUploadTask = null;
-    window.currentVideoUploadTask = null;
-    window.isVideoUploadCancelled = false;
 
     const jobsData = {
       'job1': { title: 'Online ESL Tutor (K-12)', pay: '$18-$24/hr', loc: 'Online - Global', type: 'Full Time', desc: 'Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor\'s degree.\n\nRequirements:\n- Native-level English proficiency\n- 120-Hour TEFL or equivalent\n- Fast internet connection\n\nResponsibilities:\nDeliver 25-minute engaging 1-on-1 lessons using our proprietary platform. Full lesson materials provided.' },
       'job2': { title: 'Adult Business English', pay: '$30/hr', loc: 'Beijing, China', type: 'Part Time', desc: 'Teach conversational and business English to corporate professionals. Housing allowance provided. Minimum 3 years experience required.\n\nRequirements:\n- 3+ years experience teaching adults\n- Business background preferred\n- Willing to relocate to Beijing\n\nBenefits:\n- Z-Visa sponsorship\n- Free accommodation\n- Health insurance' }
     };
+
+    // ----- REUSABLE IMAGEKIT UPLOADER -----
+    async function uploadToImageKit(fileOrBlob, fileName, folder = "/", onProgress = null) {
+      return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append("file", fileOrBlob);
+        formData.append("fileName", fileName);
+        formData.append("publicKey", IMAGEKIT_PUBLIC_KEY);
+        formData.append("folder", folder);
+        formData.append("useUniqueFileName", "true");
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://upload.imagekit.io/api/v1/files/upload");
+
+        if (onProgress && xhr.upload) {
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              const percent = Math.round((e.loaded / e.total) * 100);
+              onProgress(percent);
+            }
+          };
+        }
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const resp = JSON.parse(xhr.responseText);
+            resolve(resp.url);
+          } else {
+            reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText}`));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error("Network error during ImageKit upload."));
+        xhr.send(formData);
+      });
+    }
 
     // ----- HELPER: COMPRESS IMAGE / CONVERT TO BLOB -----
     window.compressOrGetBlob = function(file) {
@@ -983,7 +1014,7 @@
       }
     };
 
-    // --- CROPPER & AVATAR LOGIC ---
+    // --- 1. PROFILE PICTURE UPLOAD VIA IMAGEKIT ---
     window.openCropperModal = function(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -1012,104 +1043,68 @@
       canvas.toBlob(async (blob) => {
         if(!window.auth.currentUser) { btn.innerHTML = 'Crop & Save'; return cancelCrop(); }
         try {
-           const storageRef = window.fb.ref(window.storage, `users/${window.auth.currentUser.uid}/avatar.jpg`);
-           const uploadTask = window.fb.uploadBytesResumable(storageRef, blob);
-           uploadTask.on('state_changed', null, (err) => {
-             showToast("Avatar upload failed. Check permissions.", "error"); btn.innerHTML = 'Crop & Save';
-           }, async () => {
-             const url = await window.fb.getDownloadURL(uploadTask.snapshot.ref);
-             document.getElementById('profile-avatar').src = url;
-             window.currentUser.avatarUrl = url;
-             const navImg = document.getElementById('nav-avatar-img');
-             if(navImg) navImg.src = url;
-             
-             await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { avatarUrl: url });
-             btn.innerHTML = 'Crop & Save';
-             cancelCrop();
-             showToast('Profile picture saved!', 'success');
-           });
-        } catch(e) { showToast("Upload error.", "error"); btn.innerHTML = 'Crop & Save'; cancelCrop(); }
+           const fileName = `avatar_${window.auth.currentUser.uid}.jpg`;
+           const url = await uploadToImageKit(blob, fileName, "/avatars");
+           
+           document.getElementById('profile-avatar').src = url;
+           window.currentUser.avatarUrl = url;
+           const navImg = document.getElementById('nav-avatar-img');
+           if(navImg) navImg.src = url;
+           
+           await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { avatarUrl: url });
+           btn.innerHTML = 'Crop & Save';
+           cancelCrop();
+           showToast('Profile picture saved!', 'success');
+        } catch(e) { 
+           console.error(e);
+           showToast("ImageKit upload error.", "error"); 
+           btn.innerHTML = 'Crop & Save'; 
+           cancelCrop(); 
+        }
       }, 'image/jpeg', 0.85);
     };
 
-    // --- VIDEO COMPRESSION & UPLOAD ---
-    window.cancelVideoUpload = function() {
-      window.isVideoUploadCancelled = true;
-      if (window.currentVideoUploadTask) {
-        window.currentVideoUploadTask.cancel();
-        window.currentVideoUploadTask = null;
-      }
-      document.getElementById('video-progress-bar').style.display = 'none';
-      document.getElementById('video-progress-text').style.display = 'none';
-      document.getElementById('btn-cancel-video').style.display = 'none';
-      document.getElementById('prof-video-file').value = '';
-      showToast("Video upload canceled.", "info");
-    };
-
+    // --- VIDEO UPLOAD VIA IMAGEKIT ---
     window.handleVideoUpload = async function(input) {
       const file = input.files[0];
       if(!file || !window.auth.currentUser) return;
       
-      window.isVideoUploadCancelled = false;
       const pContainer = document.getElementById('video-progress-bar');
       const pFill = document.getElementById('video-progress-fill');
       const pText = document.getElementById('video-progress-text');
-      const cancelBtn = document.getElementById('btn-cancel-video');
       
       pContainer.style.display = 'block';
       pText.style.display = 'block';
-      cancelBtn.style.display = 'block';
-      pText.innerText = 'Compressing video... 0%';
+      pText.innerText = 'Uploading video... 0%';
       pFill.style.width = '0%';
 
-      for(let i=10; i<=100; i+=15) {
-        if(window.isVideoUploadCancelled) return;
-        await new Promise(r => setTimeout(r, 150));
-        pText.innerText = `Compressing video... ${Math.min(i, 100)}%`;
-        pFill.style.width = `${Math.min(i, 100)}%`;
-      }
-      
-      if(window.isVideoUploadCancelled) return;
+      try {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const url = await uploadToImageKit(file, `${Date.now()}_${safeName}`, "/videos", (percent) => {
+          pFill.style.width = `${percent}%`;
+          pText.innerText = `Uploading video... ${percent}%`;
+        });
 
-      pText.innerText = `Uploading to secure storage... 0%`;
-      pFill.style.width = `0%`;
-      
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const storageRef = window.fb.ref(window.storage, `users/${window.auth.currentUser.uid}/videos/${Date.now()}_${safeName}`);
-      const uploadTask = window.fb.uploadBytesResumable(storageRef, file);
-      window.currentVideoUploadTask = uploadTask;
-      
-      uploadTask.on('state_changed', 
-        (snapshot) => {
-          const prog = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          pFill.style.width = `${prog}%`;
-          pText.innerText = `Uploading... ${Math.round(prog)}%`;
-        }, 
-        (error) => {
-           if (error.code !== 'storage/canceled') {
-              showToast("Video upload failed. File might be too large.", "error");
-           }
-           pContainer.style.display = 'none'; pText.style.display = 'none'; cancelBtn.style.display = 'none';
-           window.currentVideoUploadTask = null;
-        }, 
-        async () => {
-           const url = await window.fb.getDownloadURL(uploadTask.snapshot.ref);
-           window.currentUser.videoUrl = url;
-           saveProfileToFirestore();
-           
-           const vPreview = document.getElementById('prof-video-preview');
-           vPreview.src = url;
-           vPreview.style.display = 'block';
-           
-           pContainer.style.display = 'none'; pText.style.display = 'none'; cancelBtn.style.display = 'none';
-           window.currentVideoUploadTask = null;
-           showToast("Video uploaded & saved automatically!", "success");
-           input.value = '';
-        }
-      );
+        window.currentUser.videoUrl = url;
+        saveProfileToFirestore();
+        
+        const vPreview = document.getElementById('prof-video-preview');
+        vPreview.src = url;
+        vPreview.style.display = 'block';
+        
+        pContainer.style.display = 'none'; 
+        pText.style.display = 'none';
+        showToast("Video uploaded & saved automatically!", "success");
+        input.value = '';
+      } catch (err) {
+        console.error(err);
+        showToast("Video upload failed.", "error");
+        pContainer.style.display = 'none'; 
+        pText.style.display = 'none';
+      }
     };
 
-    // --- QUALIFICATIONS & CERTIFICATES UPLOAD ---
+    // --- 2. QUALIFICATIONS & CERTIFICATES VIA IMAGEKIT ---
     window.handleQualFileSelect = function(input) {
       if (input.files && input.files[0]) {
         const file = input.files[0];
@@ -1135,10 +1130,6 @@
     };
 
     window.cancelQualificationUpload = function() {
-      if (window.currentQualUploadTask) {
-        window.currentQualUploadTask.cancel();
-        window.currentQualUploadTask = null;
-      }
       document.getElementById('qual-progress-bar').style.display = 'none';
       document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate';
       document.getElementById('new-qual-file').value = '';
@@ -1164,41 +1155,21 @@
         try {
           const blobOrFile = await window.compressOrGetBlob(file);
           const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-          const storageRef = window.fb.ref(window.storage, `users/${window.auth.currentUser.uid}/quals/${Date.now()}_${safeName}`);
-          const uploadTask = window.fb.uploadBytesResumable(storageRef, blobOrFile);
-          window.currentQualUploadTask = uploadTask;
           
-          uploadTask.on('state_changed', 
-            (snap) => { 
-              const percent = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-              pFill.style.width = `${percent}%`; 
-            },
-            (error) => { 
-              btn.disabled = false;
-              if (error.code === 'storage/canceled') {
-                showToast("Upload canceled.", "info");
-              } else {
-                showToast("Upload failed.", "error"); 
-              }
-              btn.innerHTML = 'Upload & Save Certificate'; 
-              pContainer.style.display = 'none'; 
-              window.currentQualUploadTask = null;
-            },
-            async () => {
-              const url = await window.fb.getDownloadURL(uploadTask.snapshot.ref);
-              finalizeSaveQual(title, url, file.name);
-              btn.disabled = false;
-              btn.innerHTML = 'Upload & Save Certificate';
-              pContainer.style.display = 'none';
-              window.currentQualUploadTask = null;
-            }
-          );
+          const url = await uploadToImageKit(blobOrFile, `${Date.now()}_${safeName}`, "/qualifications", (percent) => {
+            pFill.style.width = `${percent}%`;
+          });
+
+          finalizeSaveQual(title, url, file.name);
+          btn.disabled = false;
+          btn.innerHTML = 'Upload & Save Certificate';
+          pContainer.style.display = 'none';
         } catch (err) {
           console.error(err);
           btn.disabled = false;
           btn.innerHTML = 'Upload & Save Certificate';
           pContainer.style.display = 'none';
-          showToast("Error processing certificate file.", "error");
+          showToast("Certificate upload failed.", "error");
         }
       } else {
         let url = "", fName = "";
@@ -1392,7 +1363,7 @@
       });
     };
 
-    // --- INBOX, CHAT HISTORY & MEDIA ATTACHMENTS ---
+    // --- 3. INBOX MEDIA ATTACHMENTS VIA IMAGEKIT ---
     window.handleChatMediaUpload = async function(input) {
       const file = input.files[0];
       if (!file || !window.auth || !window.auth.currentUser) return;
@@ -1416,7 +1387,6 @@
 
       if (!targetMsg.chatHistory) targetMsg.chatHistory = [];
 
-      // Create a temporary upload indicator bubble inside active chat
       const tempId = 'temp-msg-' + Date.now();
       const isImg = file.type.startsWith('image/');
       const hist = document.getElementById('chat-history');
@@ -1437,65 +1407,51 @@
       try {
         const blobOrFile = await window.compressOrGetBlob(file);
         const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const storageRef = window.fb.ref(window.storage, `users/${window.auth.currentUser.uid}/chat_media/${Date.now()}_${safeName}`);
-        const uploadTask = window.fb.uploadBytesResumable(storageRef, blobOrFile);
 
-        uploadTask.on('state_changed', 
-          (snapshot) => {
-            const prog = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            const progEl = document.getElementById(`prog-${tempId}`);
-            if (progEl) progEl.innerText = `${prog}%`;
-          }, 
-          (error) => {
-            showToast("Media upload failed.", "error");
-            const tempEl = document.getElementById(tempId);
-            if(tempEl) tempEl.remove();
-          }, 
-          async () => {
-            const mediaUrl = await window.fb.getDownloadURL(uploadTask.snapshot.ref);
-            
-            const chatMsgItem = {
-              sender: 'me',
-              text: isImg ? '' : file.name,
-              mediaUrl: mediaUrl,
-              fileName: file.name,
-              isImage: isImg,
-              time: timeStr,
-              type: 'media'
-            };
+        const mediaUrl = await uploadToImageKit(blobOrFile, `${Date.now()}_${safeName}`, "/chat_media", (percent) => {
+          const progEl = document.getElementById(`prog-${tempId}`);
+          if (progEl) progEl.innerText = `${percent}%`;
+        });
 
-            targetMsg.chatHistory.push(chatMsgItem);
-            saveProfileToFirestore();
+        const chatMsgItem = {
+          sender: 'me',
+          text: isImg ? '' : file.name,
+          mediaUrl: mediaUrl,
+          fileName: file.name,
+          isImage: isImg,
+          time: timeStr,
+          type: 'media'
+        };
 
-            // Replace upload bubble with final media bubble
-            const bubbleEl = document.getElementById(tempId);
-            let contentHtml = '';
-            if (isImg) {
-              contentHtml = `
-                <div style="margin-top:2px;">
-                  <img src="${mediaUrl}" style="max-width:240px; max-height:240px; border-radius:10px; display:block; cursor:pointer; object-fit:cover;" onclick="window.open('${mediaUrl}', '_blank')" />
-                </div>
-              `;
-            } else {
-              contentHtml = `
-                <div style="display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; background:rgba(255,255,255,0.15); margin-top:2px;">
-                  <i class="fa-solid fa-file-lines" style="font-size:1.2rem;"></i>
-                  <a href="${mediaUrl}" target="_blank" style="color:white; font-weight:600; text-decoration:underline; font-size:0.85rem; word-break:break-all;">${file.name}</a>
-                </div>
-              `;
-            }
+        targetMsg.chatHistory.push(chatMsgItem);
+        saveProfileToFirestore();
 
-            if (bubbleEl) {
-              bubbleEl.innerHTML = `${contentHtml} <span class="msg-time-stamp">${timeStr}</span>`;
-            }
-            hist.scrollTop = hist.scrollHeight;
-            showToast("Attachment sent!", "success");
-            input.value = '';
-          }
-        );
+        const bubbleEl = document.getElementById(tempId);
+        let contentHtml = '';
+        if (isImg) {
+          contentHtml = `
+            <div style="margin-top:2px;">
+              <img src="${mediaUrl}" style="max-width:240px; max-height:240px; border-radius:10px; display:block; cursor:pointer; object-fit:cover;" onclick="window.open('${mediaUrl}', '_blank')" />
+            </div>
+          `;
+        } else {
+          contentHtml = `
+            <div style="display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; background:rgba(255,255,255,0.15); margin-top:2px;">
+              <i class="fa-solid fa-file-lines" style="font-size:1.2rem;"></i>
+              <a href="${mediaUrl}" target="_blank" style="color:white; font-weight:600; text-decoration:underline; font-size:0.85rem; word-break:break-all;">${file.name}</a>
+            </div>
+          `;
+        }
+
+        if (bubbleEl) {
+          bubbleEl.innerHTML = `${contentHtml} <span class="msg-time-stamp">${timeStr}</span>`;
+        }
+        hist.scrollTop = hist.scrollHeight;
+        showToast("Attachment sent!", "success");
+        input.value = '';
       } catch (err) {
         console.error(err);
-        showToast("Error processing media file.", "error");
+        showToast("Error uploading file to ImageKit.", "error");
         const tempEl = document.getElementById(tempId);
         if(tempEl) tempEl.remove();
       }
