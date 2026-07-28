@@ -153,7 +153,7 @@
     .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; word-wrap: break-word; }
     .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; }
     .bubble-out { background: var(--navy-light); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; }
+    .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; align-items: center; }
 
     /* Modals */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
@@ -465,25 +465,25 @@
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
-              <h3>My Qualifications</h3>
+              <h3>My Qualifications & Certificates</h3>
               <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm(false)"><i class="fa-solid fa-plus"></i> Add Qualification</button>
             </div>
             
             <div id="add-qual-form">
               <div class="form-group">
                 <label class="form-label">Qualification Title</label>
-                <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. 120-Hour TEFL, BSc Mathematics">
+                <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. 120-Hour TEFL Certificate">
               </div>
               <div class="form-group">
-                <label class="form-label">Upload Certificate/Document</label>
+                <label class="form-label">Upload Certificate Document / Image</label>
                 <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-5px; margin-bottom:5px;">Accepts Images, PDFs, and Word Documents</p>
-                <input type="file" id="new-qual-file" class="form-input" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                <input type="file" id="new-qual-file" class="form-input" onchange="handleQualFileSelect(this)" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
               </div>
               <div class="progress-bar-container" id="qual-progress-bar">
                 <div class="progress-bar-fill" id="qual-progress-fill"></div>
               </div>
               <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-                <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewQualification()">Save Qualification</button>
+                <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewQualification()">Upload & Save Certificate</button>
                 <button type="button" class="btn btn-outline btn-small" onclick="cancelQualificationUpload()">Cancel</button>
               </div>
             </div>
@@ -597,7 +597,11 @@
             <!-- Messages go here -->
           </div>
           <div class="chat-input-area">
-            <button class="btn btn-outline btn-small" style="border:none;" onclick="alert('Media upload simulated.')"><i class="fa-solid fa-paperclip"></i></button>
+            <label for="chat-file-input" class="btn btn-outline btn-small" style="border:none; cursor:pointer;" title="Attach file or image">
+              <i class="fa-solid fa-paperclip" style="font-size:1.2rem;"></i>
+            </label>
+            <input type="file" id="chat-file-input" style="display:none;" onchange="handleChatMediaUpload(this)" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+            
             <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message to the recruiter..." style="border-radius:20px;">
             <button class="btn btn-primary btn-small" style="border-radius:50%; width:40px; height:40px; padding:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
           </div>
@@ -717,7 +721,6 @@
     window.addEventListener('popstate', (event) => {
       if (!document.body.classList.contains('dashboard-active')) return;
       
-      // Close all modals forcefully on back
       document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
 
       if (event.state && event.state.view) {
@@ -921,13 +924,13 @@
       `;
     }
 
-    // --- FILE SAVING & FIRESTORE UPDATES ---
+    // --- AUTOMATIC FIRESTORE SYNCHRONIZATION ---
     window.saveProfileToFirestore = async function() {
       if (!window.auth || !window.auth.currentUser) return;
       import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js").then(async ({ doc, updateDoc }) => {
         await updateDoc(doc(window.db, "users", window.auth.currentUser.uid), {
           qualifications: window.currentUser.quals,
-          videoUrl: window.currentUser.videoUrl,
+          videoUrl: window.currentUser.videoUrl || "",
           messages: window.currentUser.messages
         });
       });
@@ -1016,7 +1019,6 @@
       pText.innerText = 'Compressing video... 0%';
       pFill.style.width = '0%';
 
-      // Simulate compression phase - checking for cancellation inside loop
       for(let i=10; i<=100; i+=15) {
         if(window.isVideoUploadCancelled) return;
         await new Promise(r => setTimeout(r, 200));
@@ -1058,21 +1060,32 @@
              
              pContainer.style.display = 'none'; pText.style.display = 'none'; cancelBtn.style.display = 'none';
              window.currentVideoUploadTask = null;
-             showToast("Video compressed and saved permanently!", "success");
+             showToast("Video uploaded & saved automatically!", "success");
              input.value = '';
           }
         );
       });
     };
 
-    // --- DYNAMIC QUALIFICATIONS ---
+    // --- AUTOMATIC CERTIFICATES / QUALIFICATIONS UPLOAD ---
+    window.handleQualFileSelect = function(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const titleInput = document.getElementById('new-qual-title');
+        if (!titleInput.value) {
+          const cleanName = file.name.replace(/\.[^/.]+$/, "");
+          titleInput.value = cleanName;
+        }
+      }
+    };
+
     window.toggleAddQualForm = function() {
       const form = document.getElementById('add-qual-form');
       if(form.style.display === 'none' || form.style.display === '') {
         form.style.display = 'block';
         document.getElementById('new-qual-title').value = '';
         document.getElementById('new-qual-file').value = '';
-        document.getElementById('btn-save-qual').innerHTML = 'Save Qualification';
+        document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate';
         editQualIndex = -1;
       } else {
         form.style.display = 'none';
@@ -1085,13 +1098,13 @@
         window.currentQualUploadTask = null;
       }
       document.getElementById('qual-progress-bar').style.display = 'none';
-      document.getElementById('btn-save-qual').innerHTML = 'Save Qualification';
+      document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate';
       document.getElementById('new-qual-file').value = '';
       toggleAddQualForm();
     };
 
     window.saveNewQualification = async function() {
-      const title = document.getElementById('new-qual-title').value;
+      const title = document.getElementById('new-qual-title').value.trim();
       const fileInput = document.getElementById('new-qual-file');
       
       if(!title) { showToast("Please enter a qualification title.", "error"); return; }
@@ -1099,7 +1112,7 @@
       if(fileInput.files.length > 0 && window.auth.currentUser) {
         const file = fileInput.files[0];
         const btn = document.getElementById('btn-save-qual');
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading Certificate...';
         
         const pContainer = document.getElementById('qual-progress-bar');
         const pFill = document.getElementById('qual-progress-fill');
@@ -1118,21 +1131,20 @@
               } else {
                 showToast("Upload failed.", "error"); 
               }
-              btn.innerHTML = 'Save Qualification'; 
+              btn.innerHTML = 'Upload & Save Certificate'; 
               pContainer.style.display = 'none'; 
               window.currentQualUploadTask = null;
             },
             async () => {
               const url = await getDownloadURL(uploadTask.snapshot.ref);
               finalizeSaveQual(title, url, file.name);
-              btn.innerHTML = 'Save Qualification';
+              btn.innerHTML = 'Upload & Save Certificate';
               pContainer.style.display = 'none';
               window.currentQualUploadTask = null;
             }
           );
         });
       } else {
-        // Saving without new file (editing title) or fallback
         let url = "", fName = "";
         if (editQualIndex > -1) {
           url = window.currentUser.quals[editQualIndex].url;
@@ -1152,7 +1164,7 @@
       saveProfileToFirestore();
       renderQualifications();
       toggleAddQualForm();
-      showToast("Qualification saved permanently.", "success");
+      showToast("Certificate uploaded and saved automatically!", "success");
     }
 
     window.renderQualifications = function() {
@@ -1194,6 +1206,7 @@
         window.currentUser.quals.splice(index, 1);
         saveProfileToFirestore();
         renderQualifications();
+        showToast("Qualification removed.", "info");
       }
     };
 
@@ -1320,7 +1333,42 @@
       });
     };
 
-    // --- INBOX & CHAT UI (PERSISTENT) ---
+    // --- AUTOMATIC INBOX MEDIA ATTACHMENTS & CHAT ---
+    window.handleChatMediaUpload = async function(input) {
+      const file = input.files[0];
+      if (!file || !window.auth.currentUser) return;
+
+      showToast("Uploading attachment...", "info");
+      
+      import("https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js").then(({ ref, uploadBytesResumable, getDownloadURL }) => {
+        const storageRef = ref(window.storage, `users/${window.auth.currentUser.uid}/chat_media/${Date.now()}_${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        
+        uploadTask.on('state_changed', null, 
+          (error) => { showToast("Media upload failed.", "error"); },
+          async () => {
+            const mediaUrl = await getDownloadURL(uploadTask.snapshot.ref);
+            const isImg = file.type.startsWith('image/');
+            
+            let contentHtml = '';
+            if (isImg) {
+              contentHtml = `<br><img src="${mediaUrl}" style="max-width:200px; max-height:200px; border-radius:8px; margin-top:8px; display:block; cursor:pointer;" onclick="window.open('${mediaUrl}', '_blank')" />`;
+            } else {
+              contentHtml = `<br><a href="${mediaUrl}" target="_blank" style="color:var(--accent-yellow); text-decoration:underline; display:inline-block; margin-top:6px;"><i class="fa-solid fa-file-arrow-down"></i> ${file.name}</a>`;
+            }
+
+            const hist = document.getElementById('chat-history');
+            hist.insertAdjacentHTML('beforeend', `<div class="chat-bubble bubble-out">Shared Attachment:${contentHtml}</div>`);
+            hist.scrollTop = hist.scrollHeight;
+
+            saveProfileToFirestore();
+            showToast("Attachment sent and saved!", "success");
+            input.value = '';
+          }
+        );
+      });
+    };
+
     window.receiveMessage = function(subject, body) {
       const msg = { id: 'msg-' + Date.now(), subject, body, date: new Date().toISOString(), read: false };
       window.currentUser.messages.unshift(msg);
