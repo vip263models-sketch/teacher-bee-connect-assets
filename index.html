@@ -583,7 +583,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
             <h2>Your Inbox</h2>
           </div>
-            
+          
           <div class="card" style="padding: 0;" id="inbox-container">
             <div style="text-align:center; padding: 3rem; color:var(--text-muted);" id="empty-inbox">
               <i class="fa-regular fa-envelope-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
@@ -701,8 +701,7 @@
 
   <script>
     // ImageKit Credentials
-    const IMAGEKIT_PUBLIC_KEY = "public_DFsV1X0hwp83SmawwbOR8eqbGko=";
-    const IMAGEKIT_PRIVATE_KEY = "private_h60koh2ofIAPl+c7sZmWNrkF8+Q="; // Exposed locally as requested
+    const IMAGEKIT_PUBLIC_KEY = "public_kXg5X6kA6gX7Wpmi4Ou2uGJUi+g=";
     const IMAGEKIT_URL_ENDPOINT = "https://ik.imagekit.io/liegv0cs1";
 
     window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], messages: [] };
@@ -711,75 +710,44 @@
     let currentCropper = null;
     let editQualIndex = -1;
 
-    // ----- LOCAL IMAGEKIT AUTH SIGNATURE GENERATOR -----
-    async function generateImageKitSignature() {
-      const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      const expire = Math.floor(Date.now() / 1000) + (60 * 30); // Expires in 30 minutes
-      const stringToSign = token + expire;
-
-      const enc = new TextEncoder();
-      const key = await crypto.subtle.importKey(
-        "raw",
-        enc.encode(IMAGEKIT_PRIVATE_KEY),
-        { name: "HMAC", hash: "SHA-1" },
-        false,
-        ["sign"]
-      );
-
-      const signatureBuffer = await crypto.subtle.sign("HMAC", key, enc.encode(stringToSign));
-      const hashArray = Array.from(new Uint8Array(signatureBuffer));
-      const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-      return { token, expire, signature };
-    }
+    const jobsData = {
+      'job1': { title: 'Online ESL Tutor (K-12)', pay: '$18-$24/hr', loc: 'Online - Global', type: 'Full Time', desc: 'Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor\'s degree.\n\nRequirements:\n- Native-level English proficiency\n- 120-Hour TEFL or equivalent\n- Fast internet connection\n\nResponsibilities:\nDeliver 25-minute engaging 1-on-1 lessons using our proprietary platform. Full lesson materials provided.' },
+      'job2': { title: 'Adult Business English', pay: '$30/hr', loc: 'Beijing, China', type: 'Part Time', desc: 'Teach conversational and business English to corporate professionals. Housing allowance provided. Minimum 3 years experience required.\n\nRequirements:\n- 3+ years experience teaching adults\n- Business background preferred\n- Willing to relocate to Beijing\n\nBenefits:\n- Z-Visa sponsorship\n- Free accommodation\n- Health insurance' }
+    };
 
     // ----- REUSABLE IMAGEKIT UPLOADER -----
     async function uploadToImageKit(fileOrBlob, fileName, folder = "/", onProgress = null) {
-      return new Promise(async (resolve, reject) => {
-        try {
-            // Generate auth params locally
-            const authParams = await generateImageKitSignature();
-            
-            const formData = new FormData();
-            formData.append("file", fileOrBlob);
-            formData.append("fileName", fileName);
-            formData.append("publicKey", IMAGEKIT_PUBLIC_KEY);
-            formData.append("folder", folder);
-            formData.append("useUniqueFileName", "true");
-            
-            // Append generated signature data
-            formData.append("signature", authParams.signature);
-            formData.append("expire", authParams.expire);
-            formData.append("token", authParams.token);
+      return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append("file", fileOrBlob);
+        formData.append("fileName", fileName);
+        formData.append("publicKey", IMAGEKIT_PUBLIC_KEY);
+        formData.append("folder", folder);
+        formData.append("useUniqueFileName", "true");
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "https://upload.imagekit.io/api/v1/files/upload");
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://upload.imagekit.io/api/v1/files/upload");
 
-            if (onProgress && xhr.upload) {
-              xhr.upload.onprogress = (e) => {
-                if (e.lengthComputable) {
-                  const percent = Math.round((e.loaded / e.total) * 100);
-                  onProgress(percent);
-                }
-              };
+        if (onProgress && xhr.upload) {
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              const percent = Math.round((e.loaded / e.total) * 100);
+              onProgress(percent);
             }
-
-            xhr.onload = () => {
-              if (xhr.status >= 200 && xhr.status < 300) {
-                const resp = JSON.parse(xhr.responseText);
-                resolve(resp.url);
-              } else {
-                reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText}`));
-              }
-            };
-
-            xhr.onerror = () => reject(new Error("Network error during ImageKit upload."));
-            xhr.send(formData);
-
-        } catch (error) {
-            console.error("Signature generation failed:", error);
-            reject(error);
+          };
         }
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const resp = JSON.parse(xhr.responseText);
+            resolve(resp.url);
+          } else {
+            reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText}`));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error("Network error during ImageKit upload."));
+        xhr.send(formData);
       });
     }
 
@@ -1674,3 +1642,5 @@
   </script>
 </body>
 </html>
+
+
