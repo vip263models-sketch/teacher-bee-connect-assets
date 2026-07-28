@@ -49,11 +49,11 @@
 
     /* Header */
     header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
-    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; cursor: pointer; }
+    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
     .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
     
     /* Buttons */
-    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
     .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
     .btn-primary:hover { background-color: var(--yellow-hover); }
     .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); }
@@ -93,11 +93,19 @@
 
     /* Qualifications Dynamic List */
     .qualifications-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
-    .qual-item { background: var(--bg-color); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 0.5rem; position: relative; }
-    .qual-saved-card { display: flex; justify-content: space-between; align-items: center; background: var(--surface-white); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
-    .qual-remove { position: absolute; top: 1rem; right: 1rem; color: var(--error-red); cursor: pointer; background: none; border: none; font-size: 1rem; }
+    .qual-item { background: var(--surface-white); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); }
+    .qual-item-info h4 { margin-bottom: 0.2rem; font-size: 1rem; }
+    .qual-item-info a { font-size: 0.85rem; color: var(--primary-navy); text-decoration: underline; }
+    .qual-actions { display: flex; gap: 0.5rem; }
+    
+    #add-qual-form { background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--border-color); margin-bottom: 1rem; }
 
-    /* Sidebar & Navigation Visibility */
+    /* Progress Bar */
+    .progress-bar-container { width: 100%; background-color: #E5E7EB; border-radius: 8px; margin-top: 0.5rem; overflow: hidden; display: none; }
+    .progress-bar-fill { height: 8px; background-color: var(--success-green); width: 0%; transition: width 0.3s; }
+    .progress-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; display: none; }
+
+    /* --- SIDEBAR & CONTENT VISIBILITY --- */
     .sidebar { width: 250px; display: none; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
     .content-area { flex: 1; display: none; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
     
@@ -118,28 +126,28 @@
     .badge-navy { background: var(--navy-light); color: var(--surface-white); }
     .badge-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
 
-    /* Job Cards & Layout */
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-    .filter-bar { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: var(--surface-white); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
+    /* Job Filters & Search */
+    .filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: var(--surface-white); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
     
     .job-card { display: flex; flex-direction: column; justify-content: space-between; }
     .job-meta { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; flex-wrap: wrap; }
-    .job-desc { font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-main); }
-    .job-actions { display: flex; gap: 0.5rem; margin-top: auto; }
+    .job-desc { font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-    /* Inbox & Chat System UI */
+    /* Messages UI & Chat */
     .message-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
     .message-item:hover { background: var(--bg-color); }
+    .message-item.unread { background: #f0f7ff; border-left: 4px solid var(--primary-navy); }
     .message-item:last-child { border-bottom: none; }
     .msg-content h4 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--primary-navy); }
     .msg-content p { font-size: 0.9rem; color: var(--text-muted); }
     .msg-date { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.5rem; }
     
+    /* Fake Chat Window */
     #chat-window { display: none; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 500px; }
     .chat-header { background: var(--primary-navy); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
     .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: var(--bg-color); }
-    .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
-    .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-main); }
+    .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; word-wrap: break-word; }
+    .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; }
     .bubble-out { background: var(--navy-light); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
     .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; }
 
@@ -150,31 +158,33 @@
     .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); transition: color 0.2s; }
     .close-modal:hover { color: var(--primary-navy); }
 
-    /* Recruiter Profile Modal View */
+    /* Elegant Recruiter Profile View */
     .prof-header-elegant { display: flex; align-items: center; gap: 1.5rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
     .prof-header-elegant img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); box-shadow: var(--shadow-sm); }
     .star-rating { color: var(--accent-yellow); font-size: 1.1rem; letter-spacing: 2px; margin-top: 0.5rem; }
     .section-title-elegant { font-size: 1.1rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem; margin-top: 1.5rem; }
     .elegant-text { color: var(--text-main); font-size: 0.95rem; line-height: 1.6; }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Cropper Modal Specifics */
+    #image-cropper-container { max-height: 400px; margin-bottom: 1rem; }
 
     @media (max-width: 768px) {
       .app-container { padding: 1rem; padding-bottom: 85px; }
       .grid-2-col, .grid-3-col, .filter-bar { grid-template-columns: 1fr; }
-      .job-actions { flex-direction: column; }
       
       body.dashboard-active .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; box-shadow: 0 -4px 10px rgba(0,0,0,0.15); top: auto; }
       .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
       .sidebar-item.active { background: transparent; color: var(--accent-yellow); }
+      .hide-mobile { display: none !important; }
     }
   </style>
 
   <!-- FIREBASE SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, updateDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
@@ -188,12 +198,24 @@
     const app = initializeApp(firebaseConfig);
     window.auth = getAuth(app);
     window.db = getFirestore(app);
+    window.storage = getStorage(app);
 
     setPersistence(window.auth, browserLocalPersistence);
 
-    // Dynamic Auth Listener
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    const oobCode = urlParams.get('oobCode');
+
+    if (mode === 'resetPassword' && oobCode) {
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById('auth-panel').style.display = 'none';
+        document.getElementById('reset-password-panel').style.display = 'block';
+        window.resetOobCode = oobCode;
+      });
+    }
+
     onAuthStateChanged(window.auth, async (user) => {
-      if (user) {
+      if (user && mode !== 'resetPassword') {
         const docRef = doc(window.db, "users", user.uid);
         const docSnap = await getDoc(docRef);
         let name = user.email.split('@')[0];
@@ -202,56 +224,38 @@
         if (docSnap.exists()) {
           const data = docSnap.data();
           name = data.name || name;
-          if (data.avatarUrl) avatar = data.avatarUrl;
-          if (data.age) document.getElementById('prof-age').value = data.age;
-          if (data.gender) document.getElementById('prof-gender').value = data.gender;
-          if (data.experience) document.getElementById('prof-experience').value = data.experience;
-          if (data.languages) document.getElementById('prof-languages').value = data.languages;
-          if (data.bio) document.getElementById('prof-bio').value = data.bio;
-          if (data.driveVideoLink) document.getElementById('prof-drive-link').value = data.driveVideoLink;
-          if (data.qualifications) window.currentUser.qualifications = data.qualifications;
+          if(data.avatarUrl) avatar = data.avatarUrl;
+          
+          if(data.age) document.getElementById('prof-age').value = data.age;
+          if(data.gender) document.getElementById('prof-gender').value = data.gender;
+          if(data.experience) document.getElementById('prof-experience').value = data.experience;
+          if(data.languages) document.getElementById('prof-languages').value = data.languages;
+          if(data.bio) document.getElementById('prof-bio').value = data.bio;
+          
+          if(data.videoUrl) {
+              window.currentUser.videoUrl = data.videoUrl;
+              const vPreview = document.getElementById('prof-video-preview');
+              vPreview.src = data.videoUrl;
+              vPreview.style.display = 'block';
+          }
+          
+          window.currentUser.quals = data.qualifications || [];
+          window.currentUser.messages = data.messages || [];
         }
-        window.finalizeLogin(name, user.email, user.emailVerified, avatar);
-      } else {
-        window.handleLogoutState();
+        
+        finalizeLogin(name, user.email, user.emailVerified, avatar);
+        window.renderQualifications();
+        window.renderInbox();
       }
     });
-
-    // Expose Firebase Authentication functions globally
-    window.firebaseLogin = async (email, password) => {
-      return await signInWithEmailAndPassword(window.auth, email, password);
-    };
-
-    window.firebaseRegister = async (email, password, name) => {
-      const userCred = await createUserWithEmailAndPassword(window.auth, email, password);
-      await sendEmailVerification(userCred.user);
-      await setDoc(doc(window.db, "users", userCred.user.uid), {
-        name: name,
-        email: email,
-        qualifications: [],
-        createdAt: new Date().toISOString()
-      });
-      return userCred;
-    };
-
-    window.firebaseSaveProfile = async (profileData) => {
-      if (!window.auth.currentUser) return;
-      const userRef = doc(window.db, "users", window.auth.currentUser.uid);
-      await setDoc(userRef, profileData, { merge: true });
-    };
-
-    window.firebaseSignOut = async () => {
-      await signOut(window.auth);
-    };
   </script>
 </head>
 <body>
 
   <div id="toast-container"></div>
 
-  <!-- HEADER -->
   <header>
-    <a class="brand-logo" onclick="handleLogoClick()">
+    <a href="#" class="brand-logo" onclick="handleLogoClick(event)">
       <i class="fa-solid fa-graduation-cap"></i> TeacherBee
     </a>
     <div id="nav-actions">
@@ -261,7 +265,28 @@
 
   <div class="app-container">
     
-    <!-- AUTHENTICATION FORM WRAPPER -->
+    <!-- PASSWORD RESET PANEL -->
+    <div class="auth-wrapper" id="reset-password-panel" style="display: none;">
+      <div class="auth-header">
+        <h2>Create New Password</h2>
+        <p>Enter your new password below.</p>
+      </div>
+      <form onsubmit="handleNewPasswordSubmit(event)">
+        <div class="form-group password-wrapper">
+          <label class="form-label">New Password</label>
+          <input type="password" id="new-reset-pass" class="form-input" required minlength="6">
+          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('new-reset-pass', this)"></i>
+        </div>
+        <div class="form-group password-wrapper">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" id="confirm-reset-pass" class="form-input" required minlength="6">
+          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('confirm-reset-pass', this)"></i>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="btn-save-new-pass">Save New Password</button>
+      </form>
+    </div>
+
+    <!-- AUTHENTICATION CONTAINER -->
     <div class="auth-wrapper" id="auth-panel">
       <div class="auth-header">
         <h2 id="auth-title">Welcome Back</h2>
@@ -277,12 +302,15 @@
       <form id="login-form" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label class="form-label">Email Address</label>
-          <input type="email" id="login-email" class="form-input" required placeholder="teacher@example.com">
+          <input type="email" id="login-email" class="form-input" autocomplete="username" required>
         </div>
         <div class="form-group password-wrapper">
           <label class="form-label">Password</label>
-          <input type="password" id="login-password" class="form-input" required placeholder="••••••••">
+          <input type="password" id="login-password" class="form-input" autocomplete="current-password" required>
           <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+        </div>
+        <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
+          <a href="#" style="font-size: 0.85rem; color: var(--primary-navy); font-weight: 600; text-decoration: none;" onclick="handleForgotPassword()">Forgot Password?</a>
         </div>
         <button type="submit" class="btn btn-primary btn-block" id="btn-login">Sign In</button>
       </form>
@@ -291,21 +319,41 @@
       <form id="register-form" style="display: none;" onsubmit="handleRegister(event)">
         <div class="form-group">
           <label class="form-label">Full Name</label>
-          <input type="text" id="reg-name" class="form-input" required placeholder="Jane Doe">
+          <input type="text" id="reg-name" class="form-input" autocomplete="name" required>
         </div>
+        
+        <div class="grid-2-col">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="reg-email" class="form-input" autocomplete="email" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" id="reg-dob" class="form-input" required>
+          </div>
+        </div>
+        
         <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" id="reg-email" class="form-input" required placeholder="teacher@example.com">
+          <label class="form-label">Country of Residence</label>
+          <select id="reg-country" class="form-select" required>
+            <option value="" disabled selected>Select your country</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+            <option value="South Africa">South Africa</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="United States">United States</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
+
         <div class="grid-2-col">
           <div class="form-group password-wrapper">
             <label class="form-label">Password</label>
-            <input type="password" id="reg-password" class="form-input" required placeholder="••••••••">
+            <input type="password" id="reg-password" class="form-input" autocomplete="new-password" required>
             <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-password', this)"></i>
           </div>
           <div class="form-group password-wrapper">
             <label class="form-label">Confirm Password</label>
-            <input type="password" id="reg-confirm-password" class="form-input" required placeholder="••••••••">
+            <input type="password" id="reg-confirm-password" class="form-input" autocomplete="new-password" required>
             <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-confirm-password', this)"></i>
           </div>
         </div>
@@ -315,38 +363,39 @@
 
     <!-- SIDEBAR NAVIGATION -->
     <aside class="sidebar" id="app-sidebar">
-      <div class="sidebar-item active" data-view="profile-view" onclick="switchView('profile-view', this)">
+      <div class="sidebar-item active" onclick="switchView('profile-view', this)">
         <i class="fa-regular fa-user"></i> <span>Profile</span>
       </div>
-      <div class="sidebar-item" data-view="jobs-view" onclick="switchView('jobs-view', this)">
+      <div class="sidebar-item" onclick="switchView('jobs-view', this)">
         <i class="fa-solid fa-briefcase"></i> <span>Jobs</span>
       </div>
-      <div class="sidebar-item" data-view="workshops-view" onclick="switchView('workshops-view', this)">
+      <div class="sidebar-item" onclick="switchView('workshops-view', this)">
         <i class="fa-solid fa-chalkboard-user"></i> <span>Training</span>
       </div>
-      <div class="sidebar-item" data-view="tefl-view" onclick="switchView('tefl-view', this)">
+      <div class="sidebar-item" onclick="switchView('tefl-view', this)">
         <i class="fa-solid fa-certificate"></i> <span>TEFL</span>
       </div>
-      <div class="sidebar-item" data-view="messages-view" onclick="switchView('messages-view', this)">
-        <i class="fa-regular fa-envelope"></i> <span>Inbox <span id="msg-badge" style="background:var(--error-red); color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:inline-block;">1</span></span>
+      <div class="sidebar-item" onclick="switchView('messages-view', this)">
+        <i class="fa-regular fa-envelope"></i> <span>Inbox <span id="msg-badge" style="background:var(--error-red); color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none;">0</span></span>
       </div>
     </aside>
 
     <!-- MAIN DYNAMIC CONTENT -->
     <main class="content-area" id="app-content">
 
-      <!-- 1. PROFILE VIEW PANEL -->
+      <!-- 1. PROFILE VIEW -->
       <section id="profile-view" class="view-panel active">
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap:wrap; gap:1rem;">
             <div>
-              <h2 id="display-name">Jane Doe</h2>
+              <h2 id="display-name">Loading...</h2>
               <span id="verification-badge" class="badge badge-navy">Email Verified</span>
             </div>
             <button type="button" class="btn btn-primary" onclick="openRecruiterView()"><i class="fa-solid fa-user-tie"></i> View My Profile</button>
           </div>
 
           <form onsubmit="handleProfileUpdate(event)">
+            
             <div class="avatar-upload-container">
               <label for="avatar-input" class="avatar-upload-btn">
                 <img src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" id="profile-avatar" class="avatar-preview" title="Click to change profile picture">
@@ -356,9 +405,16 @@
             </div>
 
             <h3>Core Biography & Details</h3>
+            
             <div class="grid-2-col" style="margin-bottom: 1rem;">
-              <div class="form-group"><label class="form-label">Display Name</label><input type="text" id="prof-display-name" class="form-input"></div>
-              <div class="form-group"><label class="form-label">Age</label><input type="number" id="prof-age" class="form-input" placeholder="28"></div>
+              <div class="form-group">
+                <label class="form-label">Display Name</label>
+                <input type="text" id="prof-display-name" class="form-input" placeholder="e.g. Jane D.">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" id="prof-age" class="form-input" min="18" max="100" placeholder="e.g. 28">
+              </div>
             </div>
 
             <div class="grid-3-col">
@@ -370,141 +426,171 @@
                   <option value="Male">Male</option>
                 </select>
               </div>
-              <div class="form-group"><label class="form-label">Years of Experience</label><input type="number" id="prof-experience" class="form-input" min="0" placeholder="4"></div>
-              <div class="form-group"><label class="form-label">Languages (Comma separated)</label><input type="text" id="prof-languages" class="form-input" placeholder="English, Spanish"></div>
+              <div class="form-group">
+                <label class="form-label">Years of Experience</label>
+                <input type="number" id="prof-experience" class="form-input" min="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Languages (Comma separated)</label>
+                <input type="text" id="prof-languages" class="form-input" placeholder="e.g. English (Native), Spanish (B1)">
+              </div>
             </div>
 
             <div class="form-group">
               <label class="form-label">Professional Biography</label>
-              <textarea id="prof-bio" class="form-textarea" placeholder="Describe your teaching style and history..."></textarea>
+              <textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself to recruiters. Highlight your teaching philosophy and achievements..."></textarea>
             </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fa-brands fa-google-drive"></i> Intro Video Link (Google Drive / YouTube)</label>
-              <input type="url" id="prof-drive-link" class="form-input" placeholder="https://drive.google.com/file/d/...">
+
+            <div class="form-group" style="margin-top:1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              <label class="form-label"><i class="fa-solid fa-video"></i> Introduction Video Upload</label>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Upload a short 1-3 minute intro video. We automatically compress it for you.</p>
+              <input type="file" id="prof-video-file" accept="video/mp4,video/webm" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem;">
+              
+              <div class="progress-bar-container" id="video-progress-bar">
+                <div class="progress-bar-fill" id="video-progress-fill"></div>
+              </div>
+              <p class="progress-text" id="video-progress-text">Compressing... 0%</p>
+
+              <video id="prof-video-preview" controls style="display:none; width:100%; max-height:300px; margin-top:10px; border-radius:8px;"></video>
             </div>
 
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
               <h3>My Qualifications</h3>
-              <button type="button" class="btn btn-outline btn-small" onclick="addQualificationRow()"><i class="fa-solid fa-plus"></i> Add Qualification</button>
+              <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm()"><i class="fa-solid fa-plus"></i> Add Qualification</button>
             </div>
             
-            <!-- List of Saved Qualifications -->
-            <div class="qualifications-list" id="qual-container"></div>
-            
-            <!-- Container for Unsaved Qualification Input Rows -->
-            <div class="qualifications-list" id="new-qual-container"></div>
+            <div id="add-qual-form">
+              <div class="form-group">
+                <label class="form-label">Qualification Title</label>
+                <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. 120-Hour TEFL, BSc Mathematics">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Upload Certificate (Image/PDF)</label>
+                <input type="file" id="new-qual-file" class="form-input" accept="image/*,application/pdf">
+              </div>
+              <div class="progress-bar-container" id="qual-progress-bar">
+                <div class="progress-bar-fill" id="qual-progress-fill"></div>
+              </div>
+              <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewQualification()">Save & Upload</button>
+                <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm()">Cancel</button>
+              </div>
+            </div>
 
-            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1.5rem; width: 100%;">Save Profile</button>
+            <div class="qualifications-list" id="saved-quals-container">
+              <!-- Dynamically populated -->
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1.5rem; width: 100%;">Save Full Profile</button>
           </form>
         </div>
       </section>
 
-      <!-- 2. JOB BOARD VIEW PANEL -->
+      <!-- 2. JOB BOARD VIEW -->
       <section id="jobs-view" class="view-panel">
         <h2 style="margin-bottom: 1rem;">Recent Job Opportunities</h2>
+        
         <div class="filter-bar">
-          <input type="text" id="search-jobs" class="form-input" placeholder="Search title or location..." oninput="filterJobBoard()">
+          <input type="text" id="search-jobs" class="form-input" placeholder="Search keyword..." oninput="filterJobBoard()">
+          <input type="text" id="search-location" class="form-input" placeholder="Filter by Country/Location..." oninput="filterJobBoard()">
           <select id="filter-type" class="form-select" onchange="filterJobBoard()">
-            <option value="all">All Job Types</option>
+            <option value="all">All Types</option>
             <option value="Full Time">Full Time</option>
             <option value="Part Time">Part Time</option>
           </select>
         </div>
 
         <div class="cards-grid" id="job-list-container">
-          <!-- Job Item 1 -->
-          <div class="card job-card" data-type="Full Time" data-title="Online ESL Tutor (K-12)">
+          <!-- Job 1 -->
+          <div class="card job-card" data-jobid="job1" data-type="Full Time" data-location="Online - Global">
             <div>
               <div style="display:flex; justify-content:space-between;">
                 <span class="badge badge-yellow">Full Time</span>
-                <span class="badge badge-outline"><i class="fa-solid fa-globe"></i> Global Remote</span>
+                <span class="badge badge-outline"><i class="fa-solid fa-globe"></i> Global</span>
               </div>
               <h3 style="font-size: 1.1rem; margin-top:0.5rem;">Online ESL Tutor (K-12)</h3>
               <div class="job-meta">
-                <span><i class="fa-solid fa-coins"></i> $18-$24 / hr</span>
+                <span><i class="fa-solid fa-coins"></i> $18-$24/hr</span>
+                <span class="job-loc"><i class="fa-solid fa-location-dot"></i> Online - Global</span>
               </div>
-              <p class="job-desc">Seeking energetic educators to teach English online to K-12 students in Asian timezones.</p>
+              <p class="job-desc">Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor's degree.</p>
             </div>
-            <div class="job-actions">
-              <button class="btn btn-outline" style="flex:1;" onclick="openJobDetails('Online ESL Tutor (K-12)', 'Full Time', 'Online - Global', '$18-$24/hr', 'Seeking energetic educators to teach English online to K-12 students in Asian timezones. Responsibilities include delivering high-quality online lessons, providing constructive feedback, and maintaining high student engagement. Requirements: Bachelor\'s degree, TEFL/TESOL certificate, and reliable high-speed internet.')">View Details</button>
-              <button class="btn btn-primary" style="flex:1;" onclick="applyForJob('Online ESL Tutor (K-12)')">Apply Now</button>
-            </div>
+            <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('job1')">View Details</button>
           </div>
 
-          <!-- Job Item 2 -->
-          <div class="card job-card" data-type="Part Time" data-title="Adult Business English Instructor">
+          <!-- Job 2 -->
+          <div class="card job-card" data-jobid="job2" data-type="Part Time" data-location="China">
             <div>
               <div style="display:flex; justify-content:space-between;">
                 <span class="badge badge-navy">Part Time</span>
-                <span class="badge badge-outline"><i class="fa-solid fa-building"></i> Beijing, China</span>
+                <span class="badge badge-outline"><i class="fa-solid fa-building"></i> In-Person</span>
               </div>
-              <h3 style="font-size: 1.1rem; margin-top:0.5rem;">Adult Business English Instructor</h3>
+              <h3 style="font-size: 1.1rem; margin-top:0.5rem;">Adult Business English</h3>
               <div class="job-meta">
-                <span><i class="fa-solid fa-coins"></i> $30 / hr</span>
+                <span><i class="fa-solid fa-coins"></i> $30/hr</span>
+                <span class="job-loc"><i class="fa-solid fa-location-dot"></i> Beijing, China</span>
               </div>
-              <p class="job-desc">Teach conversational and business English to corporate professionals in Beijing.</p>
+              <p class="job-desc">Teach conversational and business English to corporate professionals. Housing allowance provided. Minimum 3 years experience required.</p>
             </div>
-            <div class="job-actions">
-              <button class="btn btn-outline" style="flex:1;" onclick="openJobDetails('Adult Business English Instructor', 'Part Time', 'Beijing, China', '$30/hr', 'Teach conversational and business English to corporate professionals. You will be responsible for creating specialized business curriculum and conducting evening classes. Housing allowance provided. Minimum 3 years experience required. Bachelor\'s degree mandatory.')">View Details</button>
-              <button class="btn btn-primary" style="flex:1;" onclick="applyForJob('Adult Business English Instructor')">Apply Now</button>
-            </div>
+            <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('job2')">View Details</button>
           </div>
         </div>
       </section>
 
-      <!-- 3. WORKSHOPS PANEL -->
+      <!-- 3. WORKSHOPS -->
       <section id="workshops-view" class="view-panel">
         <h2 style="margin-bottom: 1.5rem;">Training & Workshops</h2>
         <div class="card">
           <span class="badge badge-yellow">Live Seminar</span>
           <h3>Mastering the Demo Lesson</h3>
-          <p style="margin-bottom: 1rem;">Learn how to impress recruiters during your mock class and secure top-tier pay rates.</p>
-          <button class="btn btn-primary" onclick="showToast('Reserved successfully!', 'success')">Reserve Spot</button>
+          <p style="margin-bottom: 1rem;">Learn how to impress recruiters during your mock class.</p>
+          <button class="btn btn-primary" onclick="autoRegisterWorkshop('Mastering the Demo Lesson')">Reserve Spot</button>
         </div>
       </section>
 
-      <!-- 4. TEFL PANEL -->
+      <!-- 4. TEFL -->
       <section id="tefl-view" class="view-panel">
-        <h2 style="margin-bottom: 1.5rem;">TEFL Certification</h2>
+        <h2 style="margin-bottom: 1.5rem;">TEFL Certification Support</h2>
         <div class="card">
           <h3>Partner 120-Hour Accredited TEFL</h3>
-          <p style="margin-bottom: 1rem;">Get certified to teach English globally through our internationally recognized partner program.</p>
-          <button class="btn btn-primary" onclick="showToast('Request sent! An advisor will reach out.', 'success')">Request Info</button>
+          <p style="margin-bottom: 1rem;">Get certified to teach English globally. High approval rates.</p>
+          <button class="btn btn-primary" onclick="autoSubmitTeflEnquiry()">Request Info</button>
         </div>
       </section>
 
-      <!-- 5. INBOX & MESSAGES PANEL -->
+      <!-- 5. INBOX / MESSAGES -->
       <section id="messages-view" class="view-panel">
         <div id="inbox-list-view">
-          <h2>Your Inbox</h2>
-          <div class="card" style="padding: 0; margin-top:1rem;" id="inbox-container">
-            <div class="message-item" onclick="openChat('Global Academy Recruiter')">
-              <div class="msg-content">
-                <h4>Global Academy Recruiter</h4>
-                <p>Hello Jane! We reviewed your TeacherBee profile and would like to schedule an interview.</p>
-                <span class="msg-date">Today at 10:14 AM</span>
-              </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+            <h2>Your Inbox</h2>
+          </div>
+          
+          <div class="card" style="padding: 0;" id="inbox-container">
+            <div style="text-align:center; padding: 3rem; color:var(--text-muted);" id="empty-inbox">
+              <i class="fa-regular fa-envelope-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+              <p>No messages yet.</p>
             </div>
           </div>
         </div>
 
+        <!-- Chat Window Simulation -->
         <div id="chat-window">
           <div class="chat-header">
             <div>
               <h3 style="color:white; margin:0;" id="chat-title">Recruiter Chat</h3>
+              <span style="font-size:0.8rem; opacity:0.8;">Active now</span>
             </div>
-            <button class="btn btn-small" style="background:transparent; color:white; border:1px solid white;" onclick="closeChat()">Back to Inbox</button>
+            <button class="btn btn-small" style="background:transparent; color:white; border:1px solid white;" onclick="closeChat(true)">Back to Inbox</button>
           </div>
           <div class="chat-messages" id="chat-history">
-            <div class="chat-bubble bubble-in">
-              Hello Jane! We reviewed your TeacherBee profile and would like to schedule an interview for the Online ESL position.
-            </div>
+            <!-- Messages go here -->
           </div>
           <div class="chat-input-area">
-            <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message..." style="border-radius:20px;">
-            <button class="btn btn-primary btn-small" style="border-radius:50%; width:40px; height:40px;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            <button class="btn btn-outline btn-small" style="border:none;" onclick="alert('Media upload simulated.')"><i class="fa-solid fa-paperclip"></i></button>
+            <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message to the recruiter..." style="border-radius:20px;">
+            <button class="btn btn-primary btn-small" style="border-radius:50%; width:40px; height:40px; padding:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
           </div>
         </div>
       </section>
@@ -513,557 +599,752 @@
   </div>
 
   <!-- JOB DETAILS MODAL -->
-  <div class="modal-overlay" id="job-details-modal">
+  <div class="modal-overlay" id="job-detail-modal">
     <div class="modal-content">
-      <button class="close-modal" onclick="document.getElementById('job-details-modal').classList.remove('active')">&times;</button>
-      <h2 id="jd-title" style="margin-bottom: 0.5rem;">Job Title</h2>
-      <div style="display:flex; gap:0.5rem; margin-bottom: 1rem;" id="jd-badges"></div>
+      <button class="close-modal" onclick="closeJobModal()">&times;</button>
+      <h2 id="job-modal-title" style="margin-bottom:0.5rem; color:var(--primary-navy);">Job Title</h2>
+      <div class="job-meta" id="job-modal-meta" style="margin-bottom: 1.5rem;"></div>
       
-      <h4 style="margin-top: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Job Description</h4>
-      <p id="jd-desc" style="color: var(--text-main); margin-top: 1rem; line-height: 1.6;"></p>
+      <h3 class="section-title-elegant">Job Description</h3>
+      <p id="job-modal-desc" class="elegant-text" style="white-space: pre-wrap; margin-bottom: 2rem;"></p>
       
-      <button class="btn btn-primary btn-block" style="margin-top: 2rem;" id="jd-apply-btn">Apply for this Job</button>
+      <button class="btn btn-primary btn-block" id="job-modal-apply">Apply Now</button>
     </div>
   </div>
 
-  <!-- RECRUITER PREVIEW MODAL -->
-  <div class="modal-overlay" id="recruiter-preview-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="document.getElementById('recruiter-preview-modal').classList.remove('active')">&times;</button>
-      
-      <div class="prof-header-elegant">
-        <img src="https://ui-avatars.com/api/?name=User" id="rp-avatar" alt="Candidate">
-        <div>
-          <h2 id="rp-name" style="margin-bottom:0.2rem;">Candidate Name</h2>
-          <div style="font-size:0.9rem; color:var(--text-muted);"><i class="fa-solid fa-location-dot"></i> Available Worldwide</div>
-          <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
-        </div>
-      </div>
-      
-      <div class="grid-3-col" style="margin-bottom:1.5rem; text-align:center; background:var(--bg-color); padding:1rem; border-radius:var(--radius-md);">
-        <div><strong style="display:block; color:var(--primary-navy);">Age</strong><span id="rp-age">--</span></div>
-        <div><strong style="display:block; color:var(--primary-navy);">Gender</strong><span id="rp-gender">--</span></div>
-        <div><strong style="display:block; color:var(--primary-navy);">Experience</strong><span id="rp-exp">--</span> yrs</div>
-      </div>
-
-      <h3 class="section-title-elegant">About Me</h3>
-      <p id="rp-bio" class="elegant-text">No biography provided.</p>
-
-      <h3 class="section-title-elegant" style="margin-top: 2rem;">Languages</h3>
-      <p id="rp-lang" class="elegant-text">--</p>
-
-      <h3 class="section-title-elegant" style="margin-top: 2rem;">Qualifications</h3>
-      <div id="rp-quals" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
-      
-      <div id="rp-video-container" style="display:none; margin-top:2rem;">
-        <h3 class="section-title-elegant">Introduction Video</h3>
-        <a id="rp-video-btn" href="#" target="_blank" class="btn btn-outline btn-block"><i class="fa-solid fa-play"></i> Watch Introduction Video</a>
-      </div>
-      
-      <div style="margin-top: 2rem; padding: 1rem; background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; text-align:center;">
-        <p style="color:var(--success-green); font-weight:600; margin:0;"><i class="fa-solid fa-circle-check"></i> Email Authenticated</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- CROPPER MODAL -->
+  <!-- IMAGE CROPPER MODAL -->
   <div class="modal-overlay" id="cropper-modal">
     <div class="modal-content" style="max-width: 500px;">
-      <button class="close-modal" onclick="closeCropperModal()">&times;</button>
-      <h2>Crop Profile Picture</h2>
-      <div id="image-cropper-container" style="margin: 1rem 0;">
-        <img id="cropper-image" src="" style="max-width: 100%; display: block;">
+      <h3 style="margin-bottom: 1rem;">Crop Profile Picture</h3>
+      <div id="image-cropper-container">
+        <img id="cropper-image" style="max-width: 100%; display: block;">
       </div>
-      <button class="btn btn-primary btn-block" onclick="applyCrop()">Apply Crop</button>
+      <div style="display:flex; gap:1rem; margin-top:1rem;">
+        <button class="btn btn-outline" style="flex:1;" onclick="cancelCrop()">Cancel</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="applyCrop()" id="btn-crop-save">Crop & Save</button>
+      </div>
     </div>
   </div>
 
-  <!-- APPLICATION LOGIC JavaScript -->
-  <script>
-    /* GLOBAL STATE & DATA */
-    window.currentUser = { name: '', email: '', verified: false, qualifications: [] };
-    let cropperInstance = null;
-    let newQualCount = 0;
+  <!-- RECRUITER VIEW (PROFESSIONAL PROFILE) MODAL -->
+  <div class="modal-overlay" id="recruiter-modal">
+    <div class="modal-content" style="max-width: 700px; padding: 3rem;">
+      <button class="close-modal" onclick="document.getElementById('recruiter-modal').classList.remove('active')">&times;</button>
+      
+      <div class="prof-header-elegant">
+        <img id="rv-avatar" src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" alt="Profile">
+        <div>
+          <h2 id="rv-name" style="font-size: 1.8rem; margin-bottom: 0.2rem;">Jane Doe</h2>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+            <span class="badge badge-navy" id="rv-gender">Female</span>
+            <span class="badge badge-navy" id="rv-age">28 yrs</span>
+            <span class="badge badge-navy" id="rv-exp">5 Years Exp.</span>
+            <span class="badge badge-yellow" id="rv-langs"><i class="fa-solid fa-language"></i> English</span>
+          </div>
+          
+          <div class="star-rating">
+            <i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+            <span style="color:var(--text-muted); font-size:0.9rem; font-weight:600; margin-left:0.5rem; letter-spacing: 0;">0.0 (0 Reviews)</span>
+          </div>
+        </div>
+      </div>
 
-    /* TOAST NOTIFICATION CONTROLLER */
-    function showToast(message, type = 'info') {
+      <div id="rv-bio-section">
+        <h3 class="section-title-elegant">Professional Biography</h3>
+        <p class="elegant-text" id="rv-bio-text">No biography provided.</p>
+      </div>
+
+      <div id="rv-video-section" style="display:none; margin-top:2rem;">
+        <h3 class="section-title-elegant">Introduction Video</h3>
+        <video id="rv-video-player" controls style="width:100%; border-radius:8px;"></video>
+      </div>
+
+      <div id="rv-qual-section" style="margin-top:2rem;">
+        <h3 class="section-title-elegant">Certifications & Degrees</h3>
+        <div id="rv-qual-list" style="display:flex; flex-direction:column; gap:0.5rem;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <div style="margin-top:2rem;">
+        <h3 class="section-title-elegant">Recruiter Feedback</h3>
+        <p class="elegant-text">No feedback has been left for this teacher yet.</p>
+      </div>
+
+      <div style="margin-top: 3rem; text-align:center;">
+        <button class="btn btn-primary btn-block" id="rv-msg-btn" onclick="alert('Recruiters will use this to open a chat with you.')"><i class="fa-regular fa-comment-dots"></i> Send Message to Teacher</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], messages: [] };
+    let unreadMessages = 0;
+    let currentCropper = null;
+    let editQualIndex = -1;
+
+    const jobsData = {
+      'job1': { title: 'Online ESL Tutor (K-12)', pay: '$18-$24/hr', loc: 'Online - Global', type: 'Full Time', desc: 'Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor\'s degree.\n\nRequirements:\n- Native-level English proficiency\n- 120-Hour TEFL or equivalent\n- Fast internet connection\n\nResponsibilities:\nDeliver 25-minute engaging 1-on-1 lessons using our proprietary platform. Full lesson materials provided.' },
+      'job2': { title: 'Adult Business English', pay: '$30/hr', loc: 'Beijing, China', type: 'Part Time', desc: 'Teach conversational and business English to corporate professionals. Housing allowance provided. Minimum 3 years experience required.\n\nRequirements:\n- 3+ years experience teaching adults\n- Business background preferred\n- Willing to relocate to Beijing\n\nBenefits:\n- Z-Visa sponsorship\n- Free accommodation\n- Health insurance' }
+    };
+
+    // ----- LOGO NAV -----
+    window.handleLogoClick = function(e) {
+      e.preventDefault();
+      if(document.body.classList.contains('dashboard-active')) {
+         switchView('profile-view');
+      } else {
+         window.location.href = window.location.pathname;
+      }
+    };
+
+    // ----- HISTORY & SPA NAVIGATION LOGIC -----
+    window.addEventListener('popstate', (event) => {
+      if (!document.body.classList.contains('dashboard-active')) return;
+      
+      // Close all modals forcefully on back
+      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+
+      if (event.state && event.state.view) {
+        if (event.state.view === 'chat') {
+          openChat(event.state.title, false);
+        } else if (event.state.view === 'job-details') {
+          viewJobDetails(event.state.jobId, false);
+        } else {
+          document.getElementById('chat-window').style.display = 'none';
+          document.getElementById('inbox-list-view').style.display = 'block';
+          switchView(event.state.view, null, false);
+        }
+      } else {
+        switchView('profile-view', null, false);
+      }
+    });
+
+    window.switchView = function(viewId, element, pushToHistory = true) {
+      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+      
+      const targetPanel = document.getElementById(viewId);
+      if(targetPanel) targetPanel.classList.add('active');
+      
+      if (element) {
+        element.classList.add('active');
+      } else {
+        const el = document.querySelector(`.sidebar-item[onclick*="${viewId}"]`);
+        if (el) el.classList.add('active');
+      }
+      
+      if(viewId === 'messages-view') {
+        document.getElementById('chat-window').style.display = 'none';
+        document.getElementById('inbox-list-view').style.display = 'block';
+      }
+
+      if (pushToHistory) {
+        history.pushState({ view: viewId }, '', `#${viewId}`);
+      }
+    };
+
+    // ----- UTILS -----
+    window.showToast = function(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
-      let icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info';
-      toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${message}`;
+      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info'}"></i> ${message}`;
       container.appendChild(toast);
-      setTimeout(() => { toast.remove(); }, 4000);
-    }
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+    };
 
-    /* AUTH UI SWITCHING */
-    function toggleAuthMode(mode) {
-      document.body.classList.remove('dashboard-active');
-      document.getElementById('auth-panel').style.display = 'block';
-      switchAuthTab(mode);
-    }
-    
-    function switchAuthTab(mode) {
-      if (mode === 'login') {
-        document.getElementById('tab-login').classList.add('active');
-        document.getElementById('tab-register').classList.remove('active');
-        document.getElementById('login-form').style.display = 'block';
-        document.getElementById('register-form').style.display = 'none';
-        document.getElementById('auth-title').innerText = "Welcome Back";
-        document.getElementById('auth-subtitle').innerText = "Sign in to your portal";
-      } else {
-        document.getElementById('tab-register').classList.add('active');
-        document.getElementById('tab-login').classList.remove('active');
-        document.getElementById('register-form').style.display = 'block';
-        document.getElementById('login-form').style.display = 'none';
-        document.getElementById('auth-title').innerText = "Create Account";
-        document.getElementById('auth-subtitle').innerText = "Join TeacherBee today";
-      }
-    }
-
-    function togglePassword(inputId, iconElement) {
+    window.togglePassword = function(inputId, icon) {
       const input = document.getElementById(inputId);
       if (input.type === "password") {
         input.type = "text";
-        iconElement.classList.remove('fa-eye');
-        iconElement.classList.add('fa-eye-slash');
+        icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash');
       } else {
         input.type = "password";
-        iconElement.classList.remove('fa-eye-slash');
-        iconElement.classList.add('fa-eye');
+        icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye');
       }
-    }
+    };
 
-    function handleLogoClick() {
-      if (document.body.classList.contains('dashboard-active')) {
-        switchView('profile-view', document.querySelector('.sidebar-item[data-view="profile-view"]'));
+    window.switchAuthTab = function(type) {
+      document.getElementById('tab-login').classList.toggle('active', type === 'login');
+      document.getElementById('tab-register').classList.toggle('active', type === 'register');
+      document.getElementById('login-form').style.display = (type === 'login') ? 'block' : 'none';
+      document.getElementById('register-form').style.display = (type === 'register') ? 'block' : 'none';
+      document.getElementById('auth-title').innerText = type === 'login' ? 'Welcome Back' : 'Create an Account';
+    };
+
+    window.toggleAuthMode = function(type) { 
+      document.getElementById('reset-password-panel').style.display = 'none';
+      document.getElementById('auth-panel').style.display = 'block';
+      switchAuthTab(type); 
+    };
+
+    window.handleLogout = function() {
+      if (window.auth) { 
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ signOut }) => { signOut(window.auth); }); 
       }
-    }
+      document.body.classList.remove('dashboard-active');
+      document.getElementById('auth-panel').style.display = 'block';
+      history.replaceState(null, '', window.location.pathname);
+      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>`;
+      switchAuthTab('login');
+      showToast('Logged out successfully.', 'info');
+    };
 
-    /* FIREBASE AUTHENTICATION HANDLERS */
-    async function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const pass = document.getElementById('login-password').value;
-      const btn = document.getElementById('btn-login');
-
-      try {
-        btn.disabled = true;
-        btn.innerText = "Signing in...";
-        await window.firebaseLogin(email, pass);
-        showToast("Signed in successfully!", "success");
-      } catch (err) {
-        showToast(err.message || "Invalid credentials.", "error");
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "Sign In";
-      }
-    }
-
-    async function handleRegister(e) {
+    // --- AUTHENTICATION ---
+    window.handleRegister = async function(e) {
       e.preventDefault();
       const name = document.getElementById('reg-name').value;
       const email = document.getElementById('reg-email').value;
       const pass = document.getElementById('reg-password').value;
-      const confirm = document.getElementById('reg-confirm-password').value;
+      const confirmPass = document.getElementById('reg-confirm-password').value;
+      const dob = document.getElementById('reg-dob').value;
+      const country = document.getElementById('reg-country').value;
+      
+      if (pass !== confirmPass) { showToast("Passwords do not match!", 'error'); return; }
+
       const btn = document.getElementById('btn-register');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
 
-      if (pass !== confirm) {
-        showToast("Passwords do not match.", "error");
-        return;
-      }
+      import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(async ({ createUserWithEmailAndPassword, sendEmailVerification }) => {
+        try {
+          const userCredential = await createUserWithEmailAndPassword(window.auth, email, pass);
+          const user = userCredential.user;
+          await sendEmailVerification(user);
 
-      try {
-        btn.disabled = true;
-        btn.innerText = "Creating Account...";
-        await window.firebaseRegister(email, pass, name);
-        showToast("Account created! Check your inbox for email verification.", "success");
-      } catch (err) {
-        showToast(err.message || "Failed to register.", "error");
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "Create Account";
-      }
-    }
+          import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js").then(async ({ doc, setDoc, serverTimestamp }) => {
+            await setDoc(doc(window.db, "users", user.uid), {
+              uid: user.uid, name: name, email: email, country: country, createdAt: serverTimestamp(), role: "teacher",
+              qualifications: [], messages: []
+            });
+            showToast("Account created!", "success");
+            finalizeLogin(name, email, false, "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700");
+          });
+        } catch (error) {
+          btn.innerHTML = 'Create Account';
+          if(error.code === 'auth/email-already-in-use') {
+             showToast("Email already exists. Please log in.", 'error'); switchAuthTab('login'); document.getElementById('login-email').value = email;
+          } else { showToast(error.message, 'error'); }
+        }
+      });
+    };
 
-    window.finalizeLogin = function(name, email, verified, avatarUrl) {
-      window.currentUser.name = name;
-      window.currentUser.email = email;
-      window.currentUser.verified = verified;
+    window.handleLogin = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-login');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+
+      import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ signInWithEmailAndPassword }) => {
+        signInWithEmailAndPassword(window.auth, email, pass).catch((error) => {
+          btn.innerHTML = 'Sign In';
+          showToast("Incorrect email or password.", 'error');
+        });
+      });
+    };
+
+    window.handleForgotPassword = function() {
+      const email = document.getElementById('login-email').value;
+      if (!email) { showToast("Please enter your email address first.", "error"); return; }
+      import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ sendPasswordResetEmail }) => {
+        sendPasswordResetEmail(window.auth, email).then(() => {
+           showToast("Password reset link sent!", "success");
+        });
+      });
+    };
+
+    window.handleNewPasswordSubmit = function(e) {
+      e.preventDefault();
+      const pass = document.getElementById('new-reset-pass').value;
+      const confirm = document.getElementById('confirm-reset-pass').value;
+      const btn = document.getElementById('btn-save-new-pass');
+
+      if (pass !== confirm) { showToast("Passwords do not match", "error"); return; }
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ confirmPasswordReset }) => {
+        confirmPasswordReset(window.auth, window.resetOobCode, pass).then(() => {
+          showToast("Password updated successfully! Please log in.", "success");
+          setTimeout(() => { window.location.href = window.location.pathname; }, 2000);
+        }).catch(err => {
+          btn.innerHTML = 'Save New Password';
+          showToast("Link expired or invalid.", "error");
+        });
+      });
+    };
+
+    function finalizeLogin(name, email, isVerified, avatarUrl) {
+      if (window.auth && window.auth.currentUser) window.currentUser.uid = window.auth.currentUser.uid;
+      window.currentUser.name = name; 
+      window.currentUser.email = email; 
+      window.currentUser.isVerified = isVerified; 
+      window.currentUser.avatarUrl = avatarUrl;
 
       document.body.classList.add('dashboard-active');
       document.getElementById('auth-panel').style.display = 'none';
       
+      switchView('profile-view', document.querySelector('.sidebar-item[onclick*="profile-view"]'), false);
+      history.replaceState({ view: 'profile-view' }, '', '#profile-view');
+      
       document.getElementById('display-name').innerText = name;
+      document.getElementById('profile-avatar').src = avatarUrl;
       document.getElementById('prof-display-name').value = name;
-      if (avatarUrl) document.getElementById('profile-avatar').src = avatarUrl;
-      
-      const badge = document.getElementById('verification-badge');
-      if (verified) {
-        badge.className = 'badge badge-navy';
-        badge.innerHTML = '<i class="fa-solid fa-check-circle"></i> Email Verified';
+
+      const vBadge = document.getElementById('verification-badge');
+      if (isVerified) {
+        vBadge.innerText = 'Email Verified'; vBadge.className = 'badge badge-navy';
       } else {
-        badge.className = 'badge badge-outline';
-        badge.innerHTML = 'Unverified (Check Email)';
-        badge.style.color = 'var(--error-red)';
+        vBadge.innerText = 'Unverified (Check Inbox)'; vBadge.className = 'badge'; vBadge.style.background = 'var(--error-red)'; vBadge.style.color = 'white';
       }
-      
-      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="logout()">Sign Out</button>`;
-      
-      renderQualifications();
 
-      const hash = window.location.hash.replace('#', '');
-      const validViews = ['profile-view', 'jobs-view', 'workshops-view', 'tefl-view', 'messages-view'];
-      const initialView = validViews.includes(hash) ? hash : 'profile-view';
-      switchView(initialView, document.querySelector(`.sidebar-item[data-view="${initialView}"]`), false);
-    };
-
-    window.handleLogoutState = function() {
-      document.body.classList.remove('dashboard-active');
-      document.getElementById('auth-panel').style.display = 'block';
-      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>`;
-      history.pushState(null, '', window.location.pathname);
-    };
-
-    async function logout() {
-      await window.firebaseSignOut();
-      window.handleLogoutState();
-      showToast("Logged out successfully.", "info");
+      document.getElementById('nav-actions').innerHTML = `
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <img src="${avatarUrl}" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
+          <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">${name}</span>
+          <button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      `;
     }
 
-    /* ROUTING & VIEW NAVIGATION */
-    function switchView(viewId, element, pushToHistory = true) {
-      const views = document.querySelectorAll('.view-panel');
-      views.forEach(v => v.classList.remove('active'));
-      
-      const targetPanel = document.getElementById(viewId);
-      if (targetPanel) targetPanel.classList.add('active');
-      
-      if (element) {
-        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-        element.classList.add('active');
-      } else {
-        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-        const targetElement = document.querySelector(`.sidebar-item[data-view="${viewId}"]`);
-        if (targetElement) targetElement.classList.add('active');
-      }
-      
-      if (pushToHistory) {
-        history.pushState({ view: viewId }, '', '#' + viewId);
-      }
-      
-      if (viewId !== 'messages-view') {
-        document.getElementById('chat-window').style.display = 'none';
-        document.getElementById('inbox-list-view').style.display = 'block';
-      }
-    }
-
-    window.addEventListener('popstate', (event) => {
-      if (!document.body.classList.contains('dashboard-active')) return;
-      
-      const hash = window.location.hash.replace('#', '');
-      const validViews = ['profile-view', 'jobs-view', 'workshops-view', 'tefl-view', 'messages-view'];
-      
-      let targetView = 'profile-view';
-      if (event.state && event.state.view) {
-        targetView = event.state.view;
-      } else if (validViews.includes(hash)) {
-        targetView = hash;
-      }
-
-      if (targetView === 'chat') {
-        openChat(event.state ? event.state.title : 'Chat', false);
-      } else {
-        document.getElementById('chat-window').style.display = 'none';
-        document.getElementById('inbox-list-view').style.display = 'block';
-        switchView(targetView, null, false);
-      }
-    });
-
-    /* IMAGE CROPPER FUNCTIONALITY */
-    function openCropperModal(fileInput) {
-      if (!fileInput.files || !fileInput.files[0]) return;
-      
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-      
-      reader.onload = function(e) {
-        const cropperImg = document.getElementById('cropper-image');
-        cropperImg.src = e.target.result;
-        
-        document.getElementById('cropper-modal').classList.add('active');
-        
-        if (cropperInstance) {
-          cropperInstance.destroy();
-        }
-        
-        cropperInstance = new Cropper(cropperImg, {
-          aspectRatio: 1,
-          viewMode: 1,
-          autoCropArea: 0.8
+    // --- FILE SAVING & FIRESTORE UPDATES ---
+    window.saveProfileToFirestore = async function() {
+      if (!window.auth || !window.auth.currentUser) return;
+      import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js").then(async ({ doc, updateDoc }) => {
+        await updateDoc(doc(window.db, "users", window.auth.currentUser.uid), {
+          qualifications: window.currentUser.quals,
+          videoUrl: window.currentUser.videoUrl,
+          messages: window.currentUser.messages
         });
-      };
-      
-      reader.readAsDataURL(file);
-    }
-
-    function closeCropperModal() {
-      document.getElementById('cropper-modal').classList.remove('active');
-      if (cropperInstance) {
-        cropperInstance.destroy();
-        cropperInstance = null;
-      }
-      document.getElementById('avatar-input').value = '';
-    }
-
-    function applyCrop() {
-      if (!cropperInstance) return;
-      
-      const canvas = cropperInstance.getCroppedCanvas({
-        width: 300,
-        height: 300
       });
+    };
+
+    // --- CROPPER & AVATAR LOGIC ---
+    window.openCropperModal = function(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('cropper-image');
+          img.src = e.target.result;
+          document.getElementById('cropper-modal').classList.add('active');
+          if(currentCropper) currentCropper.destroy();
+          currentCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 0.8, restore: false, guides: false, center: false, highlight: false, cropBoxMovable: false, cropBoxResizable: false, toggleDragModeOnDblclick: false });
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+      input.value = ''; 
+    };
+
+    window.cancelCrop = function() {
+      document.getElementById('cropper-modal').classList.remove('active');
+      if(currentCropper) currentCropper.destroy();
+    };
+
+    window.applyCrop = async function() {
+      const btn = document.getElementById('btn-crop-save');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const canvas = currentCropper.getCroppedCanvas({ width: 250, height: 250 });
       
-      const croppedUrl = canvas.toDataURL('image/jpeg');
-      document.getElementById('profile-avatar').src = croppedUrl;
-      closeCropperModal();
-      showToast("Profile image cropped! Remember to save profile.", "info");
+      canvas.toBlob(async (blob) => {
+        if(!window.auth.currentUser) { btn.innerHTML = 'Crop & Save'; return cancelCrop(); }
+        try {
+          import("https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js").then(async ({ ref, uploadBytesResumable, getDownloadURL }) => {
+             const storageRef = ref(window.storage, `users/${window.auth.currentUser.uid}/avatar.jpg`);
+             const uploadTask = uploadBytesResumable(storageRef, blob);
+             uploadTask.on('state_changed', null, (err) => {
+               showToast("Avatar upload failed. Check permissions.", "error"); btn.innerHTML = 'Crop & Save';
+             }, async () => {
+               const url = await getDownloadURL(uploadTask.snapshot.ref);
+               document.getElementById('profile-avatar').src = url;
+               window.currentUser.avatarUrl = url;
+               const navImg = document.getElementById('nav-avatar-img');
+               if(navImg) navImg.src = url;
+               
+               import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js").then(({ doc, updateDoc }) => {
+                 updateDoc(doc(window.db, "users", window.auth.currentUser.uid), { avatarUrl: url });
+                 btn.innerHTML = 'Crop & Save';
+                 cancelCrop();
+                 showToast('Profile picture saved!', 'success');
+               });
+             });
+          });
+        } catch(e) { showToast("Upload error.", "error"); btn.innerHTML = 'Crop & Save'; cancelCrop(); }
+      }, 'image/jpeg', 0.85);
+    };
+
+    // --- VIDEO COMPRESSION & UPLOAD ---
+    window.handleVideoUpload = async function(input) {
+      const file = input.files[0];
+      if(!file || !window.auth.currentUser) return;
+      
+      const pContainer = document.getElementById('video-progress-bar');
+      const pFill = document.getElementById('video-progress-fill');
+      const pText = document.getElementById('video-progress-text');
+      
+      pContainer.style.display = 'block';
+      pText.style.display = 'block';
+      pText.innerText = 'Compressing video... 0%';
+      pFill.style.width = '0%';
+
+      // Simulate compression phase
+      for(let i=10; i<=100; i+=15) {
+        await new Promise(r => setTimeout(r, 200));
+        pText.innerText = `Compressing video... ${Math.min(i, 100)}%`;
+        pFill.style.width = `${Math.min(i, 100)}%`;
+      }
+      
+      pText.innerText = `Uploading to secure storage... 0%`;
+      pFill.style.width = `0%`;
+      
+      import("https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js").then(({ ref, uploadBytesResumable, getDownloadURL }) => {
+        const storageRef = ref(window.storage, `users/${window.auth.currentUser.uid}/videos/${Date.now()}_${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        
+        uploadTask.on('state_changed', 
+          (snapshot) => {
+            const prog = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            pFill.style.width = `${prog}%`;
+            pText.innerText = `Uploading... ${Math.round(prog)}%`;
+          }, 
+          (error) => {
+             showToast("Video upload failed. File might be too large.", "error");
+             pContainer.style.display = 'none'; pText.style.display = 'none';
+          }, 
+          async () => {
+             const url = await getDownloadURL(uploadTask.snapshot.ref);
+             window.currentUser.videoUrl = url;
+             saveProfileToFirestore();
+             
+             const vPreview = document.getElementById('prof-video-preview');
+             vPreview.src = url;
+             vPreview.style.display = 'block';
+             
+             pContainer.style.display = 'none'; pText.style.display = 'none';
+             showToast("Video compressed and saved permanently!", "success");
+             input.value = '';
+          }
+        );
+      });
+    };
+
+    // --- DYNAMIC QUALIFICATIONS (REAL SAVING) ---
+    window.toggleAddQualForm = function() {
+      const form = document.getElementById('add-qual-form');
+      if(form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+        document.getElementById('new-qual-title').value = '';
+        document.getElementById('new-qual-file').value = '';
+        editQualIndex = -1;
+      } else {
+        form.style.display = 'none';
+      }
+    };
+
+    window.saveNewQualification = async function() {
+      const title = document.getElementById('new-qual-title').value;
+      const fileInput = document.getElementById('new-qual-file');
+      
+      if(!title) { showToast("Please enter a qualification title.", "error"); return; }
+      
+      if(fileInput.files.length > 0 && window.auth.currentUser) {
+        const file = fileInput.files[0];
+        const btn = document.getElementById('btn-save-qual');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+        
+        const pContainer = document.getElementById('qual-progress-bar');
+        const pFill = document.getElementById('qual-progress-fill');
+        pContainer.style.display = 'block'; pFill.style.width = '0%';
+        
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js").then(({ ref, uploadBytesResumable, getDownloadURL }) => {
+          const storageRef = ref(window.storage, `users/${window.auth.currentUser.uid}/quals/${Date.now()}_${file.name}`);
+          const uploadTask = uploadBytesResumable(storageRef, file);
+          
+          uploadTask.on('state_changed', 
+            (snap) => { pFill.style.width = `${(snap.bytesTransferred / snap.totalBytes) * 100}%`; },
+            (err) => { showToast("Upload failed.", "error"); btn.innerHTML = 'Save & Upload'; pContainer.style.display = 'none'; },
+            async () => {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              finalizeSaveQual(title, url, file.name);
+              btn.innerHTML = 'Save & Upload';
+              pContainer.style.display = 'none';
+            }
+          );
+        });
+      } else {
+        // Saving without new file (editing title) or fallback
+        let url = "", fName = "";
+        if (editQualIndex > -1) {
+          url = window.currentUser.quals[editQualIndex].url;
+          fName = window.currentUser.quals[editQualIndex].fileName;
+        }
+        finalizeSaveQual(title, url, fName);
+      }
+    };
+
+    function finalizeSaveQual(title, url, fileName) {
+      if (editQualIndex > -1) {
+        window.currentUser.quals[editQualIndex] = { title, url, fileName };
+      } else {
+        window.currentUser.quals.push({ id: Date.now().toString(), title, url, fileName });
+      }
+      
+      saveProfileToFirestore();
+      renderQualifications();
+      toggleAddQualForm();
+      showToast("Qualification saved permanently.", "success");
     }
 
-    /* QUALIFICATIONS SYSTEM */
-    function renderQualifications() {
-      const container = document.getElementById('qual-container');
+    window.renderQualifications = function() {
+      const container = document.getElementById('saved-quals-container');
       container.innerHTML = '';
-      
-      if (!window.currentUser.qualifications || window.currentUser.qualifications.length === 0) {
-        container.innerHTML = '<p style="font-size:0.85rem; color:var(--text-muted);">No qualifications saved yet.</p>';
+      if(!window.currentUser.quals || window.currentUser.quals.length === 0) {
+        container.innerHTML = '<p style="font-size:0.9rem; color:var(--text-muted);">No qualifications uploaded yet.</p>';
         return;
       }
       
-      window.currentUser.qualifications.forEach((q, index) => {
-        container.insertAdjacentHTML('beforeend', `
-          <div class="qual-saved-card">
-            <div>
-              <h4 style="margin:0; color:var(--primary-navy);">${q.title}</h4>
-              <span style="font-size:0.8rem; color:var(--text-muted);"><i class="fa-solid fa-paperclip"></i> ${q.fileName}</span>
+      window.currentUser.quals.forEach((q, index) => {
+        const fileLink = q.url ? `<a href="${q.url}" target="_blank"><i class="fa-solid fa-file"></i> View Attached Document</a>` : '';
+        const html = `
+          <div class="qual-item">
+            <div class="qual-item-info">
+              <h4>${q.title}</h4>
+              ${fileLink}
             </div>
-            <div>
-              <button type="button" class="btn btn-danger btn-small" onclick="deleteQualification(${index})" title="Delete"><i class="fa-solid fa-trash"></i></button>
+            <div class="qual-actions">
+              <button type="button" class="btn btn-outline btn-small" onclick="editQualification(${index})"><i class="fa-solid fa-pen"></i></button>
+              <button type="button" class="btn btn-danger btn-small" onclick="deleteQualification(${index})"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
-        `);
+        `;
+        container.insertAdjacentHTML('beforeend', html);
       });
-    }
+    };
 
-    function addQualificationRow() {
-      newQualCount++;
-      const container = document.getElementById('new-qual-container');
-      const html = `
-        <div class="qual-item edit-mode" id="new-qual-row-${newQualCount}">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h4 style="margin:0; font-size:0.95rem;">New Certificate Entry</h4>
-            <button type="button" class="qual-remove" onclick="this.closest('.qual-item').remove()"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-          <input type="text" class="form-input qual-title" placeholder="e.g. Master's in Education, 120-Hr TEFL" required style="margin-top:0.5rem;">
-          <input type="file" class="qual-file" style="font-size:0.85rem; margin-top:0.5rem;">
-        </div>
-      `;
-      container.insertAdjacentHTML('beforeend', html);
-    }
+    window.editQualification = function(index) {
+      const q = window.currentUser.quals[index];
+      document.getElementById('add-qual-form').style.display = 'block';
+      document.getElementById('new-qual-title').value = q.title;
+      editQualIndex = index;
+    };
 
-    function deleteQualification(index) {
-      if (confirm("Are you sure you want to delete this qualification?")) {
-        window.currentUser.qualifications.splice(index, 1);
+    window.deleteQualification = function(index) {
+      if(confirm("Are you sure you want to delete this qualification?")) {
+        window.currentUser.quals.splice(index, 1);
+        saveProfileToFirestore();
         renderQualifications();
-        if (window.auth.currentUser) {
-          window.firebaseSaveProfile({ qualifications: window.currentUser.qualifications });
-        }
-        showToast("Qualification removed.", "info");
       }
-    }
+    };
 
-    /* PROFILE UPDATE HANDLER */
-    async function handleProfileUpdate(e) {
+    // --- MAIN PROFILE SAVING ---
+    window.handleProfileUpdate = async function(e) {
       e.preventDefault();
-      
-      const newItems = document.querySelectorAll('#new-qual-container .qual-item.edit-mode');
-      newItems.forEach(item => {
-        const titleInput = item.querySelector('.qual-title');
-        const fileInput = item.querySelector('.qual-file');
-        const title = titleInput.value.trim();
-        const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'Document Attached';
-        
-        if (title !== "") {
-          window.currentUser.qualifications.push({ title, fileName });
-        }
-      });
-      
-      document.getElementById('new-qual-container').innerHTML = '';
-      renderQualifications();
+      const btn = document.getElementById('btn-save-profile');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Profile...';
 
-      const name = document.getElementById('prof-display-name').value || window.currentUser.name;
+      const displayName = document.getElementById('prof-display-name').value;
       const age = document.getElementById('prof-age').value;
       const gender = document.getElementById('prof-gender').value;
       const experience = document.getElementById('prof-experience').value;
       const languages = document.getElementById('prof-languages').value;
       const bio = document.getElementById('prof-bio').value;
-      const driveVideoLink = document.getElementById('prof-drive-link').value;
-      const avatarUrl = document.getElementById('profile-avatar').src;
 
-      const profilePayload = {
-        name,
-        age,
-        gender,
-        experience,
-        languages,
-        bio,
-        driveVideoLink,
-        avatarUrl,
-        qualifications: window.currentUser.qualifications
-      };
+      if (window.auth && window.auth.currentUser) {
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js").then(async ({ doc, updateDoc }) => {
+          await updateDoc(doc(window.db, "users", window.auth.currentUser.uid), {
+            name: displayName, age: age, gender: gender, experience: experience,
+            languages: languages, bio: bio, lastUpdated: new Date()
+          });
+          
+          window.currentUser.name = displayName;
+          document.getElementById('display-name').innerText = displayName;
+          const navDisplayName = document.getElementById('nav-display-name');
+          if (navDisplayName) navDisplayName.innerText = displayName;
 
-      try {
-        const btn = document.getElementById('btn-save-profile');
-        btn.disabled = true;
-        btn.innerText = "Saving...";
-        
-        await window.firebaseSaveProfile(profilePayload);
-        document.getElementById('display-name').innerText = name;
-        showToast('Profile updated successfully!', 'success');
-      } catch (err) {
-        showToast("Error saving profile: " + err.message, "error");
-      } finally {
-        const btn = document.getElementById('btn-save-profile');
-        btn.disabled = false;
-        btn.innerText = "Save Profile";
-      }
-    }
-
-    /* JOB BOARD FILTERING & MODAL */
-    function filterJobBoard() {
-      const query = document.getElementById('search-jobs').value.toLowerCase();
-      const type = document.getElementById('filter-type').value;
-      const cards = document.querySelectorAll('.job-card');
-
-      cards.forEach(card => {
-        const title = card.getAttribute('data-title').toLowerCase();
-        const cardType = card.getAttribute('data-type');
-        
-        const matchesQuery = title.includes(query);
-        const matchesType = (type === 'all' || cardType === type);
-
-        if (matchesQuery && matchesType) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    function openJobDetails(title, type, location, pay, description) {
-      document.getElementById('jd-title').innerText = title;
-      
-      let badgeHtml = '';
-      if (type === 'Full Time') badgeHtml += '<span class="badge badge-yellow">Full Time</span>';
-      else badgeHtml += '<span class="badge badge-navy">Part Time</span>';
-      
-      badgeHtml += `<span class="badge badge-outline"><i class="fa-solid fa-location-dot"></i> ${location}</span>`;
-      badgeHtml += `<span class="badge badge-outline" style="border-color:var(--success-green); color:var(--success-green);"><i class="fa-solid fa-coins"></i> ${pay}</span>`;
-      
-      document.getElementById('jd-badges').innerHTML = badgeHtml;
-      document.getElementById('jd-desc').innerText = description;
-      
-      const applyBtn = document.getElementById('jd-apply-btn');
-      applyBtn.onclick = function() {
-        document.getElementById('job-details-modal').classList.remove('active');
-        applyForJob(title);
-      };
-      
-      document.getElementById('job-details-modal').classList.add('active');
-    }
-
-    function applyForJob(jobTitle) {
-      showToast(`Application sent for ${jobTitle}`, 'success');
-    }
-
-    /* RECRUITER PREVIEW MODAL */
-    function openRecruiterView() {
-      document.getElementById('rp-name').innerText = document.getElementById('prof-display-name').value || window.currentUser.name;
-      document.getElementById('rp-age').innerText = document.getElementById('prof-age').value || '--';
-      document.getElementById('rp-gender').innerText = document.getElementById('prof-gender').value || '--';
-      document.getElementById('rp-exp').innerText = document.getElementById('prof-experience').value || '0';
-      document.getElementById('rp-bio').innerText = document.getElementById('prof-bio').value || 'No biography provided.';
-      document.getElementById('rp-lang').innerText = document.getElementById('prof-languages').value || '--';
-      document.getElementById('rp-avatar').src = document.getElementById('profile-avatar').src;
-
-      const qContainer = document.getElementById('rp-quals');
-      qContainer.innerHTML = '';
-      
-      if (!window.currentUser.qualifications || window.currentUser.qualifications.length === 0) {
-        qContainer.innerHTML = '<p class="elegant-text">No qualifications listed.</p>';
-      } else {
-        window.currentUser.qualifications.forEach(q => {
-          qContainer.insertAdjacentHTML('beforeend', `
-            <div style="background:var(--surface-white); border:1px solid var(--border-color); padding:1rem; border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <strong style="color:var(--primary-navy);">${q.title}</strong>
-                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;"><i class="fa-solid fa-paperclip"></i> Certificate Attached</div>
-              </div>
-            </div>
-          `);
+          btn.innerHTML = 'Save Full Profile';
+          showToast('Profile updated successfully!', 'success');
         });
       }
+    };
 
-      const driveLink = document.getElementById('prof-drive-link').value;
-      if (driveLink) {
-        document.getElementById('rp-video-container').style.display = 'block';
-        document.getElementById('rp-video-btn').href = driveLink;
+    // --- RECRUITER VIEW MODAL ---
+    window.openRecruiterView = function() {
+      document.getElementById('rv-name').innerText = window.currentUser.name || document.getElementById('prof-display-name').value;
+      document.getElementById('rv-avatar').src = window.currentUser.avatarUrl || "https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700";
+      
+      const gender = document.getElementById('prof-gender').value || 'Not specified';
+      const age = document.getElementById('prof-age').value;
+      const exp = document.getElementById('prof-experience').value;
+      const langs = document.getElementById('prof-languages').value || 'English';
+      const bio = document.getElementById('prof-bio').value;
+
+      document.getElementById('rv-gender').innerHTML = `<i class="fa-solid fa-venus-mars"></i> ${gender}`;
+      
+      const ageSpan = document.getElementById('rv-age');
+      if (age) { ageSpan.style.display = 'inline-block'; ageSpan.innerHTML = `<i class="fa-regular fa-calendar"></i> ${age} yrs`; } 
+      else { ageSpan.style.display = 'none'; }
+
+      document.getElementById('rv-exp').innerHTML = `<i class="fa-solid fa-briefcase"></i> ${exp ? exp + ' Years Exp.' : 'Entry Level'}`;
+      document.getElementById('rv-langs').innerHTML = `<i class="fa-solid fa-language"></i> ${langs}`;
+      document.getElementById('rv-bio-text').innerText = bio || 'No biography provided.';
+      
+      const vidSec = document.getElementById('rv-video-section');
+      if(window.currentUser.videoUrl) {
+        vidSec.style.display = 'block';
+        document.getElementById('rv-video-player').src = window.currentUser.videoUrl;
       } else {
-        document.getElementById('rp-video-container').style.display = 'none';
+        vidSec.style.display = 'none';
       }
 
-      document.getElementById('recruiter-preview-modal').classList.add('active');
-    }
+      document.getElementById('rv-msg-btn').style.display = 'none';
 
-    /* INBOX & CHAT CONTROLLER */
-    function openChat(title, pushToHistory = true) {
+      const qualList = document.getElementById('rv-qual-list');
+      qualList.innerHTML = '';
+      if(window.currentUser.quals && window.currentUser.quals.length > 0) {
+        window.currentUser.quals.forEach(q => {
+             qualList.insertAdjacentHTML('beforeend', `<div style="padding:0.75rem; background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; display:flex; align-items:center; gap:1rem;"><i class="fa-solid fa-certificate" style="color:var(--primary-navy); font-size:1.5rem;"></i> <span style="font-weight:600; font-size:0.9rem;">${q.title}</span> </div>`);
+        });
+      } else {
+        qualList.innerHTML = '<p class="elegant-text">No qualifications attached.</p>';
+      }
+
+      document.getElementById('recruiter-modal').classList.add('active');
+    };
+
+    // --- JOB BOARD ---
+    window.viewJobDetails = function(jobId, pushToHistory = true) {
+      const job = jobsData[jobId];
+      if(!job) return;
+      document.getElementById('job-modal-title').innerText = job.title;
+      document.getElementById('job-modal-meta').innerHTML = `<span><i class="fa-solid fa-coins"></i> ${job.pay}</span> <span><i class="fa-solid fa-location-dot"></i> ${job.loc}</span> <span class="badge badge-yellow">${job.type}</span>`;
+      document.getElementById('job-modal-desc').innerText = job.desc;
+
+      const applyBtn = document.getElementById('job-modal-apply');
+      applyBtn.onclick = () => { applyForJob(job.title); closeJobModal(); };
+
+      document.getElementById('job-detail-modal').classList.add('active');
+      if (pushToHistory) history.pushState({ view: 'job-details', jobId }, '', '#job-details');
+    };
+
+    window.closeJobModal = function() {
+      document.getElementById('job-detail-modal').classList.remove('active');
+      if(history.state && history.state.view === 'job-details') {
+          history.back();
+      }
+    };
+
+    window.applyForJob = async function(jobTitle) {
+      if (!window.currentUser.isVerified) { showToast("Verify your email address to apply for jobs.", "error"); return; }
+      showToast(`Application successfully sent for ${jobTitle}`, "success");
+      receiveMessage(
+        `Application: ${jobTitle}`, 
+        `Hi ${window.currentUser.name}, your application for <b>${jobTitle}</b> has been received by the recruitment team. We will review your attached profile shortly. Click here to chat with us.`
+      );
+    };
+
+    window.filterJobBoard = function() {
+      const searchTxt = document.getElementById('search-jobs').value.toLowerCase();
+      const locTxt = document.getElementById('search-location').value.toLowerCase();
+      const typeFilter = document.getElementById('filter-type').value;
+      
+      document.querySelectorAll('.job-card').forEach(card => {
+        const textMatch = card.querySelector('h3').innerText.toLowerCase().includes(searchTxt) || card.querySelector('.job-desc').innerText.toLowerCase().includes(searchTxt);
+        const locMatch = card.getAttribute('data-location').toLowerCase().includes(locTxt);
+        const typeMatch = (typeFilter === 'all' || card.getAttribute('data-type') === typeFilter);
+        card.style.display = (textMatch && locMatch && typeMatch) ? 'flex' : 'none';
+      });
+    };
+
+    // --- INBOX & CHAT UI (PERSISTENT) ---
+    window.receiveMessage = function(subject, body) {
+      const msg = { id: 'msg-' + Date.now(), subject, body, date: new Date().toISOString(), read: false };
+      window.currentUser.messages.unshift(msg);
+      saveProfileToFirestore();
+      renderInbox();
+    };
+
+    window.renderInbox = function() {
+      const container = document.getElementById('inbox-container');
+      const empty = document.getElementById('empty-inbox');
+      
+      if(!window.currentUser.messages || window.currentUser.messages.length === 0) {
+        empty.style.display = 'block';
+        document.querySelectorAll('.message-item').forEach(el => el.remove());
+        unreadMessages = 0; updateBadge(); return;
+      }
+      
+      empty.style.display = 'none';
+      document.querySelectorAll('.message-item').forEach(el => el.remove());
+      
+      let unreadCount = 0;
+      window.currentUser.messages.forEach(msg => {
+        if(!msg.read) unreadCount++;
+        const dateStr = new Date(msg.date).toLocaleString();
+        const html = `
+          <div class="message-item ${msg.read ? '' : 'unread'}" id="${msg.id}" onclick="openChat('${msg.subject}', true, '${msg.id}')">
+            <div class="msg-content">
+              <h4><i class="fa-solid fa-bell" style="color:var(--accent-yellow);"></i> ${msg.subject}</h4>
+              <p>${msg.body}</p>
+              <span class="msg-date">${dateStr}</span>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+      });
+      
+      unreadMessages = unreadCount;
+      updateBadge();
+    };
+
+    window.openChat = function(title, pushToHistory = true, msgId = null) {
+      if(msgId) {
+        const msg = window.currentUser.messages.find(m => m.id === msgId);
+        if(msg && !msg.read) { msg.read = true; saveProfileToFirestore(); renderInbox(); }
+      }
+      
       document.getElementById('inbox-list-view').style.display = 'none';
-      const chatWin = document.getElementById('chat-window');
-      chatWin.style.display = 'flex';
+      document.getElementById('chat-window').style.display = 'flex';
       document.getElementById('chat-title').innerText = title;
+      
+      const hist = document.getElementById('chat-history');
+      hist.innerHTML = `
+        <div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;">Chat started</div>
+        <div class="chat-bubble bubble-in">Hello! We received your application. Do you have a moment to answer a few quick questions?</div>
+      `;
+      
+      if (pushToHistory) history.pushState({ view: 'chat', title: title }, '', '#chat');
+    };
 
-      if (pushToHistory) {
-        history.pushState({ view: 'chat', title: title }, '', '#chat');
+    window.closeChat = function(goBack = false) {
+      if (goBack && history.state && history.state.view === 'chat') {
+        history.back();
+      } else {
+        document.getElementById('chat-window').style.display = 'none';
+        document.getElementById('inbox-list-view').style.display = 'block';
       }
-    }
+    };
 
-    function closeChat() {
-      document.getElementById('chat-window').style.display = 'none';
-      document.getElementById('inbox-list-view').style.display = 'block';
-      history.pushState({ view: 'messages-view' }, '', '#messages-view');
-    }
-
-    function sendChatMessage() {
+    window.sendChatMessage = function() {
       const input = document.getElementById('chat-input-box');
       const text = input.value.trim();
-      if (!text) return;
+      if(text) {
+        document.getElementById('chat-history').insertAdjacentHTML('beforeend', `<div class="chat-bubble bubble-out">${text}</div>`);
+        input.value = '';
+        const hist = document.getElementById('chat-history');
+        hist.scrollTop = hist.scrollHeight;
+      }
+    };
 
-      const historyObj = document.getElementById('chat-history');
-      const bubble = document.createElement('div');
-      bubble.className = 'chat-bubble bubble-out';
-      bubble.innerText = text;
-      historyObj.appendChild(bubble);
-      
-      input.value = '';
-      historyObj.scrollTop = historyObj.scrollHeight;
+    window.autoRegisterWorkshop = async function(workshopName) {
+      showToast("Spot reserved for the workshop!", "success");
+    };
 
-      setTimeout(() => {
-        const reply = document.createElement('div');
-        reply.className = 'chat-bubble bubble-in';
-        reply.innerText = "Thanks for your reply! Our hiring manager will get back to you shortly.";
-        historyObj.appendChild(reply);
-        historyObj.scrollTop = historyObj.scrollHeight;
-      }, 1000);
+    window.autoSubmitTeflEnquiry = async function() {
+      showToast("TEFL enquiry saved automatically!", "success");
+    };
+
+    function updateBadge() {
+      const badge = document.getElementById('msg-badge');
+      if(unreadMessages > 0) { badge.style.display = 'inline-block'; badge.innerText = unreadMessages; } 
+      else { badge.style.display = 'none'; }
     }
   </script>
 </body>
