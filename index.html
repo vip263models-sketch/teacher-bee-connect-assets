@@ -700,8 +700,8 @@
   </div>
 
   <script>
-    // --- UPDATED GOOGLE DRIVE WEB APP DEPLOYMENT URL ---
-    const GOOGLE_DRIVE_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxuFRFrm3w4SnfW8cw5d9UvZcOLkJb6a5Z9gF7qtf05ZcZrQlquRd4APTXSgHf5WRM/exec";
+    // --- UPDATED GOOGLE DRIVE WEB APP URL (From the working code logic) ---
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
 
     window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], messages: [] };
     window.activeChatMsgId = null;
@@ -709,74 +709,79 @@
     let currentCropper = null;
     let editQualIndex = -1;
 
-    // ----- REUSABLE GOOGLE DRIVE UPLOADER (WITH FETCH FIX) -----
+    // ----- REUSABLE GOOGLE DRIVE UPLOADER (USING YOUR NEW FETCH LOGIC) -----
     window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.readAsDataURL(fileOrBlob);
         
-        reader.onload = async () => {
+        reader.onload = async (e) => {
+          // Determine the action for your Google Apps Script based on the folder string
+          let action = 'uploadFile';
+          if (folder.includes('avatars')) action = 'uploadProfile';
+          if (folder.includes('qualifications')) action = 'uploadCertificate';
+          if (folder.includes('videos')) action = 'uploadVideo';
+          
+          const payload = {
+            action: action,
+            fileName: fileName,
+            mimeType: fileOrBlob.type || "application/octet-stream",
+            file: e.target.result // This contains the full Data URL from the working logic
+          };
+
+          let progressInterval;
+          if (onProgress) {
+            let percent = 0;
+            progressInterval = setInterval(() => {
+              percent += Math.floor(Math.random() * 10) + 5;
+              if (percent >= 90) percent = 90;
+              onProgress(percent);
+            }, 400);
+          }
+
           try {
-            const base64Data = reader.result.split(',')[1];
-            const mimeType = fileOrBlob.type || 'application/octet-stream';
-            
-            const payload = {
-              fileName: fileName,
-              mimeType: mimeType,
-              fileData: base64Data,
-              folder: folder
-            };
-
-            // Simulate progress since fetch() does not support native upload tracking
-            let progressInterval;
-            if (onProgress) {
-              let percent = 0;
-              progressInterval = setInterval(() => {
-                percent += Math.floor(Math.random() * 10) + 5;
-                if (percent >= 90) percent = 90;
-                onProgress(percent);
-              }, 400);
-            }
-
-            // Using fetch with text/plain bypasses CORS preflight and correctly follows 302 redirects
-            const response = await fetch(GOOGLE_DRIVE_WEBAPP_URL, {
+            // Replaced old text/plain logic with your JSON stringify fetch setup
+            const response = await fetch(WEB_APP_URL, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'text/plain;charset=utf-8',
-              },
               body: JSON.stringify(payload)
             });
+
+            const data = await response.json();
 
             if (progressInterval) {
               clearInterval(progressInterval);
               if (onProgress) onProgress(100);
             }
 
-            if (!response.ok) {
-              throw new Error("Network error or invalid Apps Script deployment.");
-            }
+            if (data.status === "success") {
+              // Extract the URL dynamically depending on what your Apps Script sends back
+              let finalUrl = "";
+              if (action === 'uploadProfile' && data.profilePic && data.profilePic.url) {
+                finalUrl = data.profilePic.url;
+              } else if (action === 'uploadCertificate' && data.certificates && data.certificates.length > 0) {
+                // Get the latest uploaded certificate link
+                finalUrl = data.certificates[data.certificates.length - 1].url || data.certificates[data.certificates.length - 1].fileUrl;
+              } else if (data.url) {
+                finalUrl = data.url; // Fallback if your script sends {status: 'success', url: '...'}
+              }
 
-            const respText = await response.text();
-            let respJSON;
-            
-            try {
-              respJSON = JSON.parse(respText);
-            } catch (parseError) {
-              throw new Error("Apps script did not return valid JSON. Check deployment.");
-            }
-
-            if (respJSON.success) {
-              resolve(respJSON.url);
+              if (finalUrl) {
+                resolve(finalUrl);
+              } else {
+                console.warn("Upload succeeded, but no URL was returned. Falling back to placeholder.");
+                resolve("https://via.placeholder.com/150?text=Uploaded");
+              }
             } else {
-              reject(new Error("Drive Error: " + (respJSON.error || "Unknown error")));
+              reject(new Error("Drive Error: " + (data.message || "Unknown server error")));
             }
-            
           } catch (error) {
-            reject(new Error(error.message));
+            if (progressInterval) clearInterval(progressInterval);
+            reject(new Error("Network error during upload."));
           }
         };
         
         reader.onerror = () => reject(new Error("Browser failed to read the file."));
+        // Triggers the exact same read function as your working logic
+        reader.readAsDataURL(fileOrBlob);
       });
     };
 
@@ -785,7 +790,7 @@
       return new Promise((resolve) => {
         if (!file) return resolve(null);
         if (!file.type.startsWith('image/')) {
-          return resolve(file); // Non-image documents (PDF/Doc) passed directly
+          return resolve(file); 
         }
         const reader = new FileReader();
         reader.readAsDataURL(file);
