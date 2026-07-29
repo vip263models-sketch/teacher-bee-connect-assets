@@ -700,8 +700,8 @@
   </div>
 
   <script>
-    // Google Drive Web App Deployment URL
-    const GOOGLE_DRIVE_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzp3d1nSePEysnTeHCR4G0q8p3g6vydHNVgE7qzcI7-GxsuI9azPKPtKIyAKcCF08J9/exec";
+    // --- UPDATED GOOGLE DRIVE WEB APP DEPLOYMENT URL ---
+    const GOOGLE_DRIVE_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxuFRFrm3w4SnfW8cw5d9UvZcOLkJb6a5Z9gF7qtf05ZcZrQlquRd4APTXSgHf5WRM/exec";
 
     window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], messages: [] };
     window.activeChatMsgId = null;
@@ -709,17 +709,15 @@
     let currentCropper = null;
     let editQualIndex = -1;
 
-    // ----- REUSABLE GOOGLE DRIVE UPLOADER -----
-    async function uploadToGoogleDrive(fileOrBlob, fileName, folder = "/", onProgress = null) {
+    // ----- REUSABLE GOOGLE DRIVE UPLOADER (WITH DEEP DEBUGGING) -----
+    window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(fileOrBlob);
         reader.onload = () => {
-          // Extract purely the base64 string
           const base64Data = reader.result.split(',')[1];
           const mimeType = fileOrBlob.type || 'application/octet-stream';
           
-          // Using JSON payload to avoid CORS preflight issues common with GAS FormData
           const payload = {
             fileName: fileName,
             mimeType: mimeType,
@@ -729,9 +727,6 @@
 
           const xhr = new XMLHttpRequest();
           xhr.open("POST", GOOGLE_DRIVE_WEBAPP_URL, true);
-          
-          // Using text/plain prevents the browser from sending a CORS preflight request
-          // Note: The Apps Script doPost(e) needs to read JSON.parse(e.postData.contents)
           xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
 
           if (onProgress && xhr.upload) {
@@ -744,24 +739,27 @@
           }
 
           xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                const resp = JSON.parse(xhr.responseText);
-                resolve(resp.url || resp.link || xhr.responseText);
-              } catch (e) {
-                // In case the script just returns the raw URL text instead of JSON
-                resolve(xhr.responseText);
+            // Check for CORS / Deployment errors
+            if (xhr.status === 0) {
+               reject(new Error("CORS Error: The script is not accessible. Did you deploy as 'New Version' with 'Anyone' access?"));
+               return;
+            }
+            try {
+              const resp = JSON.parse(xhr.responseText);
+              if (resp.success) {
+                resolve(resp.url);
+              } else {
+                reject(new Error("Google Drive Error: " + resp.error));
               }
-            } else {
-              reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText}`));
+            } catch (e) {
+              reject(new Error("Script returned HTML instead of JSON. Ensure you saved as a 'New Version'."));
             }
           };
 
-          xhr.onerror = () => reject(new Error("Network error during Google Drive upload."));
-          
+          xhr.onerror = () => reject(new Error("Network connection lost during upload."));
           xhr.send(JSON.stringify(payload));
         };
-        reader.onerror = (error) => reject(error);
+        reader.onerror = (error) => reject(new Error("Browser failed to read the file."));
       });
     }
 
@@ -1071,7 +1069,7 @@
            showToast('Profile picture saved!', 'success');
         } catch(e) { 
            console.error(e);
-           showToast("Google Drive upload error.", "error"); 
+           showToast(e.message, "error"); 
            btn.innerHTML = 'Crop & Save'; 
            cancelCrop(); 
         }
@@ -1112,7 +1110,7 @@
         input.value = '';
       } catch (err) {
         console.error(err);
-        showToast("Video upload failed.", "error");
+        showToast(err.message, "error");
         pContainer.style.display = 'none'; 
         pText.style.display = 'none';
       }
@@ -1158,6 +1156,12 @@
       
       if(fileInput.files.length > 0 && window.auth && window.auth.currentUser) {
         const file = fileInput.files[0];
+        
+        // File Size Check (Warn if over 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+           showToast("File is very large. Upload may timeout.", "info");
+        }
+
         const btn = document.getElementById('btn-save-qual');
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading Certificate...';
@@ -1183,7 +1187,9 @@
           btn.disabled = false;
           btn.innerHTML = 'Upload & Save Certificate';
           pContainer.style.display = 'none';
-          showToast("Certificate upload failed.", "error");
+          
+          // THIS WILL NOW SHOW THE EXACT ERROR IN THE RED TOAST
+          showToast(err.message, "error"); 
         }
       } else {
         let url = "", fName = "";
@@ -1465,7 +1471,7 @@
         input.value = '';
       } catch (err) {
         console.error(err);
-        showToast("Error uploading file to Google Drive.", "error");
+        showToast(err.message, "error");
         const tempEl = document.getElementById(tempId);
         if(tempEl) tempEl.remove();
       }
