@@ -709,59 +709,76 @@
     let currentCropper = null;
     let editQualIndex = -1;
 
-    // ----- REUSABLE GOOGLE DRIVE UPLOADER (WITH DEEP DEBUGGING) -----
+    // ----- REUSABLE GOOGLE DRIVE UPLOADER (WITH FETCH FIX) -----
     window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(fileOrBlob);
-        reader.onload = () => {
-          const base64Data = reader.result.split(',')[1];
-          const mimeType = fileOrBlob.type || 'application/octet-stream';
-          
-          const payload = {
-            fileName: fileName,
-            mimeType: mimeType,
-            fileData: base64Data,
-            folder: folder
-          };
-
-          const xhr = new XMLHttpRequest();
-          xhr.open("POST", GOOGLE_DRIVE_WEBAPP_URL, true);
-          xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
-
-          if (onProgress && xhr.upload) {
-            xhr.upload.onprogress = (e) => {
-              if (e.lengthComputable) {
-                const percent = Math.round((e.loaded / e.total) * 100);
-                onProgress(percent);
-              }
+        
+        reader.onload = async () => {
+          try {
+            const base64Data = reader.result.split(',')[1];
+            const mimeType = fileOrBlob.type || 'application/octet-stream';
+            
+            const payload = {
+              fileName: fileName,
+              mimeType: mimeType,
+              fileData: base64Data,
+              folder: folder
             };
-          }
 
-          xhr.onload = () => {
-            // Check for CORS / Deployment errors
-            if (xhr.status === 0) {
-               reject(new Error("CORS Error: The script is not accessible. Did you deploy as 'New Version' with 'Anyone' access?"));
-               return;
+            // Simulate progress since fetch() does not support native upload tracking
+            let progressInterval;
+            if (onProgress) {
+              let percent = 0;
+              progressInterval = setInterval(() => {
+                percent += Math.floor(Math.random() * 10) + 5;
+                if (percent >= 90) percent = 90;
+                onProgress(percent);
+              }, 400);
             }
+
+            // Using fetch with text/plain bypasses CORS preflight and correctly follows 302 redirects
+            const response = await fetch(GOOGLE_DRIVE_WEBAPP_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'text/plain;charset=utf-8',
+              },
+              body: JSON.stringify(payload)
+            });
+
+            if (progressInterval) {
+              clearInterval(progressInterval);
+              if (onProgress) onProgress(100);
+            }
+
+            if (!response.ok) {
+              throw new Error("Network error or invalid Apps Script deployment.");
+            }
+
+            const respText = await response.text();
+            let respJSON;
+            
             try {
-              const resp = JSON.parse(xhr.responseText);
-              if (resp.success) {
-                resolve(resp.url);
-              } else {
-                reject(new Error("Google Drive Error: " + resp.error));
-              }
-            } catch (e) {
-              reject(new Error("Script returned HTML instead of JSON. Ensure you saved as a 'New Version'."));
+              respJSON = JSON.parse(respText);
+            } catch (parseError) {
+              throw new Error("Apps script did not return valid JSON. Check deployment.");
             }
-          };
 
-          xhr.onerror = () => reject(new Error("Network connection lost during upload."));
-          xhr.send(JSON.stringify(payload));
+            if (respJSON.success) {
+              resolve(respJSON.url);
+            } else {
+              reject(new Error("Drive Error: " + (respJSON.error || "Unknown error")));
+            }
+            
+          } catch (error) {
+            reject(new Error(error.message));
+          }
         };
-        reader.onerror = (error) => reject(new Error("Browser failed to read the file."));
+        
+        reader.onerror = () => reject(new Error("Browser failed to read the file."));
       });
-    }
+    };
 
     // ----- HELPER: COMPRESS IMAGE / CONVERT TO BLOB -----
     window.compressOrGetBlob = function(file) {
@@ -1188,7 +1205,6 @@
           btn.innerHTML = 'Upload & Save Certificate';
           pContainer.style.display = 'none';
           
-          // THIS WILL NOW SHOW THE EXACT ERROR IN THE RED TOAST
           showToast(err.message, "error"); 
         }
       } else {
