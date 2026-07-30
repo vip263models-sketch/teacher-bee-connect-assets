@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TeacherBee Connect - Portal</title>
+  <title>TeacherBee Connect - Teacher Portal</title>
   
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -68,7 +68,7 @@
     .auth-wrapper { max-width: 480px; margin: 2rem auto; background: var(--surface-white); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm); width: 100%; border: 1px solid var(--border-color); }
     .auth-header { text-align: center; margin-bottom: 1.5rem; }
     
-    /* Smart Role Switcher (matches the reference image style) */
+    /* Smart Role Switcher */
     .role-switcher { display: flex; background: var(--bg-color); border-radius: 12px; padding: 6px; margin-bottom: 2rem; border: 1px solid var(--border-color); }
     .role-btn { flex: 1; text-align: center; padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.95rem; }
     .role-btn.active { background: var(--surface-white); color: var(--primary-navy); box-shadow: var(--shadow-md); }
@@ -129,51 +129,62 @@
     .view-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
     .view-panel.active { display: block; }
     .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
     
-    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
     .badge-yellow { background: var(--accent-yellow); color: var(--primary-navy); }
     .badge-navy { background: var(--navy-light); color: var(--surface-white); }
+    .badge-green { background: #D1FAE5; color: #065F46; }
+    .badge-red { background: #FEE2E2; color: #991B1B; }
     .badge-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
+
+    /* Job Card Styling */
+    .job-card { display: flex; flex-direction: column; justify-content: space-between; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: transform 0.2s, box-shadow 0.2s; }
+    .job-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .recruiter-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--bg-color); }
+    .recruiter-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-yellow); }
+    .job-meta { display: flex; gap: 0.75rem; font-size: 0.85rem; color: var(--text-muted); margin: 0.75rem 0; flex-wrap: wrap; }
+    .job-desc { font-size: 0.9rem; margin-bottom: 1.25rem; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
 
     /* Job Filters & Search */
     .filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: var(--surface-white); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
-    
-    .job-card { display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
-    .job-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-    .job-meta { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; flex-wrap: wrap; }
-    .job-desc { font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-    /* Messages UI & Chat */
-    .message-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
+    /* Messages UI & Chat (WhatsApp / Gmail Style) */
+    .message-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
     .message-item:hover { background: var(--bg-color); }
-    .message-item.unread { background: #f0f7ff; border-left: 4px solid var(--primary-navy); }
+    .message-item.unread { background: #F0F7FF; border-left: 4px solid var(--primary-navy); }
     .message-item:last-child { border-bottom: none; }
-    .msg-content h4 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--primary-navy); }
-    .msg-content p { font-size: 0.9rem; color: var(--text-muted); }
-    .msg-date { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.5rem; }
+    .msg-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-yellow); flex-shrink: 0; }
+    .msg-content { flex: 1; min-width: 0; }
+    .msg-content h4 { font-size: 0.95rem; margin-bottom: 0.2rem; color: var(--primary-navy); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .msg-content p { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .msg-date { font-size: 0.75rem; color: var(--text-muted); text-align: right; white-space: nowrap; }
     
-    #chat-window { display: none; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 550px; }
-    .chat-header { background: var(--primary-navy); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
-    .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: var(--bg-color); }
+    #chat-window { display: none; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 600px; box-shadow: var(--shadow-sm); }
+    .chat-header { background: var(--primary-navy); color: white; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .chat-header-info { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
+    .chat-header-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-yellow); }
+    .chat-messages { flex: 1; padding: 1.25rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: #ECE5DD15; }
     .chat-messages::-webkit-scrollbar { width: 6px; }
     .chat-messages::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.15); border-radius: 4px; }
-    .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; word-wrap: break-word; position: relative; }
-    .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-main); }
-    .bubble-out { background: var(--navy-light); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .msg-time-stamp { display: block; font-size: 0.68rem; opacity: 0.7; margin-top: 4px; text-align: right; }
-    .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; align-items: center; }
+    
+    .chat-bubble { max-width: 75%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.92rem; word-wrap: break-word; position: relative; line-height: 1.45; }
+    .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-main); box-shadow: var(--shadow-sm); }
+    .bubble-out { background: var(--primary-navy); color: white; align-self: flex-end; border-bottom-right-radius: 2px; box-shadow: var(--shadow-sm); }
+    .msg-time-stamp { display: block; font-size: 0.65rem; opacity: 0.7; margin-top: 4px; text-align: right; }
+    .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.75rem; align-items: center; }
 
     /* Modals */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
-    .modal-content { background: var(--surface-white); width: 100%; max-width: 600px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: var(--surface-white); width: 100%; max-width: 650px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); transition: color 0.2s; }
     .close-modal:hover { color: var(--primary-navy); }
 
     .prof-header-elegant { display: flex; align-items: center; gap: 1.5rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
-    .prof-header-elegant img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); box-shadow: var(--shadow-sm); }
+    .prof-header-elegant img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); box-shadow: var(--shadow-sm); }
     .star-rating { color: var(--accent-yellow); font-size: 1.1rem; letter-spacing: 2px; margin-top: 0.5rem; }
-    .section-title-elegant { font-size: 1.1rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem; margin-top: 1.5rem; }
+    .section-title-elegant { font-size: 1.05rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem; margin-top: 1.5rem; }
     .elegant-text { color: var(--text-main); font-size: 0.95rem; line-height: 1.6; }
     #image-cropper-container { max-height: 400px; margin-bottom: 1rem; }
 
@@ -208,7 +219,6 @@
     window.auth = getAuth(app);
     window.db = getFirestore(app);
 
-    // Expose Firebase SDK methods globally
     window.fb = {
       doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, onSnapshot, addDoc, orderBy,
       signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset
@@ -236,12 +246,11 @@
         const docSnap = await getDoc(docRef);
         
         let name = user.email.split('@')[0];
-        let avatar = "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
+        let avatar = "https://ui-avatars.com/api/?name=" + encodeURIComponent(name) + "&background=0A192F&color=FFD700";
         
         if (docSnap.exists()) {
           const data = docSnap.data();
           
-          // STRICT ROUTING: If user is an employer, redirect to recruiter portal immediately
           if (data.role === 'recruiter') {
             if (!isRedirecting) {
                 isRedirecting = true;
@@ -267,13 +276,12 @@
           }
           
           window.currentUser.quals = data.qualifications || [];
-          // Instead of static messages, we now use Realtime setup below
+          window.currentUser.rating = data.rating || 5;
         }
         
         finalizeLogin(name, user.email, user.emailVerified, avatar);
         window.renderQualifications();
         
-        // Initialize real-time links with Recruiter Portal
         window.setupRealtimeJobs();
         window.setupRealtimeInbox();
       }
@@ -318,7 +326,6 @@
 
     <!-- AUTHENTICATION CONTAINER -->
     <div class="auth-wrapper" id="auth-panel">
-      
       <div class="auth-header">
         <h2 id="auth-title">Sign in to your account</h2>
       </div>
@@ -407,7 +414,7 @@
         <i class="fa-regular fa-user"></i> <span>Profile</span>
       </div>
       <div class="sidebar-item" onclick="switchView('jobs-view', this)">
-        <i class="fa-solid fa-briefcase"></i> <span>Jobs</span>
+        <i class="fa-solid fa-briefcase"></i> <span>Vacancies</span>
       </div>
       <div class="sidebar-item" onclick="switchView('workshops-view', this)">
         <i class="fa-solid fa-chalkboard-user"></i> <span>Training</span>
@@ -431,11 +438,10 @@
               <h2 id="display-name">Loading...</h2>
               <span id="verification-badge" class="badge badge-navy">Email Verified</span>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openRecruiterView()"><i class="fa-solid fa-user-tie"></i> View My Profile</button>
+            <button type="button" class="btn btn-primary" onclick="openRecruiterView()"><i class="fa-solid fa-eye"></i> Preview Profile</button>
           </div>
 
           <form onsubmit="handleProfileUpdate(event)">
-            
             <div class="avatar-upload-container">
               <label for="avatar-input" class="avatar-upload-btn">
                 <img src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" id="profile-avatar" class="avatar-preview" title="Click to change profile picture">
@@ -448,8 +454,8 @@
             
             <div class="grid-2-col" style="margin-bottom: 1rem;">
               <div class="form-group">
-                <label class="form-label">Display Name</label>
-                <input type="text" id="prof-display-name" class="form-input" placeholder="e.g. Jane D.">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="prof-display-name" class="form-input" placeholder="e.g. Jane Doe">
               </div>
               <div class="form-group">
                 <label class="form-label">Age</label>
@@ -468,23 +474,23 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Years of Experience</label>
-                <input type="number" id="prof-experience" class="form-input" min="0">
+                <input type="number" id="prof-experience" class="form-input" min="0" placeholder="e.g. 5">
               </div>
               <div class="form-group">
                 <label class="form-label">Languages (Comma separated)</label>
-                <input type="text" id="prof-languages" class="form-input" placeholder="e.g. English (Native), Spanish (B1)">
+                <input type="text" id="prof-languages" class="form-input" placeholder="e.g. English (Native), Spanish">
               </div>
             </div>
 
             <div class="form-group">
               <label class="form-label">Professional Biography</label>
-              <textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself to recruiters. Highlight your teaching philosophy and achievements..."></textarea>
+              <textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself to recruiters. Highlight your teaching philosophy, subjects, and key achievements..."></textarea>
             </div>
 
-            <div class="form-group" style="margin-top:1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
-              <label class="form-label"><i class="fa-solid fa-video"></i> Introduction Video Upload</label>
-              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Upload a short 1-3 minute intro video.</p>
-              <input type="file" id="prof-video-file" accept="video/mp4,video/webm" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem;">
+            <div class="form-group" style="margin-top:1rem; padding: 1.25rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--bg-color);">
+              <label class="form-label"><i class="fa-solid fa-video" style="color:var(--primary-navy);"></i> Introduction Video Upload</label>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">Upload a short 1-3 minute intro video for recruiters to view.</p>
+              <input type="file" id="prof-video-file" accept="video/mp4,video/webm" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem; background:white;">
               
               <div class="progress-bar-container" id="video-progress-bar">
                 <div class="progress-bar-fill" id="video-progress-fill"></div>
@@ -501,17 +507,17 @@
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
               <h3>My Qualifications & Certificates</h3>
-              <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm(false)"><i class="fa-solid fa-plus"></i> Add Qualification</button>
+              <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm()"><i class="fa-solid fa-plus"></i> Add Qualification</button>
             </div>
             
             <div id="add-qual-form">
               <div class="form-group">
                 <label class="form-label">Qualification Title</label>
-                <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. 120-Hour TEFL Certificate">
+                <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. Bachelor of Education / 120-Hour TEFL">
               </div>
               <div class="form-group">
-                <label class="form-label">Upload Certificate Document / Image</label>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-5px; margin-bottom:5px;">Accepts Images, PDFs, and Word Documents</p>
+                <label class="form-label">Upload Certificate Document / Resume / Image</label>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-5px; margin-bottom:5px;">Accepts Images, PDFs, and Word Documents (.doc, .docx)</p>
                 <input type="file" id="new-qual-file" class="form-input" onchange="handleQualFileSelect(this)" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
               </div>
               <div class="progress-bar-container" id="qual-progress-bar">
@@ -532,13 +538,13 @@
         </div>
       </section>
 
-      <!-- 2. REALTIME JOB BOARD VIEW -->
+      <!-- 2. VACANCIES JOB BOARD VIEW -->
       <section id="jobs-view" class="view-panel">
-        <h2 style="margin-bottom: 1rem;">Recent Job Opportunities</h2>
+        <h2 style="margin-bottom: 1rem;">Posted Vacancies</h2>
         
         <div class="filter-bar">
-          <input type="text" id="search-jobs" class="form-input" placeholder="Search keyword..." oninput="filterJobBoard()">
-          <input type="text" id="search-location" class="form-input" placeholder="Filter by Country/Location..." oninput="filterJobBoard()">
+          <input type="text" id="search-jobs" class="form-input" placeholder="Search position or keywords..." oninput="filterJobBoard()">
+          <input type="text" id="search-location" class="form-input" placeholder="Filter by Location/Country..." oninput="filterJobBoard()">
           <select id="filter-type" class="form-select" onchange="filterJobBoard()">
             <option value="all">All Types</option>
             <option value="Full Time">Full Time</option>
@@ -549,7 +555,7 @@
         <div class="cards-grid" id="job-list-container">
           <div style="text-align:center; padding: 2rem; color:var(--text-muted); grid-column: 1/-1;" id="jobs-loading">
             <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom:1rem;"></i>
-            <p>Fetching active jobs from employers...</p>
+            <p>Fetching active vacancies from recruiters...</p>
           </div>
         </div>
       </section>
@@ -558,9 +564,9 @@
       <section id="workshops-view" class="view-panel">
         <h2 style="margin-bottom: 1.5rem;">Training & Workshops</h2>
         <div class="card">
-          <span class="badge badge-yellow">Live Seminar</span>
+          <span class="badge badge-yellow" style="margin-bottom:0.75rem;">Live Seminar</span>
           <h3>Mastering the Demo Lesson</h3>
-          <p style="margin-bottom: 1rem;">Learn how to impress recruiters during your mock class.</p>
+          <p style="margin-bottom: 1rem;">Learn how to impress recruiters during your mock class and structure your ESL lesson plan.</p>
           <button class="btn btn-primary" onclick="autoRegisterWorkshop('Mastering the Demo Lesson')">Reserve Spot</button>
         </div>
       </section>
@@ -570,41 +576,46 @@
         <h2 style="margin-bottom: 1.5rem;">TEFL Certification Support</h2>
         <div class="card">
           <h3>Partner 120-Hour Accredited TEFL</h3>
-          <p style="margin-bottom: 1rem;">Get certified to teach English globally. High approval rates.</p>
+          <p style="margin-bottom: 1rem;">Get certified to teach English globally with international accreditation and high approval rates.</p>
           <button class="btn btn-primary" onclick="autoSubmitTeflEnquiry()">Request Info</button>
         </div>
       </section>
 
-      <!-- 5. INBOX / MESSAGES (Synced with Recruiters) -->
+      <!-- 5. INBOX / MESSAGES -->
       <section id="messages-view" class="view-panel">
         <div id="inbox-list-view">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
-            <h2>Your Inbox</h2>
+            <h2>Messages & Job Applications</h2>
           </div>
           
           <div class="card" style="padding: 0;" id="inbox-container">
             <div style="text-align:center; padding: 3rem; color:var(--text-muted);" id="empty-inbox">
               <i class="fa-regular fa-envelope-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-              <p>No messages yet.</p>
+              <p>No messages yet. When you apply for a job or a recruiter contacts you, messages appear here.</p>
             </div>
           </div>
         </div>
 
-        <!-- Realtime Chat Window -->
+        <!-- Realtime Chat Window (WhatsApp/Gmail Style) -->
         <div id="chat-window">
           <div class="chat-header">
-            <div>
-              <h3 style="color:white; margin:0;" id="chat-title">Recruiter Chat</h3>
-              <span style="font-size:0.8rem; opacity:0.8;">Active now</span>
+            <div class="chat-header-info" onclick="viewRecruiterProfileFromChat()">
+              <img src="" id="chat-header-avatar" class="chat-header-avatar" alt="Recruiter">
+              <div>
+                <h3 style="color:white; margin:0; font-size:1.05rem;" id="chat-title">Recruiter Name</h3>
+                <span style="font-size:0.78rem; opacity:0.8;" id="chat-subtitle"><i class="fa-solid fa-circle" style="color:#10B981; font-size:0.6rem;"></i> Active Now • View Profile</span>
+              </div>
             </div>
-            <button class="btn btn-small" style="background:transparent; color:white; border:1px solid white;" onclick="closeChat(true)">Back to Inbox</button>
+            <button class="btn btn-small" style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.4);" onclick="closeChat(true)">Back to Inbox</button>
           </div>
+          
           <div class="chat-messages" id="chat-history">
-            <!-- Messages go here dynamically -->
+            <!-- Messages render dynamically -->
           </div>
+          
           <div class="chat-input-area">
-            <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message to the recruiter..." style="border-radius:20px;">
-            <button class="btn btn-primary btn-small" style="border-radius:50%; width:40px; height:40px; padding:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message..." style="border-radius:20px;" onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn btn-primary btn-small" style="border-radius:50%; width:42px; height:42px; padding:0; flex-shrink:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
           </div>
         </div>
       </section>
@@ -616,13 +627,28 @@
   <div class="modal-overlay" id="job-detail-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeJobModal()">&times;</button>
+      
+      <div class="recruiter-header" style="margin-bottom:1.5rem;">
+        <img id="job-modal-avatar" src="" class="recruiter-avatar" alt="Recruiter">
+        <div>
+          <h4 id="job-modal-recruiter-name" style="margin:0; font-size:1.05rem;">Recruiter Name</h4>
+          <span style="font-size:0.8rem; color:var(--text-muted);" id="job-modal-date">Posted Date</span>
+        </div>
+        <span class="badge" id="job-modal-status-badge" style="margin-left:auto;">Open</span>
+      </div>
+
       <h2 id="job-modal-title" style="margin-bottom:0.5rem; color:var(--primary-navy);">Job Title</h2>
       <div class="job-meta" id="job-modal-meta" style="margin-bottom: 1.5rem;"></div>
       
-      <h3 class="section-title-elegant">Job Description</h3>
-      <div id="job-modal-desc" class="elegant-text" style="white-space: pre-wrap; margin-bottom: 2rem;"></div>
+      <h3 class="section-title-elegant">Full Job Description</h3>
+      <div id="job-modal-desc" class="elegant-text" style="margin-bottom: 2rem;"></div>
       
-      <button class="btn btn-primary btn-block" id="job-modal-apply">Apply Now</button>
+      <div id="job-modal-attachments-container" style="display:none; margin-bottom:1.5rem;">
+        <h3 class="section-title-elegant">Attached Images & Files</h3>
+        <div id="job-modal-attachments" style="display:flex; gap:0.5rem; flex-wrap:wrap;"></div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="job-modal-apply"><i class="fa-solid fa-paper-plane"></i> Apply Now & Attach Profile</button>
     </div>
   </div>
 
@@ -640,15 +666,15 @@
     </div>
   </div>
 
-  <!-- RECRUITER VIEW (PROFESSIONAL PROFILE) MODAL -->
+  <!-- RECRUITER / PREVIEW TEACHER PROFILE MODAL -->
   <div class="modal-overlay" id="recruiter-modal">
-    <div class="modal-content" style="max-width: 700px; padding: 3rem;">
+    <div class="modal-content" style="max-width: 700px; padding: 2.5rem;">
       <button class="close-modal" onclick="document.getElementById('recruiter-modal').classList.remove('active')">&times;</button>
       
       <div class="prof-header-elegant">
         <img id="rv-avatar" src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" alt="Profile">
         <div>
-          <h2 id="rv-name" style="font-size: 1.8rem; margin-bottom: 0.2rem;">Jane Doe</h2>
+          <h2 id="rv-name" style="font-size: 1.7rem; margin-bottom: 0.2rem;">Jane Doe</h2>
           <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
             <span class="badge badge-navy" id="rv-gender">Female</span>
             <span class="badge badge-navy" id="rv-age">28 yrs</span>
@@ -663,14 +689,26 @@
         <p class="elegant-text" id="rv-bio-text">No biography provided.</p>
       </div>
 
-      <div id="rv-video-section" style="display:none; margin-top:2rem;">
+      <div id="rv-video-section" style="display:none; margin-top:1.5rem;">
         <h3 class="section-title-elegant">Introduction Video</h3>
-        <video id="rv-video-player" controls style="width:100%; border-radius:8px;"></video>
+        <video id="rv-video-player" controls style="width:100%; border-radius:8px; max-height:350px; background:black;"></video>
       </div>
 
-      <div id="rv-qual-section" style="margin-top:2rem;">
-        <h3 class="section-title-elegant">Certifications & Degrees</h3>
+      <div id="rv-qual-section" style="margin-top:1.5rem;">
+        <h3 class="section-title-elegant">Certifications & Qualifications</h3>
         <div id="rv-qual-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECRUITER INFO MODAL (For viewing recruiter profile from chat) -->
+  <div class="modal-overlay" id="recruiter-info-modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <button class="close-modal" onclick="document.getElementById('recruiter-info-modal').classList.remove('active')">&times;</button>
+      <div style="text-align:center; padding: 1rem 0;">
+        <img id="recruiter-info-avatar" src="" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid var(--accent-yellow); margin-bottom:1rem;">
+        <h2 id="recruiter-info-name" style="margin-bottom:0.25rem;">Recruiter Name</h2>
+        <p id="recruiter-info-email" style="font-size:0.9rem; color:var(--text-muted);"><i class="fa-regular fa-envelope"></i> recruiter@school.com</p>
       </div>
     </div>
   </div>
@@ -679,16 +717,14 @@
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
 
     window.activeRole = 'teacher';
-    window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [] };
+    window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], rating: 5 };
     
-    // For Realtime Chat/Jobs
     window.activeChatId = null;
+    window.activeChatRecruiterId = null;
     let jobList = [];
-    let unreadMessages = 0;
     let currentCropper = null;
     let editQualIndex = -1;
 
-    // --- SMART ROLE SWITCHER (Matches 1002587938_2.jpg) ---
     window.selectRole = function(role) {
       window.activeRole = role;
       document.getElementById('role-teacher').classList.toggle('active', role === 'teacher');
@@ -697,16 +733,14 @@
       const isRecruiter = role === 'recruiter';
       document.getElementById('reg-name-label').innerText = isRecruiter ? 'Company Name / Representative' : 'Full Name';
       
-      // Hide DOB and Country if Employer is selected (streamlined onboarding)
       document.getElementById('dob-group').style.display = isRecruiter ? 'none' : 'block';
       document.getElementById('country-group').style.display = isRecruiter ? 'none' : 'block';
       
-      // Remove required attributes dynamically
       document.getElementById('reg-dob').required = !isRecruiter;
       document.getElementById('reg-country').required = !isRecruiter;
     };
 
-    // ----- REUSABLE GOOGLE DRIVE UPLOADER -----
+    // ----- GOOGLE DRIVE UPLOADER -----
     window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -791,7 +825,7 @@
       document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
 
       if (event.state && event.state.view) {
-        if (event.state.view === 'chat') openChat(event.state.title, false, event.state.msgId);
+        if (event.state.view === 'chat') openChat(event.state.msgId, event.state.title, event.state.recruiterId, event.state.recruiterAvatar, false);
         else if (event.state.view === 'job-details') viewJobDetails(event.state.jobId, false);
         else {
           document.getElementById('chat-window').style.display = 'none';
@@ -879,16 +913,16 @@
           email: email, 
           country: country || "", 
           role: window.activeRole, 
+          rating: 5,
           createdAt: window.fb.serverTimestamp(),
           qualifications: []
         });
 
-        // Strict Routing check on Registration
         if(window.activeRole === 'recruiter') {
            window.location.href = 'recruiter.html';
         } else {
            showToast("Account created!", "success");
-           finalizeLogin(name, email, false, "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700");
+           finalizeLogin(name, email, false, "https://ui-avatars.com/api/?name=" + encodeURIComponent(name) + "&background=0A192F&color=FFD700");
         }
       } catch (error) {
         btn.innerHTML = 'Create Account';
@@ -907,7 +941,6 @@
 
       try {
         await window.fb.signInWithEmailAndPassword(window.auth, email, pass);
-        // User document fetch and strict routing handled safely inside onAuthStateChanged
       } catch (error) {
         btn.innerHTML = 'Sign In';
         showToast("Incorrect email or password.", 'error');
@@ -967,7 +1000,7 @@
       `;
     }
 
-    // --- REALTIME JOBS BOARD (Links with Recruiter panel) ---
+    // --- REALTIME VACANCIES (POSTED JOBS) BOARD ---
     window.setupRealtimeJobs = function() {
       const jobsQuery = window.fb.query(window.fb.collection(window.db, "jobs"), window.fb.orderBy("createdAt", "desc"));
       
@@ -978,7 +1011,7 @@
         container.innerHTML = '';
         
         if (snapshot.empty) {
-          container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No live jobs at the moment.</p>';
+          container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No live vacancies available at the moment.</p>';
           return;
         }
 
@@ -986,20 +1019,38 @@
           const job = { id: docSnap.id, ...docSnap.data() };
           jobList.push(job);
           
+          const isTaken = (job.status === 'taken');
+          const statusBadge = isTaken ? `<span class="badge badge-red">Taken</span>` : `<span class="badge badge-green">Open</span>`;
+          const recruiterAvatar = job.recruiterAvatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(job.recruiterName || 'Employer') + "&background=0A192F&color=FFD700";
+          
+          let dateStr = "Recently";
+          if (job.createdAt && job.createdAt.toDate) {
+            dateStr = job.createdAt.toDate().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+          }
+
           const html = `
-            <div class="card job-card" data-title="${job.title.toLowerCase()}" data-location="${(job.location||'').toLowerCase()}" data-type="${job.type||'Full Time'}">
+            <div class="job-card" data-title="${(job.title||'').toLowerCase()}" data-location="${(job.location||'').toLowerCase()}" data-type="${job.type||'Full Time'}">
               <div>
-                <div style="display:flex; justify-content:space-between;">
+                <div class="recruiter-header">
+                  <img src="${recruiterAvatar}" class="recruiter-avatar" alt="Recruiter">
+                  <div>
+                    <h4 style="font-size:0.92rem; margin:0; color:var(--primary-navy);">${job.recruiterName || 'School / Employer'}</h4>
+                    <span style="font-size:0.75rem; color:var(--text-muted);"><i class="fa-regular fa-clock"></i> ${dateStr}</span>
+                  </div>
+                  <div style="margin-left:auto;">${statusBadge}</div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
                   <span class="badge badge-yellow">${job.type || 'Full Time'}</span>
                   <span class="badge badge-outline"><i class="fa-solid fa-location-dot"></i> ${job.location || 'Remote'}</span>
                 </div>
-                <h3 style="font-size: 1.1rem; margin-top:0.5rem;">${job.title}</h3>
+                <h3 style="font-size: 1.1rem; margin-top:0.75rem;">${job.title}</h3>
                 <div class="job-meta">
                   <span><i class="fa-solid fa-coins"></i> ${job.pay || 'Negotiable'}</span>
                 </div>
                 <div class="job-desc">${job.description || ''}</div>
               </div>
-              <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('${job.id}')">View Details</button>
+              <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('${job.id}')">View Details & Apply</button>
             </div>
           `;
           container.insertAdjacentHTML('beforeend', html);
@@ -1023,12 +1074,46 @@
     window.viewJobDetails = function(jobId, pushToHistory = true) {
       const job = jobList.find(j => j.id === jobId);
       if(!job) return;
+
       document.getElementById('job-modal-title').innerText = job.title;
+      document.getElementById('job-modal-recruiter-name').innerText = job.recruiterName || 'Employer / School';
+      document.getElementById('job-modal-avatar').src = job.recruiterAvatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(job.recruiterName || 'Employer') + "&background=0A192F&color=FFD700";
+
+      let dateStr = "Recently";
+      if (job.createdAt && job.createdAt.toDate) {
+        dateStr = job.createdAt.toDate().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+      document.getElementById('job-modal-date').innerText = `Posted: ${dateStr}`;
+
+      const isTaken = (job.status === 'taken');
+      const sBadge = document.getElementById('job-modal-status-badge');
+      sBadge.className = isTaken ? 'badge badge-red' : 'badge badge-green';
+      sBadge.innerText = isTaken ? 'Taken' : 'Open';
+
       document.getElementById('job-modal-meta').innerHTML = `<span><i class="fa-solid fa-coins"></i> ${job.pay||'N/A'}</span> <span><i class="fa-solid fa-location-dot"></i> ${job.location||'Remote'}</span> <span class="badge badge-yellow">${job.type||'Full Time'}</span>`;
-      document.getElementById('job-modal-desc').innerHTML = job.description; // Renders Rich Text
+      document.getElementById('job-modal-desc').innerHTML = job.description || 'No detailed description provided.';
+
+      const attachContainer = document.getElementById('job-modal-attachments-container');
+      const attachList = document.getElementById('job-modal-attachments');
+      attachList.innerHTML = '';
+
+      if (job.imageUrl) {
+        attachContainer.style.display = 'block';
+        attachList.innerHTML = `<img src="${job.imageUrl}" style="max-width:100%; max-height:250px; border-radius:8px; border:1px solid var(--border-color); object-fit:cover;" onclick="window.open('${job.imageUrl}', '_blank')">`;
+      } else {
+        attachContainer.style.display = 'none';
+      }
 
       const applyBtn = document.getElementById('job-modal-apply');
-      applyBtn.onclick = () => { applyForJob(job); closeJobModal(); };
+      if (isTaken) {
+        applyBtn.disabled = true;
+        applyBtn.innerText = "Position Filled / Taken";
+        applyBtn.style.opacity = "0.6";
+      } else {
+        applyBtn.disabled = false;
+        applyBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Apply Now & Attach Profile`;
+        applyBtn.onclick = () => { applyForJob(job); closeJobModal(); };
+      }
 
       document.getElementById('job-detail-modal').classList.add('active');
       if (pushToHistory) history.pushState({ view: 'job-details', jobId }, '', '#job-details');
@@ -1039,34 +1124,72 @@
       if(history.state && history.state.view === 'job-details') history.back();
     };
 
-    // --- REALTIME MESSAGING (Linking Teacher & Recruiter) ---
+    // --- APPLY FOR JOB & REALTIME MESSAGING ---
     window.applyForJob = async function(job) {
-      if (!window.currentUser.isVerified) { showToast("Verify your email address to apply for jobs.", "error"); return; }
+      if (!window.currentUser.isVerified) { showToast("Please verify your email address to apply for jobs.", "error"); return; }
       
       try {
-        const threadData = {
-          participants: [window.currentUser.uid, job.recruiterId],
-          jobId: job.id,
-          jobTitle: job.title,
-          updatedAt: window.fb.serverTimestamp(),
-          teacherName: window.currentUser.name
-        };
+        const threadsRef = window.fb.collection(window.db, "threads");
         
-        const threadRef = await window.fb.addDoc(window.fb.collection(window.db, "threads"), threadData);
+        // Query to check if thread already exists
+        const q = window.fb.query(threadsRef, window.fb.where("teacherId", "==", window.currentUser.uid), window.fb.where("jobId", "==", job.id));
+        const existingDocs = await window.fb.getDocs(q);
         
-        await window.fb.addDoc(window.fb.collection(window.db, `threads/${threadRef.id}/messages`), {
+        let threadId = null;
+        
+        if (!existingDocs.empty) {
+          threadId = existingDocs.docs[0].id;
+        } else {
+          const threadData = {
+            participants: [window.currentUser.uid, job.recruiterId],
+            teacherId: window.currentUser.uid,
+            teacherName: window.currentUser.name,
+            teacherAvatar: window.currentUser.avatarUrl,
+            recruiterId: job.recruiterId,
+            recruiterName: job.recruiterName || "Recruiter",
+            recruiterAvatar: job.recruiterAvatar || "",
+            jobId: job.id,
+            jobTitle: job.title,
+            updatedAt: window.fb.serverTimestamp(),
+            lastMessage: `Application submitted for ${job.title}`
+          };
+          
+          const newThread = await window.fb.addDoc(threadsRef, threadData);
+          threadId = newThread.id;
+        }
+
+        // Add application message with attached profile card
+        await window.fb.addDoc(window.fb.collection(window.db, `threads/${threadId}/messages`), {
           senderId: window.currentUser.uid,
-          text: `Application for ${job.title}. Hello, I would like to apply for this position. My profile is fully updated.`,
+          senderName: window.currentUser.name,
+          senderAvatar: window.currentUser.avatarUrl,
+          text: `👋 Application for position: **${job.title}**.\n\nHello, I am interested in this position and have attached my complete profile and credentials.`,
+          isApplication: true,
+          teacherProfile: {
+            uid: window.currentUser.uid,
+            name: window.currentUser.name,
+            avatarUrl: window.currentUser.avatarUrl,
+            experience: document.getElementById('prof-experience').value || '0',
+            bio: document.getElementById('prof-bio').value || '',
+            rating: window.currentUser.rating || 5,
+            quals: window.currentUser.quals || [],
+            videoUrl: window.currentUser.videoUrl || ''
+          },
           timestamp: window.fb.serverTimestamp()
         });
 
-        showToast(`Application successfully sent for ${job.title}`, "success");
+        // Trigger Notification for Teacher
+        showToast(`Application successfully sent for ${job.title}! You can track it in your inbox.`, "success");
+        switchView('messages-view');
+        openChat(threadId, job.recruiterName || "Recruiter", job.recruiterId, job.recruiterAvatar || "");
+
       } catch(e) {
-        console.error(e);
-        showToast("Error sending application.", "error");
+        console.error("Application error:", e);
+        showToast("Error sending application. Please try again.", "error");
       }
     };
 
+    // --- REALTIME MESSAGING & INBOX (WhatsApp / Gmail Style) ---
     window.setupRealtimeInbox = function() {
       const inboxQuery = window.fb.query(window.fb.collection(window.db, "threads"), window.fb.where("participants", "array-contains", window.currentUser.uid));
       
@@ -1088,12 +1211,24 @@
         snapshot.forEach((docSnap) => {
           threadCount++;
           const thread = { id: docSnap.id, ...docSnap.data() };
+          
+          const recruiterName = thread.recruiterName || 'Recruiter';
+          const recruiterAvatar = thread.recruiterAvatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(recruiterName) + "&background=0A192F&color=FFD700";
+          const lastMsg = thread.lastMessage || `Conversation regarding ${thread.jobTitle || 'Vacancy'}`;
+          
+          let dateStr = "";
+          if (thread.updatedAt && thread.updatedAt.toDate) {
+            dateStr = thread.updatedAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          }
+
           const html = `
-            <div class="message-item" onclick="openChat('${thread.id}', '${thread.jobTitle || 'Chat'}')">
+            <div class="message-item" onclick="openChat('${thread.id}', '${recruiterName.replace(/'/g, "\\'")}', '${thread.recruiterId}', '${recruiterAvatar.replace(/'/g, "\\'")}')">
+              <img src="${recruiterAvatar}" class="msg-avatar" alt="${recruiterName}">
               <div class="msg-content">
-                <h4><i class="fa-solid fa-building" style="color:var(--accent-yellow);"></i> ${thread.jobTitle || 'Employer Message'}</h4>
-                <p>Click to view conversation</p>
+                <h4>${recruiterName} <span style="font-size:0.75rem; font-weight:normal; color:var(--text-muted);">• ${thread.jobTitle || 'General'}</span></h4>
+                <p>${lastMsg}</p>
               </div>
+              <span class="msg-date">${dateStr}</span>
             </div>
           `;
           container.insertAdjacentHTML('beforeend', html);
@@ -1109,11 +1244,16 @@
 
     let activeChatUnsubscribe = null;
 
-    window.openChat = function(threadId, title, pushToHistory = true) {
+    window.openChat = function(threadId, recruiterName, recruiterId, recruiterAvatar, pushToHistory = true) {
       window.activeChatId = threadId;
+      window.activeChatRecruiterId = recruiterId;
+
       document.getElementById('inbox-list-view').style.display = 'none';
       document.getElementById('chat-window').style.display = 'flex';
-      document.getElementById('chat-title').innerText = title;
+      
+      document.getElementById('chat-title').innerText = recruiterName || 'Recruiter Chat';
+      const avatarEl = document.getElementById('chat-header-avatar');
+      avatarEl.src = recruiterAvatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(recruiterName || 'Recruiter') + "&background=0A192F&color=FFD700";
 
       if(activeChatUnsubscribe) activeChatUnsubscribe();
 
@@ -1121,29 +1261,49 @@
       
       activeChatUnsubscribe = window.fb.onSnapshot(msgsQuery, (snapshot) => {
         const hist = document.getElementById('chat-history');
-        hist.innerHTML = '<div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;">Chat started</div>';
+        hist.innerHTML = '<div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-bottom:0.5rem;">Protected Conversation • TeacherBee Connect</div>';
         
         snapshot.forEach((docSnap) => {
           const msg = docSnap.data();
-          const bubbleClass = msg.senderId === window.currentUser.uid ? 'bubble-out' : 'bubble-in';
+          const isMe = msg.senderId === window.currentUser.uid;
+          const bubbleClass = isMe ? 'bubble-out' : 'bubble-in';
           
-          let content = `<div>${msg.text}</div>`;
-          // If media exists (using old attachment structure integration)
-          if(msg.mediaUrl) {
-              content = `<a href="${msg.mediaUrl}" target="_blank" style="color:inherit; text-decoration:underline;">View Attachment</a>`;
+          let timeStr = "";
+          if (msg.timestamp && msg.timestamp.toDate) {
+            timeStr = msg.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           }
-          hist.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${bubbleClass}">${content}</div>`);
+
+          let formattedText = (msg.text || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+
+          let attachContent = '';
+          if (msg.isApplication) {
+            attachContent = `
+              <div style="margin-top:0.5rem; padding:0.5rem; background:rgba(255,215,0,0.15); border-radius:6px; border:1px solid var(--accent-yellow); font-size:0.8rem;">
+                <i class="fa-solid fa-id-card"></i> <strong>Profile Attached:</strong> ${msg.senderName}
+              </div>
+            `;
+          }
+
+          const html = `
+            <div class="chat-bubble ${bubbleClass}">
+              <div>${formattedText}</div>
+              ${attachContent}
+              <span class="msg-time-stamp">${timeStr}</span>
+            </div>
+          `;
+          hist.insertAdjacentHTML('beforeend', html);
         });
         hist.scrollTop = hist.scrollHeight;
       });
 
-      if (pushToHistory) history.pushState({ view: 'chat', title, msgId: threadId }, '', '#chat');
+      if (pushToHistory) history.pushState({ view: 'chat', msgId: threadId, title: recruiterName, recruiterId, recruiterAvatar }, '', '#chat');
     };
 
     window.closeChat = function(pushToHistory = true) {
       document.getElementById('chat-window').style.display = 'none';
       document.getElementById('inbox-list-view').style.display = 'block';
       window.activeChatId = null;
+      window.activeChatRecruiterId = null;
       if(activeChatUnsubscribe) activeChatUnsubscribe();
       if (pushToHistory && history.state && history.state.view === 'chat') history.back();
     };
@@ -1156,13 +1316,37 @@
       input.value = '';
       await window.fb.addDoc(window.fb.collection(window.db, `threads/${window.activeChatId}/messages`), {
         senderId: window.currentUser.uid,
+        senderName: window.currentUser.name,
+        senderAvatar: window.currentUser.avatarUrl,
         text: text,
         timestamp: window.fb.serverTimestamp()
       });
-      await window.fb.updateDoc(window.fb.doc(window.db, "threads", window.activeChatId), { updatedAt: window.fb.serverTimestamp() });
+
+      await window.fb.updateDoc(window.fb.doc(window.db, "threads", window.activeChatId), { 
+        updatedAt: window.fb.serverTimestamp(),
+        lastMessage: text
+      });
     };
 
-    // --- AUTOMATIC FIRESTORE SYNCHRONIZATION ---
+    window.viewRecruiterProfileFromChat = async function() {
+      if(!window.activeChatRecruiterId) return;
+      try {
+        const docSnap = await window.fb.getDoc(window.fb.doc(window.db, "users", window.activeChatRecruiterId));
+        if (docSnap.exists()) {
+          const recData = docSnap.data();
+          document.getElementById('recruiter-info-name').innerText = recData.name || 'Recruiter';
+          document.getElementById('recruiter-info-email').innerText = recData.email || '';
+          document.getElementById('recruiter-info-avatar').src = recData.avatarUrl || document.getElementById('chat-header-avatar').src;
+          document.getElementById('recruiter-info-modal').classList.add('active');
+        } else {
+          showToast("Recruiter details unavailable.", "info");
+        }
+      } catch(e) {
+        console.error(e);
+      }
+    };
+
+    // --- AUTOMATIC PROFILE SYNCHRONIZATION ---
     window.saveProfileToFirestore = async function() {
       if (!window.auth || !window.auth.currentUser || !window.fb) return;
       try {
@@ -1171,11 +1355,11 @@
           videoUrl: window.currentUser.videoUrl || ""
         });
       } catch (e) {
-        console.error("Firestore sync failed:", e);
+        console.error("Firestore sync error:", e);
       }
     };
 
-    // ... (Avatar/Cropper/Qualifications Code Remains Unchanged) ...
+    // --- AVATAR CROPPER & PROFILE MEDIA HANDLERS ---
     window.openCropperModal = function(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -1211,7 +1395,7 @@
            const navImg = document.getElementById('nav-avatar-img');
            if(navImg) navImg.src = url;
            await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { avatarUrl: url });
-           btn.innerHTML = 'Crop & Save'; cancelCrop(); showToast('Profile picture saved!', 'success');
+           btn.innerHTML = 'Crop & Save'; cancelCrop(); showToast('Profile picture saved successfully!', 'success');
         } catch(e) { console.error(e); showToast(e.message, "error"); btn.innerHTML = 'Crop & Save'; cancelCrop(); }
       }, 'image/jpeg', 0.85);
     };
@@ -1226,7 +1410,7 @@
         const url = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, "/videos", (percent) => { pFill.style.width = `${percent}%`; pText.innerText = `Uploading video... ${percent}%`; });
         window.currentUser.videoUrl = url; saveProfileToFirestore();
         const vPreview = document.getElementById('prof-video-preview'); vPreview.src = url; vPreview.style.display = 'block';
-        pContainer.style.display = 'none'; pText.style.display = 'none'; showToast("Video uploaded & saved automatically!", "success"); input.value = '';
+        pContainer.style.display = 'none'; pText.style.display = 'none'; showToast("Intro video saved successfully!", "success"); input.value = '';
       } catch (err) { console.error(err); showToast(err.message, "error"); pContainer.style.display = 'none'; pText.style.display = 'none'; }
     };
 
@@ -1255,7 +1439,6 @@
       if(!title) { showToast("Please enter a qualification title.", "error"); return; }
       if(fileInput.files.length > 0 && window.auth && window.auth.currentUser) {
         const file = fileInput.files[0];
-        if (file.size > 5 * 1024 * 1024) showToast("File is very large. Upload may timeout.", "info");
         const btn = document.getElementById('btn-save-qual'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading Certificate...';
         const pContainer = document.getElementById('qual-progress-bar'), pFill = document.getElementById('qual-progress-fill');
         pContainer.style.display = 'block'; pFill.style.width = '0%';
@@ -1274,7 +1457,7 @@
 
     function finalizeSaveQual(title, url, fileName) {
       if (editQualIndex > -1) { window.currentUser.quals[editQualIndex] = { title, url, fileName }; } else { window.currentUser.quals.push({ id: Date.now().toString(), title, url, fileName }); }
-      saveProfileToFirestore(); renderQualifications(); toggleAddQualForm(); showToast("Certificate uploaded and saved automatically!", "success");
+      saveProfileToFirestore(); renderQualifications(); toggleAddQualForm(); showToast("Certificate saved successfully!", "success");
     }
 
     window.renderQualifications = function() {
@@ -1318,7 +1501,7 @@
 
     window.openRecruiterView = function() {
       document.getElementById('rv-name').innerText = window.currentUser.name || document.getElementById('prof-display-name').value;
-      document.getElementById('rv-avatar').src = window.currentUser.avatarUrl || "https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700";
+      document.getElementById('rv-avatar').src = window.currentUser.avatarUrl || "https://ui-avatars.com/api/?name=" + encodeURIComponent(window.currentUser.name || 'Teacher') + "&background=0A192F&color=FFD700";
       const gender = document.getElementById('prof-gender').value || 'Not specified', age = document.getElementById('prof-age').value, exp = document.getElementById('prof-experience').value, langs = document.getElementById('prof-languages').value || 'English', bio = document.getElementById('prof-bio').value;
       document.getElementById('rv-gender').innerHTML = `<i class="fa-solid fa-venus-mars"></i> ${gender}`;
       const ageSpan = document.getElementById('rv-age'); if (age) { ageSpan.style.display = 'inline-block'; ageSpan.innerHTML = `<i class="fa-regular fa-calendar"></i> ${age} yrs`; } else { ageSpan.style.display = 'none'; }
@@ -1338,4 +1521,4 @@
     window.autoSubmitTeflEnquiry = function() { showToast(`Information request sent successfully!`, 'success'); };
   </script>
 </body>
-                </html>
+</html>
