@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TeacherBee Connect - Unified Portal</title>
+  <title>TeacherBee Connect - Portal</title>
   
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,149 +14,218 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   
   <style>
-    /* CORE STYLES */
+    /* UPDATED CORPORATE COLOR PALETTE */
     :root {
-      --primary-navy: #0A192F; 
-      --navy-light: #172A45; 
-      --accent-yellow: #FFD700; 
-      --yellow-hover: #E5C100;
-      --bg-color: #F8F9FA; 
-      --surface-white: #FFFFFF; 
-      --text-main: #111827; 
-      --text-muted: #6B7280;
-      --border-color: #E5E7EB; 
-      --error-red: #EF4444; 
+      --primary-navy: #0D4054;
+      --navy-light: #165b77;
+      --accent-yellow: #F5A623;
+      --yellow-hover: #e0961c;
+      --blue-gray: #718691;
+      --bg-color: #f7f9fa;
+      --surface-white: #FFFFFF;
+      --text-main: #2b3a42;
+      --text-muted: #718691;
+      --border-color: #d1d9dd;
+      --error-red: #EF4444;
       --success-green: #10B981;
-      --radius-lg: 16px; 
-      --radius-md: 8px; 
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); 
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --radius-lg: 12px;
+      --radius-md: 8px;
+      --shadow-sm: 0 2px 4px rgba(13, 64, 84, 0.05);
+      --shadow-md: 0 4px 12px rgba(13, 64, 84, 0.1);
+      --shadow-lg: 0 10px 25px rgba(13, 64, 84, 0.15);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+
     h1, h2, h3, h4 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; }
-    p { color: var(--text-muted); line-height: 1.5; }
-
-    /* Header & Navigation */
-    header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
-    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
-    .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
-    .role-badge { padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-left: 10px; font-weight: 700; }
-    .badge-recruiter { background: rgba(255, 215, 0, 0.2); color: var(--accent-yellow); }
-    .badge-teacher { background: rgba(16, 185, 129, 0.2); color: var(--success-green); }
-
-    /* Buttons & Form Elements */
-    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
-    .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
-    .btn-primary:hover { background-color: var(--yellow-hover); }
-    .btn-navy { background-color: var(--primary-navy); color: var(--surface-white); }
-    .btn-navy:hover { background-color: var(--navy-light); }
-    .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); }
-    .btn-outline-navy { background: transparent; border: 1px solid var(--primary-navy); color: var(--primary-navy); }
-    .btn-danger { background-color: #FEE2E2; color: var(--error-red); padding: 0.5rem 1rem; }
-    .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
-    .btn-block { width: 100%; }
-    
-    .form-group { margin-bottom: 1.25rem; }
-    .form-label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
-    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1); }
-    .form-textarea { resize: vertical; min-height: 100px; }
-    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-    /* Application Layout */
-    .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
-    .sidebar { width: 250px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
-    .content-area { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
-    
-    .sidebar-item { padding: 1rem; border-radius: var(--radius-md); color: var(--primary-navy); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; }
-    .sidebar-item:hover { background-color: var(--bg-color); }
-    .sidebar-item.active { background-color: var(--primary-navy); color: var(--accent-yellow); }
-    
-    .view-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
-    .view-panel.active { display: block; }
-    .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
-
-    /* Landing Hero (Logged Out) */
-    .hero-banner { text-align: center; padding: 4rem 2rem; background: var(--surface-white); border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-bottom: 2rem; }
-    .hero-banner h1 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-navy); }
-    .hero-banner p { font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto; }
-
-    /* Profile Avatar Handling */
-    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2rem; }
-    .avatar-preview { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent-yellow); object-fit: cover; background-color: var(--bg-color); cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-md); }
-    .avatar-preview:hover { opacity: 0.8; filter: brightness(0.9); }
-    .avatar-upload-btn { position: relative; overflow: hidden; }
-    .avatar-upload-btn input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-
-    /* Badges */
-    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .badge-yellow { background: var(--accent-yellow); color: var(--primary-navy); }
-    .badge-navy { background: var(--navy-light); color: var(--surface-white); }
-    .badge-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
-
-    /* Editors & Cards */
-    .editor-toolbar { display: flex; gap: 0.5rem; padding: 0.5rem; background: var(--bg-color); border: 1px solid var(--border-color); border-bottom: none; border-radius: var(--radius-md) var(--radius-md) 0 0; }
-    .editor-toolbar button { background: none; border: none; cursor: pointer; padding: 0.5rem; border-radius: 4px; color: var(--primary-navy); }
-    .editor-toolbar button:hover { background: var(--border-color); }
-    .rich-editor { min-height: 200px; padding: 1rem; border: 1px solid var(--border-color); border-radius: 0 0 var(--radius-md) var(--radius-md); background: var(--surface-white); outline: none; overflow-y: auto; }
-
-    /* Cards Grids */
-    .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-    .teacher-card, .job-card { display: flex; flex-direction: column; justify-content: space-between; padding: 1.5rem; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); transition: transform 0.2s; }
-    .teacher-card:hover, .job-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-    .teacher-card { text-align: center; align-items: center; cursor: pointer; }
-    .teacher-card img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); margin-bottom: 1rem; }
-
-    .job-list-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 1rem; }
-
-    /* Messaging UI */
-    .message-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
-    .message-item:hover { background: var(--bg-color); }
-    .msg-content h4 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--primary-navy); }
-    
-    #chat-window { display: none; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 550px; }
-    .chat-header { background: var(--primary-navy); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
-    .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: var(--bg-color); }
-    .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; word-wrap: break-word; }
-    .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-main); }
-    .bubble-out { background: var(--navy-light); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; align-items: center; }
-
-    /* Modals */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
-    .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
-    .modal-content { background: var(--surface-white); width: 100%; max-width: 600px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
-    .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
-    #image-cropper-container { max-height: 400px; margin-bottom: 1rem; }
+    p { color: var(--text-muted); line-height: 1.6; }
 
     /* Toast Notifications */
     #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
     .toast { padding: 1rem 1.25rem; border-radius: var(--radius-md); color: var(--surface-white); font-weight: 600; font-size: 0.9rem; box-shadow: var(--shadow-md); animation: slideIn 0.3s ease forwards; display: flex; align-items: center; gap: 10px; }
-    .toast.success { background-color: var(--success-green); }
     .toast.error { background-color: var(--error-red); }
+    .toast.success { background-color: var(--success-green); }
     .toast.info { background-color: var(--primary-navy); color: var(--accent-yellow); }
-
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* Disappearing/Translucent Header */
+    header { 
+      background-color: rgba(13, 64, 84, 0.95); 
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      position: sticky; 
+      top: 0; 
+      z-index: 100; 
+      box-shadow: var(--shadow-md); 
+      transition: transform 0.3s ease-in-out;
+    }
+    header.header-hidden { transform: translateY(-100%); }
+    .brand-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.35rem; }
+    .brand-logo img { height: 35px; width: auto; border-radius: 4px; } /* Attach your logo URL to the src in HTML */
+    .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
+    
+    /* Buttons */
+    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
+    .btn-primary { background-color: var(--accent-yellow); color: var(--surface-white); }
+    .btn-primary:hover { background-color: var(--yellow-hover); }
+    .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); }
+    .btn-outline:hover { background: rgba(245, 166, 35, 0.1); }
+    .btn-danger { background-color: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 0.5rem 1rem; }
+    .btn-danger:hover { background-color: #FEE2E2; }
+    .btn-block { width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1.05rem; }
+    .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Layout Setup (Wider Blogger Style) */
+    .app-container { display: flex; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; padding: 2.5rem; gap: 2.5rem; align-items: flex-start; }
+    
+    /* Redesigned Clean Auth Wrapper */
+    .auth-wrapper { max-width: 420px; margin: 4rem auto; background: var(--surface-white); border-radius: var(--radius-lg); padding: 3rem 2.5rem; box-shadow: var(--shadow-lg); width: 100%; border: 1px solid var(--border-color); }
+    .auth-header { text-align: center; margin-bottom: 2.5rem; }
+    .auth-header h2 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    
+    .role-switcher { display: flex; background: var(--bg-color); border-radius: 8px; padding: 4px; margin-bottom: 2rem; border: 1px solid var(--border-color); }
+    .role-btn { flex: 1; text-align: center; padding: 0.6rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; color: var(--blue-gray); transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.9rem; }
+    .role-btn.active { background: var(--surface-white); color: var(--primary-navy); box-shadow: var(--shadow-sm); }
+    
+    .auth-switch-text { text-align: center; margin-top: 2rem; font-size: 0.95rem; color: var(--blue-gray); border-top: 1px solid var(--border-color); padding-top: 1.5rem; }
+    .auth-switch-text a { color: var(--primary-navy); font-weight: 700; text-decoration: none; cursor: pointer; }
+    .auth-switch-text a:hover { text-decoration: underline; }
+
+    /* Forms */
+    .form-group { margin-bottom: 1.5rem; position: relative; }
+    .form-label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.95rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--bg-color); color: var(--text-main); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary-navy); background: var(--surface-white); box-shadow: 0 0 0 3px rgba(13, 64, 84, 0.1); }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .grid-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+    
+    .password-wrapper { position: relative; }
+    .password-wrapper input { padding-right: 2.5rem; }
+    .password-toggle { position: absolute; right: 1rem; top: 40px; cursor: pointer; color: var(--blue-gray); font-size: 1.1rem; }
+
+    /* Profile UI Corporate */
+    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border-color); }
+    .avatar-preview { width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--surface-white); object-fit: cover; background-color: var(--bg-color); cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-md); }
+    .avatar-preview:hover { opacity: 0.8; filter: brightness(0.9); border-color: var(--accent-yellow); }
+    .avatar-upload-btn { position: relative; overflow: hidden; }
+    .avatar-upload-btn input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+    /* Dynamic Lists */
+    .qualifications-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
+    .qual-item { background: var(--bg-color); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; }
+    .qual-item-info h4 { margin-bottom: 0.2rem; font-size: 1rem; }
+    .qual-item-info a { font-size: 0.85rem; color: var(--primary-navy); font-weight: 600; text-decoration: none; }
+    .qual-item-info a:hover { text-decoration: underline; }
+    #add-qual-form { background: var(--surface-white); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--blue-gray); margin-bottom: 1.5rem; display: none; }
+
+    /* Progress Bar */
+    .progress-bar-container { width: 100%; background-color: var(--border-color); border-radius: 8px; margin-top: 0.5rem; overflow: hidden; display: none; }
+    .progress-bar-fill { height: 8px; background-color: var(--success-green); width: 0%; transition: width 0.3s; }
+
+    /* --- SIDEBAR & CONTENT --- */
+    .sidebar { width: 260px; display: none; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
+    .content-area { flex: 1; display: none; flex-direction: column; gap: 2rem; padding-bottom: 3rem; min-width: 0; }
+    
+    body.dashboard-active .sidebar { display: flex; }
+    body.dashboard-active .content-area { display: flex; }
+    
+    .sidebar-item { padding: 1rem 1.25rem; border-radius: var(--radius-md); color: var(--blue-gray); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; font-size: 1.05rem; }
+    .sidebar-item:hover { background-color: rgba(13, 64, 84, 0.05); color: var(--primary-navy); }
+    .sidebar-item.active { background-color: var(--primary-navy); color: var(--surface-white); box-shadow: var(--shadow-sm); }
+    .sidebar-item.active i { color: var(--accent-yellow); }
+    
+    .view-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
+    .view-panel.active { display: block; }
+    .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
+    
+    .badge { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .badge-yellow { background: var(--accent-yellow); color: var(--surface-white); }
+    .badge-navy { background: var(--navy-light); color: var(--surface-white); }
+    .badge-outline { background: transparent; border: 1px solid var(--border-color); color: var(--blue-gray); }
+    .badge-gray { background: #E5E7EB; color: #4B5563; }
+    .badge-success { background: #D1FAE5; color: var(--success-green); }
+
+    /* Job Filters & Search */
+    .filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: var(--surface-white); padding: 1.25rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+    
+    /* Upgraded Job Card */
+    .job-card { display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; padding: 1.5rem; }
+    .job-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .job-header-info { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--bg-color); padding-bottom: 1rem; }
+    .job-header-info img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); }
+    .job-header-text h4 { margin: 0; font-size: 1rem; color: var(--primary-navy); }
+    .job-header-text span { font-size: 0.8rem; color: var(--blue-gray); }
+    
+    .job-title { font-size: 1.3rem; margin-bottom: 0.75rem; color: var(--primary-navy); }
+    .job-meta { display: flex; gap: 0.75rem; font-size: 0.85rem; color: var(--blue-gray); margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+    .job-desc { font-size: 0.95rem; margin-bottom: 1.5rem; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.6; }
+    .job-img-preview { width: 100%; height: 200px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 1.5rem; }
+
+    /* Gmail/WhatsApp Style Inbox */
+    .inbox-list { display: flex; flex-direction: column; }
+    .message-item { display: flex; align-items: center; gap: 1.25rem; padding: 1.25rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
+    .message-item:hover { background: var(--bg-color); }
+    .message-item img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); }
+    .message-item-content { flex: 1; min-width: 0; }
+    .message-item-content h4 { margin: 0 0 0.25rem 0; font-size: 1.05rem; color: var(--primary-navy); }
+    .message-item-content h4 span { float: right; font-size: 0.75rem; color: var(--blue-gray); font-weight: normal; }
+    .message-item-content p.subject { font-size: 0.9rem; color: var(--text-main); font-weight: 600; margin: 0 0 0.25rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .message-item-content p.preview { font-size: 0.85rem; color: var(--blue-gray); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    #chat-window { display: none; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 650px; box-shadow: var(--shadow-md); }
+    .chat-header { background: var(--surface-white); border-bottom: 1px solid var(--border-color); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .chat-header-user { display: flex; align-items: center; gap: 1rem; cursor: pointer; }
+    .chat-header-user img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-yellow); }
+    .chat-header-user h3 { margin: 0; font-size: 1.1rem; color: var(--primary-navy); }
+    
+    .chat-messages { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.25rem; }
+    .chat-bubble-wrapper { display: flex; align-items: flex-end; gap: 0.75rem; max-width: 85%; }
+    .chat-bubble-wrapper.in { align-self: flex-start; }
+    .chat-bubble-wrapper.out { align-self: flex-end; flex-direction: row-reverse; }
+    .chat-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); }
+    .chat-bubble { padding: 0.85rem 1.25rem; border-radius: 16px; font-size: 0.95rem; word-wrap: break-word; box-shadow: var(--shadow-sm); line-height: 1.5; }
+    .chat-bubble-wrapper.in .chat-bubble { background: var(--surface-white); border: 1px solid var(--border-color); border-bottom-left-radius: 4px; color: var(--text-main); }
+    .chat-bubble-wrapper.out .chat-bubble { background: var(--navy-light); color: var(--surface-white); border-bottom-right-radius: 4px; border: 1px solid var(--navy-light); }
+    .msg-time-stamp { display: block; font-size: 0.7rem; opacity: 0.7; margin-top: 6px; text-align: right; }
+    
+    .chat-input-area { padding: 1.25rem; background: var(--surface-white); border-top: 1px solid var(--border-color); display: flex; gap: 1rem; align-items: center; }
+
+    /* Modals */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 64, 84, 0.85); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
+    .modal-content { background: var(--surface-white); width: 100%; max-width: 700px; border-radius: var(--radius-lg); padding: 2.5rem; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+    .close-modal { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--blue-gray); transition: color 0.2s; }
+    .close-modal:hover { color: var(--error-red); }
+
+    .prof-header-elegant { display: flex; align-items: center; gap: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; margin-bottom: 2rem; }
+    .prof-header-elegant img { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); box-shadow: var(--shadow-sm); }
+    .section-title-elegant { font-size: 1.2rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1.25rem; margin-top: 2rem; }
+    .elegant-text { color: var(--text-main); font-size: 1rem; line-height: 1.7; }
+
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     @media (max-width: 768px) {
       .app-container { padding: 1rem; padding-bottom: 85px; }
-      .grid-2-col { grid-template-columns: 1fr; }
-      .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; top: auto; }
-      .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
-      .sidebar-item.active { background: transparent; color: var(--accent-yellow); }
+      .grid-2-col, .grid-3-col, .filter-bar { grid-template-columns: 1fr; }
+      body.dashboard-active .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; box-shadow: 0 -4px 10px rgba(13,64,84,0.15); top: auto; }
+      .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.75rem; gap: 0.3rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
+      .sidebar-item.active { background: transparent; color: var(--accent-yellow); box-shadow: none; }
       .hide-mobile { display: none !important; }
-      .job-list-item { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .auth-wrapper { padding: 2rem 1.5rem; margin: 2rem auto; }
     }
   </style>
 
-  <!-- FIREBASE ENGINE SETUP -->
+  <!-- FIREBASE SDK MODULE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, onSnapshot, addDoc, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, onSnapshot, addDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
@@ -170,22 +239,50 @@
     const app = initializeApp(firebaseConfig);
     window.auth = getAuth(app);
     window.db = getFirestore(app);
-    window.fb = { doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, onSnapshot, addDoc, orderBy, deleteDoc, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword };
+    window.fb = { doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, onSnapshot, addDoc, orderBy, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset };
+
     setPersistence(window.auth, browserLocalPersistence);
 
-    // Auth & Navigation State Observer
+    let isRedirecting = false;
+
     onAuthStateChanged(window.auth, async (user) => {
       if (user) {
         const docRef = doc(window.db, "users", user.uid);
-        let docSnap = await getDoc(docRef);
+        const docSnap = await getDoc(docRef);
         
-        let userData = docSnap.exists() ? docSnap.data() : { role: 'teacher', name: user.email.split('@')[0] };
-        window.currentUser = { uid: user.uid, ...userData };
+        let name = user.email.split('@')[0];
+        let avatar = "https://ui-avatars.com/api/?name=" + name + "&background=0D4054&color=F5A623";
+        
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          
+          if (data.role === 'recruiter') {
+            if (!isRedirecting) { isRedirecting = true; window.location.href = 'recruiter.html'; }
+            return;
+          }
 
-        setupAuthenticatedUI(window.currentUser);
-      } else {
-        window.currentUser = null;
-        setupLoggedOutUI();
+          name = data.name || name;
+          if(data.avatarUrl) avatar = data.avatarUrl;
+          
+          if(data.age) document.getElementById('prof-age').value = data.age;
+          if(data.gender) document.getElementById('prof-gender').value = data.gender;
+          if(data.experience) document.getElementById('prof-experience').value = data.experience;
+          if(data.languages) document.getElementById('prof-languages').value = data.languages;
+          if(data.bio) document.getElementById('prof-bio').value = data.bio;
+          
+          if(data.videoUrl) {
+              window.currentUser.videoUrl = data.videoUrl;
+              const vPreview = document.getElementById('prof-video-preview');
+              vPreview.src = data.videoUrl;
+              vPreview.style.display = 'block';
+          }
+          window.currentUser.quals = data.qualifications || [];
+        }
+        
+        finalizeLogin(name, user.email, user.emailVerified, avatar);
+        window.renderQualifications();
+        window.setupRealtimeJobs();
+        window.setupRealtimeInbox();
       }
     });
   </script>
@@ -194,196 +291,303 @@
 
   <div id="toast-container"></div>
 
-  <!-- NAVIGATION HEADER -->
-  <header>
-    <a href="#" class="brand-logo">
-      <i class="fa-solid fa-graduation-cap"></i> TeacherBee <span id="portal-role-badge" class="role-badge" style="display:none;"></span>
+  <header id="main-header">
+    <a href="#" class="brand-logo" onclick="handleLogoClick(event)">
+      <!-- Replace the icon below with your image tag if you have the URL, e.g.: <img src="YOUR_LOGO_URL.png" alt="TeacherBee"> -->
+      <i class="fa-solid fa-graduation-cap"></i> TeacherBee
     </a>
     <div id="nav-actions">
-      <!-- Unauthenticated View Header Button -->
-      <div id="nav-logged-out" style="display: flex; gap: 0.5rem;">
-        <button class="btn btn-outline btn-small" onclick="openAuthModal('login')">Log In</button>
-        <button class="btn btn-primary btn-small" onclick="openAuthModal('signup')">Sign Up</button>
-      </div>
-      <!-- Authenticated View Header Controls -->
-      <div id="nav-logged-in" style="display:none; align-items:center; gap:1rem;">
-        <img src="" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
-        <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">User</span>
-        <button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
-      </div>
+      <!-- Hidden dynamically after login -->
     </div>
   </header>
 
-  <!-- MAIN APP CONTAINER -->
   <div class="app-container">
     
-    <!-- DYNAMIC SIDEBAR NAV -->
-    <aside class="sidebar" id="app-sidebar" style="display: none;">
-      <!-- Navigation Menu links inserted dynamically via JS depending on role -->
-    </aside>
+    <!-- CLEAN AUTHENTICATION CONTAINER -->
+    <div class="auth-wrapper" id="auth-panel">
+      <div class="auth-header">
+        <h2 id="auth-title">Welcome Back</h2>
+        <p style="color: var(--blue-gray);">Sign in to access your dashboard.</p>
+      </div>
 
-    <!-- MAIN CONTENT VIEW PANELS -->
-    <main class="content-area">
+      <!-- Smart Role Switcher -->
+      <div class="role-switcher" id="role-switcher">
+        <div class="role-btn active" id="role-teacher" onclick="selectRole('teacher')">
+          <i class="fa-regular fa-user"></i> Job seeker
+        </div>
+        <div class="role-btn" id="role-recruiter" onclick="selectRole('recruiter')">
+          <i class="fa-solid fa-building"></i> Employer
+        </div>
+      </div>
 
-      <!-- LANDING / PUBLIC HERO VIEW -->
-      <section id="public-hero-view" class="view-panel active">
-        <div class="hero-banner">
-          <h1>Connect ESL Teachers & Global Schools</h1>
-          <p>Find teaching positions worldwide or discover top-tier accredited ESL educators instantly.</p>
-          <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
-            <button class="btn btn-primary" onclick="openAuthModal('signup', 'teacher')">I'm a Teacher</button>
-            <button class="btn btn-navy" onclick="openAuthModal('signup', 'recruiter')">I'm an Employer</button>
+      <!-- Login Form -->
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="login-email" class="form-input" required>
+        </div>
+        <div class="form-group password-wrapper">
+          <label class="form-label">Password</label>
+          <input type="password" id="login-password" class="form-input" required>
+          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+        </div>
+        <div style="text-align: right; margin-top: -10px; margin-bottom: 20px;">
+          <a href="#" style="font-size: 0.85rem; color: var(--primary-navy); font-weight: 600; text-decoration: none;" onclick="handleForgotPassword()">Forgot Password?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="btn-login">Sign In</button>
+        
+        <div class="auth-switch-text">
+          Are you new? <a onclick="switchAuthTab('register')">Create an account</a>
+        </div>
+      </form>
+
+      <!-- Registration Form -->
+      <form id="register-form" style="display: none;" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label" id="reg-name-label">Full Name</label>
+          <input type="text" id="reg-name" class="form-input" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="reg-email" class="form-input" required>
+        </div>
+        
+        <div class="grid-2-col" id="personal-details-group">
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" id="reg-dob" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <select id="reg-country" class="form-select">
+              <option value="" disabled selected>Select country</option>
+              <option value="Zimbabwe">Zimbabwe</option>
+              <option value="South Africa">South Africa</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="United States">United States</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
         </div>
-      </section>
 
-      <!-- 1. PROFILE VIEW (TEACHER / RECRUITER) -->
-      <section id="profile-view" class="view-panel">
+        <div class="grid-2-col">
+          <div class="form-group password-wrapper">
+            <label class="form-label">Password</label>
+            <input type="password" id="reg-password" class="form-input" required>
+            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-password', this)"></i>
+          </div>
+          <div class="form-group password-wrapper">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" id="reg-confirm-password" class="form-input" required>
+            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-confirm-password', this)"></i>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block" id="btn-register">Create Account</button>
+        
+        <div class="auth-switch-text">
+          Already have an account? <a onclick="switchAuthTab('login')">Sign in here</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="sidebar-item active" onclick="switchView('profile-view', this)">
+        <i class="fa-regular fa-user"></i> <span>My Profile</span>
+      </div>
+      <div class="sidebar-item" onclick="switchView('jobs-view', this)">
+        <i class="fa-solid fa-briefcase"></i> <span>Job Board</span>
+      </div>
+      <div class="sidebar-item" onclick="switchView('workshops-view', this)">
+        <i class="fa-solid fa-chalkboard-user"></i> <span>Training</span>
+      </div>
+      <div class="sidebar-item" onclick="switchView('tefl-view', this)">
+        <i class="fa-solid fa-certificate"></i> <span>TEFL</span>
+      </div>
+      <div class="sidebar-item" onclick="switchView('messages-view', this)">
+        <i class="fa-regular fa-envelope"></i> <span>Inbox <span id="msg-badge" style="background:var(--error-red); color:white; border-radius:50%; padding:2px 6px; font-size:0.75rem; display:none;">0</span></span>
+      </div>
+    </aside>
+
+    <!-- MAIN DYNAMIC CONTENT -->
+    <main class="content-area" id="app-content">
+
+      <!-- 1. CORPORATE PROFILE VIEW -->
+      <section id="profile-view" class="view-panel active">
         <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap:wrap; gap:1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
             <div>
-              <h2 id="display-name">User Profile</h2>
-              <span id="profile-role-tag" class="badge badge-navy">Profile</span>
+              <h2 id="display-name" style="font-size: 2rem; margin-bottom: 0.25rem;">Loading...</h2>
+              <span id="verification-badge" class="badge badge-navy">Email Verified</span>
             </div>
+            <button type="button" class="btn btn-outline" onclick="openRecruiterView()"><i class="fa-regular fa-eye"></i> Preview Profile</button>
           </div>
 
           <form onsubmit="handleProfileUpdate(event)">
             <div class="avatar-upload-container">
               <label for="avatar-input" class="avatar-upload-btn">
-                <img src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" id="profile-avatar" class="avatar-preview" title="Click to upload profile photo">
+                <img src="https://ui-avatars.com/api/?name=User&background=0D4054&color=F5A623" id="profile-avatar" class="avatar-preview" title="Click to update picture">
                 <input type="file" id="avatar-input" accept="image/png, image/jpeg" onchange="openCropperModal(this)">
               </label>
-              <p style="font-size: 0.8rem;">Click image to upload photo / logo</p>
+              <p style="font-size: 0.9rem; color: var(--blue-gray); margin-top: 0.5rem;"><i class="fa-solid fa-camera"></i> Click to upload professional photo</p>
             </div>
 
-            <!-- TEACHER SPECIFIC FIELDS -->
-            <div id="teacher-profile-fields">
-              <div class="grid-2-col">
-                <div class="form-group">
-                  <label class="form-label">Full Name</label>
-                  <input type="text" id="prof-teacher-name" class="form-input" placeholder="e.g. Jane Doe">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Years of Teaching Experience</label>
-                  <input type="number" id="prof-teacher-exp" class="form-input" placeholder="e.g. 3">
-                </div>
+            <h3 class="section-title-elegant">Core Professional Details</h3>
+            
+            <div class="grid-2-col">
+              <div class="form-group">
+                <label class="form-label">Full Display Name</label>
+                <input type="text" id="prof-display-name" class="form-input" placeholder="e.g. Jane Doe">
               </div>
               <div class="form-group">
-                <label class="form-label">Spoken Languages & Certifications</label>
-                <input type="text" id="prof-teacher-langs" class="form-input" placeholder="e.g. Native English, TEFL Certified">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Video Introduction URL (YouTube/Vimeo)</label>
-                <input type="url" id="prof-teacher-video" class="form-input" placeholder="https://...">
+                <label class="form-label">Age</label>
+                <input type="number" id="prof-age" class="form-input" min="18" max="100">
               </div>
             </div>
 
-            <!-- RECRUITER SPECIFIC FIELDS -->
-            <div id="recruiter-profile-fields" style="display: none;">
-              <div class="grid-2-col">
-                <div class="form-group">
-                  <label class="form-label">Company / School Name</label>
-                  <input type="text" id="prof-company-name" class="form-input" placeholder="e.g. Global English Academy">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Representative Name</label>
-                  <input type="text" id="prof-rep-name" class="form-input" placeholder="e.g. John Smith">
-                </div>
+            <div class="grid-3-col">
+              <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select id="prof-gender" class="form-select">
+                  <option value="Prefer not to say">Prefer not to say</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                </select>
               </div>
-              <div class="grid-2-col">
-                <div class="form-group">
-                  <label class="form-label">Headquarters Location</label>
-                  <input type="text" id="prof-location" class="form-input" placeholder="e.g. Beijing, China">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Institution Type</label>
-                  <select id="prof-type" class="form-select">
-                    <option value="Online ESL Platform">Online ESL Platform</option>
-                    <option value="Public School">Public School</option>
-                    <option value="Private Academy">Private Academy / Training Center</option>
-                    <option value="Recruiting Agency">Recruiting Agency</option>
-                  </select>
-                </div>
+              <div class="form-group">
+                <label class="form-label">Years of Experience</label>
+                <input type="number" id="prof-experience" class="form-input" min="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Languages (Native first)</label>
+                <input type="text" id="prof-languages" class="form-input" placeholder="e.g. English, Spanish">
               </div>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Bio & Overview</label>
-              <textarea id="prof-bio" class="form-textarea" placeholder="Tell us more about your experience or organization..."></textarea>
+              <label class="form-label">Professional Summary & Biography</label>
+              <textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself. Highlight your teaching philosophy, achievements, and unique skills..."></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block" id="btn-save-profile">Save Profile Details</button>
+            <div class="form-group" style="margin-top:1rem; padding: 1.5rem; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              <label class="form-label" style="font-size: 1rem;"><i class="fa-solid fa-video"></i> Introduction Video</label>
+              <p style="font-size: 0.9rem; color: var(--blue-gray); margin-bottom: 1rem;">Upload a short 1-2 minute introductory video for recruiters.</p>
+              <input type="file" id="prof-video-file" accept="video/mp4,video/webm" onchange="handleVideoUpload(this)" class="form-input" style="background: var(--surface-white);">
+              
+              <div class="progress-bar-container" id="video-progress-bar">
+                <div class="progress-bar-fill" id="video-progress-fill"></div>
+              </div>
+
+              <video id="prof-video-preview" controls style="display:none; width:100%; max-height:300px; margin-top:15px; border-radius:8px; border: 1px solid var(--border-color);"></video>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 3rem; margin-bottom: 1.5rem;">
+              <h3 class="section-title-elegant" style="margin: 0;">Qualifications & Resumes</h3>
+              <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm(false)"><i class="fa-solid fa-plus"></i> Add Document</button>
+            </div>
+            
+            <div id="add-qual-form">
+              <div class="form-group">
+                <label class="form-label">Document Title (e.g. Bachelor's Degree, TEFL, CV)</label>
+                <input type="text" id="new-qual-title" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Upload File</label>
+                <p style="font-size:0.85rem; color:var(--blue-gray); margin-bottom:0.5rem;">Accepts Images, PDFs, and Word Documents</p>
+                <input type="file" id="new-qual-file" class="form-input" onchange="handleQualFileSelect(this)">
+              </div>
+              <div class="progress-bar-container" id="qual-progress-bar">
+                <div class="progress-bar-fill" id="qual-progress-fill"></div>
+              </div>
+              <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+                <button type="button" class="btn btn-primary" id="btn-save-qual" onclick="saveNewQualification()">Upload & Save</button>
+                <button type="button" class="btn btn-danger" onclick="cancelQualificationUpload()">Cancel</button>
+              </div>
+            </div>
+
+            <div class="qualifications-list" id="saved-quals-container"></div>
+
+            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 2rem; width: 100%; padding: 1.25rem; font-size: 1.1rem;">Update Profile Settings</button>
           </form>
         </div>
       </section>
 
-      <!-- 2. TEACHER SEARCH VIEW (RECRUITER EXCLUSIVE) -->
-      <section id="search-teachers-view" class="view-panel">
-        <h2>Teacher Database</h2>
-        <div class="card" style="padding:1rem; margin-bottom:1.5rem; display:grid; grid-template-columns:2fr 1fr; gap:1rem;">
-          <input type="text" class="form-input" id="search-keyword" placeholder="Search by name or languages..." oninput="filterTeachers()">
-          <select class="form-select" id="search-exp" onchange="filterTeachers()">
-            <option value="">Any Experience</option>
-            <option value="1">1+ Years</option>
-            <option value="3">3+ Years</option>
-          </select>
-        </div>
-
-        <div class="grid-cards" id="teacher-results-container"></div>
-      </section>
-
-      <!-- 3. BROWSE JOBS VIEW (TEACHER EXCLUSIVE) -->
-      <section id="browse-jobs-view" class="view-panel">
-        <h2>Explore Job Opportunities</h2>
-        <div class="card" style="padding:1rem; margin-bottom:1.5rem; display:grid; grid-template-columns:2fr 1fr; gap:1rem;">
-          <input type="text" class="form-input" id="job-search-keyword" placeholder="Search by job title or keyword..." oninput="filterJobs()">
-          <select class="form-select" id="job-search-type" onchange="filterJobs()">
-            <option value="">All Job Types</option>
+      <!-- 2. UPGRADED JOB BOARD VIEW -->
+      <section id="jobs-view" class="view-panel">
+        <h2 style="margin-bottom: 1.5rem; font-size: 2rem;">Active Job Openings</h2>
+        
+        <div class="filter-bar">
+          <input type="text" id="search-jobs" class="form-input" placeholder="Search by title or keyword..." oninput="filterJobBoard()">
+          <input type="text" id="search-location" class="form-input" placeholder="Country / Location..." oninput="filterJobBoard()">
+          <select id="filter-type" class="form-select" onchange="filterJobBoard()">
+            <option value="all">Any Schedule</option>
             <option value="Full Time">Full Time</option>
             <option value="Part Time">Part Time</option>
           </select>
         </div>
 
-        <div class="grid-cards" id="job-board-container"></div>
-      </section>
-
-      <!-- 4. RECRUITER MANAGE JOBS VIEW (RECRUITER EXCLUSIVE) -->
-      <section id="manage-jobs-view" class="view-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-          <h2>My Job Postings</h2>
-          <button class="btn btn-primary" onclick="openJobEditor()"><i class="fa-solid fa-plus"></i> Post New Job</button>
-        </div>
-
-        <div class="card" id="recruiter-jobs-container" style="display:flex; flex-direction:column; gap:1rem;">
-          <div style="text-align:center; padding:3rem; color:var(--text-muted);" id="empty-jobs">
-            <i class="fa-solid fa-briefcase" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-            <p>You haven't posted any jobs yet.</p>
+        <div id="job-list-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div style="text-align:center; padding: 3rem; color:var(--text-muted);" id="jobs-loading">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2.5rem; margin-bottom:1rem; color:var(--primary-navy);"></i>
+            <p>Fetching jobs from employers...</p>
           </div>
         </div>
       </section>
 
-      <!-- 5. SHARED INBOX & MESSAGING VIEW -->
-      <section id="inbox-view" class="view-panel">
+      <!-- 3 & 4. WORKSHOPS / TEFL -->
+      <section id="workshops-view" class="view-panel">
+        <h2 style="margin-bottom: 1.5rem;">Training & Workshops</h2>
+        <div class="card">
+          <span class="badge badge-yellow">Live Seminar</span>
+          <h3 style="margin-top: 1rem;">Mastering the Demo Lesson</h3>
+          <p style="margin-bottom: 1.5rem;">Learn how to impress recruiters during your mock class.</p>
+          <button class="btn btn-primary" onclick="autoRegisterWorkshop('Mastering the Demo Lesson')">Reserve Spot</button>
+        </div>
+      </section>
+
+      <section id="tefl-view" class="view-panel">
+        <h2 style="margin-bottom: 1.5rem;">TEFL Certification Support</h2>
+        <div class="card">
+          <h3>Partner 120-Hour Accredited TEFL</h3>
+          <p style="margin-bottom: 1.5rem;">Get certified to teach English globally. High approval rates.</p>
+          <button class="btn btn-primary" onclick="autoSubmitTeflEnquiry()">Request Info</button>
+        </div>
+      </section>
+
+      <!-- 5. GMAIL/WHATSAPP STYLE INBOX -->
+      <section id="messages-view" class="view-panel">
         <div id="inbox-list-view">
-          <h2>Messages & Applications</h2>
-          <div class="card" style="padding: 0; margin-top: 1rem;" id="inbox-container">
-            <div style="text-align:center; padding: 3rem; color:var(--text-muted);" id="empty-inbox">
-              <i class="fa-regular fa-envelope-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-              <p>No messages or active threads yet.</p>
+          <h2 style="margin-bottom: 1.5rem; font-size: 2rem;">Recruitment Inbox</h2>
+          <div class="card" style="padding: 0; overflow: hidden;">
+            <div class="inbox-list" id="inbox-container">
+              <div style="text-align:center; padding: 4rem; color:var(--blue-gray);" id="empty-inbox">
+                <i class="fa-regular fa-envelope-open" style="font-size: 3.5rem; margin-bottom: 1rem; opacity:0.5;"></i>
+                <p>No messages or applications yet.</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Interactive Chat Overlay Component -->
+        <!-- Chat Window -->
         <div id="chat-window">
           <div class="chat-header">
-            <h3 style="color:white; margin:0;" id="chat-title">Chat Conversation</h3>
-            <button class="btn btn-small" style="background:transparent; color:white; border:1px solid white;" onclick="closeChat()">Back</button>
+            <div class="chat-header-user">
+              <img src="" id="chat-header-img" alt="Recruiter">
+              <div>
+                <h3 id="chat-title">Recruiter Name</h3>
+                <span style="font-size: 0.8rem; color: var(--blue-gray);">Employer</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-small" onclick="closeChat()">Back</button>
           </div>
+          
           <div class="chat-messages" id="chat-history"></div>
+          
           <div class="chat-input-area">
-            <input type="text" id="chat-input-box" class="form-input" placeholder="Type your message..." style="border-radius:20px;">
-            <button class="btn btn-primary btn-small" style="border-radius:50%; width:40px; height:40px; padding:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            <input type="text" id="chat-input-box" class="form-input" placeholder="Type your message..." style="border-radius:24px;">
+            <button class="btn btn-primary" style="border-radius:50%; width:50px; height:50px; padding:0; flex-shrink:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
           </div>
         </div>
       </section>
@@ -391,618 +595,421 @@
     </main>
   </div>
 
-  <!-- AUTHENTICATION MODAL (LOGIN/SIGNUP) -->
-  <div class="modal-overlay" id="auth-modal">
-    <div class="modal-content" style="max-width: 400px;">
-      <button class="close-modal" onclick="closeAuthModal()">&times;</button>
-      <h2 id="auth-modal-title" style="text-align: center; margin-bottom: 1.5rem;">Log In</h2>
-      
-      <form onsubmit="handleAuthSubmit(event)">
-        <div class="form-group" id="auth-role-group" style="display:none;">
-          <label class="form-label">Account Role</label>
-          <select id="auth-role" class="form-select">
-            <option value="teacher">Teacher / Job Seeker</option>
-            <option value="recruiter">Recruiter / Employer</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" id="auth-email" class="form-input" required placeholder="name@domain.com">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" id="auth-password" class="form-input" required placeholder="••••••••">
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block" id="btn-auth-submit">Log In</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- JOB CREATION/EDITING MODAL -->
-  <div class="modal-overlay" id="job-editor-modal">
+  <!-- JOB DETAILS MODAL -->
+  <div class="modal-overlay" id="job-detail-modal">
     <div class="modal-content">
-      <button class="close-modal" onclick="closeJobEditor()">&times;</button>
-      <h2>Create Job Posting</h2>
+      <button class="close-modal" onclick="closeJobModal()">&times;</button>
       
-      <div class="form-group">
-        <label class="form-label">Job Title</label>
-        <input type="text" id="job-title" class="form-input" placeholder="e.g. Online English Tutor (K-12)">
-      </div>
-      
-      <div class="grid-2-col">
-        <div class="form-group">
-          <label class="form-label">Location / Setup</label>
-          <input type="text" id="job-loc" class="form-input" placeholder="e.g. Remote, Beijing">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Compensation / Pay</label>
-          <input type="text" id="job-pay" class="form-input" placeholder="e.g. $20/hr">
-        </div>
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">Job Type</label>
-        <select id="job-type" class="form-select">
-          <option value="Full Time">Full Time</option>
-          <option value="Part Time">Part Time</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Job Description</label>
-        <div class="editor-toolbar">
-          <button type="button" onclick="document.execCommand('bold', false, null)"><i class="fa-solid fa-bold"></i></button>
-          <button type="button" onclick="document.execCommand('italic', false, null)"><i class="fa-solid fa-italic"></i></button>
-          <button type="button" onclick="document.execCommand('insertUnorderedList', false, null)"><i class="fa-solid fa-list-ul"></i></button>
-        </div>
-        <div class="rich-editor" id="job-desc" contenteditable="true"></div>
-      </div>
-
-      <button class="btn btn-primary btn-block" id="btn-save-job" onclick="saveJobPost()">Publish Job</button>
-    </div>
-  </div>
-
-  <!-- TEACHER PROFILE DETAIL MODAL -->
-  <div class="modal-overlay" id="teacher-modal">
-    <div class="modal-content" style="max-width: 600px;">
-      <button class="close-modal" onclick="document.getElementById('teacher-modal').classList.remove('active')">&times;</button>
-      
-      <div style="display:flex; align-items:center; gap:1.5rem; border-bottom: 2px solid var(--bg-color); padding-bottom:1.5rem; margin-bottom:1.5rem;">
-        <img id="tm-avatar" src="" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid var(--accent-yellow);">
+      <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+        <img id="modal-recruiter-img" src="" style="width:55px; height:55px; border-radius:50%; object-fit:cover; border:2px solid var(--border-color);">
         <div>
-          <h2 id="tm-name"></h2>
-          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem;" id="tm-badges"></div>
+          <h4 id="modal-recruiter-name" style="margin:0; color:var(--primary-navy); font-size:1.15rem;">Recruiter</h4>
+          <span style="font-size:0.85rem; color:var(--blue-gray);" id="modal-job-date">Posted Date</span>
         </div>
       </div>
 
-      <h3>Biography</h3>
-      <p id="tm-bio" style="color:var(--text-main); line-height:1.6; margin-bottom:1.5rem;"></p>
-
-      <div id="tm-video-section" style="display:none; margin-bottom:1.5rem;">
-        <h3>Introduction Video</h3>
-        <iframe id="tm-video" style="width:100%; height:250px; border-radius:8px; border:none;" src=""></iframe>
-      </div>
-
-      <button class="btn btn-primary btn-block" onclick="inviteTeacher()"><i class="fa-regular fa-comment-dots"></i> Send Interview Invitation</button>
+      <h2 id="job-modal-title" style="margin-bottom:0.75rem; font-size: 1.8rem;">Job Title</h2>
+      <div class="job-meta" id="job-modal-meta" style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;"></div>
+      
+      <img id="job-modal-image" class="job-img-preview" style="display:none;">
+      
+      <h3 class="section-title-elegant">Job Description</h3>
+      <div id="job-modal-desc" class="elegant-text" style="margin-bottom: 2.5rem;"></div>
+      
+      <button class="btn btn-primary btn-block" id="job-modal-apply">Apply Now & Attach Profile</button>
     </div>
   </div>
 
   <!-- IMAGE CROPPER MODAL -->
   <div class="modal-overlay" id="cropper-modal">
-    <div class="modal-content" style="max-width: 450px;">
-      <h3 style="margin-bottom: 1rem;">Crop Image</h3>
+    <div class="modal-content" style="max-width: 500px;">
+      <h3 style="margin-bottom: 1rem;">Crop Profile Picture</h3>
       <div id="image-cropper-container">
-        <img id="cropper-image" style="max-width: 100%;">
+        <img id="cropper-image" style="max-width: 100%; display: block;">
       </div>
-      <div style="display:flex; gap:1rem; margin-top:1rem;">
+      <div style="display:flex; gap:1rem; margin-top:1.5rem;">
         <button class="btn btn-outline" style="flex:1;" onclick="cancelCrop()">Cancel</button>
-        <button class="btn btn-primary" style="flex:1;" id="btn-crop-save" onclick="applyCrop()">Save</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="applyCrop()" id="btn-crop-save">Crop & Save</button>
       </div>
     </div>
   </div>
 
-  <!-- CORE LOGIC & CONTROLLERS -->
-  <script>
-    let authMode = 'login'; 
-    let allTeachers = [];
-    let allJobs = [];
-    let currentTeacherContext = null;
-    let currentCropper = null;
-    let activeChatUnsubscribe = null;
+  <!-- RECRUITER VIEW (PROFESSIONAL PROFILE) MODAL -->
+  <div class="modal-overlay" id="recruiter-modal">
+    <div class="modal-content" style="max-width: 750px;">
+      <button class="close-modal" onclick="document.getElementById('recruiter-modal').classList.remove('active')">&times;</button>
+      
+      <div class="prof-header-elegant">
+        <img id="rv-avatar" src="" alt="Profile">
+        <div>
+          <h2 id="rv-name" style="font-size: 2rem; margin-bottom: 0.5rem; color:var(--primary-navy);"></h2>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <span class="badge badge-gray" id="rv-gender"></span>
+            <span class="badge badge-gray" id="rv-age"></span>
+            <span class="badge badge-navy" id="rv-exp"></span>
+            <span class="badge badge-yellow" id="rv-langs"></span>
+          </div>
+        </div>
+      </div>
 
-    // Toast Notification System
+      <div id="rv-bio-section">
+        <h3 class="section-title-elegant">Professional Summary</h3>
+        <p class="elegant-text" id="rv-bio-text"></p>
+      </div>
+
+      <div id="rv-video-section" style="display:none; margin-top:2.5rem;">
+        <h3 class="section-title-elegant">Introduction Video</h3>
+        <video id="rv-video-player" controls style="width:100%; border-radius:12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);"></video>
+      </div>
+
+      <div id="rv-qual-section" style="margin-top:2.5rem;">
+        <h3 class="section-title-elegant">Attached Documents & Certifications</h3>
+        <div id="rv-qual-list" style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+
+    window.activeRole = 'teacher';
+    window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [] };
+    
+    window.activeChatId = null;
+    let jobList = [];
+    let currentCropper = null;
+    let editQualIndex = -1;
+
+    // --- DISAPPEARING HEADER LOGIC ---
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      const header = document.getElementById('main-header');
+      if (currentScroll <= 0) { header.classList.remove('header-hidden'); }
+      else if (currentScroll > lastScroll && currentScroll > 80) { header.classList.add('header-hidden'); }
+      else { header.classList.remove('header-hidden'); }
+      lastScroll = currentScroll;
+    });
+
+    window.selectRole = function(role) {
+      window.activeRole = role;
+      document.getElementById('role-teacher').classList.toggle('active', role === 'teacher');
+      document.getElementById('role-recruiter').classList.toggle('active', role === 'recruiter');
+      
+      const isRecruiter = role === 'recruiter';
+      document.getElementById('reg-name-label').innerText = isRecruiter ? 'Company Name / Representative' : 'Full Name';
+      document.getElementById('personal-details-group').style.display = isRecruiter ? 'none' : 'grid';
+      document.getElementById('reg-dob').required = !isRecruiter;
+      document.getElementById('reg-country').required = !isRecruiter;
+    };
+
+    window.switchAuthTab = function(type) {
+      document.getElementById('auth-title').innerText = type === 'login' ? 'Welcome Back' : 'Create an Account';
+      document.getElementById('login-form').style.display = (type === 'login') ? 'block' : 'none';
+      document.getElementById('register-form').style.display = (type === 'register') ? 'block' : 'none';
+      document.getElementById('role-switcher').style.display = (type === 'register') ? 'flex' : 'none';
+    };
+
+    window.togglePassword = function(inputId, icon) {
+      const input = document.getElementById(inputId);
+      input.type = input.type === "password" ? "text" : "password";
+      icon.classList.toggle('fa-eye'); icon.classList.toggle('fa-eye-slash');
+    };
+
     window.showToast = function(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
-      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : 'fa-exclamation'}"></i> ${message}`;
+      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info'}"></i> ${message}`;
       container.appendChild(toast);
       setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
     };
 
-    // Navigation View Switcher
-    window.switchView = function(viewId, element) {
-      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
-      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-      
-      const targetPanel = document.getElementById(viewId);
-      if (targetPanel) targetPanel.classList.add('active');
-      
-      if (element) {
-        element.classList.add('active');
-      } else {
-        const matchingSidebarItem = document.querySelector(`.sidebar-item[onclick*="${viewId}"]`);
-        if (matchingSidebarItem) matchingSidebarItem.classList.add('active');
-      }
-
-      if(viewId === 'inbox-view') {
-        document.getElementById('chat-window').style.display = 'none';
-        document.getElementById('inbox-list-view').style.display = 'block';
-      }
-      window.scrollTo(0, 0);
+    // Google Drive Uploader Reusable Function
+    window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          let action = 'uploadFile';
+          if (folder.includes('avatars')) action = 'uploadProfile';
+          if (folder.includes('qualifications')) action = 'uploadCertificate';
+          if (folder.includes('videos')) action = 'uploadVideo';
+          
+          const payload = { action: action, fileName: fileName, mimeType: fileOrBlob.type || "application/octet-stream", file: e.target.result };
+          let progressInterval;
+          if (onProgress) {
+            let percent = 0;
+            progressInterval = setInterval(() => { percent += Math.floor(Math.random() * 10) + 5; if (percent >= 90) percent = 90; onProgress(percent); }, 400);
+          }
+          try {
+            const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const data = await response.json();
+            if (progressInterval) { clearInterval(progressInterval); if (onProgress) onProgress(100); }
+            if (data.status === "success") {
+              let finalUrl = "";
+              if (action === 'uploadProfile' && data.profilePic && data.profilePic.url) finalUrl = data.profilePic.url;
+              else if (action === 'uploadCertificate' && data.certificates && data.certificates.length > 0) finalUrl = data.certificates[data.certificates.length - 1].url || data.certificates[data.certificates.length - 1].fileUrl;
+              else if (data.url) finalUrl = data.url; 
+              resolve(finalUrl || "https://via.placeholder.com/150");
+            } else reject(new Error("Drive Error"));
+          } catch (error) { if (progressInterval) clearInterval(progressInterval); reject(new Error("Network error")); }
+        };
+        reader.readAsDataURL(fileOrBlob);
+      });
     };
 
-    // Authentication UI Handlers
-    window.openAuthModal = function(mode, preselectRole = 'teacher') {
-      authMode = mode;
-      document.getElementById('auth-modal').classList.add('active');
-      document.getElementById('auth-modal-title').innerText = mode === 'login' ? 'Log In' : 'Create Account';
-      document.getElementById('btn-auth-submit').innerText = mode === 'login' ? 'Log In' : 'Sign Up';
-      
-      const roleGroup = document.getElementById('auth-role-group');
-      if (mode === 'signup') {
-        roleGroup.style.display = 'block';
-        document.getElementById('auth-role').value = preselectRole;
-      } else {
-        roleGroup.style.display = 'none';
-      }
-    };
-
-    window.closeAuthModal = function() {
-      document.getElementById('auth-modal').classList.remove('active');
-    };
-
-    window.handleAuthSubmit = async function(e) {
+    // --- AUTHENTICATION METHODS ---
+    window.handleRegister = async function(e) {
       e.preventDefault();
-      const email = document.getElementById('auth-email').value;
-      const pass = document.getElementById('auth-password').value;
-      const role = document.getElementById('auth-role').value;
-      const btn = document.getElementById('btn-auth-submit');
-      
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const pass = document.getElementById('reg-password').value;
+      const confirmPass = document.getElementById('reg-confirm-password').value;
+      if (pass !== confirmPass) { showToast("Passwords do not match!", 'error'); return; }
+
+      const btn = document.getElementById('btn-register');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
 
       try {
-        if (authMode === 'signup') {
-          const res = await window.fb.createUserWithEmailAndPassword(window.auth, email, pass);
-          await window.fb.setDoc(window.fb.doc(window.db, "users", res.user.uid), {
-            email: email,
-            role: role,
-            name: email.split('@')[0],
-            createdAt: window.fb.serverTimestamp()
-          });
-          showToast("Account created successfully!", "success");
-        } else {
-          await window.fb.signInWithEmailAndPassword(window.auth, email, pass);
-          showToast("Logged in successfully!", "success");
-        }
-        closeAuthModal();
-      } catch (err) {
-        showToast(err.message, "error");
-      } finally {
-        btn.innerText = authMode === 'login' ? 'Log In' : 'Sign Up';
+        const userCredential = await window.fb.createUserWithEmailAndPassword(window.auth, email, pass);
+        const user = userCredential.user;
+        await window.fb.sendEmailVerification(user);
+
+        await window.fb.setDoc(window.fb.doc(window.db, "users", user.uid), {
+          uid: user.uid, name: name, email: email, role: window.activeRole, createdAt: window.fb.serverTimestamp(), qualifications: []
+        });
+
+        if(window.activeRole === 'recruiter') { window.location.href = 'recruiter.html'; } 
+        else { showToast("Account created!", "success"); finalizeLogin(name, email, false, "https://ui-avatars.com/api/?name=" + name + "&background=0D4054&color=F5A623"); }
+      } catch (error) {
+        btn.innerHTML = 'Create Account'; showToast(error.message, 'error');
       }
+    };
+
+    window.handleLogin = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-login');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+      try { await window.fb.signInWithEmailAndPassword(window.auth, email, pass); } 
+      catch (error) { btn.innerHTML = 'Sign In'; showToast("Incorrect email or password.", 'error'); }
     };
 
     window.handleLogout = function() {
-      if(window.auth && window.fb) window.fb.signOut(window.auth);
+      if (window.auth && window.fb) window.fb.signOut(window.auth);
+      window.location.reload();
     };
 
-    // Synchronize UI States based on User Roles
-    function setupAuthenticatedUI(user) {
-      document.getElementById('nav-logged-out').style.display = 'none';
-      document.getElementById('nav-logged-in').style.display = 'flex';
-      
-      const badge = document.getElementById('portal-role-badge');
-      badge.style.display = 'inline-block';
-      badge.className = `role-badge ${user.role === 'recruiter' ? 'badge-recruiter' : 'badge-teacher'}`;
-      badge.innerText = user.role === 'recruiter' ? 'Employer' : 'Teacher';
+    window.handleForgotPassword = function() {
+      const email = document.getElementById('login-email').value;
+      if (!email) { showToast("Enter your email address in the field first.", "error"); return; }
+      window.fb.sendPasswordResetEmail(window.auth, email).then(() => { showToast("Password reset link sent!", "success"); });
+    };
 
-      let name = user.name || user.email.split('@')[0];
-      let avatar = user.avatarUrl || `https://ui-avatars.com/api/?name=${name}&background=0A192F&color=FFD700`;
-
-      document.getElementById('nav-display-name').innerText = name;
-      document.getElementById('nav-avatar-img').src = avatar;
-      document.getElementById('profile-avatar').src = avatar;
-      document.getElementById('display-name').innerText = name;
-
-      // Render Dynamic Sidebar Options
-      const sidebar = document.getElementById('app-sidebar');
-      sidebar.style.display = 'flex';
-      
-      if (user.role === 'recruiter') {
-        sidebar.innerHTML = `
-          <div class="sidebar-item active" onclick="switchView('profile-view', this)"><i class="fa-regular fa-user"></i> <span>Profile</span></div>
-          <div class="sidebar-item" onclick="switchView('search-teachers-view', this)"><i class="fa-solid fa-users"></i> <span>Search Teachers</span></div>
-          <div class="sidebar-item" onclick="switchView('manage-jobs-view', this)"><i class="fa-solid fa-briefcase"></i> <span>Manage Jobs</span></div>
-          <div class="sidebar-item" onclick="switchView('inbox-view', this)"><i class="fa-regular fa-envelope"></i> <span>Inbox</span></div>
-        `;
-        document.getElementById('teacher-profile-fields').style.display = 'none';
-        document.getElementById('recruiter-profile-fields').style.display = 'block';
-        
-        // Populate profile inputs
-        if(user.repName) document.getElementById('prof-rep-name').value = user.repName;
-        if(user.location) document.getElementById('prof-location').value = user.location;
-        if(user.type) document.getElementById('prof-type').value = user.type;
-        document.getElementById('prof-company-name').value = user.name || '';
-
-        fetchTeachers();
-        setupRealtimeRecruiterJobs();
-      } else {
-        sidebar.innerHTML = `
-          <div class="sidebar-item active" onclick="switchView('profile-view', this)"><i class="fa-regular fa-user"></i> <span>Profile</span></div>
-          <div class="sidebar-item" onclick="switchView('browse-jobs-view', this)"><i class="fa-solid fa-briefcase"></i> <span>Browse Jobs</span></div>
-          <div class="sidebar-item" onclick="switchView('inbox-view', this)"><i class="fa-regular fa-envelope"></i> <span>Inbox</span></div>
-        `;
-        document.getElementById('teacher-profile-fields').style.display = 'block';
-        document.getElementById('recruiter-profile-fields').style.display = 'none';
-
-        // Populate profile inputs
-        document.getElementById('prof-teacher-name').value = user.name || '';
-        if(user.experience) document.getElementById('prof-teacher-exp').value = user.experience;
-        if(user.languages) document.getElementById('prof-teacher-langs').value = user.languages;
-        if(user.videoUrl) document.getElementById('prof-teacher-video').value = user.videoUrl;
-
-        setupRealtimeTeacherJobs();
-      }
-
-      if(user.bio) document.getElementById('prof-bio').value = user.bio;
-      
-      setupRealtimeInbox();
+    function finalizeLogin(name, email, isVerified, avatarUrl) {
+      if (window.auth && window.auth.currentUser) window.currentUser.uid = window.auth.currentUser.uid;
+      window.currentUser.name = name; window.currentUser.email = email; window.currentUser.isVerified = isVerified; window.currentUser.avatarUrl = avatarUrl;
+      document.body.classList.add('dashboard-active');
+      document.getElementById('auth-panel').style.display = 'none';
       switchView('profile-view');
-    }
-
-    function setupLoggedOutUI() {
-      document.getElementById('nav-logged-out').style.display = 'flex';
-      document.getElementById('nav-logged-in').style.display = 'none';
-      document.getElementById('app-sidebar').style.display = 'none';
-      document.getElementById('portal-role-badge').style.display = 'none';
-      switchView('public-hero-view');
-    }
-
-    // PROFILE MANAGEMENT
-    window.handleProfileUpdate = async function(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-save-profile');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-
-      const isRecruiter = window.currentUser.role === 'recruiter';
-      const updates = {
-        bio: document.getElementById('prof-bio').value
-      };
-
-      if (isRecruiter) {
-        updates.name = document.getElementById('prof-company-name').value;
-        updates.repName = document.getElementById('prof-rep-name').value;
-        updates.location = document.getElementById('prof-location').value;
-        updates.type = document.getElementById('prof-type').value;
-      } else {
-        updates.name = document.getElementById('prof-teacher-name').value;
-        updates.experience = document.getElementById('prof-teacher-exp').value;
-        updates.languages = document.getElementById('prof-teacher-langs').value;
-        updates.videoUrl = document.getElementById('prof-teacher-video').value;
-      }
-
-      try {
-        await window.fb.updateDoc(window.fb.doc(window.db, "users", window.currentUser.uid), updates);
-        document.getElementById('nav-display-name').innerText = updates.name;
-        document.getElementById('display-name').innerText = updates.name;
-        showToast("Profile updated successfully!", "success");
-      } catch(err) {
-        showToast("Error updating profile.", "error");
-      } finally {
-        btn.innerText = 'Save Profile Details';
-      }
-    };
-
-    // CROPPING CONTROLLERS
-    window.openCropperModal = function(input) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const img = document.getElementById('cropper-image');
-          img.src = e.target.result;
-          document.getElementById('cropper-modal').classList.add('active');
-          if(currentCropper) currentCropper.destroy();
-          currentCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1 });
-        }
-        reader.readAsDataURL(input.files[0]);
-      }
-      input.value = '';
-    };
-
-    window.cancelCrop = function() {
-      document.getElementById('cropper-modal').classList.remove('active');
-      if(currentCropper) currentCropper.destroy();
-    };
-
-    window.applyCrop = async function() {
-      const btn = document.getElementById('btn-crop-save');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-      const canvas = currentCropper.getCroppedCanvas({ width: 250, height: 250 });
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-
-      try {
-        await window.fb.updateDoc(window.fb.doc(window.db, "users", window.currentUser.uid), { avatarUrl: dataUrl });
-        document.getElementById('profile-avatar').src = dataUrl;
-        document.getElementById('nav-avatar-img').src = dataUrl;
-        cancelCrop();
-        showToast("Avatar updated!", "success");
-      } catch (err) {
-        showToast("Error saving avatar.", "error");
-      } finally {
-        btn.innerText = 'Save';
-      }
-    };
-
-    // TEACHER DATABASE SEARCH (FOR RECRUITER)
-    async function fetchTeachers() {
-      try {
-        const q = window.fb.query(window.fb.collection(window.db, "users"), window.fb.where("role", "==", "teacher"));
-        const snapshot = await window.fb.getDocs(q);
-        allTeachers = [];
-        snapshot.forEach(docSnap => allTeachers.push({id: docSnap.id, ...docSnap.data()}));
-        renderTeachers(allTeachers);
-      } catch(e) {
-        console.error(e);
-      }
-    }
-
-    function renderTeachers(list) {
-      const container = document.getElementById('teacher-results-container');
-      container.innerHTML = '';
-      if(list.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No teachers found.</p>';
-        return;
-      }
-      list.forEach(t => {
-        const avatar = t.avatarUrl || `https://ui-avatars.com/api/?name=${t.name}&background=0A192F&color=FFD700`;
-        const html = `
-          <div class="teacher-card" onclick="openTeacherProfile('${t.id}')">
-            <img src="${avatar}">
-            <h3>${t.name}</h3>
-            <p><i class="fa-solid fa-language"></i> ${t.languages || 'English'}</p>
-            <div style="margin-top:0.5rem;"><span class="badge badge-navy">${t.experience || 0} Yrs Experience</span></div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', html);
-      });
-    }
-
-    window.filterTeachers = function() {
-      const kw = document.getElementById('search-keyword').value.toLowerCase();
-      const exp = document.getElementById('search-exp').value;
-      const filtered = allTeachers.filter(t => {
-        const matchKw = t.name.toLowerCase().includes(kw) || (t.languages || '').toLowerCase().includes(kw);
-        let matchExp = true;
-        if (exp === "1") matchExp = (parseInt(t.experience) || 0) >= 1;
-        if (exp === "3") matchExp = (parseInt(t.experience) || 0) >= 3;
-        return matchKw && matchExp;
-      });
-      renderTeachers(filtered);
-    };
-
-    window.openTeacherProfile = function(tid) {
-      const t = allTeachers.find(x => x.id === tid);
-      if(!t) return;
-      currentTeacherContext = t;
-      document.getElementById('tm-name').innerText = t.name;
-      document.getElementById('tm-avatar').src = t.avatarUrl || `https://ui-avatars.com/api/?name=${t.name}&background=0A192F&color=FFD700`;
-      document.getElementById('tm-bio').innerText = t.bio || 'No bio provided.';
+      document.getElementById('display-name').innerText = name;
+      document.getElementById('profile-avatar').src = avatarUrl;
+      document.getElementById('prof-display-name').value = name;
+      const vBadge = document.getElementById('verification-badge');
+      if (!isVerified) { vBadge.innerText = 'Unverified (Check Inbox)'; vBadge.className = 'badge'; vBadge.style.background = 'var(--error-red)'; } 
       
-      const vidSection = document.getElementById('tm-video-section');
-      if (t.videoUrl) {
-        vidSection.style.display = 'block';
-        document.getElementById('tm-video').src = t.videoUrl;
-      } else {
-        vidSection.style.display = 'none';
-      }
-
-      document.getElementById('teacher-modal').classList.add('active');
-    };
-
-    window.inviteTeacher = async function() {
-      document.getElementById('teacher-modal').classList.remove('active');
-      switchView('inbox-view');
-      try {
-        const threadRef = await window.fb.addDoc(window.fb.collection(window.db, "threads"), {
-          participants: [currentTeacherContext.id, window.currentUser.uid],
-          jobTitle: `Interview Invitation from ${window.currentUser.name}`,
-          teacherName: currentTeacherContext.name,
-          updatedAt: window.fb.serverTimestamp()
-        });
-
-        await window.fb.addDoc(window.fb.collection(window.db, `threads/${threadRef.id}/messages`), {
-          senderId: window.currentUser.uid,
-          text: `Hello ${currentTeacherContext.name}, we are impressed by your profile and would like to talk!`,
-          timestamp: window.fb.serverTimestamp()
-        });
-
-        showToast("Invitation sent!", "success");
-      } catch(e) { showToast("Failed to send invite.", "error"); }
-    };
-
-    // JOB BOARD & MANAGEMENT (FIRESTORE REALTIME)
-    function setupRealtimeRecruiterJobs() {
-      const q = window.fb.query(window.fb.collection(window.db, "jobs"), window.fb.where("recruiterId", "==", window.currentUser.uid));
-      window.fb.onSnapshot(q, (snapshot) => {
-        const container = document.getElementById('recruiter-jobs-container');
-        container.innerHTML = '';
-        if (snapshot.empty) {
-          container.innerHTML = `<div style="text-align:center; padding: 3rem; color:var(--text-muted);"><i class="fa-solid fa-briefcase" style="font-size: 3rem; margin-bottom: 1rem;"></i><p>You haven't posted any jobs yet.</p></div>`;
-          return;
-        }
-        snapshot.forEach(docSnap => {
-          const job = { id: docSnap.id, ...docSnap.data() };
-          const html = `
-            <div class="job-list-item">
-              <div>
-                <h3>${job.title}</h3>
-                <p>${job.type} | ${job.pay || 'Negotiable'} | ${job.location || 'Remote'}</p>
-              </div>
-              <button class="btn btn-danger btn-small" onclick="deleteJob('${job.id}')"><i class="fa-solid fa-trash"></i> Remove</button>
-            </div>
-          `;
-          container.insertAdjacentHTML('beforeend', html);
-        });
-      });
+      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>`;
     }
 
-    function setupRealtimeTeacherJobs() {
-      const q = window.fb.query(window.fb.collection(window.db, "jobs"), window.fb.orderBy("createdAt", "desc"));
-      window.fb.onSnapshot(q, (snapshot) => {
-        allJobs = [];
-        snapshot.forEach(docSnap => allJobs.push({ id: docSnap.id, ...docSnap.data() }));
-        renderJobs(allJobs);
-      });
-    }
-
-    function renderJobs(jobs) {
-      const container = document.getElementById('job-board-container');
-      container.innerHTML = '';
-      if(jobs.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No job postings available.</p>';
-        return;
+    window.switchView = function(viewId, element) {
+      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+      if (element) element.classList.add('active');
+      else { const el = document.querySelector(`.sidebar-item[onclick*="${viewId}"]`); if (el) el.classList.add('active'); }
+      
+      if(viewId === 'messages-view') {
+        document.getElementById('chat-window').style.display = 'none';
+        document.getElementById('inbox-list-view').style.display = 'block';
       }
-      jobs.forEach(j => {
-        const html = `
-          <div class="job-card">
-            <div>
-              <span class="badge badge-yellow">${j.type}</span>
-              <h3 style="margin-top:0.5rem;">${j.title}</h3>
-              <p style="font-weight:600; color:var(--primary-navy);">${j.companyName || 'School'}</p>
-              <p style="font-size:0.85rem; margin-bottom:1rem;"><i class="fa-solid fa-location-dot"></i> ${j.location || 'Remote'} | <i class="fa-solid fa-money-bill"></i> ${j.pay || 'Negotiable'}</p>
-              <div style="font-size:0.9rem; color:var(--text-main); margin-bottom:1rem;">${j.description}</div>
-            </div>
-            <button class="btn btn-navy btn-block btn-small" onclick="applyToJob('${j.id}', '${j.recruiterId}', '${j.title}')">Apply Now</button>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', html);
-      });
-    }
-
-    window.filterJobs = function() {
-      const kw = document.getElementById('job-search-keyword').value.toLowerCase();
-      const type = document.getElementById('job-search-type').value;
-      const filtered = allJobs.filter(j => {
-        const matchKw = j.title.toLowerCase().includes(kw) || (j.description || '').toLowerCase().includes(kw);
-        const matchType = !type || j.type === type;
-        return matchKw && matchType;
-      });
-      renderJobs(filtered);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.openJobEditor = function() { document.getElementById('job-editor-modal').classList.add('active'); };
-    window.closeJobEditor = function() { document.getElementById('job-editor-modal').classList.remove('active'); };
-
-    window.saveJobPost = async function() {
-      const title = document.getElementById('job-title').value;
-      if (!title) { showToast("Title is required", "error"); return; }
-
-      const btn = document.getElementById('btn-save-job');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-
-      try {
-        await window.fb.addDoc(window.fb.collection(window.db, "jobs"), {
-          title: title,
-          location: document.getElementById('job-loc').value,
-          pay: document.getElementById('job-pay').value,
-          type: document.getElementById('job-type').value,
-          description: document.getElementById('job-desc').innerHTML,
-          recruiterId: window.currentUser.uid,
-          companyName: window.currentUser.name,
-          createdAt: window.fb.serverTimestamp()
-        });
-        showToast("Job posted successfully!", "success");
-        closeJobEditor();
-      } catch(e) {
-        showToast("Error creating job.", "error");
-      } finally {
-        btn.innerText = 'Publish Job';
-      }
+    window.handleLogoClick = function(e) {
+      e.preventDefault();
+      if(document.body.classList.contains('dashboard-active')) switchView('profile-view');
     };
 
-    window.deleteJob = async function(id) {
-      if(confirm("Remove this job posting?")) {
-        await window.fb.deleteDoc(window.fb.doc(window.db, "jobs", id));
-        showToast("Job deleted.", "info");
-      }
-    };
-
-    window.applyToJob = async function(jobId, recruiterId, jobTitle) {
-      try {
-        const threadRef = await window.fb.addDoc(window.fb.collection(window.db, "threads"), {
-          participants: [window.currentUser.uid, recruiterId],
-          jobTitle: `Application: ${jobTitle}`,
-          teacherName: window.currentUser.name,
-          updatedAt: window.fb.serverTimestamp()
-        });
-
-        await window.fb.addDoc(window.fb.collection(window.db, `threads/${threadRef.id}/messages`), {
-          senderId: window.currentUser.uid,
-          text: `Hello, I would like to submit my application for the position of ${jobTitle}.`,
-          timestamp: window.fb.serverTimestamp()
-        });
-
-        showToast("Application submitted successfully!", "success");
-        switchView('inbox-view');
-      } catch(e) {
-        showToast("Error submitting application.", "error");
-      }
-    };
-
-    // REALTIME CHAT ENGINE (SHARED INBOX)
-    function setupRealtimeInbox() {
-      const q = window.fb.query(window.fb.collection(window.db, "threads"), window.fb.where("participants", "array-contains", window.currentUser.uid));
-      window.fb.onSnapshot(q, (snapshot) => {
-        const container = document.getElementById('inbox-container');
-        document.getElementById('empty-inbox').style.display = snapshot.empty ? 'block' : 'none';
+    // --- REALTIME JOBS BOARD (Advanced) ---
+    window.setupRealtimeJobs = function() {
+      const jobsQuery = window.fb.query(window.fb.collection(window.db, "jobs"), window.fb.orderBy("createdAt", "desc"));
+      window.fb.onSnapshot(jobsQuery, (snapshot) => {
+        const container = document.getElementById('job-list-container');
+        document.getElementById('jobs-loading').style.display = 'none';
+        jobList = []; container.innerHTML = '';
         
-        container.querySelectorAll('.message-item').forEach(e => e.remove());
+        if (snapshot.empty) { container.innerHTML = '<p style="text-align:center; padding: 2rem;">No jobs available.</p>'; return; }
 
-        snapshot.forEach(docSnap => {
-          const t = { id: docSnap.id, ...docSnap.data() };
+        snapshot.forEach((docSnap) => {
+          const job = { id: docSnap.id, ...docSnap.data() };
+          jobList.push(job);
+          
+          const isTaken = job.status === 'taken';
+          const statusBadge = isTaken 
+              ? `<span class="badge badge-gray"><i class="fa-solid fa-lock"></i> Position Filled</span>`
+              : `<span class="badge badge-success"><i class="fa-solid fa-door-open"></i> Open</span>`;
+              
+          const recruiterImg = job.recruiterAvatar || `https://ui-avatars.com/api/?name=${job.companyName}&background=0D4054&color=F5A623`;
+          const dateStr = job.createdAt ? job.createdAt.toDate().toLocaleDateString() : 'Recent';
+
           const html = `
-            <div class="message-item" onclick="openChat('${t.id}', '${t.jobTitle || 'Chat'}')">
-              <div class="msg-content">
-                <h4><i class="fa-solid fa-comments" style="color:var(--accent-yellow);"></i> ${t.jobTitle || 'Discussion'}</h4>
-                <p>Click to open conversation history</p>
+            <div class="card job-card" style="${isTaken ? 'opacity:0.6;' : ''}" data-title="${job.title.toLowerCase()}" data-location="${(job.location||'').toLowerCase()}" data-type="${job.type||'Full Time'}">
+              <div class="job-header-info">
+                 <img src="${recruiterImg}" alt="Recruiter">
+                 <div class="job-header-text">
+                    <h4>${job.companyName || 'Recruiter'}</h4>
+                    <span>Posted: ${dateStr}</span>
+                 </div>
               </div>
+              <h3 class="job-title">${job.title}</h3>
+              <div class="job-meta">
+                ${statusBadge}
+                <span class="badge badge-yellow">${job.type || 'Full Time'}</span>
+                <span class="badge badge-outline"><i class="fa-solid fa-location-dot"></i> ${job.location || 'Remote'}</span>
+                <span style="font-weight:700; color:var(--text-main);"><i class="fa-solid fa-coins"></i> ${job.pay || 'Negotiable'}</span>
+              </div>
+              <div class="job-desc">${job.description || ''}</div>
+              <button class="btn ${isTaken ? 'btn-outline' : 'btn-primary'}" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('${job.id}')">${isTaken ? 'View Details' : 'View & Apply'}</button>
             </div>
           `;
           container.insertAdjacentHTML('beforeend', html);
         });
       });
-    }
+    };
 
-    window.openChat = function(threadId, title) {
+    window.filterJobBoard = function() {
+      const searchTxt = document.getElementById('search-jobs').value.toLowerCase();
+      const locTxt = document.getElementById('search-location').value.toLowerCase();
+      const typeFilter = document.getElementById('filter-type').value;
+      document.querySelectorAll('.job-card').forEach(card => {
+        const textMatch = card.querySelector('.job-title').innerText.toLowerCase().includes(searchTxt) || card.querySelector('.job-desc').innerText.toLowerCase().includes(searchTxt);
+        const locMatch = card.getAttribute('data-location').includes(locTxt);
+        const typeMatch = (typeFilter === 'all' || card.getAttribute('data-type') === typeFilter);
+        card.style.display = (textMatch && locMatch && typeMatch) ? 'flex' : 'none';
+      });
+    };
+
+    window.viewJobDetails = function(jobId) {
+      const job = jobList.find(j => j.id === jobId);
+      if(!job) return;
+      
+      const rImg = job.recruiterAvatar || `https://ui-avatars.com/api/?name=${job.companyName}&background=0D4054&color=F5A623`;
+      document.getElementById('modal-recruiter-img').src = rImg;
+      document.getElementById('modal-recruiter-name').innerText = job.companyName;
+      document.getElementById('modal-job-date').innerText = "Posted: " + (job.createdAt ? job.createdAt.toDate().toLocaleDateString() : 'Recent');
+      
+      document.getElementById('job-modal-title').innerText = job.title;
+      document.getElementById('job-modal-meta').innerHTML = `<span class="badge badge-yellow">${job.type||'Full Time'}</span> <span><i class="fa-solid fa-location-dot"></i> ${job.location||'Remote'}</span> <span style="font-weight:700;"><i class="fa-solid fa-coins"></i> ${job.pay||'N/A'}</span>`;
+      
+      const imgPreview = document.getElementById('job-modal-image');
+      if (job.imageUrl) { imgPreview.src = job.imageUrl; imgPreview.style.display = 'block'; } else { imgPreview.style.display = 'none'; }
+      
+      document.getElementById('job-modal-desc').innerHTML = job.description; // Renders Rich Text
+      
+      const applyBtn = document.getElementById('job-modal-apply');
+      if (job.status === 'taken') {
+         applyBtn.disabled = true; applyBtn.innerText = "Position Already Taken"; applyBtn.classList.remove('btn-primary'); applyBtn.classList.add('btn-outline');
+      } else {
+         applyBtn.disabled = false; applyBtn.innerText = "Apply Now & Attach Profile"; applyBtn.classList.add('btn-primary'); applyBtn.classList.remove('btn-outline');
+         applyBtn.onclick = () => { applyForJob(job); };
+      }
+      document.getElementById('job-detail-modal').classList.add('active');
+    };
+
+    window.closeJobModal = function() { document.getElementById('job-detail-modal').classList.remove('active'); };
+
+    // --- APPLYING & INBOX MESSAGING ---
+    window.applyForJob = async function(job) {
+      if (!window.currentUser.isVerified) { showToast("Verify your email address to apply for jobs.", "error"); return; }
+      const btn = document.getElementById('job-modal-apply'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending Application...';
+      try {
+        const threadData = {
+          participants: [window.currentUser.uid, job.recruiterId],
+          jobId: job.id, jobTitle: job.title, updatedAt: window.fb.serverTimestamp(),
+          teacherName: window.currentUser.name, teacherAvatar: window.currentUser.avatarUrl,
+          recruiterName: job.companyName, recruiterAvatar: job.recruiterAvatar || `https://ui-avatars.com/api/?name=${job.companyName}&background=0D4054&color=F5A623`,
+          type: 'application'
+        };
+        const threadRef = await window.fb.addDoc(window.fb.collection(window.db, "threads"), threadData);
+        await window.fb.addDoc(window.fb.collection(window.db, `threads/${threadRef.id}/messages`), {
+          senderId: window.currentUser.uid, text: `🔔 **New Application for:** ${job.title}.\nI have attached my profile and documents for your review. I look forward to hearing from you!`, timestamp: window.fb.serverTimestamp()
+        });
+        showToast(`Application successfully sent to ${job.companyName}!`, "success"); closeJobModal();
+      } catch(e) { showToast("Error sending application.", "error"); btn.innerHTML = 'Apply Now & Attach Profile'; }
+    };
+
+    window.setupRealtimeInbox = function() {
+      const inboxQuery = window.fb.query(window.fb.collection(window.db, "threads"), window.fb.where("participants", "array-contains", window.currentUser.uid), window.fb.orderBy("updatedAt", "desc"));
+      window.fb.onSnapshot(inboxQuery, (snapshot) => {
+        const container = document.getElementById('inbox-container');
+        if (snapshot.empty) { container.innerHTML = `<div style="text-align:center; padding: 4rem; color:var(--blue-gray);"><i class="fa-regular fa-envelope-open" style="font-size: 3.5rem; margin-bottom: 1rem; opacity:0.5;"></i><p>No messages yet.</p></div>`; document.getElementById('msg-badge').style.display = 'none'; return; }
+        
+        container.innerHTML = ''; let threadCount = 0;
+        snapshot.forEach((docSnap) => {
+          threadCount++; const thread = { id: docSnap.id, ...docSnap.data() };
+          const dAvatar = thread.recruiterAvatar || 'https://ui-avatars.com/api/?name=Recruiter&background=0D4054&color=F5A623';
+          const dName = thread.recruiterName || 'Employer';
+          const timeStr = thread.updatedAt ? new Date(thread.updatedAt.toDate()).toLocaleDateString() : '';
+          
+          const html = `
+            <div class="message-item" onclick='openChat("${thread.id}", ${JSON.stringify(thread).replace(/'/g, "&apos;")})'>
+              <img src="${dAvatar}" alt="Profile">
+              <div class="message-item-content">
+                <h4>${dName} <span>${timeStr}</span></h4>
+                <p class="subject">${thread.jobTitle || 'Direct Message'}</p>
+                <p class="preview">Click to view conversation thread...</p>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', html);
+        });
+        const badge = document.getElementById('msg-badge');
+        if(threadCount > 0) { badge.innerText = threadCount; badge.style.display = 'inline-block'; }
+      });
+    };
+
+    let activeChatUnsubscribe = null;
+    window.openChat = function(threadId, threadObj) {
       window.activeChatId = threadId;
       document.getElementById('inbox-list-view').style.display = 'none';
       document.getElementById('chat-window').style.display = 'flex';
-      document.getElementById('chat-title').innerText = title;
+      document.getElementById('chat-title').innerText = threadObj.recruiterName || 'Employer';
+      document.getElementById('chat-header-img').src = threadObj.recruiterAvatar || 'https://ui-avatars.com/api/?name=Recruiter';
 
       if(activeChatUnsubscribe) activeChatUnsubscribe();
-
-      const q = window.fb.query(window.fb.collection(window.db, `threads/${threadId}/messages`), window.fb.orderBy("timestamp", "asc"));
-      activeChatUnsubscribe = window.fb.onSnapshot(q, (snapshot) => {
+      const msgsQuery = window.fb.query(window.fb.collection(window.db, `threads/${threadId}/messages`), window.fb.orderBy("timestamp", "asc"));
+      
+      activeChatUnsubscribe = window.fb.onSnapshot(msgsQuery, (snapshot) => {
         const hist = document.getElementById('chat-history');
-        hist.innerHTML = '';
-        snapshot.forEach(docSnap => {
-          const m = docSnap.data();
-          const bubbleClass = m.senderId === window.currentUser.uid ? 'bubble-out' : 'bubble-in';
-          hist.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${bubbleClass}">${m.text}</div>`);
+        hist.innerHTML = '<div style="text-align:center; font-size:0.8rem; color:var(--blue-gray); margin-bottom:1rem;">Chat Started</div>';
+        
+        snapshot.forEach((docSnap) => {
+          const msg = docSnap.data();
+          const isMe = msg.senderId === window.currentUser.uid;
+          const bClass = isMe ? 'out' : 'in';
+          const avatar = isMe ? window.currentUser.avatarUrl : (threadObj.recruiterAvatar || 'https://ui-avatars.com/api/?name=Recruiter');
+          const timeStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Sending...';
+
+          hist.insertAdjacentHTML('beforeend', `
+            <div class="chat-bubble-wrapper ${bClass}">
+               <img src="${avatar}" class="chat-avatar">
+               <div class="chat-bubble">
+                  ${msg.text.replace(/\n/g, '<br>')}
+                  <span class="msg-time-stamp">${timeStr}</span>
+               </div>
+            </div>
+          `);
         });
         hist.scrollTop = hist.scrollHeight;
       });
@@ -1011,23 +1018,143 @@
     window.closeChat = function() {
       document.getElementById('chat-window').style.display = 'none';
       document.getElementById('inbox-list-view').style.display = 'block';
-      window.activeChatId = null;
-      if(activeChatUnsubscribe) activeChatUnsubscribe();
+      window.activeChatId = null; if(activeChatUnsubscribe) activeChatUnsubscribe();
     };
 
     window.sendChatMessage = async function() {
-      const input = document.getElementById('chat-input-box');
-      const text = input.value.trim();
+      const input = document.getElementById('chat-input-box'); const text = input.value.trim();
       if (!text || !window.activeChatId) return;
-
       input.value = '';
-      await window.fb.addDoc(window.fb.collection(window.db, `threads/${window.activeChatId}/messages`), {
-        senderId: window.currentUser.uid,
-        text: text,
-        timestamp: window.fb.serverTimestamp()
-      });
+      await window.fb.addDoc(window.fb.collection(window.db, `threads/${window.activeChatId}/messages`), { senderId: window.currentUser.uid, text: text, timestamp: window.fb.serverTimestamp() });
       await window.fb.updateDoc(window.fb.doc(window.db, "threads", window.activeChatId), { updatedAt: window.fb.serverTimestamp() });
     };
+
+    // --- PROFILE, QUALIFICATIONS, CROPPER LOGIC (Standard Updates) ---
+    window.saveProfileToFirestore = async function() {
+      if (!window.auth || !window.auth.currentUser || !window.fb) return;
+      try { await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { qualifications: window.currentUser.quals || [], videoUrl: window.currentUser.videoUrl || "" }); } 
+      catch (e) {}
+    };
+
+    window.handleProfileUpdate = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-profile'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const displayName = document.getElementById('prof-display-name').value, age = document.getElementById('prof-age').value, gender = document.getElementById('prof-gender').value, experience = document.getElementById('prof-experience').value, languages = document.getElementById('prof-languages').value, bio = document.getElementById('prof-bio').value;
+      if (window.auth && window.auth.currentUser) {
+        try {
+          await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { name: displayName, age: age, gender: gender, experience: experience, languages: languages, bio: bio, lastUpdated: new Date() });
+          window.currentUser.name = displayName; document.getElementById('display-name').innerText = displayName;
+          btn.innerHTML = 'Update Profile Settings'; showToast('Profile updated successfully!', 'success');
+        } catch (err) { btn.innerHTML = 'Update Profile Settings'; showToast('Error updating profile.', 'error'); }
+      }
+    };
+
+    window.openRecruiterView = function() {
+      document.getElementById('rv-name').innerText = window.currentUser.name || document.getElementById('prof-display-name').value;
+      document.getElementById('rv-avatar').src = window.currentUser.avatarUrl || "https://ui-avatars.com/api/?name=User&background=0D4054&color=F5A623";
+      document.getElementById('rv-gender').innerHTML = `<i class="fa-solid fa-venus-mars"></i> ${document.getElementById('prof-gender').value || 'N/A'}`;
+      document.getElementById('rv-age').innerHTML = `<i class="fa-regular fa-calendar"></i> ${document.getElementById('prof-age').value || 'N/A'} yrs`; 
+      document.getElementById('rv-exp').innerHTML = `<i class="fa-solid fa-briefcase"></i> ${document.getElementById('prof-experience').value ? document.getElementById('prof-experience').value + ' Yrs Exp' : 'Entry Level'}`; 
+      document.getElementById('rv-langs').innerHTML = `<i class="fa-solid fa-language"></i> ${document.getElementById('prof-languages').value || 'English'}`; 
+      document.getElementById('rv-bio-text').innerText = document.getElementById('prof-bio').value || 'No summary provided.';
+      const vidSec = document.getElementById('rv-video-section'); if(window.currentUser.videoUrl) { vidSec.style.display = 'block'; document.getElementById('rv-video-player').src = window.currentUser.videoUrl; } else { vidSec.style.display = 'none'; }
+      const qualList = document.getElementById('rv-qual-list'); qualList.innerHTML = '';
+      if(window.currentUser.quals && window.currentUser.quals.length > 0) {
+        window.currentUser.quals.forEach(q => {
+             const clickableAttr = q.url ? `onclick="window.open('${q.url}', '_blank')"` : ''; 
+             qualList.insertAdjacentHTML('beforeend', `<div ${clickableAttr} style="padding:1rem; background:var(--bg-color); border:1px solid var(--border-color); border-radius:8px; display:flex; align-items:center; gap:1rem; cursor:pointer;"><i class="fa-solid fa-file-contract" style="color:var(--primary-navy); font-size:1.8rem;"></i> <span style="font-weight:600;">${q.title}</span></div>`);
+        });
+      } else { qualList.innerHTML = '<p class="elegant-text">No documents attached.</p>'; }
+      document.getElementById('recruiter-modal').classList.add('active');
+    };
+
+    window.openCropperModal = function(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('cropper-image'); img.src = e.target.result;
+          document.getElementById('cropper-modal').classList.add('active');
+          if(currentCropper) currentCropper.destroy();
+          currentCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 0.8 });
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+      input.value = ''; 
+    };
+
+    window.cancelCrop = function() { document.getElementById('cropper-modal').classList.remove('active'); if(currentCropper) currentCropper.destroy(); };
+
+    window.applyCrop = async function() {
+      const btn = document.getElementById('btn-crop-save'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const canvas = currentCropper.getCroppedCanvas({ width: 250, height: 250 });
+      canvas.toBlob(async (blob) => {
+        if(!window.auth.currentUser) return cancelCrop();
+        try {
+           const url = await uploadToGoogleDrive(blob, `avatar_${window.auth.currentUser.uid}.jpg`, "/avatars");
+           document.getElementById('profile-avatar').src = url; window.currentUser.avatarUrl = url;
+           await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { avatarUrl: url });
+           btn.innerHTML = 'Crop & Save'; cancelCrop(); showToast('Profile picture saved!', 'success');
+        } catch(e) { showToast("Upload error.", "error"); btn.innerHTML = 'Crop & Save'; cancelCrop(); }
+      }, 'image/jpeg', 0.85);
+    };
+
+    window.handleVideoUpload = async function(input) {
+      const file = input.files[0]; if(!file || !window.auth.currentUser) return;
+      const pContainer = document.getElementById('video-progress-bar'), pFill = document.getElementById('video-progress-fill');
+      pContainer.style.display = 'block'; pFill.style.width = '0%';
+      try {
+        const url = await uploadToGoogleDrive(file, `${Date.now()}_video`, "/videos", (p) => { pFill.style.width = `${p}%`; });
+        window.currentUser.videoUrl = url; saveProfileToFirestore();
+        const vPreview = document.getElementById('prof-video-preview'); vPreview.src = url; vPreview.style.display = 'block';
+        pContainer.style.display = 'none'; showToast("Video saved!", "success"); input.value = '';
+      } catch (err) { pContainer.style.display = 'none'; showToast("Upload error.", "error"); }
+    };
+
+    window.toggleAddQualForm = function() {
+      const form = document.getElementById('add-qual-form');
+      if(form.style.display === 'none' || form.style.display === '') { form.style.display = 'block'; document.getElementById('new-qual-title').value = ''; document.getElementById('new-qual-file').value = ''; editQualIndex = -1; } 
+      else { form.style.display = 'none'; }
+    };
+
+    window.cancelQualificationUpload = function() { document.getElementById('qual-progress-bar').style.display = 'none'; document.getElementById('new-qual-file').value = ''; toggleAddQualForm(); };
+
+    window.saveNewQualification = async function() {
+      const title = document.getElementById('new-qual-title').value.trim(); const fileInput = document.getElementById('new-qual-file');
+      if(!title) { showToast("Enter title.", "error"); return; }
+      if(fileInput.files.length > 0 && window.auth.currentUser) {
+        const file = fileInput.files[0]; const btn = document.getElementById('btn-save-qual'); btn.disabled = true;
+        const pContainer = document.getElementById('qual-progress-bar'), pFill = document.getElementById('qual-progress-fill'); pContainer.style.display = 'block'; pFill.style.width = '0%';
+        try {
+          const url = await uploadToGoogleDrive(file, `${Date.now()}_qual`, "/qualifications", (p) => { pFill.style.width = `${p}%`; });
+          finalizeSaveQual(title, url, file.name); btn.disabled = false; pContainer.style.display = 'none';
+        } catch (err) { btn.disabled = false; pContainer.style.display = 'none'; showToast("Upload error.", "error"); }
+      } else {
+        let url = "", fName = "";
+        if (editQualIndex > -1 && window.currentUser.quals[editQualIndex]) { url = window.currentUser.quals[editQualIndex].url; fName = window.currentUser.quals[editQualIndex].fileName; }
+        finalizeSaveQual(title, url, fName);
+      }
+    };
+
+    function finalizeSaveQual(title, url, fileName) {
+      if (editQualIndex > -1) { window.currentUser.quals[editQualIndex] = { title, url, fileName }; } else { window.currentUser.quals.push({ id: Date.now().toString(), title, url, fileName }); }
+      saveProfileToFirestore(); renderQualifications(); toggleAddQualForm(); showToast("Saved!", "success");
+    }
+
+    window.renderQualifications = function() {
+      const container = document.getElementById('saved-quals-container'); container.innerHTML = '';
+      if(!window.currentUser.quals || window.currentUser.quals.length === 0) { container.innerHTML = '<p style="color:var(--blue-gray);">No documents attached.</p>'; return; }
+      window.currentUser.quals.forEach((q, index) => {
+        const fileLink = q.url ? `<a href="${q.url}" target="_blank">View File</a>` : '';
+        const html = `<div class="qual-item"><div class="qual-item-info"><h4>${q.title}</h4>${fileLink}</div>
+            <div style="display:flex; gap:0.5rem;"><button type="button" class="btn btn-outline btn-small" onclick="editQualification(${index})"><i class="fa-solid fa-pen"></i></button><button type="button" class="btn btn-danger btn-small" onclick="deleteQualification(${index})"><i class="fa-solid fa-trash"></i></button></div></div>`;
+        container.insertAdjacentHTML('beforeend', html);
+      });
+    };
+
+    window.editQualification = function(index) { const q = window.currentUser.quals[index]; document.getElementById('add-qual-form').style.display = 'block'; document.getElementById('new-qual-title').value = q.title; editQualIndex = index; };
+    window.deleteQualification = function(index) { if(confirm("Delete this document?")) { window.currentUser.quals.splice(index, 1); saveProfileToFirestore(); renderQualifications(); } };
+
+    window.autoRegisterWorkshop = function() { showToast(`Registered!`, 'success'); }; window.autoSubmitTeflEnquiry = function() { showToast(`Sent!`, 'success'); };
   </script>
 </body>
 </html>
