@@ -3,165 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TeacherBee Connect - Employer Portal</title>
+  <title>TeacherBee Connect - Recruiter Profile</title>
   
-  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Cropper.js for Image Cropping -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   
   <style>
-    /* CORPORATE STYLES - Synced with Teacher Portal */
+    /* CORE STYLES */
     :root {
-      --primary-navy: #0D4054; --navy-light: #165b77; --accent-yellow: #F5A623; --yellow-hover: #e0961c;
-      --blue-gray: #718691; --bg-color: #f7f9fa; --surface-white: #FFFFFF; --text-main: #2b3a42; --text-muted: #718691;
-      --border-color: #d1d9dd; --error-red: #EF4444; --success-green: #10B981;
-      --radius-lg: 12px; --radius-md: 8px; --shadow-sm: 0 2px 4px rgba(13, 64, 84, 0.05); --shadow-md: 0 4px 12px rgba(13, 64, 84, 0.1);
+      --primary-navy: #0A192F; --navy-light: #172A45; --accent-yellow: #FFD700; --yellow-hover: #E5C100;
+      --bg-color: #F8F9FA; --surface-white: #FFFFFF; --text-main: #111827; --text-muted: #6B7280;
+      --border-color: #E5E7EB; --error-red: #EF4444; --success-green: #10B981;
+      --radius-lg: 16px; --radius-md: 8px; --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
     }
-    
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
     h1, h2, h3, h4 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; }
-    p { color: var(--text-muted); line-height: 1.6; }
+    p { color: var(--text-muted); line-height: 1.5; }
 
-    /* Header */
-    header { background-color: rgba(13, 64, 84, 0.95); backdrop-filter: blur(10px); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
-    .brand-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.35rem; }
+    header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
+    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
     .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
-    .recruiter-badge { background: rgba(245, 166, 35, 0.2); color: var(--accent-yellow); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-left: 10px; }
+    .recruiter-badge { background: rgba(255, 215, 0, 0.2); color: var(--accent-yellow); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-left: 10px; }
 
-    /* Buttons & Forms */
     .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
-    .btn-primary { background-color: var(--accent-yellow); color: var(--surface-white); }
+    .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
     .btn-primary:hover { background-color: var(--yellow-hover); }
     .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); }
-    .btn-outline:hover { background: rgba(245, 166, 35, 0.1); }
-    .btn-danger { background-color: transparent; border: 1px solid var(--error-red); color: var(--error-red); padding: 0.5rem 1rem; }
-    .btn-danger:hover { background-color: #FEE2E2; }
+    .btn-danger { background-color: #FEE2E2; color: var(--error-red); padding: 0.5rem 1rem; }
     .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
-    .btn-block { width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1.05rem; }
     
-    .form-group { margin-bottom: 1.5rem; position: relative; }
+    .form-group { margin-bottom: 1.25rem; }
     .form-label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
-    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.95rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--bg-color); color: var(--text-main); }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary-navy); background: var(--surface-white); box-shadow: 0 0 0 3px rgba(13, 64, 84, 0.1); }
-    .form-textarea { resize: vertical; min-height: 120px; }
-    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1); }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-    /* Layout Setup */
-    .app-container { display: flex; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; padding: 2.5rem; gap: 2.5rem; align-items: flex-start; }
-    .sidebar { width: 260px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
-    .content-area { flex: 1; display: flex; flex-direction: column; gap: 2rem; padding-bottom: 3rem; min-width: 0; }
+    .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
+    .sidebar { width: 250px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
+    .content-area { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
     
-    .sidebar-item { padding: 1rem 1.25rem; border-radius: var(--radius-md); color: var(--blue-gray); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; font-size: 1.05rem; }
-    .sidebar-item:hover { background-color: rgba(13, 64, 84, 0.05); color: var(--primary-navy); }
-    .sidebar-item.active { background-color: var(--primary-navy); color: var(--surface-white); box-shadow: var(--shadow-sm); }
-    .sidebar-item.active i { color: var(--accent-yellow); }
+    .sidebar-item { padding: 1rem; border-radius: var(--radius-md); color: var(--primary-navy); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; text-decoration: none; }
+    .sidebar-item:hover { background-color: var(--bg-color); }
+    .sidebar-item.active { background-color: var(--primary-navy); color: var(--accent-yellow); }
     
-    .view-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
-    .view-panel.active { display: block; }
-    .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
+    .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
 
-    /* Avatar Upload */
-    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border-color); }
-    .avatar-preview { width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--surface-white); object-fit: cover; background-color: var(--bg-color); cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-md); }
-    .avatar-preview:hover { opacity: 0.8; filter: brightness(0.9); border-color: var(--accent-yellow); }
+    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .avatar-preview { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent-yellow); object-fit: cover; background-color: var(--bg-color); cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-md); }
+    .avatar-preview:hover { opacity: 0.8; filter: brightness(0.9); }
     .avatar-upload-btn { position: relative; overflow: hidden; }
     .avatar-upload-btn input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-    /* Badges */
-    .badge { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .badge-yellow { background: var(--accent-yellow); color: var(--surface-white); }
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
     .badge-navy { background: var(--navy-light); color: var(--surface-white); }
-    .badge-outline { background: transparent; border: 1px solid var(--border-color); color: var(--blue-gray); }
-    .badge-gray { background: #E5E7EB; color: #4B5563; }
-    .badge-success { background: #D1FAE5; color: var(--success-green); }
 
-    /* Rich Text Editor */
-    .editor-toolbar { display: flex; gap: 0.5rem; padding: 0.5rem; background: var(--bg-color); border: 1px solid var(--border-color); border-bottom: none; border-radius: var(--radius-md) var(--radius-md) 0 0; flex-wrap: wrap; }
-    .editor-toolbar button, .editor-toolbar select { background: var(--surface-white); border: 1px solid var(--border-color); cursor: pointer; padding: 0.5rem; border-radius: 4px; color: var(--primary-navy); }
-    .editor-toolbar button:hover { background: var(--border-color); }
-    .rich-editor { min-height: 250px; padding: 1rem; border: 1px solid var(--border-color); border-radius: 0 0 var(--radius-md) var(--radius-md); background: var(--surface-white); outline: none; overflow-y: auto; line-height: 1.6; }
-    
-    /* Teacher Search Grid & Profiles */
-    .teacher-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-    .teacher-card { text-align: center; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; padding: 2rem 1.5rem; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
-    .teacher-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--accent-yellow); }
-    .teacher-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); margin-bottom: 1rem; box-shadow: var(--shadow-sm); }
-    
-    .rating-stars { color: #E5E7EB; font-size: 1.2rem; display: flex; gap: 0.2rem; cursor: pointer; justify-content: center; margin-bottom: 1rem; }
-    .rating-stars i.active, .rating-stars i.hovered { color: var(--accent-yellow); }
-    
-    .prof-header-elegant { display: flex; align-items: center; gap: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; margin-bottom: 2rem; }
-    .prof-header-elegant img { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); box-shadow: var(--shadow-sm); }
-    .section-title-elegant { font-size: 1.2rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1.25rem; margin-top: 2rem; }
-
-    /* Job Management List */
-    .job-list-item { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 1rem; background: var(--surface-white); box-shadow: var(--shadow-sm); transition: transform 0.2s;}
-    .job-list-item:hover { transform: translateX(5px); border-color: var(--primary-navy); }
-    .job-status-toggle { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--blue-gray); margin-top: 0.5rem; }
-
-    /* Messaging UI (Gmail/WhatsApp) */
-    .inbox-list { display: flex; flex-direction: column; }
-    .message-item { display: flex; align-items: center; gap: 1.25rem; padding: 1.25rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
-    .message-item:hover { background: var(--bg-color); }
-    .message-item img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); }
-    .message-item-content { flex: 1; min-width: 0; }
-    .message-item-content h4 { margin: 0 0 0.25rem 0; font-size: 1.05rem; color: var(--primary-navy); }
-    .message-item-content h4 span { float: right; font-size: 0.75rem; color: var(--blue-gray); font-weight: normal; }
-    .message-item-content p.subject { font-size: 0.9rem; color: var(--text-main); font-weight: 600; margin: 0 0 0.25rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    
-    #chat-window { display: none; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 650px; box-shadow: var(--shadow-md); }
-    .chat-header { background: var(--surface-white); border-bottom: 1px solid var(--border-color); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-    .chat-header-user { display: flex; align-items: center; gap: 1rem; cursor: pointer; }
-    .chat-header-user img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-yellow); }
-    .chat-header-user h3 { margin: 0; font-size: 1.1rem; color: var(--primary-navy); }
-    
-    .chat-messages { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.25rem; }
-    .chat-bubble-wrapper { display: flex; align-items: flex-end; gap: 0.75rem; max-width: 85%; }
-    .chat-bubble-wrapper.in { align-self: flex-start; }
-    .chat-bubble-wrapper.out { align-self: flex-end; flex-direction: row-reverse; }
-    .chat-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color); }
-    .chat-bubble { padding: 0.85rem 1.25rem; border-radius: 16px; font-size: 0.95rem; word-wrap: break-word; box-shadow: var(--shadow-sm); line-height: 1.5; }
-    .chat-bubble-wrapper.in .chat-bubble { background: var(--surface-white); border: 1px solid var(--border-color); border-bottom-left-radius: 4px; color: var(--text-main); }
-    .chat-bubble-wrapper.out .chat-bubble { background: var(--navy-light); color: var(--surface-white); border-bottom-right-radius: 4px; border: 1px solid var(--navy-light); }
-    .msg-time-stamp { display: block; font-size: 0.7rem; opacity: 0.7; margin-top: 6px; text-align: right; }
-    
-    .chat-input-area { padding: 1.25rem; background: var(--surface-white); border-top: 1px solid var(--border-color); display: flex; gap: 1rem; align-items: center; }
-    .chat-attachment-btn { background: var(--bg-color); border: 1px solid var(--border-color); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--primary-navy); transition: 0.2s; position: relative; overflow: hidden;}
-    .chat-attachment-btn:hover { background: var(--border-color); }
-    .chat-attachment-btn input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-
-    /* Modals */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 64, 84, 0.85); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
-    .modal-content { background: var(--surface-white); width: 100%; max-width: 750px; border-radius: var(--radius-lg); padding: 2.5rem; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
-    .close-modal { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--blue-gray); transition: color 0.2s; }
-    .close-modal:hover { color: var(--error-red); }
+    .modal-content { background: var(--surface-white); width: 100%; max-width: 600px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+    
+    #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+    .toast { padding: 1rem 1.25rem; border-radius: var(--radius-md); color: var(--surface-white); font-weight: 600; font-size: 0.9rem; box-shadow: var(--shadow-md); animation: slideIn 0.3s ease forwards; display: flex; align-items: center; gap: 10px; }
+    .toast.success { background-color: var(--success-green); }
+    .toast.error { background-color: var(--error-red); }
+    .toast.info { background-color: var(--primary-navy); color: var(--accent-yellow); }
 
-    /* Progress Bar */
-    .progress-bar-container { width: 100%; background-color: var(--border-color); border-radius: 8px; margin-top: 0.5rem; overflow: hidden; display: none; }
-    .progress-bar-fill { height: 8px; background-color: var(--success-green); width: 0%; transition: width 0.3s; }
-
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
     @media (max-width: 768px) {
       .app-container { padding: 1rem; padding-bottom: 85px; }
-      .grid-2-col, .filter-bar { grid-template-columns: 1fr; }
-      .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; box-shadow: 0 -4px 10px rgba(13,64,84,0.15); top: auto; }
-      .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.75rem; gap: 0.3rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
-      .sidebar-item.active { background: transparent; color: var(--accent-yellow); box-shadow: none; }
+      .grid-2-col { grid-template-columns: 1fr; }
+      .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; top: auto; }
+      .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
+      .sidebar-item.active { background: transparent; color: var(--accent-yellow); }
       .hide-mobile { display: none !important; }
-      .job-list-item { flex-direction: column; align-items: flex-start; gap: 1rem; }
     }
   </style>
 
-  <!-- FIREBASE SDK MODULE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, updatePassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, onSnapshot, addDoc, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -176,7 +102,7 @@
     const app = initializeApp(firebaseConfig);
     window.auth = getAuth(app);
     window.db = getFirestore(app);
-    window.fb = { doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, onSnapshot, addDoc, orderBy, deleteDoc, updatePassword, signOut };
+    window.fb = { doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, onSnapshot, addDoc, orderBy, deleteDoc, signOut };
     setPersistence(window.auth, browserLocalPersistence);
 
     let isRedirecting = false;
@@ -196,7 +122,7 @@
 
           window.currentUser = { uid: user.uid, ...data };
           let name = data.name || user.email.split('@')[0];
-          let avatar = data.avatarUrl || "https://ui-avatars.com/api/?name=" + name + "&background=0D4054&color=F5A623";
+          let avatar = data.avatarUrl || "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
           
           document.getElementById('nav-display-name').innerText = name;
           document.getElementById('display-name').innerText = name;
@@ -208,28 +134,24 @@
           if(data.type) document.getElementById('prof-type').value = data.type;
           if(data.bio) document.getElementById('prof-bio').value = data.bio;
           document.getElementById('prof-company-name').value = name;
-          
-          window.setupRealtimeJobs();
-          window.setupRealtimeInbox();
-          window.fetchTeachers();
         }
       } else {
-        window.location.href = 'index.html';
+        window.location.href = 'index.html'; // Redirect to login
       }
     });
   </script>
 </head>
-<body class="dashboard-active">
+<body>
 
   <div id="toast-container"></div>
 
   <header>
-    <a href="#" class="brand-logo">
+    <a href="RecruiterProfile.html" class="brand-logo">
       <i class="fa-solid fa-graduation-cap"></i> TeacherBee <span class="recruiter-badge">Employer</span>
     </a>
     <div id="nav-actions">
       <div style="display:flex; align-items:center; gap:1rem;">
-        <img src="https://ui-avatars.com/api/?name=Company&background=0D4054&color=F5A623" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
+        <img src="https://ui-avatars.com/api/?name=Company&background=0A192F&color=FFD700" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
         <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">Loading...</span>
         <button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
       </div>
@@ -238,32 +160,20 @@
 
   <div class="app-container">
     
-    <aside class="sidebar" id="app-sidebar">
-      <div class="sidebar-item active" onclick="switchView('profile-view', this)">
-        <i class="fa-regular fa-building"></i> <span>Profile settings</span>
-      </div>
-      <div class="sidebar-item" onclick="switchView('search-view', this)">
-        <i class="fa-solid fa-users"></i> <span>Search Teachers</span>
-      </div>
-      <div class="sidebar-item" onclick="switchView('jobs-view', this)">
-        <i class="fa-solid fa-briefcase"></i> <span>Post Vacancies</span>
-      </div>
-      <div class="sidebar-item" onclick="switchView('inbox-view', this)">
-        <i class="fa-regular fa-envelope"></i> <span>Inbox <span id="msg-badge" style="background:var(--error-red); color:white; border-radius:50%; padding:2px 6px; font-size:0.75rem; display:none;">0</span></span>
-      </div>
-      <div class="sidebar-item" onclick="switchView('billing-view', this)">
-        <i class="fa-solid fa-credit-card"></i> <span>Subscriptions</span>
-      </div>
+    <aside class="sidebar">
+      <a href="RecruiterProfile.html" class="sidebar-item active"><i class="fa-regular fa-user"></i> <span>Profile</span></a>
+      <a href="Searchteachers.html" class="sidebar-item"><i class="fa-solid fa-users"></i> <span>Search Teachers</span></a>
+      <a href="Postjobs.html" class="sidebar-item"><i class="fa-solid fa-briefcase"></i> <span>Manage Jobs</span></a>
+      <a href="RecruiterInbox.html" class="sidebar-item"><i class="fa-regular fa-envelope"></i> <span>Inbox</span></a>
+      <a href="Subscriptions.html" class="sidebar-item"><i class="fa-solid fa-credit-card"></i> <span>Subscriptions</span></a>
     </aside>
 
     <main class="content-area">
-
-      <!-- 1. COMPANY PROFILE VIEW -->
-      <section id="profile-view" class="view-panel active">
+      <section id="profile-view">
         <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap:wrap; gap:1rem;">
             <div>
-              <h2 id="display-name" style="font-size: 2rem; margin-bottom: 0.25rem;">Company Profile</h2>
+              <h2 id="display-name">Company Profile</h2>
               <span class="badge badge-navy">Employer Account</span>
             </div>
           </div>
@@ -271,29 +181,29 @@
           <form onsubmit="handleProfileUpdate(event)">
             <div class="avatar-upload-container">
               <label for="avatar-input" class="avatar-upload-btn">
-                <img src="https://ui-avatars.com/api/?name=Company&background=0D4054&color=F5A623" id="profile-avatar" class="avatar-preview" title="Click to change company logo">
+                <img src="https://ui-avatars.com/api/?name=Company&background=0A192F&color=FFD700" id="profile-avatar" class="avatar-preview" title="Click to change company logo">
                 <input type="file" id="avatar-input" accept="image/png, image/jpeg" onchange="openCropperModal(this)">
               </label>
-              <p style="font-size: 0.9rem; color: var(--blue-gray);"><i class="fa-solid fa-camera"></i> Upload Company Logo</p>
+              <p style="font-size: 0.8rem;">Click to upload Company Logo</p>
             </div>
 
-            <h3 class="section-title-elegant">Organization Details</h3>
+            <h3>Organization Details</h3>
             
             <div class="grid-2-col" style="margin-bottom: 1rem;">
               <div class="form-group">
                 <label class="form-label">Company / School Name</label>
-                <input type="text" id="prof-company-name" class="form-input" required>
+                <input type="text" id="prof-company-name" class="form-input" placeholder="e.g. Global English Academy" required>
               </div>
               <div class="form-group">
                 <label class="form-label">Representative Name</label>
-                <input type="text" id="prof-rep-name" class="form-input">
+                <input type="text" id="prof-rep-name" class="form-input" placeholder="e.g. John Smith">
               </div>
             </div>
 
             <div class="grid-2-col">
               <div class="form-group">
                 <label class="form-label">Headquarters / Location</label>
-                <input type="text" id="prof-location" class="form-input">
+                <input type="text" id="prof-location" class="form-input" placeholder="e.g. Beijing, China">
               </div>
               <div class="form-group">
                 <label class="form-label">Institution Type</label>
@@ -311,239 +221,18 @@
               <textarea id="prof-bio" class="form-textarea" placeholder="Describe your school, the working environment, and what you look for in teachers..."></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1rem; width: 100%; padding: 1.25rem; font-size:1.1rem;">Update Company Profile</button>
+            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1rem; width: 100%;">Save Company Profile</button>
           </form>
-          
-          <h3 class="section-title-elegant" style="margin-top: 3rem;">Account Security</h3>
-          <div class="grid-2-col">
-             <div class="form-group">
-                <label class="form-label">New Password</label>
-                <input type="password" id="sec-new-pass" class="form-input" placeholder="Enter new password">
-             </div>
-             <div class="form-group">
-                <label class="form-label">Confirm Password</label>
-                <input type="password" id="sec-confirm-pass" class="form-input" placeholder="Confirm new password">
-             </div>
-          </div>
-          <button type="button" class="btn btn-outline" onclick="changeAccountPassword()">Change Password</button>
-
         </div>
       </section>
-
-      <!-- 2. TEACHER SEARCH VIEW -->
-      <section id="search-view" class="view-panel">
-        <h2 style="margin-bottom: 1.5rem; font-size: 2rem;">Teacher Database</h2>
-        <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; box-shadow: var(--shadow-sm);">
-          <input type="text" class="form-input" id="search-keyword" placeholder="Search by name, skills, or language..." oninput="filterTeachers()">
-          <select class="form-select" id="search-exp" onchange="filterTeachers()">
-            <option value="">Any Experience</option>
-            <option value="1">1+ Years</option>
-            <option value="3">3+ Years</option>
-            <option value="5">5+ Years</option>
-          </select>
-        </div>
-
-        <div class="teacher-grid" id="teacher-results-container">
-          <div style="text-align:center; padding: 4rem; color:var(--text-muted); grid-column: 1/-1;" id="teacher-loading">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; margin-bottom:1rem; color:var(--primary-navy);"></i>
-            <p>Loading database...</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. POST VACANCIES (JOB MANAGEMENT) -->
-      <section id="jobs-view" class="view-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-          <h2 style="font-size: 2rem; margin:0;">Post Vacancies</h2>
-          <button class="btn btn-primary" onclick="openJobEditor()"><i class="fa-solid fa-plus"></i> Post New Job</button>
-        </div>
-
-        <div id="recruiter-jobs-container" style="display:flex; flex-direction:column; gap:1.5rem;">
-          <div class="card" style="text-align:center; padding: 4rem; color:var(--blue-gray);" id="empty-jobs">
-            <i class="fa-solid fa-briefcase" style="font-size: 3.5rem; margin-bottom: 1rem; opacity:0.5;"></i>
-            <p>You haven't posted any jobs yet.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 4. INBOX & INTERVIEWS -->
-      <section id="inbox-view" class="view-panel">
-        <div id="inbox-list-view">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
-            <h2 style="font-size: 2rem; margin:0;">Recruitment Inbox</h2>
-          </div>
-          <div class="card" style="padding: 0; overflow:hidden;">
-             <div class="inbox-list" id="inbox-container">
-                <div style="text-align:center; padding: 4rem; color:var(--blue-gray);" id="empty-inbox">
-                  <i class="fa-regular fa-envelope-open" style="font-size: 3.5rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                  <p>No messages or applications yet.</p>
-                </div>
-             </div>
-          </div>
-        </div>
-
-        <!-- Chat Window -->
-        <div id="chat-window">
-          <div class="chat-header">
-            <div class="chat-header-user" onclick="viewTeacherFromChat()">
-              <img src="" id="chat-header-img" alt="Teacher">
-              <div>
-                <h3 id="chat-title">Teacher Chat</h3>
-                <span style="font-size: 0.8rem; color: var(--blue-gray);">View Profile & Documents</span>
-              </div>
-            </div>
-            <button class="btn btn-outline btn-small" onclick="closeChat()">Back to Inbox</button>
-          </div>
-          <div class="chat-messages" id="chat-history"></div>
-          
-          <div class="progress-bar-container" id="chat-media-progress" style="margin: 0 1.5rem;">
-             <div class="progress-bar-fill" id="chat-media-fill"></div>
-          </div>
-
-          <div class="chat-input-area">
-            <label class="chat-attachment-btn" title="Send Attachment">
-               <i class="fa-solid fa-paperclip"></i>
-               <input type="file" onchange="sendMediaMessage(this)" accept="image/*,application/pdf,.doc,.docx">
-            </label>
-            <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message..." style="border-radius:24px;">
-            <button class="btn btn-primary" style="border-radius:50%; width:45px; height:45px; padding:0; flex-shrink:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-          </div>
-        </div>
-      </section>
-
-      <!-- 5. SUBSCRIPTION -->
-      <section id="billing-view" class="view-panel">
-        <h2 style="margin-bottom: 1.5rem;">Manage Subscriptions</h2>
-        <div class="grid-2-col">
-          <div class="card" style="border: 2px solid var(--accent-yellow);">
-            <span class="badge badge-navy">Current Plan</span>
-            <h3 style="margin-top:1rem; font-size:1.8rem;">Free Tier</h3>
-            <p style="margin-bottom:1rem;">Includes 1 Active Job Post & 5 Messages/month.</p>
-            <ul style="list-style:none; line-height:2; color:var(--text-muted); margin-bottom:1.5rem;">
-              <li><i class="fa-solid fa-check" style="color:var(--success-green);"></i> Basic Search Filters</li>
-              <li><i class="fa-solid fa-check" style="color:var(--success-green);"></i> Receive Applications</li>
-              <li><i class="fa-solid fa-xmark" style="color:var(--error-red);"></i> Video Introductions</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
     </main>
-  </div>
-
-  <!-- JOB CREATION/EDIT MODAL -->
-  <div class="modal-overlay" id="job-editor-modal">
-    <div class="modal-content" style="max-width: 800px;">
-      <button class="close-modal" onclick="closeJobEditor()">&times;</button>
-      <h2 id="job-modal-title" style="margin-bottom: 1.5rem;">Create / Edit Vacancy</h2>
-      
-      <input type="hidden" id="edit-job-id">
-      
-      <div class="form-group">
-        <label class="form-label">Job Title</label>
-        <input type="text" id="job-title" class="form-input" placeholder="e.g. Online English Tutor (K-12)">
-      </div>
-      
-      <div class="grid-2-col">
-        <div class="form-group">
-          <label class="form-label">Location / Setup</label>
-          <input type="text" id="job-loc" class="form-input" placeholder="e.g. Remote, Beijing, etc.">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Compensation / Pay</label>
-          <input type="text" id="job-pay" class="form-input" placeholder="e.g. $20/hr">
-        </div>
-      </div>
-      
-      <div class="grid-2-col">
-        <div class="form-group">
-          <label class="form-label">Job Type</label>
-          <select id="job-type" class="form-select">
-            <option value="Full Time">Full Time</option>
-            <option value="Part Time">Part Time</option>
-          </select>
-        </div>
-        <div class="form-group">
-           <label class="form-label">Promotional Picture (Optional)</label>
-           <input type="file" id="job-promo-img" class="form-input" accept="image/*" style="padding: 0.75rem;">
-           <input type="hidden" id="job-promo-url">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Rich Job Description</label>
-        <div class="editor-toolbar">
-          <button type="button" onclick="document.execCommand('bold', false, null)"><i class="fa-solid fa-bold"></i></button>
-          <button type="button" onclick="document.execCommand('italic', false, null)"><i class="fa-solid fa-italic"></i></button>
-          <button type="button" onclick="document.execCommand('underline', false, null)"><i class="fa-solid fa-underline"></i></button>
-          <button type="button" onclick="document.execCommand('insertUnorderedList', false, null)"><i class="fa-solid fa-list-ul"></i></button>
-          <select onchange="document.execCommand('foreColor', false, this.value); this.selectedIndex=0;">
-             <option value="">Color</option>
-             <option value="#0D4054">Navy</option>
-             <option value="#F5A623">Yellow</option>
-             <option value="#EF4444">Red</option>
-             <option value="#10B981">Green</option>
-          </select>
-          <button type="button" onclick="insertEmoji('💼')">💼</button>
-          <button type="button" onclick="insertEmoji('🎓')">🎓</button>
-          <button type="button" onclick="insertEmoji('🚀')">🚀</button>
-        </div>
-        <div class="rich-editor" id="job-desc" contenteditable="true" placeholder="Enter job requirements, schedules, and details here..."></div>
-      </div>
-      
-      <div class="progress-bar-container" id="job-img-progress" style="margin-bottom:1rem;"><div class="progress-bar-fill" id="job-img-fill"></div></div>
-
-      <button class="btn btn-primary btn-block" id="btn-save-job" onclick="saveJobPost()">Publish Vacancy</button>
-    </div>
-  </div>
-
-  <!-- TEACHER PROFILE MODAL -->
-  <div class="modal-overlay" id="teacher-modal">
-    <div class="modal-content" style="max-width: 800px; padding: 3rem;">
-      <button class="close-modal" onclick="document.getElementById('teacher-modal').classList.remove('active')">&times;</button>
-      
-      <div class="prof-header-elegant">
-        <img id="tm-avatar" src="" alt="Teacher">
-        <div style="flex:1;">
-          <h2 id="tm-name" style="font-size: 2.2rem; margin-bottom: 0.2rem;"></h2>
-          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.75rem;" id="tm-badges"></div>
-          
-          <div style="display:flex; align-items:center; gap:0.5rem;">
-             <div class="rating-stars" id="tm-rating-stars">
-               <i class="fa-solid fa-star" data-val="1"></i><i class="fa-solid fa-star" data-val="2"></i>
-               <i class="fa-solid fa-star" data-val="3"></i><i class="fa-solid fa-star" data-val="4"></i>
-               <i class="fa-solid fa-star" data-val="5"></i>
-             </div>
-             <span style="font-size:0.8rem; color:var(--blue-gray);" id="tm-rating-label">Rate Candidate</span>
-          </div>
-        </div>
-      </div>
-
-      <h3 class="section-title-elegant">Professional Summary</h3>
-      <p id="tm-bio" class="elegant-text" style="margin-bottom:2rem;"></p>
-
-      <div id="tm-video-section" style="display:none; margin-bottom:2.5rem;">
-        <h3 class="section-title-elegant">Introduction Video</h3>
-        <video id="tm-video" controls style="width:100%; border-radius:12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);"></video>
-      </div>
-      
-      <div id="tm-qual-section" style="margin-bottom: 2.5rem;">
-         <h3 class="section-title-elegant">Attached Documents & Certifications</h3>
-         <div id="tm-qual-list" style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;"></div>
-      </div>
-
-      <div style="display:flex; gap:1.5rem; margin-top: 3rem;">
-        <button class="btn btn-outline" style="flex:1; padding: 1.25rem;" onclick="inviteTeacher('direct')"><i class="fa-regular fa-comment-dots"></i> Direct Message</button>
-        <button class="btn btn-primary" style="flex:1; padding: 1.25rem;" onclick="inviteTeacher('invite')"><i class="fa-regular fa-calendar-check"></i> Invite to Interview</button>
-      </div>
-    </div>
   </div>
 
   <!-- IMAGE CROPPER MODAL -->
   <div class="modal-overlay" id="cropper-modal">
     <div class="modal-content" style="max-width: 500px;">
-      <h3 style="margin-bottom: 1rem;">Crop Logo</h3>
-      <div id="image-cropper-container">
+      <h3 style="margin-bottom: 1rem;">Crop Company Logo</h3>
+      <div id="image-cropper-container" style="max-height: 400px; margin-bottom: 1rem;">
         <img id="cropper-image" style="max-width: 100%; display: block;">
       </div>
       <div style="display:flex; gap:1rem; margin-top:1rem;">
@@ -553,109 +242,57 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
   <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
-
-    window.activeChatId = null;
-    let allTeachers = [];
-    let currentTeacherContext = null;
-    let currentThreadTeacher = null;
     let currentCropper = null;
-
-    // --- REUSABLE GOOGLE DRIVE UPLOADER ---
-    window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          let action = 'uploadFile';
-          if (folder.includes('avatars')) action = 'uploadProfile';
-          const payload = { action: action, fileName: fileName, mimeType: fileOrBlob.type || "application/octet-stream", file: e.target.result };
-          let progressInterval;
-          if (onProgress) {
-            let percent = 0;
-            progressInterval = setInterval(() => { percent += Math.floor(Math.random() * 10) + 5; if (percent >= 90) percent = 90; onProgress(percent); }, 400);
-          }
-          try {
-            const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
-            const data = await response.json();
-            if (progressInterval) { clearInterval(progressInterval); if (onProgress) onProgress(100); }
-            if (data.status === "success") {
-              let finalUrl = "";
-              if (action === 'uploadProfile' && data.profilePic && data.profilePic.url) finalUrl = data.profilePic.url;
-              else if (data.url) finalUrl = data.url; else if (data.fileUrl) finalUrl = data.fileUrl;
-              resolve(finalUrl || "https://via.placeholder.com/150");
-            } else reject(new Error("Drive Error"));
-          } catch (error) { if (progressInterval) clearInterval(progressInterval); reject(new Error("Network error")); }
-        };
-        reader.readAsDataURL(fileOrBlob);
-      });
-    };
 
     window.showToast = function(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
-      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info'}"></i> ${message}`;
+      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : 'fa-exclamation'}"></i> ${message}`;
       container.appendChild(toast);
       setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
     };
 
-    window.switchView = function(viewId, element) {
-      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
-      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-      document.getElementById(viewId).classList.add('active');
-      if (element) element.classList.add('active');
-      else { const el = document.querySelector(`.sidebar-item[onclick*="${viewId}"]`); if (el) el.classList.add('active'); }
-      
-      if(viewId === 'inbox-view') {
-        document.getElementById('chat-window').style.display = 'none';
-        document.getElementById('inbox-list-view').style.display = 'block';
-      }
-      window.scrollTo(0, 0);
-    };
-
     window.handleLogout = function() {
       if(window.auth && window.fb) window.fb.signOut(window.auth);
-      window.location.reload();
-    };
-
-    // --- ACCOUNT & PROFILE SEC ---
-    window.changeAccountPassword = async function() {
-      const pass1 = document.getElementById('sec-new-pass').value;
-      const pass2 = document.getElementById('sec-confirm-pass').value;
-      if (!pass1 || pass1.length < 6) { showToast("Password must be at least 6 characters.", "error"); return; }
-      if (pass1 !== pass2) { showToast("Passwords do not match.", "error"); return; }
-      
-      try {
-         await window.fb.updatePassword(window.auth.currentUser, pass1);
-         showToast("Password updated successfully!", "success");
-         document.getElementById('sec-new-pass').value = '';
-         document.getElementById('sec-confirm-pass').value = '';
-      } catch(e) {
-         if (e.code === 'auth/requires-recent-login') showToast("Please log out and log back in to change password.", "error");
-         else showToast(e.message, "error");
-      }
+      window.location.href = 'index.html';
     };
 
     window.handleProfileUpdate = async function(e) {
       e.preventDefault();
-      const btn = document.getElementById('btn-save-profile'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const btn = document.getElementById('btn-save-profile');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      
       const compName = document.getElementById('prof-company-name').value;
-      const updates = { name: compName, repName: document.getElementById('prof-rep-name').value, location: document.getElementById('prof-location').value, type: document.getElementById('prof-type').value, bio: document.getElementById('prof-bio').value };
+      const updates = {
+          name: compName,
+          repName: document.getElementById('prof-rep-name').value,
+          location: document.getElementById('prof-location').value,
+          type: document.getElementById('prof-type').value,
+          bio: document.getElementById('prof-bio').value
+      };
+
       try {
         await window.fb.updateDoc(window.fb.doc(window.db, "users", window.currentUser.uid), updates);
-        document.getElementById('nav-display-name').innerText = compName; document.getElementById('display-name').innerText = compName; window.currentUser.name = compName;
-        btn.innerHTML = 'Update Company Profile'; showToast('Company profile saved successfully!', 'success');
-      } catch(e) { btn.innerHTML = 'Update Company Profile'; showToast('Error saving profile.', 'error'); }
+        document.getElementById('nav-display-name').innerText = compName;
+        document.getElementById('display-name').innerText = compName;
+        window.currentUser.name = compName;
+        btn.innerHTML = 'Save Company Profile';
+        showToast('Company profile saved successfully!', 'success');
+      } catch(e) {
+        btn.innerHTML = 'Save Company Profile';
+        showToast('Error saving profile.', 'error');
+      }
     };
 
-    // --- CROPPER ---
     window.openCropperModal = function(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          const img = document.getElementById('cropper-image'); img.src = e.target.result;
+          const img = document.getElementById('cropper-image');
+          img.src = e.target.result;
           document.getElementById('cropper-modal').classList.add('active');
           if(currentCropper) currentCropper.destroy();
           currentCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 0.8 });
@@ -664,427 +301,30 @@
       }
       input.value = ''; 
     };
-    window.cancelCrop = function() { document.getElementById('cropper-modal').classList.remove('active'); if(currentCropper) currentCropper.destroy(); };
+
+    window.cancelCrop = function() {
+      document.getElementById('cropper-modal').classList.remove('active');
+      if(currentCropper) currentCropper.destroy();
+    };
+
     window.applyCrop = async function() {
-      const btn = document.getElementById('btn-crop-save'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-      const canvas = currentCropper.getCroppedCanvas({ width: 250, height: 250 });
-      canvas.toBlob(async (blob) => {
-        if(!window.auth.currentUser) return cancelCrop();
-        try {
-           const url = await uploadToGoogleDrive(blob, `avatar_${window.auth.currentUser.uid}.jpg`, "/avatars");
-           await window.fb.updateDoc(window.fb.doc(window.db, "users", window.currentUser.uid), { avatarUrl: url });
-           document.getElementById('profile-avatar').src = url; document.getElementById('nav-avatar-img').src = url; window.currentUser.avatarUrl = url;
-           btn.innerHTML = 'Crop & Save'; cancelCrop(); showToast('Company logo updated!', 'success');
-        } catch(e) { btn.innerHTML = 'Crop & Save'; showToast('Error uploading logo.', 'error'); cancelCrop(); }
-      }, 'image/jpeg', 0.85);
-    };
-
-    // --- TEACHER DATABASE & RATINGS ---
-    window.fetchTeachers = async function() {
-      try {
-        const q = window.fb.query(window.fb.collection(window.db, "users"), window.fb.where("role", "==", "teacher"));
-        const snapshot = await window.fb.getDocs(q);
-        document.getElementById('teacher-loading').style.display = 'none';
-        allTeachers = [];
-        snapshot.forEach(docSnap => allTeachers.push({id: docSnap.id, ...docSnap.data()}));
-        renderTeachers(allTeachers);
-      } catch(e) {}
-    };
-
-    window.renderTeachers = function(teachersArray) {
-      const container = document.getElementById('teacher-results-container'); container.innerHTML = '';
-      if(teachersArray.length === 0) { container.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:3rem;">No teachers found matching criteria.</p>'; return; }
-      
-      teachersArray.forEach(t => {
-        const avatar = t.avatarUrl || `https://ui-avatars.com/api/?name=${t.name}&background=0D4054&color=F5A623`;
-        const expStr = t.experience ? `${t.experience} Yrs` : 'Entry Level';
-        const videoBadge = t.videoUrl ? '<span class="badge badge-yellow"><i class="fa-solid fa-video"></i></span>' : '';
-        
-        let avgRating = 0; let totalRatings = 0;
-        if(t.ratings) {
-           const vals = Object.values(t.ratings);
-           if(vals.length > 0) { totalRatings = vals.length; avgRating = (vals.reduce((a,b)=>a+b, 0) / totalRatings).toFixed(1); }
-        }
-        const starHTML = avgRating > 0 ? `<div style="color:var(--accent-yellow); font-size:0.85rem; margin-bottom:0.5rem;"><i class="fa-solid fa-star"></i> ${avgRating} (${totalRatings})</div>` : `<div style="color:var(--border-color); font-size:0.85rem; margin-bottom:0.5rem;">Unrated</div>`;
-
-        const html = `
-          <div class="teacher-card" onclick="openTeacherProfile('${t.id}')">
-            <img src="${avatar}" alt="${t.name}">
-            <h3 style="font-size:1.2rem; margin-bottom:0.2rem; color:var(--primary-navy);">${t.name}</h3>
-            ${starHTML}
-            <p style="font-size:0.85rem; margin-bottom:1rem; color:var(--blue-gray);"><i class="fa-solid fa-language"></i> ${t.languages || 'English'}</p>
-            <div style="display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap;">
-              <span class="badge badge-gray">${expStr}</span>
-              ${videoBadge}
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', html);
-      });
-    };
-
-    window.filterTeachers = function() {
-      const keyword = document.getElementById('search-keyword').value.toLowerCase();
-      const expFilter = document.getElementById('search-exp').value;
-      const filtered = allTeachers.filter(t => {
-        const matchKey = t.name.toLowerCase().includes(keyword) || (t.languages||'').toLowerCase().includes(keyword);
-        let matchExp = true;
-        if(expFilter) {
-          const yrs = parseInt(t.experience) || 0;
-          if(expFilter === "1" && yrs < 1) matchExp = false; if(expFilter === "3" && yrs < 3) matchExp = false; if(expFilter === "5" && yrs < 5) matchExp = false;
-        }
-        return matchKey && matchExp;
-      });
-      renderTeachers(filtered);
-    };
-
-    // RATING LOGIC
-    let currentRating = 0;
-    function setupRatingUI(teacherData) {
-       const stars = document.querySelectorAll('#tm-rating-stars i');
-       currentRating = (teacherData.ratings && teacherData.ratings[window.currentUser.uid]) ? teacherData.ratings[window.currentUser.uid] : 0;
-       
-       function renderStars(val) {
-          stars.forEach(s => { 
-             s.classList.remove('active', 'hovered');
-             if(parseInt(s.getAttribute('data-val')) <= val) s.classList.add('active');
-          });
-       }
-       renderStars(currentRating);
-       
-       stars.forEach(s => {
-          s.onmouseover = () => { stars.forEach(st => st.classList.remove('hovered')); for(let i=0; i<parseInt(s.getAttribute('data-val')); i++) stars[i].classList.add('hovered'); };
-          s.onmouseout = () => { stars.forEach(st => st.classList.remove('hovered')); renderStars(currentRating); };
-          s.onclick = async () => {
-             const val = parseInt(s.getAttribute('data-val'));
-             currentRating = val; renderStars(val);
-             try {
-                // Save rating to teacher's document map: ratings.recruiterUid = val
-                const updateStr = `ratings.${window.currentUser.uid}`;
-                await window.fb.updateDoc(window.fb.doc(window.db, "users", teacherData.id), { [updateStr]: val });
-                showToast("Rating saved!", "success");
-                
-                // Update local array for instantaneous render
-                if(!teacherData.ratings) teacherData.ratings = {};
-                teacherData.ratings[window.currentUser.uid] = val;
-                renderTeachers(allTeachers); // background update
-             } catch(e) { showToast("Error saving rating", "error"); }
-          };
-       });
-    }
-
-    window.openTeacherProfile = function(tid) {
-      const t = allTeachers.find(x => x.id === tid); if(!t) return;
-      currentTeacherContext = t;
-      
-      document.getElementById('tm-name').innerText = t.name;
-      document.getElementById('tm-avatar').src = t.avatarUrl || `https://ui-avatars.com/api/?name=${t.name}&background=0D4054&color=F5A623`;
-      document.getElementById('tm-bio').innerText = t.bio || "No summary provided by candidate.";
-      
-      let badges = `<span class="badge badge-gray"><i class="fa-solid fa-venus-mars"></i> ${t.gender||'N/A'}</span>`;
-      badges += `<span class="badge badge-navy"><i class="fa-solid fa-briefcase"></i> ${t.experience ? t.experience + ' Yrs Exp' : 'Entry Level'}</span>`;
-      if(t.languages) badges += `<span class="badge badge-outline"><i class="fa-solid fa-language"></i> ${t.languages}</span>`;
-      document.getElementById('tm-badges').innerHTML = badges;
-
-      setupRatingUI(t);
-
-      const vidSec = document.getElementById('tm-video-section');
-      if (t.videoUrl) { vidSec.style.display = 'block'; document.getElementById('tm-video').src = t.videoUrl; } else { vidSec.style.display = 'none'; }
-      
-      const qualList = document.getElementById('tm-qual-list'); qualList.innerHTML = '';
-      if(t.qualifications && t.qualifications.length > 0) {
-        t.qualifications.forEach(q => {
-             const clickableAttr = q.url ? `onclick="window.open('${q.url}', '_blank')"` : ''; 
-             qualList.insertAdjacentHTML('beforeend', `<div ${clickableAttr} style="padding:1rem; background:var(--bg-color); border:1px solid var(--border-color); border-radius:8px; display:flex; align-items:center; gap:1rem; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#eef2f5'" onmouseout="this.style.background='var(--bg-color)'"><i class="fa-solid fa-file-contract" style="color:var(--primary-navy); font-size:1.8rem;"></i> <span style="font-weight:600; color:var(--text-main); font-size:0.9rem;">${q.title}</span></div>`);
-        });
-      } else { qualList.innerHTML = '<p class="elegant-text">No documents attached.</p>'; }
-
-      document.getElementById('teacher-modal').classList.add('active');
-    };
-
-    window.inviteTeacher = async function(type) {
-      document.getElementById('teacher-modal').classList.remove('active');
-      switchView('inbox-view');
-      
-      try {
-        const threadData = {
-          participants: [currentTeacherContext.id, window.currentUser.uid],
-          jobTitle: type === 'invite' ? `Interview Invite from ${window.currentUser.name}` : `Direct Message from ${window.currentUser.name}`,
-          updatedAt: window.fb.serverTimestamp(),
-          teacherName: currentTeacherContext.name,
-          teacherAvatar: currentTeacherContext.avatarUrl || `https://ui-avatars.com/api/?name=${currentTeacherContext.name}`,
-          recruiterName: window.currentUser.name,
-          recruiterAvatar: window.currentUser.avatarUrl || `https://ui-avatars.com/api/?name=${window.currentUser.name}`,
-          type: 'direct'
-        };
-        const threadRef = await window.fb.addDoc(window.fb.collection(window.db, "threads"), threadData);
-        
-        const msgText = type === 'invite' 
-            ? `Hello ${currentTeacherContext.name},\n\nWe have reviewed your profile and are very impressed! We would like to invite you for an interview. Please let us know your availability.\n\nBest regards,\n${window.currentUser.name}`
-            : `Hello ${currentTeacherContext.name},\n\nI came across your profile in the Teacher Database and would love to connect to discuss potential opportunities.`;
-
-        await window.fb.addDoc(window.fb.collection(window.db, `threads/${threadRef.id}/messages`), {
-          senderId: window.currentUser.uid, text: msgText, timestamp: window.fb.serverTimestamp()
-        });
-        showToast("Message sent successfully!", "success");
-      } catch(e) { showToast("Error initiating chat.", "error"); }
-    };
-
-    window.viewTeacherFromChat = function() {
-       if(currentThreadTeacher && currentThreadTeacher.id) openTeacherProfile(currentThreadTeacher.id);
-    };
-
-    // --- POST VACANCIES (ADVANCED JOB MANAGEMENT) ---
-    window.insertEmoji = function(emoji) {
-       document.execCommand('insertText', false, emoji);
-    };
-    
-    window.setupRealtimeJobs = function() {
-      const jobsQuery = window.fb.query(window.fb.collection(window.db, "jobs"), window.fb.where("recruiterId", "==", window.currentUser.uid));
-      window.fb.onSnapshot(jobsQuery, (snapshot) => {
-        const container = document.getElementById('recruiter-jobs-container');
-        document.getElementById('empty-jobs').style.display = 'none';
-        container.innerHTML = '';
-        
-        if (snapshot.empty) {
-          container.innerHTML = `<div class="card" style="text-align:center; padding: 4rem; color:var(--blue-gray);"><i class="fa-solid fa-briefcase" style="font-size: 3.5rem; margin-bottom: 1rem; opacity:0.5;"></i><p>You haven't posted any jobs yet.</p></div>`; return;
-        }
-
-        snapshot.forEach((docSnap) => {
-          const job = { id: docSnap.id, ...docSnap.data() };
-          
-          // Auto Delete Logic (if taken > 60 days)
-          if(job.status === 'taken' && job.takenAt) {
-             const takenDate = job.takenAt.toDate();
-             const diffDays = (new Date() - takenDate) / (1000 * 60 * 60 * 24);
-             if (diffDays > 60) {
-                 window.fb.deleteDoc(window.fb.doc(window.db, "jobs", job.id));
-                 return; // skip rendering
-             }
-          }
-
-          const isTaken = job.status === 'taken';
-          const statusIcon = isTaken ? `<i class="fa-solid fa-lock" style="color:var(--error-red);"></i> Position Taken` : `<i class="fa-solid fa-circle" style="color:var(--success-green); font-size:0.6rem;"></i> Live / Open`;
-          
-          const html = `
-            <div class="job-list-item" style="${isTaken ? 'opacity:0.7;' : ''}">
-              <div style="flex:1;">
-                <h3 style="margin-bottom:0.2rem; font-size:1.2rem; color:var(--primary-navy);">${job.title}</h3>
-                <div class="job-status-toggle">
-                   <span style="font-weight:600;">${statusIcon}</span>
-                   <span>&bull;</span> <span>${job.type || 'Full Time'}</span>
-                   <span>&bull;</span> <span>${job.pay || 'Negotiable'}</span>
-                </div>
-              </div>
-              <div style="display:flex; gap:0.5rem;">
-                <button class="btn btn-outline btn-small" onclick='editJob(${JSON.stringify(job).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
-                <button class="btn ${isTaken ? 'btn-success' : 'btn-outline'} btn-small" style="${isTaken ? 'background:var(--success-green); color:white; border:none;' : ''}" onclick="toggleJobStatus('${job.id}', '${job.status}')">${isTaken ? '<i class="fa-solid fa-door-open"></i> Reopen' : '<i class="fa-solid fa-lock"></i> Mark Taken'}</button>
-                <button class="btn btn-danger btn-small" onclick="deleteJob('${job.id}')"><i class="fa-solid fa-trash"></i></button>
-              </div>
-            </div>
-          `;
-          container.insertAdjacentHTML('beforeend', html);
-        });
-      });
-    };
-
-    window.openJobEditor = function() {
-      document.getElementById('job-editor-modal').classList.add('active');
-      document.getElementById('edit-job-id').value = '';
-      document.getElementById('job-title').value = '';
-      document.getElementById('job-loc').value = '';
-      document.getElementById('job-pay').value = '';
-      document.getElementById('job-desc').innerHTML = '';
-      document.getElementById('job-promo-url').value = '';
-      document.getElementById('job-promo-img').value = '';
-      document.getElementById('btn-save-job').innerText = 'Publish Vacancy';
-      document.getElementById('job-modal-title').innerText = 'Create Vacancy';
-    };
-
-    window.editJob = function(job) {
-      openJobEditor();
-      document.getElementById('edit-job-id').value = job.id;
-      document.getElementById('job-title').value = job.title;
-      document.getElementById('job-loc').value = job.location || '';
-      document.getElementById('job-pay').value = job.pay || '';
-      document.getElementById('job-type').value = job.type || 'Full Time';
-      document.getElementById('job-desc').innerHTML = job.description || '';
-      document.getElementById('job-promo-url').value = job.imageUrl || '';
-      document.getElementById('btn-save-job').innerText = 'Update Vacancy';
-      document.getElementById('job-modal-title').innerText = 'Edit Vacancy';
-    };
-
-    window.closeJobEditor = function() { document.getElementById('job-editor-modal').classList.remove('active'); };
-
-    window.saveJobPost = async function() {
-      const title = document.getElementById('job-title').value;
-      if(!title) { showToast("Job Title is required", "error"); return; }
-      
-      const btn = document.getElementById('btn-save-job');
+      const btn = document.getElementById('btn-crop-save');
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const canvas = currentCropper.getCroppedCanvas({ width: 250, height: 250 });
       
-      let imageUrl = document.getElementById('job-promo-url').value;
-      const fileInput = document.getElementById('job-promo-img');
-      
-      // Upload Promo Image if attached
-      if(fileInput.files.length > 0) {
-         const pContainer = document.getElementById('job-img-progress'), pFill = document.getElementById('job-img-fill');
-         pContainer.style.display = 'block'; pFill.style.width = '0%';
-         try {
-           imageUrl = await uploadToGoogleDrive(fileInput.files[0], `${Date.now()}_promo.jpg`, "/job_promos", (p) => { pFill.style.width = `${p}%`; });
-           pContainer.style.display = 'none';
-         } catch(e) { showToast("Failed to upload promo image.", "error"); pContainer.style.display = 'none'; }
-      }
-      
-      const jobId = document.getElementById('edit-job-id').value;
-      const jobData = {
-         title: title, location: document.getElementById('job-loc').value,
-         pay: document.getElementById('job-pay').value, type: document.getElementById('job-type').value,
-         description: document.getElementById('job-desc').innerHTML,
-         imageUrl: imageUrl,
-         recruiterId: window.currentUser.uid, companyName: window.currentUser.name, recruiterAvatar: window.currentUser.avatarUrl || ''
-      };
-
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
       try {
-        if(jobId) {
-            await window.fb.updateDoc(window.fb.doc(window.db, "jobs", jobId), jobData);
-            showToast("Vacancy updated!", "success");
-        } else {
-            jobData.createdAt = window.fb.serverTimestamp();
-            jobData.status = 'open';
-            await window.fb.addDoc(window.fb.collection(window.db, "jobs"), jobData);
-            showToast("Vacancy published to board!", "success");
-        }
-        closeJobEditor();
-      } catch(e) { showToast("Failed to post job.", "error"); } 
-      finally { btn.innerHTML = jobId ? 'Update Vacancy' : 'Publish Vacancy'; }
-    };
-
-    window.toggleJobStatus = async function(jobId, currentStatus) {
-       const newStatus = currentStatus === 'taken' ? 'open' : 'taken';
-       try {
-          const updateData = { status: newStatus };
-          if(newStatus === 'taken') updateData.takenAt = window.fb.serverTimestamp();
-          await window.fb.updateDoc(window.fb.doc(window.db, "jobs", jobId), updateData);
-          showToast(`Job marked as ${newStatus}!`, "info");
-       } catch(e) { showToast("Error updating status.", "error"); }
-    };
-
-    window.deleteJob = async function(jobId) {
-      if(confirm("Are you sure you want to permanently delete this vacancy?")) {
-        try { await window.fb.deleteDoc(window.fb.doc(window.db, "jobs", jobId)); showToast("Job deleted.", "info"); } 
-        catch(e) { showToast("Error deleting job.", "error"); }
+        await window.fb.updateDoc(window.fb.doc(window.db, "users", window.currentUser.uid), { avatarUrl: dataUrl });
+        document.getElementById('profile-avatar').src = dataUrl;
+        document.getElementById('nav-avatar-img').src = dataUrl;
+        window.currentUser.avatarUrl = dataUrl;
+        btn.innerHTML = 'Crop & Save';
+        cancelCrop();
+        showToast('Company logo updated!', 'success');
+      } catch (err) {
+        btn.innerHTML = 'Crop & Save';
+        showToast('Error uploading logo.', 'error');
       }
-    };
-
-    // --- REALTIME INBOX (GMAIL/WHATSAPP STYLE) ---
-    window.setupRealtimeInbox = function() {
-      const inboxQuery = window.fb.query(window.fb.collection(window.db, "threads"), window.fb.where("participants", "array-contains", window.currentUser.uid), window.fb.orderBy("updatedAt", "desc"));
-      
-      window.fb.onSnapshot(inboxQuery, (snapshot) => {
-        const container = document.getElementById('inbox-container');
-        if (snapshot.empty) { container.innerHTML = `<div style="text-align:center; padding: 4rem; color:var(--blue-gray);"><i class="fa-regular fa-envelope-open" style="font-size: 3.5rem; margin-bottom: 1rem; opacity:0.5;"></i><p>No messages or applications yet.</p></div>`; document.getElementById('msg-badge').style.display = 'none'; return; }
-        
-        container.innerHTML = ''; let threadCount = 0;
-        snapshot.forEach((docSnap) => {
-          threadCount++; const thread = { id: docSnap.id, ...docSnap.data() };
-          
-          const dAvatar = thread.teacherAvatar || 'https://ui-avatars.com/api/?name=Teacher&background=0D4054&color=F5A623';
-          const dName = thread.teacherName || 'Candidate';
-          const timeStr = thread.updatedAt ? new Date(thread.updatedAt.toDate()).toLocaleDateString() : '';
-          
-          const html = `
-            <div class="message-item" onclick='openChat("${thread.id}", ${JSON.stringify(thread).replace(/'/g, "&apos;")})'>
-              <img src="${dAvatar}" alt="Profile">
-              <div class="message-item-content">
-                <h4>${dName} <span>${timeStr}</span></h4>
-                <p class="subject">${thread.jobTitle || 'Direct Message'}</p>
-              </div>
-            </div>
-          `;
-          container.insertAdjacentHTML('beforeend', html);
-        });
-        const badge = document.getElementById('msg-badge');
-        if(threadCount > 0) { badge.innerText = threadCount; badge.style.display = 'inline-block'; }
-      });
-    };
-
-    let activeChatUnsubscribe = null;
-    window.openChat = function(threadId, threadObj) {
-      window.activeChatId = threadId;
-      document.getElementById('inbox-list-view').style.display = 'none';
-      document.getElementById('chat-window').style.display = 'flex';
-      
-      document.getElementById('chat-title').innerText = threadObj.teacherName || 'Candidate';
-      document.getElementById('chat-header-img').src = threadObj.teacherAvatar || 'https://ui-avatars.com/api/?name=Teacher';
-      
-      // Keep track of the teacher to open profile from header
-      currentThreadTeacher = { id: threadObj.participants.find(p => p !== window.currentUser.uid) };
-
-      if(activeChatUnsubscribe) activeChatUnsubscribe();
-      const msgsQuery = window.fb.query(window.fb.collection(window.db, `threads/${threadId}/messages`), window.fb.orderBy("timestamp", "asc"));
-      
-      activeChatUnsubscribe = window.fb.onSnapshot(msgsQuery, (snapshot) => {
-        const hist = document.getElementById('chat-history');
-        hist.innerHTML = '<div style="text-align:center; font-size:0.8rem; color:var(--blue-gray); margin-bottom:1rem;">Chat Started</div>';
-        
-        snapshot.forEach((docSnap) => {
-          const msg = docSnap.data();
-          const isMe = msg.senderId === window.currentUser.uid;
-          const bClass = isMe ? 'out' : 'in';
-          const avatar = isMe ? window.currentUser.avatarUrl : (threadObj.teacherAvatar || 'https://ui-avatars.com/api/?name=Teacher');
-          const timeStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Sending...';
-
-          let content = `<div>${msg.text.replace(/\n/g, '<br>')}</div>`;
-          if(msg.mediaUrl) {
-             const isImage = msg.mediaUrl.match(/\.(jpeg|jpg|gif|png)$/) != null;
-             if(isImage) content += `<div style="margin-top:0.5rem;"><img src="${msg.mediaUrl}" style="max-width:100%; border-radius:8px;"></div>`;
-             else content += `<div style="margin-top:0.5rem;"><a href="${msg.mediaUrl}" target="_blank" style="color:inherit; text-decoration:underline; font-weight:bold;"><i class="fa-solid fa-paperclip"></i> View Attachment</a></div>`;
-          }
-
-          hist.insertAdjacentHTML('beforeend', `
-            <div class="chat-bubble-wrapper ${bClass}">
-               <img src="${avatar}" class="chat-avatar">
-               <div class="chat-bubble">
-                  ${content}
-                  <span class="msg-time-stamp">${timeStr}</span>
-               </div>
-            </div>
-          `);
-        });
-        hist.scrollTop = hist.scrollHeight;
-      });
-    };
-
-    window.closeChat = function() {
-      document.getElementById('chat-window').style.display = 'none';
-      document.getElementById('inbox-list-view').style.display = 'block';
-      window.activeChatId = null; if(activeChatUnsubscribe) activeChatUnsubscribe();
-    };
-
-    window.sendChatMessage = async function() {
-      const input = document.getElementById('chat-input-box'); const text = input.value.trim();
-      if (!text || !window.activeChatId) return;
-      input.value = '';
-      await window.fb.addDoc(window.fb.collection(window.db, `threads/${window.activeChatId}/messages`), { senderId: window.currentUser.uid, text: text, timestamp: window.fb.serverTimestamp() });
-      await window.fb.updateDoc(window.fb.doc(window.db, "threads", window.activeChatId), { updatedAt: window.fb.serverTimestamp() });
-    };
-
-    window.sendMediaMessage = async function(input) {
-      if(!input.files || input.files.length === 0 || !window.activeChatId) return;
-      const file = input.files[0];
-      const pContainer = document.getElementById('chat-media-progress'), pFill = document.getElementById('chat-media-fill');
-      pContainer.style.display = 'block'; pFill.style.width = '0%';
-      try {
-         const url = await uploadToGoogleDrive(file, `${Date.now()}_attachment`, "/chat_media", (p) => { pFill.style.width = `${p}%`; });
-         pContainer.style.display = 'none';
-         
-         await window.fb.addDoc(window.fb.collection(window.db, `threads/${window.activeChatId}/messages`), { 
-             senderId: window.currentUser.uid, text: `Attached Media: ${file.name}`, mediaUrl: url, timestamp: window.fb.serverTimestamp() 
-         });
-         await window.fb.updateDoc(window.fb.doc(window.db, "threads", window.activeChatId), { updatedAt: window.fb.serverTimestamp() });
-      } catch(e) { pContainer.style.display = 'none'; showToast("Failed to send attachment.", "error"); }
-      input.value = '';
     };
   </script>
 </body>
