@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TeacherBee Connect - Search Teachers</title>
+  <title>TeacherBee Connect - Manage Jobs</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,11 +30,15 @@
     .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
     .btn-primary:hover { background-color: var(--yellow-hover); }
     .btn-danger { background-color: #FEE2E2; color: var(--error-red); padding: 0.5rem 1rem; }
+    .btn-danger:hover { background-color: #FCA5A5; }
     .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
     .btn-block { width: 100%; }
     
-    .form-input, .form-select { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
-    .form-input:focus, .form-select:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1); }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-weight: 600; font-size: 0.88rem; color: var(--primary-navy); margin-bottom: 0.4rem; }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1); }
 
     .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
     .sidebar { width: 250px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
@@ -46,20 +50,21 @@
     
     .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
 
-    /* Teacher Search Grid */
-    .teacher-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-    .teacher-card { text-align: center; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; padding: 1.5rem; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
-    .teacher-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
-    .teacher-card img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); margin-bottom: 1rem; }
+    /* Job Cards Grid */
+    .jobs-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .job-card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; transition: all 0.2s; }
+    .job-card:hover { border-color: var(--primary-navy); box-shadow: var(--shadow-md); }
+    .job-info { display: flex; flex-direction: column; gap: 0.4rem; }
+    .job-meta { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-top: 0.5rem; }
 
-    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
     .badge-yellow { background: var(--accent-yellow); color: var(--primary-navy); }
     .badge-navy { background: var(--navy-light); color: var(--surface-white); }
     .badge-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
-    .modal-content { background: var(--surface-white); width: 100%; max-width: 600px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: var(--surface-white); width: 100%; max-width: 650px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); transition: color 0.2s; }
     .close-modal:hover { color: var(--primary-navy); }
 
@@ -77,6 +82,7 @@
       .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
       .sidebar-item.active { background: transparent; color: var(--accent-yellow); }
       .hide-mobile { display: none !important; }
+      .job-card { flex-direction: column; align-items: flex-start; }
     }
   </style>
 
@@ -121,7 +127,7 @@
           document.getElementById('nav-display-name').innerText = name;
           document.getElementById('nav-avatar-img').src = avatar;
 
-          window.fetchTeachers();
+          window.fetchPostedJobs();
         }
       } else {
         window.location.href = 'index.html';
@@ -150,65 +156,88 @@
     
     <aside class="sidebar">
       <a href="RecruiterProfile.html" class="sidebar-item"><i class="fa-regular fa-user"></i> <span>Profile</span></a>
-      <a href="Searchteachers.html" class="sidebar-item active"><i class="fa-solid fa-users"></i> <span>Search Teachers</span></a>
-      <a href="Postjobs.html" class="sidebar-item"><i class="fa-solid fa-briefcase"></i> <span>Manage Jobs</span></a>
+      <a href="Searchteachers.html" class="sidebar-item"><i class="fa-solid fa-users"></i> <span>Search Teachers</span></a>
+      <a href="Postjobs.html" class="sidebar-item active"><i class="fa-solid fa-briefcase"></i> <span>Manage Jobs</span></a>
       <a href="RecruiterInbox.html" class="sidebar-item"><i class="fa-regular fa-envelope"></i> <span>Inbox</span></a>
       <a href="Subscriptions.html" class="sidebar-item"><i class="fa-solid fa-credit-card"></i> <span>Subscriptions</span></a>
     </aside>
 
     <main class="content-area">
-      <section id="search-view">
-        <h2>Teacher Database</h2>
-        <div class="card" style="padding: 1rem; margin-bottom: 1.5rem; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem;">
-          <input type="text" class="form-input" id="search-keyword" placeholder="Search by name or keyword..." oninput="filterTeachers()">
-          <select class="form-select" id="search-exp" onchange="filterTeachers()">
-            <option value="">Any Experience</option>
-            <option value="1">1+ Years</option>
-            <option value="3">3+ Years</option>
-          </select>
+      <section id="jobs-view">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <h2>Manage Job Listings</h2>
+            <p>Post new positions and track active recruitment postings.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openPostModal()"><i class="fa-solid fa-plus"></i> Post New Job</button>
         </div>
 
-        <div class="teacher-grid" id="teacher-results-container">
-          <div style="text-align:center; padding: 2rem; color:var(--text-muted); grid-column: 1/-1;" id="teacher-loading">
+        <div class="jobs-grid" id="jobs-container">
+          <div style="text-align:center; padding: 2rem; color:var(--text-muted);" id="jobs-loading">
             <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom:1rem;"></i>
-            <p>Loading database...</p>
+            <p>Loading your jobs...</p>
           </div>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- TEACHER PROFILE MODAL -->
-  <div class="modal-overlay" id="teacher-modal">
-    <div class="modal-content" style="max-width: 700px; padding: 3rem;">
-      <button class="close-modal" onclick="document.getElementById('teacher-modal').classList.remove('active')">&times;</button>
+  <!-- POST JOB MODAL -->
+  <div class="modal-overlay" id="job-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closePostModal()">&times;</button>
       
-      <div style="display:flex; align-items:center; gap:1.5rem; border-bottom: 2px solid var(--bg-color); padding-bottom:1.5rem; margin-bottom:1.5rem;">
-        <img id="tm-avatar" src="" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid var(--accent-yellow);">
-        <div>
-          <h2 id="tm-name" style="font-size: 1.8rem; margin-bottom: 0.2rem;"></h2>
-          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;" id="tm-badges"></div>
+      <h2 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-briefcase" style="color:var(--accent-yellow);"></i> Post a New Job</h2>
+
+      <form id="job-form" onsubmit="handleJobSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Job Title *</label>
+          <input type="text" class="form-input" id="job-title" placeholder="e.g. High School Mathematics Teacher" required>
         </div>
-      </div>
 
-      <h3 style="font-size: 1.1rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem;">Biography</h3>
-      <p id="tm-bio" style="color:var(--text-main); font-size:0.95rem; line-height:1.6; margin-bottom:2rem;"></p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+          <div class="form-group">
+            <label class="form-label">Subject / Field *</label>
+            <input type="text" class="form-input" id="job-subject" placeholder="e.g. Mathematics" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Employment Type *</label>
+            <select class="form-select" id="job-type" required>
+              <option value="Full-Time">Full-Time</option>
+              <option value="Part-Time">Part-Time</option>
+              <option value="Contract">Contract</option>
+              <option value="Online / Remote">Online / Remote</option>
+            </select>
+          </div>
+        </div>
 
-      <div id="tm-video-section" style="display:none; margin-bottom:2rem;">
-        <h3 style="font-size: 1.1rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem;">Introduction Video</h3>
-        <video id="tm-video" controls style="width:100%; border-radius:8px;"></video>
-      </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+          <div class="form-group">
+            <label class="form-label">Location *</label>
+            <input type="text" class="form-input" id="job-location" placeholder="e.g. London, UK or Remote" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Salary / Compensation</label>
+            <input type="text" class="form-input" id="job-salary" placeholder="e.g. $3,000 - $4,500 / month">
+          </div>
+        </div>
 
-      <div style="margin-top: 2rem;">
-        <button class="btn btn-primary btn-block" onclick="inviteTeacher()"><i class="fa-regular fa-comment-dots"></i> Message / Invite to Interview</button>
-      </div>
+        <div class="form-group">
+          <label class="form-label">Job Description *</label>
+          <textarea class="form-textarea" id="job-description" placeholder="Describe the role responsibilities, working hours, and expectations..." required></textarea>
+        </div>
+
+        <div style="margin-top: 2rem;">
+          <button type="submit" class="btn btn-primary btn-block" id="btn-submit-job">
+            <i class="fa-solid fa-paper-plane"></i> Publish Job Listing
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
-    let allTeachers = [];
-    let currentTeacherContext = null;
+    let myJobs = [];
 
     window.showToast = function(message, type = 'info') {
       const container = document.getElementById('toast-container');
@@ -224,42 +253,58 @@
       window.location.href = 'index.html';
     };
 
-    window.fetchTeachers = async function() {
+    window.fetchPostedJobs = async function() {
       try {
-        const q = window.fb.query(window.fb.collection(window.db, "users"), window.fb.where("role", "==", "teacher"));
+        const q = window.fb.query(
+          window.fb.collection(window.db, "jobs"),
+          window.fb.where("recruiterId", "==", window.currentUser.uid)
+        );
         const snapshot = await window.fb.getDocs(q);
-        const container = document.getElementById('teacher-results-container');
-        document.getElementById('teacher-loading').style.display = 'none';
+        const container = document.getElementById('jobs-container');
+        document.getElementById('jobs-loading').style.display = 'none';
         
-        allTeachers = [];
-        snapshot.forEach(docSnap => allTeachers.push({id: docSnap.id, ...docSnap.data()}));
-        window.renderTeachers(allTeachers);
+        myJobs = [];
+        snapshot.forEach(docSnap => myJobs.push({id: docSnap.id, ...docSnap.data()}));
+        window.renderJobs(myJobs);
       } catch(e) {
         console.error(e);
+        showToast("Error loading jobs.", "error");
       }
     };
 
-    window.renderTeachers = function(teachersArray) {
-      const container = document.getElementById('teacher-results-container');
+    window.renderJobs = function(jobsArray) {
+      const container = document.getElementById('jobs-container');
       container.innerHTML = '';
-      if(teachersArray.length === 0) {
-        container.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text-muted);">No teachers found matching your criteria.</p>';
+
+      if(jobsArray.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align:center; padding: 3rem;">
+            <i class="fa-solid fa-briefcase" style="font-size:3rem; color:var(--text-muted); margin-bottom:1rem;"></i>
+            <h3>No Jobs Posted Yet</h3>
+            <p style="margin-bottom:1.5rem;">Create your first job listing to start receiving applications from top teachers.</p>
+            <button class="btn btn-primary" onclick="openPostModal()"><i class="fa-solid fa-plus"></i> Post a Job</button>
+          </div>
+        `;
         return;
       }
 
-      teachersArray.forEach(t => {
-        const avatar = t.avatarUrl || `https://ui-avatars.com/api/?name=${t.name}&background=0A192F&color=FFD700`;
-        const expStr = t.experience ? `${t.experience} Yrs` : 'Entry Level';
-        const videoBadge = t.videoUrl ? '<span class="badge badge-yellow"><i class="fa-solid fa-video"></i></span>' : '';
-        
+      jobsArray.forEach(job => {
         const html = `
-          <div class="teacher-card" onclick="openTeacherProfile('${t.id}')">
-            <img src="${avatar}" alt="${t.name}">
-            <h3 style="font-size:1.1rem; margin-bottom:0.2rem;">${t.name}</h3>
-            <p style="font-size:0.85rem; margin-bottom:1rem; color:var(--text-muted);"><i class="fa-solid fa-language"></i> ${t.languages || 'English'}</p>
-            <div style="display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap;">
-              <span class="badge badge-navy">${expStr}</span>
-              ${videoBadge}
+          <div class="job-card">
+            <div class="job-info">
+              <h3 style="font-size:1.2rem; margin-bottom:0.2rem;">${job.title}</h3>
+              <p style="font-size:0.9rem; color:var(--text-muted);">${job.description ? job.description.substring(0, 120) + '...' : ''}</p>
+              <div class="job-meta">
+                <span class="badge badge-navy">${job.subject || 'General'}</span>
+                <span class="badge badge-yellow">${job.type || 'Full-Time'}</span>
+                <span class="badge badge-outline"><i class="fa-solid fa-location-dot"></i> ${job.location || 'Remote'}</span>
+                ${job.salary ? `<span class="badge badge-outline"><i class="fa-solid fa-coins"></i> ${job.salary}</span>` : ''}
+              </div>
+            </div>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <button class="btn btn-danger btn-small" onclick="deleteJob('${job.id}')" title="Delete Job">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </div>
           </div>
         `;
@@ -267,69 +312,57 @@
       });
     };
 
-    window.filterTeachers = function() {
-      const keyword = document.getElementById('search-keyword').value.toLowerCase();
-      const expFilter = document.getElementById('search-exp').value;
-      
-      const filtered = allTeachers.filter(t => {
-        const matchKey = t.name.toLowerCase().includes(keyword) || (t.languages||'').toLowerCase().includes(keyword);
-        let matchExp = true;
-        if(expFilter) {
-          const yrs = parseInt(t.experience) || 0;
-          if(expFilter === "1" && yrs < 1) matchExp = false;
-          if(expFilter === "3" && yrs < 3) matchExp = false;
-        }
-        return matchKey && matchExp;
-      });
-      window.renderTeachers(filtered);
+    window.openPostModal = function() {
+      document.getElementById('job-form').reset();
+      document.getElementById('job-modal').classList.add('active');
     };
 
-    window.openTeacherProfile = function(tid) {
-      const t = allTeachers.find(x => x.id === tid);
-      if(!t) return;
-      currentTeacherContext = t;
-      
-      document.getElementById('tm-name').innerText = t.name;
-      document.getElementById('tm-avatar').src = t.avatarUrl || `https://ui-avatars.com/api/?name=${t.name}&background=0A192F&color=FFD700`;
-      document.getElementById('tm-bio').innerText = t.bio || "No biography provided by this teacher.";
-      
-      let badges = `<span class="badge badge-navy">${t.experience ? t.experience + ' Yrs Exp' : 'Entry Level'}</span>`;
-      if(t.languages) badges += `<span class="badge badge-outline"><i class="fa-solid fa-language"></i> ${t.languages}</span>`;
-      document.getElementById('tm-badges').innerHTML = badges;
-
-      const vidSec = document.getElementById('tm-video-section');
-      if (t.videoUrl) {
-         vidSec.style.display = 'block';
-         document.getElementById('tm-video').src = t.videoUrl;
-      } else {
-         vidSec.style.display = 'none';
-      }
-
-      document.getElementById('teacher-modal').classList.add('active');
+    window.closePostModal = function() {
+      document.getElementById('job-modal').classList.remove('active');
     };
 
-    window.inviteTeacher = async function() {
-      document.getElementById('teacher-modal').classList.remove('active');
-      
+    window.handleJobSubmit = async function(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('btn-submit-job');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
+
       try {
-        const threadData = {
-          participants: [currentTeacherContext.id, window.currentUser.uid],
-          jobTitle: `Interview Invite from ${window.currentUser.name}`,
-          updatedAt: window.fb.serverTimestamp(),
-          teacherName: currentTeacherContext.name
+        const newJob = {
+          recruiterId: window.currentUser.uid,
+          recruiterName: window.currentUser.name || 'Employer',
+          title: document.getElementById('job-title').value.trim(),
+          subject: document.getElementById('job-subject').value.trim(),
+          type: document.getElementById('job-type').value,
+          location: document.getElementById('job-location').value.trim(),
+          salary: document.getElementById('job-salary').value.trim(),
+          description: document.getElementById('job-description').value.trim(),
+          status: 'active',
+          createdAt: window.fb.serverTimestamp()
         };
-        const threadRef = await window.fb.addDoc(window.fb.collection(window.db, "threads"), threadData);
-        
-        await window.fb.addDoc(window.fb.collection(window.db, `threads/${threadRef.id}/messages`), {
-          senderId: window.currentUser.uid,
-          text: `Hello ${currentTeacherContext.name}, we reviewed your profile and would like to invite you for an interview!`,
-          timestamp: window.fb.serverTimestamp()
-        });
 
-        // Redirect to Inbox page after successfully inviting
-        window.location.href = 'RecruiterInbox.html';
+        const docRef = await window.fb.addDoc(window.fb.collection(window.db, "jobs"), newJob);
+        showToast("Job listing published successfully!", "success");
+        window.closePostModal();
+        window.fetchPostedJobs();
+      } catch(err) {
+        console.error(err);
+        showToast("Failed to publish job listing.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publish Job Listing';
+      }
+    };
+
+    window.deleteJob = async function(jobId) {
+      if(!confirm("Are you sure you want to delete this job listing?")) return;
+      try {
+        await window.fb.deleteDoc(window.fb.doc(window.db, "jobs", jobId));
+        showToast("Job deleted successfully.", "success");
+        window.fetchPostedJobs();
       } catch(e) {
-        showToast("Error sending invitation.", "error");
+        console.error(e);
+        showToast("Error deleting job.", "error");
       }
     };
   </script>
