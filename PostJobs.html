@@ -21,6 +21,7 @@
     h1, h2, h3, h4 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; }
     p { color: var(--text-muted); line-height: 1.5; }
 
+    /* The header and sidebar CSS remains so the injected components style perfectly */
     header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
     .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
     .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
@@ -40,12 +41,14 @@
     .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
     .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
-    .sidebar { width: 250px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
-    .content-area { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
     
+    /* Sidebar CSS */
+    .sidebar { width: 250px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
     .sidebar-item { padding: 1rem; border-radius: var(--radius-md); color: var(--primary-navy); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; text-decoration: none; }
     .sidebar-item:hover { background-color: var(--bg-color); }
     .sidebar-item.active { background-color: var(--primary-navy); color: var(--accent-yellow); }
+
+    .content-area { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
     
     .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
 
@@ -123,8 +126,11 @@
           let name = data.name || user.email.split('@')[0];
           let avatar = data.avatarUrl || "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
           
-          document.getElementById('nav-display-name').innerText = name;
-          document.getElementById('nav-avatar-img').src = avatar;
+          // These elements will be inside our injected header
+          const navName = document.getElementById('nav-display-name');
+          const navAvatar = document.getElementById('nav-avatar-img');
+          if(navName) navName.innerText = name;
+          if(navAvatar) navAvatar.src = avatar;
 
           window.setupRealtimeJobs();
         }
@@ -138,28 +144,13 @@
 
   <div id="toast-container"></div>
 
-  <header>
-    <a href="RecruiterProfile.html" class="brand-logo">
-      <i class="fa-solid fa-graduation-cap"></i> TeacherBee <span class="recruiter-badge">Employer</span>
-    </a>
-    <div id="nav-actions">
-      <div style="display:flex; align-items:center; gap:1rem;">
-        <img src="https://ui-avatars.com/api/?name=Company&background=0A192F&color=FFD700" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
-        <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">Loading...</span>
-        <button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
-      </div>
-    </div>
-  </header>
+  <!-- INJECT HEADER HERE -->
+  <div id="header-placeholder"></div>
 
   <div class="app-container">
     
-    <aside class="sidebar">
-      <a href="RecruiterProfile.html" class="sidebar-item"><i class="fa-regular fa-user"></i> <span>Profile</span></a>
-      <a href="Searchteachers.html" class="sidebar-item"><i class="fa-solid fa-users"></i> <span>Search Teachers</span></a>
-      <a href="Postjobs.html" class="sidebar-item active"><i class="fa-solid fa-briefcase"></i> <span>Manage Jobs</span></a>
-      <a href="RecruiterInbox.html" class="sidebar-item"><i class="fa-regular fa-envelope"></i> <span>Inbox</span></a>
-      <a href="Subscriptions.html" class="sidebar-item"><i class="fa-solid fa-credit-card"></i> <span>Subscriptions</span></a>
-    </aside>
+    <!-- INJECT SIDEBAR HERE -->
+    <div id="sidebar-placeholder"></div>
 
     <main class="content-area">
       <section id="jobs-view">
