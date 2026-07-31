@@ -21,11 +21,6 @@
     h1, h2, h3, h4 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; }
     p { color: var(--text-muted); line-height: 1.5; }
 
-    header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
-    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
-    .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
-    .recruiter-badge { background: rgba(255, 215, 0, 0.2); color: var(--accent-yellow); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-left: 10px; }
-
     .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
     .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
     .btn-primary:hover { background-color: var(--yellow-hover); }
@@ -36,12 +31,7 @@
     .form-input:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1); }
 
     .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
-    .sidebar { width: 250px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
     .content-area { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
-    
-    .sidebar-item { padding: 1rem; border-radius: var(--radius-md); color: var(--primary-navy); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; text-decoration: none; }
-    .sidebar-item:hover { background-color: var(--bg-color); }
-    .sidebar-item.active { background-color: var(--primary-navy); color: var(--accent-yellow); }
     
     .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
 
@@ -65,11 +55,7 @@
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
     @media (max-width: 768px) {
-      .app-container { padding: 1rem; padding-bottom: 85px; }
-      .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; top: auto; }
-      .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
-      .sidebar-item.active { background: transparent; color: var(--accent-yellow); }
-      .hide-mobile { display: none !important; }
+      .app-container { padding: 1rem; }
     }
   </style>
 
@@ -108,12 +94,6 @@
           }
 
           window.currentUser = { uid: user.uid, ...data };
-          let name = data.name || user.email.split('@')[0];
-          let avatar = data.avatarUrl || "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
-          
-          document.getElementById('nav-display-name').innerText = name;
-          document.getElementById('nav-avatar-img').src = avatar;
-
           window.setupRealtimeInbox();
         }
       } else {
@@ -124,29 +104,7 @@
 </head>
 <body>
 
-  <header>
-    <a href="RecruiterProfile.html" class="brand-logo">
-      <i class="fa-solid fa-graduation-cap"></i> TeacherBee <span class="recruiter-badge">Employer</span>
-    </a>
-    <div id="nav-actions">
-      <div style="display:flex; align-items:center; gap:1rem;">
-        <img src="https://ui-avatars.com/api/?name=Company&background=0A192F&color=FFD700" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
-        <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">Loading...</span>
-        <button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
-      </div>
-    </div>
-  </header>
-
   <div class="app-container">
-    
-    <aside class="sidebar">
-      <a href="RecruiterProfile.html" class="sidebar-item"><i class="fa-regular fa-user"></i> <span>Profile</span></a>
-      <a href="Searchteachers.html" class="sidebar-item"><i class="fa-solid fa-users"></i> <span>Search Teachers</span></a>
-      <a href="Postjobs.html" class="sidebar-item"><i class="fa-solid fa-briefcase"></i> <span>Manage Jobs</span></a>
-      <a href="RecruiterInbox.html" class="sidebar-item active"><i class="fa-regular fa-envelope"></i> <span>Inbox <span id="msg-badge" style="background:var(--error-red); color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none;">0</span></span></a>
-      <a href="Subscriptions.html" class="sidebar-item"><i class="fa-solid fa-credit-card"></i> <span>Subscriptions</span></a>
-    </aside>
-
     <main class="content-area">
       <section id="inbox-view">
         <div id="inbox-list-view">
@@ -198,16 +156,14 @@
         if (snapshot.empty) {
           empty.style.display = 'block';
           document.querySelectorAll('.message-item').forEach(el => el.remove());
-          document.getElementById('msg-badge').style.display = 'none';
+          // Since the badge was in the sidebar which is now removed, we no longer need to update it here
           return;
         }
         
         empty.style.display = 'none';
         document.querySelectorAll('.message-item').forEach(el => el.remove());
         
-        let threadCount = 0;
         snapshot.forEach((docSnap) => {
-          threadCount++;
           const thread = { id: docSnap.id, ...docSnap.data() };
           const subject = thread.jobTitle || 'Chat with Teacher';
           
@@ -222,9 +178,6 @@
           `;
           container.insertAdjacentHTML('beforeend', html);
         });
-        
-        const badge = document.getElementById('msg-badge');
-        if(threadCount > 0) { badge.innerText = threadCount; badge.style.display = 'inline-block'; }
       });
     };
 
