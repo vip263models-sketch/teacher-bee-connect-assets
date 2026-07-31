@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TeacherBee - Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <style>
+    :root { --primary-navy: #0A192F; --navy-light: #172A45; --accent-yellow: #FFD700; --yellow-hover: #E5C100; --bg-color: #F8F9FA; --surface-white: #FFFFFF; --text-main: #111827; --text-muted: #6B7280; --border-color: #E5E7EB; --error-red: #EF4444; --success-green: #10B981; --radius-lg: 16px; --radius-md: 8px; --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+    h1, h2, h3, h4 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; }
+    p { color: var(--text-muted); line-height: 1.5; }
+    #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+    .toast { padding: 1rem 1.25rem; border-radius: var(--radius-md); color: var(--surface-white); font-weight: 600; font-size: 0.9rem; box-shadow: var(--shadow-md); animation: slideIn 0.3s ease forwards; display: flex; align-items: center; gap: 10px; }
+    .toast.error { background-color: var(--error-red); } .toast.success { background-color: var(--success-green); } .toast.info { background-color: var(--primary-navy); color: var(--accent-yellow); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
+    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
+    .brand-logo i { color: var(--accent-yellow); }
+    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
+    .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); } .btn-primary:hover { background-color: var(--yellow-hover); }
+    .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); }
+    .btn-danger { background-color: #FEE2E2; color: var(--error-red); padding: 0.5rem 1rem; } .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+    .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
+    .sidebar { width: 250px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
+    .sidebar-item { text-decoration: none; padding: 1rem; border-radius: var(--radius-md); color: var(--primary-navy); font-weight: 600; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; }
+    .sidebar-item:hover { background-color: var(--bg-color); } .sidebar-item.active { background-color: var(--primary-navy); color: var(--accent-yellow); }
+    .content-area { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
+    .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+    .form-group { margin-bottom: 1.25rem; position: relative; } .form-label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
+    .form-textarea { resize: vertical; min-height: 100px; } .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; } .grid-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .avatar-preview { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent-yellow); object-fit: cover; background-color: var(--bg-color); cursor: pointer; box-shadow: var(--shadow-md); }
+    .avatar-upload-btn { position: relative; overflow: hidden; } .avatar-upload-btn input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .qualifications-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
+    .qual-item { background: var(--surface-white); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); }
+    .qual-item-info h4 { margin-bottom: 0.2rem; font-size: 1rem; } .qual-item-info a { font-size: 0.85rem; color: var(--primary-navy); text-decoration: underline; }
+    .qual-actions { display: flex; gap: 0.5rem; } #add-qual-form { background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--border-color); margin-bottom: 1rem; display: none; }
+    .progress-bar-container { width: 100%; background-color: #E5E7EB; border-radius: 8px; margin-top: 0.5rem; overflow: hidden; display: none; }
+    .progress-bar-fill { height: 8px; background-color: var(--success-green); width: 0%; transition: width 0.3s; }
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .badge-yellow { background: var(--accent-yellow); color: var(--primary-navy); } .badge-navy { background: var(--navy-light); color: var(--surface-white); }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.active { display: flex; } .modal-content { background: var(--surface-white); width: 100%; max-width: 600px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+    .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+    .prof-header-elegant { display: flex; align-items: center; gap: 1.5rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+    .prof-header-elegant img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); box-shadow: var(--shadow-sm); }
+    .section-title-elegant { font-size: 1.1rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem; margin-top: 1.5rem; }
+    @media (max-width: 768px) { .app-container { padding: 1rem; padding-bottom: 85px; } .grid-2-col, .grid-3-col { grid-template-columns: 1fr; } .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; top: auto; } .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; text-align: center; color: var(--surface-white); } .sidebar-item.active { background: transparent; color: var(--accent-yellow); } .hide-mobile { display: none !important; } }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    const firebaseConfig = { apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8", authDomain: "teacherbee-connect.firebaseapp.com", projectId: "teacherbee-connect", storageBucket: "teacherbee-connect.firebasestorage.app", messagingSenderId: "345613317767", appId: "1:345613317767:web:555713e479f9837e84aa22" };
+    const app = initializeApp(firebaseConfig);
+    window.auth = getAuth(app); window.db = getFirestore(app);
+    window.fb = { doc, getDoc, updateDoc, signOut };
+
+    onAuthStateChanged(window.auth, async (user) => {
+      if (user) {
+        const docRef = doc(window.db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        let name = user.email.split('@')[0];
+        let avatar = "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.role === 'recruiter') { window.location.href = 'recruiter.html'; return; }
+          name = data.name || name; if(data.avatarUrl) avatar = data.avatarUrl;
+          window.currentUser = { uid: user.uid, name, email: user.email, isVerified: user.emailVerified, avatarUrl: avatar, quals: data.qualifications || [], videoUrl: data.videoUrl || "" };
+          if(data.age) document.getElementById('prof-age').value = data.age;
+          if(data.gender) document.getElementById('prof-gender').value = data.gender;
+          if(data.experience) document.getElementById('prof-experience').value = data.experience;
+          if(data.languages) document.getElementById('prof-languages').value = data.languages;
+          if(data.bio) document.getElementById('prof-bio').value = data.bio;
+          if(data.videoUrl) { const vPreview = document.getElementById('prof-video-preview'); vPreview.src = data.videoUrl; vPreview.style.display = 'block'; }
+          document.getElementById('display-name').innerText = name;
+          document.getElementById('prof-display-name').value = name;
+          document.getElementById('profile-avatar').src = avatar;
+          const vBadge = document.getElementById('verification-badge');
+          if (user.emailVerified) { vBadge.innerText = 'Email Verified'; vBadge.className = 'badge badge-navy'; } else { vBadge.innerText = 'Unverified (Check Inbox)'; vBadge.className = 'badge'; vBadge.style.background = 'var(--error-red)'; vBadge.style.color = 'white'; }
+        }
+        document.getElementById('nav-actions').innerHTML = `<div style="display:flex; align-items:center; gap:1rem;"><img src="${avatar}" class="hide-mobile" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--accent-yellow);"><span style="font-weight:600; color:white;" class="hide-mobile">${name}</span><button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button></div>`;
+        window.renderQualifications();
+      } else { window.location.href = 'index.html'; }
+    });
+  </script>
+</head>
+<body class="dashboard-active">
+  <div id="toast-container"></div>
+  <header>
+    <a href="profile.html" class="brand-logo"><i class="fa-solid fa-graduation-cap"></i> TeacherBee</a>
+    <div id="nav-actions"></div>
+  </header>
+  <div class="app-container">
+    <aside class="sidebar">
+      <a href="profile.html" class="sidebar-item active"><i class="fa-regular fa-user"></i> <span>Profile</span></a>
+      <a href="jobs.html" class="sidebar-item"><i class="fa-solid fa-briefcase"></i> <span>Jobs</span></a>
+      <a href="workshops.html" class="sidebar-item"><i class="fa-solid fa-chalkboard-user"></i> <span>Training</span></a>
+      <a href="tefl.html" class="sidebar-item"><i class="fa-solid fa-certificate"></i> <span>TEFL</span></a>
+      <a href="inbox.html" class="sidebar-item"><i class="fa-regular fa-envelope"></i> <span>Inbox</span></a>
+    </aside>
+    <main class="content-area">
+      <section class="view-panel active">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap:wrap; gap:1rem;">
+            <div><h2 id="display-name">Loading...</h2><span id="verification-badge" class="badge badge-navy">Email Verified</span></div>
+            <button type="button" class="btn btn-primary" onclick="openRecruiterView()"><i class="fa-solid fa-user-tie"></i> View My Profile</button>
+          </div>
+          <form onsubmit="handleProfileUpdate(event)">
+            <div class="avatar-upload-container">
+              <label for="avatar-input" class="avatar-upload-btn">
+                <img src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" id="profile-avatar" class="avatar-preview" title="Click to change profile picture">
+                <input type="file" id="avatar-input" accept="image/png, image/jpeg" onchange="openCropperModal(this)">
+              </label>
+              <p style="font-size: 0.8rem;">Click image to upload & crop</p>
+            </div>
+            <h3>Core Biography & Details</h3>
+            <div class="grid-2-col" style="margin-bottom: 1rem;">
+              <div class="form-group"><label class="form-label">Display Name</label><input type="text" id="prof-display-name" class="form-input"></div>
+              <div class="form-group"><label class="form-label">Age</label><input type="number" id="prof-age" class="form-input" min="18" max="100"></div>
+            </div>
+            <div class="grid-3-col">
+              <div class="form-group"><label class="form-label">Gender</label><select id="prof-gender" class="form-select"><option value="Prefer not to say">Prefer not to say</option><option value="Female">Female</option><option value="Male">Male</option></select></div>
+              <div class="form-group"><label class="form-label">Years of Experience</label><input type="number" id="prof-experience" class="form-input" min="0"></div>
+              <div class="form-group"><label class="form-label">Languages (Comma separated)</label><input type="text" id="prof-languages" class="form-input" placeholder="e.g. English (Native), Spanish (B1)"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Professional Biography</label><textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself to recruiters..."></textarea></div>
+            <div class="form-group" style="margin-top:1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              <label class="form-label"><i class="fa-solid fa-video"></i> Introduction Video Upload</label>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Upload a short 1-3 minute intro video.</p>
+              <input type="file" id="prof-video-file" accept="video/mp4,video/webm" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem;">
+              <div class="progress-bar-container" id="video-progress-bar"><div class="progress-bar-fill" id="video-progress-fill"></div></div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;"><p id="video-progress-text" style="display:none; margin:0; font-size:0.8rem;">Uploading video... 0%</p></div>
+              <video id="prof-video-preview" controls style="display:none; width:100%; max-height:300px; margin-top:10px; border-radius:8px;"></video>
+            </div>
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+              <h3>My Qualifications & Certificates</h3><button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm(false)"><i class="fa-solid fa-plus"></i> Add Qualification</button>
+            </div>
+            <div id="add-qual-form">
+              <div class="form-group"><label class="form-label">Qualification Title</label><input type="text" id="new-qual-title" class="form-input"></div>
+              <div class="form-group"><label class="form-label">Upload Certificate Document / Image</label><input type="file" id="new-qual-file" class="form-input" onchange="handleQualFileSelect(this)" accept="image/*,application/pdf,.doc,.docx"></div>
+              <div class="progress-bar-container" id="qual-progress-bar"><div class="progress-bar-fill" id="qual-progress-fill"></div></div>
+              <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewQualification()">Upload & Save Certificate</button>
+                <button type="button" class="btn btn-outline btn-small" onclick="cancelQualificationUpload()">Cancel</button>
+              </div>
+            </div>
+            <div class="qualifications-list" id="saved-quals-container"></div>
+            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1.5rem; width: 100%;">Save Full Profile</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="cropper-modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <h3 style="margin-bottom: 1rem;">Crop Profile Picture</h3>
+      <div id="image-cropper-container"><img id="cropper-image" style="max-width: 100%; display: block;"></div>
+      <div style="display:flex; gap:1rem; margin-top:1rem;"><button class="btn btn-outline" style="flex:1;" onclick="cancelCrop()">Cancel</button><button class="btn btn-primary" style="flex:1;" onclick="applyCrop()" id="btn-crop-save">Crop & Save</button></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="recruiter-modal">
+    <div class="modal-content" style="max-width: 700px; padding: 3rem;">
+      <button class="close-modal" onclick="document.getElementById('recruiter-modal').classList.remove('active')">&times;</button>
+      <div class="prof-header-elegant">
+        <img id="rv-avatar" src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" alt="Profile">
+        <div>
+          <h2 id="rv-name" style="font-size: 1.8rem; margin-bottom: 0.2rem;">Jane Doe</h2>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+            <span class="badge badge-navy" id="rv-gender">Female</span><span class="badge badge-navy" id="rv-age">28 yrs</span><span class="badge badge-navy" id="rv-exp">5 Years Exp.</span><span class="badge badge-yellow" id="rv-langs"><i class="fa-solid fa-language"></i> English</span>
+          </div>
+        </div>
+      </div>
+      <div id="rv-bio-section"><h3 class="section-title-elegant">Professional Biography</h3><p class="elegant-text" id="rv-bio-text">No biography provided.</p></div>
+      <div id="rv-video-section" style="display:none; margin-top:2rem;"><h3 class="section-title-elegant">Introduction Video</h3><video id="rv-video-player" controls style="width:100%; border-radius:8px;"></video></div>
+      <div id="rv-qual-section" style="margin-top:2rem;"><h3 class="section-title-elegant">Certifications & Degrees</h3><div id="rv-qual-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div></div>
+    </div>
+  </div>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+    let currentCropper = null; let editQualIndex = -1;
+
+    window.showToast = function(message, type = 'info') {
+      const container = document.getElementById('toast-container'); const toast = document.createElement('div');
+      toast.className = `toast ${type}`; toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info'}"></i> ${message}`;
+      container.appendChild(toast); setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+    };
+    window.handleLogout = function() { if (window.auth && window.fb) window.fb.signOut(window.auth); };
+
+    window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          let action = 'uploadFile'; if (folder.includes('avatars')) action = 'uploadProfile'; if (folder.includes('qualifications')) action = 'uploadCertificate'; if (folder.includes('videos')) action = 'uploadVideo';
+          const payload = { action: action, fileName: fileName, mimeType: fileOrBlob.type || "application/octet-stream", file: e.target.result };
+          let progressInterval;
+          if (onProgress) { let percent = 0; progressInterval = setInterval(() => { percent += Math.floor(Math.random() * 10) + 5; if (percent >= 90) percent = 90; onProgress(percent); }, 400); }
+          try {
+            const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) }); const data = await response.json();
+            if (progressInterval) { clearInterval(progressInterval); if (onProgress) onProgress(100); }
+            if (data.status === "success") { let finalUrl = ""; if (action === 'uploadProfile' && data.profilePic && data.profilePic.url) finalUrl = data.profilePic.url; else if (action === 'uploadCertificate' && data.certificates && data.certificates.length > 0) finalUrl = data.certificates[data.certificates.length - 1].url || data.certificates[data.certificates.length - 1].fileUrl; else if (data.url) finalUrl = data.url; resolve(finalUrl || "https://via.placeholder.com/150?text=Uploaded"); } 
+            else { reject(new Error("Drive Error: " + (data.message || "Unknown error"))); }
+          } catch (error) { if (progressInterval) clearInterval(progressInterval); reject(new Error("Network error during upload.")); }
+        };
+        reader.onerror = () => reject(new Error("Browser failed to read file.")); reader.readAsDataURL(fileOrBlob);
+      });
+    };
+
+    window.compressOrGetBlob = function(file) {
+      return new Promise((resolve) => {
+        if (!file) return resolve(null); if (!file.type.startsWith('image/')) return resolve(file); 
+        const reader = new FileReader(); reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const img = new Image(); img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas'); let width = img.width, height = img.height; const maxDim = 1600;
+            if (width > maxDim || height > maxDim) { if (width > height) { height = Math.round((height * maxDim) / width); width = maxDim; } else { width = Math.round((width * maxDim) / height); height = maxDim; } }
+            canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob((blob) => { resolve(blob || file); }, 'image/jpeg', 0.85);
+          };
+          img.onerror = () => resolve(file);
+        }; reader.onerror = () => resolve(file);
+      });
+    };
+
+    window.saveProfileToFirestore = async function() {
+      if (!window.auth || !window.auth.currentUser || !window.fb) return;
+      try { await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { qualifications: window.currentUser.quals || [], videoUrl: window.currentUser.videoUrl || "" }); } 
+      catch (e) { console.error("Firestore sync failed:", e); }
+    };
+
+    window.openCropperModal = function(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('cropper-image'); img.src = e.target.result;
+          document.getElementById('cropper-modal').classList.add('active');
+          if(currentCropper) currentCropper.destroy();
+          currentCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 0.8, guides: false, center: false, highlight: false, cropBoxMovable: false, cropBoxResizable: false, toggleDragModeOnDblclick: false });
+        }; reader.readAsDataURL(input.files[0]);
+      } input.value = ''; 
+    };
+
+    window.cancelCrop = function() { document.getElementById('cropper-modal').classList.remove('active'); if(currentCropper) currentCropper.destroy(); };
+
+    window.applyCrop = async function() {
+      const btn = document.getElementById('btn-crop-save'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const canvas = currentCropper.getCroppedCanvas({ width: 250, height: 250 });
+      canvas.toBlob(async (blob) => {
+        if(!window.auth.currentUser) { btn.innerHTML = 'Crop & Save'; return cancelCrop(); }
+        try {
+           const fileName = `avatar_${window.auth.currentUser.uid}.jpg`; const url = await uploadToGoogleDrive(blob, fileName, "/avatars");
+           document.getElementById('profile-avatar').src = url; window.currentUser.avatarUrl = url;
+           await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { avatarUrl: url });
+           btn.innerHTML = 'Crop & Save'; cancelCrop(); showToast('Profile picture saved!', 'success');
+        } catch(e) { console.error(e); showToast(e.message, "error"); btn.innerHTML = 'Crop & Save'; cancelCrop(); }
+      }, 'image/jpeg', 0.85);
+    };
+
+    window.handleVideoUpload = async function(input) {
+      const file = input.files[0]; if(!file || !window.auth.currentUser) return;
+      const pContainer = document.getElementById('video-progress-bar'), pFill = document.getElementById('video-progress-fill'), pText = document.getElementById('video-progress-text');
+      pContainer.style.display = 'block'; pText.style.display = 'block'; pText.innerText = 'Uploading video... 0%'; pFill.style.width = '0%';
+      try {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const url = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, "/videos", (percent) => { pFill.style.width = `${percent}%`; pText.innerText = `Uploading video... ${percent}%`; });
+        window.currentUser.videoUrl = url; saveProfileToFirestore();
+        const vPreview = document.getElementById('prof-video-preview'); vPreview.src = url; vPreview.style.display = 'block';
+        pContainer.style.display = 'none'; pText.style.display = 'none'; showToast("Video uploaded & saved automatically!", "success"); input.value = '';
+      } catch (err) { console.error(err); showToast(err.message, "error"); pContainer.style.display = 'none'; pText.style.display = 'none'; }
+    };
+
+    window.handleQualFileSelect = function(input) { if (input.files && input.files[0]) { const file = input.files[0]; const titleInput = document.getElementById('new-qual-title'); if (!titleInput.value) { titleInput.value = file.name.replace(/\.[^/.]+$/, ""); } } };
+    window.toggleAddQualForm = function() { const form = document.getElementById('add-qual-form'); if(form.style.display === 'none' || form.style.display === '') { form.style.display = 'block'; document.getElementById('new-qual-title').value = ''; document.getElementById('new-qual-file').value = ''; document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate'; editQualIndex = -1; } else { form.style.display = 'none'; } };
+    window.cancelQualificationUpload = function() { document.getElementById('qual-progress-bar').style.display = 'none'; document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate'; document.getElementById('new-qual-file').value = ''; toggleAddQualForm(); };
+
+    window.saveNewQualification = async function() {
+      const title = document.getElementById('new-qual-title').value.trim(); const fileInput = document.getElementById('new-qual-file');
+      if(!title) { showToast("Please enter a qualification title.", "error"); return; }
+      if(fileInput.files.length > 0 && window.auth && window.auth.currentUser) {
+        const file = fileInput.files[0]; if (file.size > 5 * 1024 * 1024) showToast("File is very large. Upload may timeout.", "info");
+        const btn = document.getElementById('btn-save-qual'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+        const pContainer = document.getElementById('qual-progress-bar'), pFill = document.getElementById('qual-progress-fill');
+        pContainer.style.display = 'block'; pFill.style.width = '0%';
+        try {
+          const blobOrFile = await window.compressOrGetBlob(file); const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const url = await uploadToGoogleDrive(blobOrFile, `${Date.now()}_${safeName}`, "/qualifications", (percent) => { pFill.style.width = `${percent}%`; });
+          finalizeSaveQual(title, url, file.name); btn.disabled = false; btn.innerHTML = 'Upload & Save Certificate'; pContainer.style.display = 'none';
+        } catch (err) { console.error(err); btn.disabled = false; btn.innerHTML = 'Upload & Save Certificate'; pContainer.style.display = 'none'; showToast(err.message, "error"); }
+      } else { let url = "", fName = ""; if (editQualIndex > -1 && window.currentUser.quals[editQualIndex]) { url = window.currentUser.quals[editQualIndex].url; fName = window.currentUser.quals[editQualIndex].fileName; } finalizeSaveQual(title, url, fName); }
+    };
+
+    function finalizeSaveQual(title, url, fileName) { if (editQualIndex > -1) { window.currentUser.quals[editQualIndex] = { title, url, fileName }; } else { window.currentUser.quals.push({ id: Date.now().toString(), title, url, fileName }); } saveProfileToFirestore(); renderQualifications(); toggleAddQualForm(); showToast("Certificate saved!", "success"); }
+
+    window.renderQualifications = function() {
+      const container = document.getElementById('saved-quals-container'); container.innerHTML = '';
+      if(!window.currentUser.quals || window.currentUser.quals.length === 0) { container.innerHTML = '<p style="font-size:0.9rem; color:var(--text-muted);">No qualifications uploaded yet.</p>'; return; }
+      window.currentUser.quals.forEach((q, index) => {
+        const fileLink = q.url ? `<a href="${q.url}" target="_blank" style="color:var(--primary-navy); font-weight:600;"><i class="fa-solid fa-file-pdf"></i> View Certificate</a>` : '';
+        const html = `<div class="qual-item"><div class="qual-item-info"><h4>${q.title}</h4>${fileLink}</div><div class="qual-actions"><button type="button" class="btn btn-outline btn-small" onclick="editQualification(${index})"><i class="fa-solid fa-pen"></i></button><button type="button" class="btn btn-danger btn-small" onclick="deleteQualification(${index})"><i class="fa-solid fa-trash"></i></button></div></div>`;
+        container.insertAdjacentHTML('beforeend', html);
+      });
+    };
+    window.editQualification = function(index) { const q = window.currentUser.quals[index]; document.getElementById('add-qual-form').style.display = 'block'; document.getElementById('new-qual-title').value = q.title; document.getElementById('btn-save-qual').innerHTML = 'Update Qualification'; editQualIndex = index; };
+    window.deleteQualification = function(index) { if(confirm("Are you sure?")) { window.currentUser.quals.splice(index, 1); saveProfileToFirestore(); renderQualifications(); showToast("Qualification removed.", "info"); } };
+
+    window.handleProfileUpdate = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-profile'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const displayName = document.getElementById('prof-display-name').value, age = document.getElementById('prof-age').value, gender = document.getElementById('prof-gender').value, experience = document.getElementById('prof-experience').value, languages = document.getElementById('prof-languages').value, bio = document.getElementById('prof-bio').value;
+      if (window.auth && window.auth.currentUser) {
+        try {
+          await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { name: displayName, age: age, gender: gender, experience: experience, languages: languages, bio: bio, lastUpdated: new Date() });
+          window.currentUser.name = displayName; document.getElementById('display-name').innerText = displayName;
+          btn.innerHTML = 'Save Full Profile'; showToast('Profile updated successfully!', 'success');
+        } catch (err) { btn.innerHTML = 'Save Full Profile'; showToast('Error updating profile.', 'error'); }
+      }
+    };
+
+    window.openRecruiterView = function() {
+      document.getElementById('rv-name').innerText = window.currentUser.name || document.getElementById('prof-display-name').value;
+      document.getElementById('rv-avatar').src = window.currentUser.avatarUrl || "https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700";
+      const gender = document.getElementById('prof-gender').value || 'Not specified', age = document.getElementById('prof-age').value, exp = document.getElementById('prof-experience').value, langs = document.getElementById('prof-languages').value || 'English', bio = document.getElementById('prof-bio').value;
+      document.getElementById('rv-gender').innerHTML = `<i class="fa-solid fa-venus-mars"></i> ${gender}`;
+      const ageSpan = document.getElementById('rv-age'); if (age) { ageSpan.style.display = 'inline-block'; ageSpan.innerHTML = `<i class="fa-regular fa-calendar"></i> ${age} yrs`; } else { ageSpan.style.display = 'none'; }
+      document.getElementById('rv-exp').innerHTML = `<i class="fa-solid fa-briefcase"></i> ${exp ? exp + ' Years Exp.' : 'Entry Level'}`; document.getElementById('rv-langs').innerHTML = `<i class="fa-solid fa-language"></i> ${langs}`; document.getElementById('rv-bio-text').innerText = bio || 'No biography provided.';
+      const vidSec = document.getElementById('rv-video-section'); if(window.currentUser.videoUrl) { vidSec.style.display = 'block'; document.getElementById('rv-video-player').src = window.currentUser.videoUrl; } else { vidSec.style.display = 'none'; }
+      const qualList = document.getElementById('rv-qual-list'); qualList.innerHTML = '';
+      if(window.currentUser.quals && window.currentUser.quals.length > 0) {
+        window.currentUser.quals.forEach(q => {
+             const clickableAttr = q.url ? `onclick="window.open('${q.url}', '_blank')"` : ''; const linkClass = q.url ? `qual-doc-link` : ``; const iconMarkup = q.url ? `<i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.85rem; color:var(--text-muted); margin-left:auto;"></i>` : ``;
+             qualList.insertAdjacentHTML('beforeend', `<div class="${linkClass}" ${clickableAttr} style="padding:0.75rem; background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; display:flex; align-items:center; gap:1rem;"><i class="fa-solid fa-certificate" style="color:var(--primary-navy); font-size:1.5rem;"></i> <span style="font-weight:600; font-size:0.9rem;">${q.title}</span> ${iconMarkup} </div>`);
+        });
+      } else { qualList.innerHTML = '<p class="elegant-text">No qualifications attached.</p>'; }
+      document.getElementById('recruiter-modal').classList.add('active');
+    };
+  </script>
+</body>
+</html>
