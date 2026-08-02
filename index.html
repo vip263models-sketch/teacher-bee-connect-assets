@@ -4,8 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TeacherBee Connect - Portal</title>
+  
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Cropper.js for Image Cropping -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   
   <style>
     :root {
@@ -24,13 +30,13 @@
       --radius-md: 8px;
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
       --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
 
-    /* Typography & Core */
-    h1, h2, h3 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; }
+    h1, h2, h3, h4 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; }
     p { color: var(--text-muted); line-height: 1.5; }
 
     /* Toast Notifications */
@@ -41,13 +47,13 @@
     .toast.info { background-color: var(--primary-navy); color: var(--accent-yellow); }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    /* Header Bar */
+    /* Header */
     header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
     .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
     .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
     
     /* Buttons */
-    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
     .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
     .btn-primary:hover { background-color: var(--yellow-hover); }
     .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); }
@@ -57,110 +63,204 @@
     .btn-block { width: 100%; margin-top: 1rem; }
     .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
 
-    /* Main Layout */
-    .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; }
-
-    /* Auth Wrapper */
+    /* Layout Setup */
+    .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
     .auth-wrapper { max-width: 480px; margin: 2rem auto; background: var(--surface-white); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm); width: 100%; border: 1px solid var(--border-color); }
     .auth-header { text-align: center; margin-bottom: 2rem; }
     .auth-tabs { display: flex; background: var(--bg-color); border-radius: var(--radius-md); padding: 0.25rem; margin-bottom: 1.5rem; }
     .auth-tab { flex: 1; text-align: center; padding: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.9rem; transition: background 0.2s; }
     .auth-tab.active { background: var(--primary-navy); color: var(--accent-yellow); box-shadow: var(--shadow-sm); }
 
-    /* Form Design & Password Toggles */
+    /* Forms */
     .form-group { margin-bottom: 1.25rem; position: relative; }
     .form-label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
     .form-input, .form-select, .form-textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
     .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1); }
     .form-textarea { resize: vertical; min-height: 100px; }
     .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
     
     .password-wrapper { position: relative; }
     .password-wrapper input { padding-right: 2.5rem; }
     .password-toggle { position: absolute; right: 1rem; top: 38px; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; }
-    .password-toggle:hover { color: var(--primary-navy); }
 
-    /* Sidebar Navigation (Desktop) */
+    /* Profile Avatar Upload */
+    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .avatar-preview { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent-yellow); object-fit: cover; background-color: var(--bg-color); cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-md); }
+    .avatar-preview:hover { opacity: 0.8; filter: brightness(0.9); }
+    .avatar-upload-btn { position: relative; overflow: hidden; }
+    .avatar-upload-btn input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+    /* Qualifications Dynamic List */
+    .qualifications-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
+    .qual-item { background: var(--surface-white); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); }
+    .qual-item-info h4 { margin-bottom: 0.2rem; font-size: 1rem; }
+    .qual-item-info a { font-size: 0.85rem; color: var(--primary-navy); text-decoration: underline; }
+    .qual-actions { display: flex; gap: 0.5rem; }
+    
+    #add-qual-form { background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--border-color); margin-bottom: 1rem; display: none; }
+    
+    /* Clickable Qualifications in Recruiter View */
+    .qual-doc-link { cursor: pointer; transition: background 0.2s; }
+    .qual-doc-link:hover { background: #E5E7EB !important; }
+
+    /* Progress Bar */
+    .progress-bar-container { width: 100%; background-color: #E5E7EB; border-radius: 8px; margin-top: 0.5rem; overflow: hidden; display: none; }
+    .progress-bar-fill { height: 8px; background-color: var(--success-green); width: 0%; transition: width 0.3s; }
+    .progress-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; display: none; flex: 1; }
+
+    /* --- SIDEBAR & CONTENT VISIBILITY --- */
     .sidebar { width: 250px; display: none; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
+    .content-area { flex: 1; display: none; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
+    
+    body.dashboard-active .sidebar { display: flex; }
+    body.dashboard-active .content-area { display: flex; }
+    
     .sidebar-item { padding: 1rem; border-radius: var(--radius-md); color: var(--primary-navy); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; }
     .sidebar-item:hover { background-color: var(--bg-color); }
     .sidebar-item.active { background-color: var(--primary-navy); color: var(--accent-yellow); }
     
-    /* Content Area */
-    .content-area { flex: 1; display: none; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; }
+    /* Content Views */
     .view-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
     .view-panel.active { display: block; }
     .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
-    .badge { display: inline-block; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.75rem; }
+    
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
     .badge-yellow { background: var(--accent-yellow); color: var(--primary-navy); }
     .badge-navy { background: var(--navy-light); color: var(--surface-white); }
+    .badge-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
 
     /* Job Filters & Search */
-    .filter-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; background: var(--surface-white); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
-    .filter-bar input { flex: 1; min-width: 200px; }
+    .filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: var(--surface-white); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
+    
+    .job-card { display: flex; flex-direction: column; justify-content: space-between; }
+    .job-meta { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; flex-wrap: wrap; }
+    .job-desc { font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-    /* Messages UI */
-    .message-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 1rem; border-bottom: 1px solid var(--border-color); }
+    /* Messages UI & Chat */
+    .message-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
+    .message-item:hover { background: var(--bg-color); }
+    .message-item.unread { background: #f0f7ff; border-left: 4px solid var(--primary-navy); }
     .message-item:last-child { border-bottom: none; }
     .msg-content h4 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--primary-navy); }
     .msg-content p { font-size: 0.9rem; color: var(--text-muted); }
     .msg-date { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.5rem; }
+    
+    /* Fake Chat Window */
+    #chat-window { display: none; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 550px; }
+    .chat-header { background: var(--primary-navy); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: var(--bg-color); }
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.15); border-radius: 4px; }
+    .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; word-wrap: break-word; position: relative; }
+    .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-main); }
+    .bubble-out { background: var(--navy-light); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .msg-time-stamp { display: block; font-size: 0.68rem; opacity: 0.7; margin-top: 4px; text-align: right; }
+    .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; align-items: center; }
 
     /* Modals */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
-    .modal-content { background: var(--surface-white); width: 100%; max-width: 500px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
-    .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+    .modal-content { background: var(--surface-white); width: 100%; max-width: 600px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+    .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); transition: color 0.2s; }
+    .close-modal:hover { color: var(--primary-navy); }
 
-    /* Upload Zones */
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
-    .upload-zone { border: 2px dashed var(--primary-navy); border-radius: var(--radius-md); padding: 1.5rem; text-align: center; cursor: pointer; background: var(--bg-color); position: relative; }
-    .upload-zone input[type="file"] { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
-    .file-active-state { display: none; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; background: var(--surface-white); align-items: center; justify-content: space-between; }
-    .file-active-state.active { display: flex; }
+    /* Elegant Recruiter Profile View */
+    .prof-header-elegant { display: flex; align-items: center; gap: 1.5rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+    .prof-header-elegant img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); box-shadow: var(--shadow-sm); }
+    .star-rating { color: var(--accent-yellow); font-size: 1.1rem; letter-spacing: 2px; margin-top: 0.5rem; }
+    .section-title-elegant { font-size: 1.1rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem; margin-top: 1.5rem; }
+    .elegant-text { color: var(--text-main); font-size: 0.95rem; line-height: 1.6; }
+    
+    /* Cropper Modal Specifics */
+    #image-cropper-container { max-height: 400px; margin-bottom: 1rem; }
 
-    /* MOBILE RESPONSIVE NAV - Fixed Footer */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
     @media (max-width: 768px) {
       .app-container { padding: 1rem; padding-bottom: 85px; }
-      .grid-2-col { grid-template-columns: 1fr; }
+      .grid-2-col, .grid-3-col, .filter-bar { grid-template-columns: 1fr; }
       
-      .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: none; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; box-shadow: 0 -4px 10px rgba(0,0,0,0.15); top: auto; }
+      body.dashboard-active .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; box-shadow: 0 -4px 10px rgba(0,0,0,0.15); top: auto; }
       .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
-      .sidebar-item i { font-size: 1.25rem; }
       .sidebar-item.active { background: transparent; color: var(--accent-yellow); }
       .hide-mobile { display: none !important; }
-      
-      body.dashboard-active .sidebar { display: flex; }
     }
   </style>
 
-  <!-- FIREBASE SDK (Modular v9) -->
+  <!-- FIREBASE SDK MODULE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, updateDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // TODO: Replace with your actual Firebase Config
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+      authDomain: "teacherbee-connect.firebaseapp.com",
+      projectId: "teacherbee-connect",
+      storageBucket: "teacherbee-connect.firebasestorage.app",
+      messagingSenderId: "345613317767",
+      appId: "1:345613317767:web:555713e479f9837e84aa22"
     };
 
-    window.initFirebaseSetup = function() {
-      try {
-        const app = initializeApp(firebaseConfig);
-        window.auth = getAuth(app);
-        window.db = getFirestore(app);
-      } catch (e) {
-        console.warn("Firebase config missing. Running in simulation mode.");
-        window.auth = null; 
-      }
+    const app = initializeApp(firebaseConfig);
+    window.auth = getAuth(app);
+    window.db = getFirestore(app);
+
+    // Expose Firebase SDK methods globally
+    window.fb = {
+      doc, setDoc, updateDoc, getDoc, serverTimestamp,
+      signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset
     };
-    window.initFirebaseSetup();
+
+    setPersistence(window.auth, browserLocalPersistence);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    const oobCode = urlParams.get('oobCode');
+
+    if (mode === 'resetPassword' && oobCode) {
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById('auth-panel').style.display = 'none';
+        document.getElementById('reset-password-panel').style.display = 'block';
+        window.resetOobCode = oobCode;
+      });
+    }
+
+    onAuthStateChanged(window.auth, async (user) => {
+      if (user && mode !== 'resetPassword') {
+        const docRef = doc(window.db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        let name = user.email.split('@')[0];
+        let avatar = "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
+        
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          name = data.name || name;
+          if(data.avatarUrl) avatar = data.avatarUrl;
+          
+          if(data.age) document.getElementById('prof-age').value = data.age;
+          if(data.gender) document.getElementById('prof-gender').value = data.gender;
+          if(data.experience) document.getElementById('prof-experience').value = data.experience;
+          if(data.languages) document.getElementById('prof-languages').value = data.languages;
+          if(data.bio) document.getElementById('prof-bio').value = data.bio;
+          
+          if(data.videoUrl) {
+              window.currentUser.videoUrl = data.videoUrl;
+              const vPreview = document.getElementById('prof-video-preview');
+              vPreview.src = data.videoUrl;
+              vPreview.style.display = 'block';
+          }
+          
+          window.currentUser.quals = data.qualifications || [];
+          window.currentUser.messages = data.messages || [];
+        }
+        
+        finalizeLogin(name, user.email, user.emailVerified, avatar);
+        window.renderQualifications();
+        window.renderInbox();
+      }
+    });
   </script>
 </head>
 <body>
@@ -168,7 +268,7 @@
   <div id="toast-container"></div>
 
   <header>
-    <a href="#" class="brand-logo">
+    <a href="#" class="brand-logo" onclick="handleLogoClick(event)">
       <i class="fa-solid fa-graduation-cap"></i> TeacherBee
     </a>
     <div id="nav-actions">
@@ -177,6 +277,28 @@
   </header>
 
   <div class="app-container">
+    
+    <!-- PASSWORD RESET PANEL -->
+    <div class="auth-wrapper" id="reset-password-panel" style="display: none;">
+      <div class="auth-header">
+        <h2>Create New Password</h2>
+        <p>Enter your new password below.</p>
+      </div>
+      <form onsubmit="handleNewPasswordSubmit(event)">
+        <div class="form-group password-wrapper">
+          <label class="form-label">New Password</label>
+          <input type="password" id="new-reset-pass" class="form-input" required minlength="6">
+          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('new-reset-pass', this)"></i>
+        </div>
+        <div class="form-group password-wrapper">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" id="confirm-reset-pass" class="form-input" required minlength="6">
+          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('confirm-reset-pass', this)"></i>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="btn-save-new-pass">Save New Password</button>
+      </form>
+    </div>
+
     <!-- AUTHENTICATION CONTAINER -->
     <div class="auth-wrapper" id="auth-panel">
       <div class="auth-header">
@@ -193,11 +315,11 @@
       <form id="login-form" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label class="form-label">Email Address</label>
-          <input type="email" id="login-email" class="form-input" required>
+          <input type="email" id="login-email" class="form-input" autocomplete="username" required>
         </div>
         <div class="form-group password-wrapper">
           <label class="form-label">Password</label>
-          <input type="password" id="login-password" class="form-input" required>
+          <input type="password" id="login-password" class="form-input" autocomplete="current-password" required>
           <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
         </div>
         <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
@@ -210,13 +332,13 @@
       <form id="register-form" style="display: none;" onsubmit="handleRegister(event)">
         <div class="form-group">
           <label class="form-label">Full Name</label>
-          <input type="text" id="reg-name" class="form-input" required>
+          <input type="text" id="reg-name" class="form-input" autocomplete="name" required>
         </div>
         
         <div class="grid-2-col">
           <div class="form-group">
             <label class="form-label">Email Address</label>
-            <input type="email" id="reg-email" class="form-input" required>
+            <input type="email" id="reg-email" class="form-input" autocomplete="email" required>
           </div>
           <div class="form-group">
             <label class="form-label">Date of Birth</label>
@@ -224,26 +346,14 @@
           </div>
         </div>
         
-        <!-- Standard Select Element for Countries (Ensures it shows up everywhere) -->
         <div class="form-group">
           <label class="form-label">Country of Residence</label>
           <select id="reg-country" class="form-select" required>
             <option value="" disabled selected>Select your country</option>
             <option value="Zimbabwe">Zimbabwe</option>
             <option value="South Africa">South Africa</option>
-            <option value="Zambia">Zambia</option>
-            <option value="Botswana">Botswana</option>
-            <option value="Namibia">Namibia</option>
-            <option value="Nigeria">Nigeria</option>
-            <option value="Kenya">Kenya</option>
             <option value="United Kingdom">United Kingdom</option>
             <option value="United States">United States</option>
-            <option value="Canada">Canada</option>
-            <option value="Australia">Australia</option>
-            <option value="China">China</option>
-            <option value="Japan">Japan</option>
-            <option value="South Korea">South Korea</option>
-            <option value="United Arab Emirates">United Arab Emirates</option>
             <option value="Other">Other</option>
           </select>
         </div>
@@ -251,12 +361,12 @@
         <div class="grid-2-col">
           <div class="form-group password-wrapper">
             <label class="form-label">Password</label>
-            <input type="password" id="reg-password" class="form-input" required>
+            <input type="password" id="reg-password" class="form-input" autocomplete="new-password" required>
             <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-password', this)"></i>
           </div>
           <div class="form-group password-wrapper">
             <label class="form-label">Confirm Password</label>
-            <input type="password" id="reg-confirm-password" class="form-input" required>
+            <input type="password" id="reg-confirm-password" class="form-input" autocomplete="new-password" required>
             <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-confirm-password', this)"></i>
           </div>
         </div>
@@ -264,7 +374,7 @@
       </form>
     </div>
 
-    <!-- SIDEBAR / BOTTOM FOOTER NAV -->
+    <!-- SIDEBAR NAVIGATION -->
     <aside class="sidebar" id="app-sidebar">
       <div class="sidebar-item active" onclick="switchView('profile-view', this)">
         <i class="fa-regular fa-user"></i> <span>Profile</span>
@@ -291,108 +401,157 @@
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap:wrap; gap:1rem;">
             <div>
-              <h2 id="display-name">Jane Doe</h2>
-              <p id="display-email">jane@example.com</p>
+              <h2 id="display-name">Loading...</h2>
               <span id="verification-badge" class="badge badge-navy">Email Verified</span>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openRecruiterView()"><i class="fa-regular fa-eye"></i> View My Profile</button>
+            <button type="button" class="btn btn-primary" onclick="openRecruiterView()"><i class="fa-solid fa-user-tie"></i> View My Profile</button>
           </div>
 
-          <form onsubmit="event.preventDefault(); showToast('Profile Saved!', 'success');">
-            <h3>Update Personal Details</h3>
-            <div class="grid-2-col">
-              <div class="form-group"><label class="form-label">Username</label><input type="text" class="form-input"></div>
-              <div class="form-group"><label class="form-label">Years of Experience</label><input type="number" class="form-input"></div>
+          <form onsubmit="handleProfileUpdate(event)">
+            
+            <div class="avatar-upload-container">
+              <label for="avatar-input" class="avatar-upload-btn">
+                <img src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" id="profile-avatar" class="avatar-preview" title="Click to change profile picture">
+                <input type="file" id="avatar-input" accept="image/png, image/jpeg" onchange="openCropperModal(this)">
+              </label>
+              <p style="font-size: 0.8rem;">Click image to upload & crop</p>
+            </div>
+
+            <h3>Core Biography & Details</h3>
+            
+            <div class="grid-2-col" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Display Name</label>
+                <input type="text" id="prof-display-name" class="form-input" placeholder="e.g. Jane D.">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" id="prof-age" class="form-input" min="18" max="100" placeholder="e.g. 28">
+              </div>
+            </div>
+
+            <div class="grid-3-col">
+              <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select id="prof-gender" class="form-select">
+                  <option value="Prefer not to say">Prefer not to say</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Years of Experience</label>
+                <input type="number" id="prof-experience" class="form-input" min="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Languages (Comma separated)</label>
+                <input type="text" id="prof-languages" class="form-input" placeholder="e.g. English (Native), Spanish (B1)">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Professional Biography</label>
+              <textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself to recruiters. Highlight your teaching philosophy and achievements..."></textarea>
+            </div>
+
+            <div class="form-group" style="margin-top:1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+              <label class="form-label"><i class="fa-solid fa-video"></i> Introduction Video Upload</label>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Upload a short 1-3 minute intro video.</p>
+              <input type="file" id="prof-video-file" accept="video/mp4,video/webm" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem;">
+              
+              <div class="progress-bar-container" id="video-progress-bar">
+                <div class="progress-bar-fill" id="video-progress-fill"></div>
+              </div>
+              
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;" id="video-progress-wrapper">
+                <p class="progress-text" id="video-progress-text" style="display:none; margin:0;">Uploading video... 0%</p>
+              </div>
+
+              <video id="prof-video-preview" controls style="display:none; width:100%; max-height:300px; margin-top:10px; border-radius:8px;"></video>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+              <h3>My Qualifications & Certificates</h3>
+              <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm(false)"><i class="fa-solid fa-plus"></i> Add Qualification</button>
             </div>
             
-            <div class="cards-grid" style="margin-top: 1rem;">
-              <!-- CV Upload -->
-              <div>
-                <div class="upload-zone" id="cv-dropzone">
-                  <i class="fa-solid fa-file-pdf" style="font-size:2rem; color:var(--primary-navy); margin-bottom:10px;"></i>
-                  <p style="font-weight:600; font-size:0.9rem;">Upload CV</p>
-                  <input type="file" accept=".pdf,.doc,.docx" onchange="simulateFileUpload('cv', this.files[0])">
-                </div>
-                <div class="file-active-state" id="cv-active">
-                  <div><i class="fa-solid fa-circle-check" style="color:var(--success-green);"></i> <span id="cv-filename" style="font-weight:600; font-size:0.9rem;">CV.pdf</span></div>
-                  <button type="button" class="btn btn-danger btn-small" onclick="deleteFile('cv')"><i class="fa-solid fa-trash"></i></button>
-                </div>
+            <div id="add-qual-form">
+              <div class="form-group">
+                <label class="form-label">Qualification Title</label>
+                <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. 120-Hour TEFL Certificate">
               </div>
-
-              <!-- Intro Video -->
-              <div>
-                <div class="upload-zone" id="video-dropzone">
-                  <i class="fa-solid fa-video" style="font-size:2rem; color:var(--primary-navy); margin-bottom:10px;"></i>
-                  <p style="font-weight:600; font-size:0.9rem;">Upload Intro Video</p>
-                  <input type="file" accept="video/mp4" onchange="simulateFileUpload('video', this.files[0])">
-                </div>
-                <div class="file-active-state" id="video-active">
-                  <div><i class="fa-solid fa-circle-check" style="color:var(--success-green);"></i> <span id="video-filename" style="font-weight:600; font-size:0.9rem;">video.mp4</span></div>
-                  <button type="button" class="btn btn-danger btn-small" onclick="deleteFile('video')"><i class="fa-solid fa-trash"></i></button>
-                </div>
+              <div class="form-group">
+                <label class="form-label">Upload Certificate Document / Image</label>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-5px; margin-bottom:5px;">Accepts Images, PDFs, and Word Documents</p>
+                <input type="file" id="new-qual-file" class="form-input" onchange="handleQualFileSelect(this)" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+              </div>
+              <div class="progress-bar-container" id="qual-progress-bar">
+                <div class="progress-bar-fill" id="qual-progress-fill"></div>
+              </div>
+              <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewQualification()">Upload & Save Certificate</button>
+                <button type="button" class="btn btn-outline btn-small" onclick="cancelQualificationUpload()">Cancel</button>
               </div>
             </div>
-            <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;">Save Details</button>
-          </form>
-        </div>
 
-        <!-- NEW: SECURITY & PASSWORD SECTION -->
-        <div class="card">
-          <form onsubmit="handleChangePassword(event)">
-            <h3>Security & Password</h3>
-            <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Update your account password securely.</p>
-            <div class="grid-2-col">
-              <div class="form-group password-wrapper">
-                <label class="form-label">New Password</label>
-                <input type="password" id="profile-new-pass" class="form-input" required minlength="6">
-                <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('profile-new-pass', this)"></i>
-              </div>
-              <div class="form-group password-wrapper">
-                <label class="form-label">Confirm New Password</label>
-                <input type="password" id="profile-confirm-pass" class="form-input" required minlength="6">
-                <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('profile-confirm-pass', this)"></i>
-              </div>
+            <div class="qualifications-list" id="saved-quals-container">
+              <!-- Dynamically populated -->
             </div>
-            <button type="submit" class="btn btn-outline" id="btn-change-pass">Update Password</button>
+
+            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1.5rem; width: 100%;">Save Full Profile</button>
           </form>
         </div>
       </section>
 
       <!-- 2. JOB BOARD VIEW -->
       <section id="jobs-view" class="view-panel">
-        <h2 style="margin-bottom: 1rem;">Job Opportunities</h2>
+        <h2 style="margin-bottom: 1rem;">Recent Job Opportunities</h2>
         
         <div class="filter-bar">
-          <input type="text" id="search-jobs" class="form-input" placeholder="Search by keyword..." oninput="filterJobBoard()">
-          <select id="filter-type" class="form-select" onchange="filterJobBoard()" style="flex: 1; min-width: 150px;">
-            <option value="all">All Job Types</option>
-            <option value="full">Full Time</option>
-            <option value="part">Part Time</option>
-          </select>
-          <select id="sort-order" class="form-select" onchange="filterJobBoard()" style="flex: 1; min-width: 150px;">
-            <option value="newest">Sort: Newest</option>
-            <option value="salary">Sort: Salary (High to Low)</option>
+          <input type="text" id="search-jobs" class="form-input" placeholder="Search keyword..." oninput="filterJobBoard()">
+          <input type="text" id="search-location" class="form-input" placeholder="Filter by Country/Location..." oninput="filterJobBoard()">
+          <select id="filter-type" class="form-select" onchange="filterJobBoard()">
+            <option value="all">All Types</option>
+            <option value="Full Time">Full Time</option>
+            <option value="Part Time">Part Time</option>
           </select>
         </div>
 
         <div class="cards-grid" id="job-list-container">
-          <div class="card job-card" data-type="full" data-salary="24">
-            <span class="badge badge-yellow">Full Time</span>
-            <h3 style="font-size: 1.1rem;">Online ESL Tutor (K-12)</h3>
-            <p style="font-size: 0.9rem; margin-bottom: 1rem;">$18 - $24 / hour • Asian Timezones</p>
-            <button class="btn btn-outline" style="width: 100%;" onclick="applyForJob('Online ESL Tutor (K-12)')">Apply Now</button>
+          <!-- Job 1 -->
+          <div class="card job-card" data-jobid="job1" data-type="Full Time" data-location="Online - Global">
+            <div>
+              <div style="display:flex; justify-content:space-between;">
+                <span class="badge badge-yellow">Full Time</span>
+                <span class="badge badge-outline"><i class="fa-solid fa-globe"></i> Global</span>
+              </div>
+              <h3 style="font-size: 1.1rem; margin-top:0.5rem;">Online ESL Tutor (K-12)</h3>
+              <div class="job-meta">
+                <span><i class="fa-solid fa-coins"></i> $18-$24/hr</span>
+                <span class="job-loc"><i class="fa-solid fa-location-dot"></i> Online - Global</span>
+              </div>
+              <p class="job-desc">Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor's degree.</p>
+            </div>
+            <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('job1')">View Details</button>
           </div>
-          <div class="card job-card" data-type="part" data-salary="30">
-            <span class="badge badge-navy">Part Time</span>
-            <h3 style="font-size: 1.1rem;">Adult Business English</h3>
-            <p style="font-size: 0.9rem; margin-bottom: 1rem;">$20 - $30 / hour • European Timezones</p>
-            <button class="btn btn-outline" style="width: 100%;" onclick="applyForJob('Adult Business English')">Apply Now</button>
-          </div>
-          <div class="card job-card" data-type="full" data-salary="20">
-            <span class="badge badge-yellow">Full Time</span>
-            <h3 style="font-size: 1.1rem;">IELTS Prep Coach</h3>
-            <p style="font-size: 0.9rem; margin-bottom: 1rem;">$15 - $20 / hour • Global</p>
-            <button class="btn btn-outline" style="width: 100%;" onclick="applyForJob('IELTS Prep Coach')">Apply Now</button>
+
+          <!-- Job 2 -->
+          <div class="card job-card" data-jobid="job2" data-type="Part Time" data-location="China">
+            <div>
+              <div style="display:flex; justify-content:space-between;">
+                <span class="badge badge-navy">Part Time</span>
+                <span class="badge badge-outline"><i class="fa-solid fa-building"></i> In-Person</span>
+              </div>
+              <h3 style="font-size: 1.1rem; margin-top:0.5rem;">Adult Business English</h3>
+              <div class="job-meta">
+                <span><i class="fa-solid fa-coins"></i> $30/hr</span>
+                <span class="job-loc"><i class="fa-solid fa-location-dot"></i> Beijing, China</span>
+              </div>
+              <p class="job-desc">Teach conversational and business English to corporate professionals. Housing allowance provided. Minimum 3 years experience required.</p>
+            </div>
+            <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('job2')">View Details</button>
           </div>
         </div>
       </section>
@@ -404,7 +563,7 @@
           <span class="badge badge-yellow">Live Seminar</span>
           <h3>Mastering the Demo Lesson</h3>
           <p style="margin-bottom: 1rem;">Learn how to impress recruiters during your mock class.</p>
-          <button class="btn btn-primary" onclick="showToast('Registered for Workshop!', 'success')">Reserve Spot</button>
+          <button class="btn btn-primary" onclick="autoRegisterWorkshop('Mastering the Demo Lesson')">Reserve Spot</button>
         </div>
       </section>
 
@@ -414,21 +573,45 @@
         <div class="card">
           <h3>Partner 120-Hour Accredited TEFL</h3>
           <p style="margin-bottom: 1rem;">Get certified to teach English globally. High approval rates.</p>
-          <button class="btn btn-primary" onclick="showToast('Enquiry Sent to TEFL Advisor', 'success')">Request Info</button>
+          <button class="btn btn-primary" onclick="autoSubmitTeflEnquiry()">Request Info</button>
         </div>
       </section>
 
       <!-- 5. INBOX / MESSAGES -->
       <section id="messages-view" class="view-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
-          <h2>Your Inbox</h2>
-          <button class="btn btn-danger btn-small" onclick="clearAllMessages()"><i class="fa-solid fa-trash-can"></i> Clear All</button>
+        <div id="inbox-list-view">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+            <h2>Your Inbox</h2>
+          </div>
+          
+          <div class="card" style="padding: 0;" id="inbox-container">
+            <div style="text-align:center; padding: 3rem; color:var(--text-muted);" id="empty-inbox">
+              <i class="fa-regular fa-envelope-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+              <p>No messages yet.</p>
+            </div>
+          </div>
         </div>
-        
-        <div class="card" style="padding: 0;" id="inbox-container">
-          <div style="text-align:center; padding: 3rem; color:var(--text-muted);" id="empty-inbox">
-            <i class="fa-regular fa-envelope-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-            <p>No messages yet.</p>
+
+        <!-- Chat Window Simulation -->
+        <div id="chat-window">
+          <div class="chat-header">
+            <div>
+              <h3 style="color:white; margin:0;" id="chat-title">Recruiter Chat</h3>
+              <span style="font-size:0.8rem; opacity:0.8;">Active now</span>
+            </div>
+            <button class="btn btn-small" style="background:transparent; color:white; border:1px solid white;" onclick="closeChat(true)">Back to Inbox</button>
+          </div>
+          <div class="chat-messages" id="chat-history">
+            <!-- Messages go here dynamically -->
+          </div>
+          <div class="chat-input-area">
+            <label for="chat-file-input" class="btn btn-outline btn-small" style="border:none; cursor:pointer;" title="Attach file or image">
+              <i class="fa-solid fa-paperclip" style="font-size:1.2rem;"></i>
+            </label>
+            <input type="file" id="chat-file-input" style="display:none;" onchange="handleChatMediaUpload(this)" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+            
+            <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message to the recruiter..." style="border-radius:20px;">
+            <button class="btn btn-primary btn-small" style="border-radius:50%; width:40px; height:40px; padding:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
           </div>
         </div>
       </section>
@@ -436,29 +619,263 @@
     </main>
   </div>
 
-  <!-- RECRUITER VIEW MODAL -->
-  <div class="modal-overlay" id="recruiter-modal">
+  <!-- JOB DETAILS MODAL -->
+  <div class="modal-overlay" id="job-detail-modal">
     <div class="modal-content">
-      <button class="close-modal" onclick="document.getElementById('recruiter-modal').classList.remove('active')">&times;</button>
-      <h2 style="margin-bottom: 1.5rem; text-align:center; font-size:1.2rem; color:var(--text-muted);"><i class="fa-solid fa-eye"></i> Recruiter Preview</h2>
-      <div style="text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
-        <i class="fa-solid fa-circle-user" style="font-size: 4rem; color: var(--primary-navy);"></i>
-        <h3 id="preview-name" style="margin-top: 0.5rem;">Name</h3>
-        <span class="badge badge-navy">Verified User</span>
+      <button class="close-modal" onclick="closeJobModal()">&times;</button>
+      <h2 id="job-modal-title" style="margin-bottom:0.5rem; color:var(--primary-navy);">Job Title</h2>
+      <div class="job-meta" id="job-modal-meta" style="margin-bottom: 1.5rem;"></div>
+      
+      <h3 class="section-title-elegant">Job Description</h3>
+      <p id="job-modal-desc" class="elegant-text" style="white-space: pre-wrap; margin-bottom: 2rem;"></p>
+      
+      <button class="btn btn-primary btn-block" id="job-modal-apply">Apply Now</button>
+    </div>
+  </div>
+
+  <!-- IMAGE CROPPER MODAL -->
+  <div class="modal-overlay" id="cropper-modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <h3 style="margin-bottom: 1rem;">Crop Profile Picture</h3>
+      <div id="image-cropper-container">
+        <img id="cropper-image" style="max-width: 100%; display: block;">
       </div>
-      <p><strong>Email:</strong> <span id="preview-email">email@test.com</span></p>
-      <p style="margin-top:0.5rem;"><strong>Docs:</strong> Resume Attached <i class="fa-solid fa-check" style="color:var(--success-green);"></i></p>
-      <p style="margin-top:0.5rem;"><strong>Intro Video:</strong> Available <i class="fa-solid fa-check" style="color:var(--success-green);"></i></p>
-      <button class="btn btn-primary btn-block" style="margin-top:2rem;" onclick="document.getElementById('recruiter-modal').classList.remove('active')">Close Preview</button>
+      <div style="display:flex; gap:1rem; margin-top:1rem;">
+        <button class="btn btn-outline" style="flex:1;" onclick="cancelCrop()">Cancel</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="applyCrop()" id="btn-crop-save">Crop & Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECRUITER VIEW (PROFESSIONAL PROFILE) MODAL -->
+  <div class="modal-overlay" id="recruiter-modal">
+    <div class="modal-content" style="max-width: 700px; padding: 3rem;">
+      <button class="close-modal" onclick="document.getElementById('recruiter-modal').classList.remove('active')">&times;</button>
+      
+      <div class="prof-header-elegant">
+        <img id="rv-avatar" src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" alt="Profile">
+        <div>
+          <h2 id="rv-name" style="font-size: 1.8rem; margin-bottom: 0.2rem;">Jane Doe</h2>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+            <span class="badge badge-navy" id="rv-gender">Female</span>
+            <span class="badge badge-navy" id="rv-age">28 yrs</span>
+            <span class="badge badge-navy" id="rv-exp">5 Years Exp.</span>
+            <span class="badge badge-yellow" id="rv-langs"><i class="fa-solid fa-language"></i> English</span>
+          </div>
+          
+          <div class="star-rating">
+            <i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+            <span style="color:var(--text-muted); font-size:0.9rem; font-weight:600; margin-left:0.5rem; letter-spacing: 0;">0.0 (0 Reviews)</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="rv-bio-section">
+        <h3 class="section-title-elegant">Professional Biography</h3>
+        <p class="elegant-text" id="rv-bio-text">No biography provided.</p>
+      </div>
+
+      <div id="rv-video-section" style="display:none; margin-top:2rem;">
+        <h3 class="section-title-elegant">Introduction Video</h3>
+        <video id="rv-video-player" controls style="width:100%; border-radius:8px;"></video>
+      </div>
+
+      <div id="rv-qual-section" style="margin-top:2rem;">
+        <h3 class="section-title-elegant">Certifications & Degrees</h3>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Click on a qualification to view the attached document.</p>
+        <div id="rv-qual-list" style="display:flex; flex-direction:column; gap:0.5rem;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <div style="margin-top:2rem;">
+        <h3 class="section-title-elegant">Recruiter Feedback</h3>
+        <p class="elegant-text">No feedback has been left for this teacher yet.</p>
+      </div>
+
+      <div style="margin-top: 3rem; text-align:center;">
+        <button class="btn btn-primary btn-block" id="rv-msg-btn" onclick="alert('Recruiters will use this to open a chat with you.')"><i class="fa-regular fa-comment-dots"></i> Send Message to Teacher</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // System Variables
-    let currentUser = { name: '', email: '', isVerified: false };
-    let unreadMessages = 0;
+    // --- UPDATED GOOGLE DRIVE WEB APP DEPLOYMENT URL ---
+    const GOOGLE_DRIVE_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxuFRFrm3w4SnfW8cw5d9UvZcOLkJb6a5Z9gF7qtf05ZcZrQlquRd4APTXSgHf5WRM/exec";
 
-    // Toast Notification System
+    window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], messages: [] };
+    window.activeChatMsgId = null;
+    let unreadMessages = 0;
+    let currentCropper = null;
+    let editQualIndex = -1;
+
+    // ----- REUSABLE GOOGLE DRIVE UPLOADER (WITH FETCH FIX) -----
+    window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(fileOrBlob);
+        
+        reader.onload = async () => {
+          try {
+            const base64Data = reader.result.split(',')[1];
+            const mimeType = fileOrBlob.type || 'application/octet-stream';
+            
+            const payload = {
+              fileName: fileName,
+              mimeType: mimeType,
+              fileData: base64Data,
+              folder: folder
+            };
+
+            // Simulate progress since fetch() does not support native upload tracking
+            let progressInterval;
+            if (onProgress) {
+              let percent = 0;
+              progressInterval = setInterval(() => {
+                percent += Math.floor(Math.random() * 10) + 5;
+                if (percent >= 90) percent = 90;
+                onProgress(percent);
+              }, 400);
+            }
+
+            // Using fetch with text/plain bypasses CORS preflight and correctly follows 302 redirects
+            const response = await fetch(GOOGLE_DRIVE_WEBAPP_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'text/plain;charset=utf-8',
+              },
+              body: JSON.stringify(payload)
+            });
+
+            if (progressInterval) {
+              clearInterval(progressInterval);
+              if (onProgress) onProgress(100);
+            }
+
+            if (!response.ok) {
+              throw new Error("Network error or invalid Apps Script deployment.");
+            }
+
+            const respText = await response.text();
+            let respJSON;
+            
+            try {
+              respJSON = JSON.parse(respText);
+            } catch (parseError) {
+              throw new Error("Apps script did not return valid JSON. Check deployment.");
+            }
+
+            if (respJSON.success) {
+              resolve(respJSON.url);
+            } else {
+              reject(new Error("Drive Error: " + (respJSON.error || "Unknown error")));
+            }
+            
+          } catch (error) {
+            reject(new Error(error.message));
+          }
+        };
+        
+        reader.onerror = () => reject(new Error("Browser failed to read the file."));
+      });
+    };
+
+    // ----- HELPER: COMPRESS IMAGE / CONVERT TO BLOB -----
+    window.compressOrGetBlob = function(file) {
+      return new Promise((resolve) => {
+        if (!file) return resolve(null);
+        if (!file.type.startsWith('image/')) {
+          return resolve(file); // Non-image documents (PDF/Doc) passed directly
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            const maxDim = 1600;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob((blob) => {
+              resolve(blob || file);
+            }, 'image/jpeg', 0.85);
+          };
+          img.onerror = () => resolve(file);
+        };
+        reader.onerror = () => resolve(file);
+      });
+    };
+
+    // ----- LOGO NAV -----
+    window.handleLogoClick = function(e) {
+      e.preventDefault();
+      if(document.body.classList.contains('dashboard-active')) {
+         switchView('profile-view');
+      } else {
+         window.location.href = window.location.pathname;
+      }
+    };
+
+    // ----- HISTORY & SPA NAVIGATION LOGIC -----
+    window.addEventListener('popstate', (event) => {
+      if (!document.body.classList.contains('dashboard-active')) return;
+      
+      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+
+      if (event.state && event.state.view) {
+        if (event.state.view === 'chat') {
+          openChat(event.state.title, false, event.state.msgId);
+        } else if (event.state.view === 'job-details') {
+          viewJobDetails(event.state.jobId, false);
+        } else {
+          document.getElementById('chat-window').style.display = 'none';
+          document.getElementById('inbox-list-view').style.display = 'block';
+          switchView(event.state.view, null, false);
+        }
+      } else {
+        switchView('profile-view', null, false);
+      }
+    });
+
+    window.switchView = function(viewId, element, pushToHistory = true) {
+      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+      
+      const targetPanel = document.getElementById(viewId);
+      if(targetPanel) targetPanel.classList.add('active');
+      
+      if (element) {
+        element.classList.add('active');
+      } else {
+        const el = document.querySelector(`.sidebar-item[onclick*="${viewId}"]`);
+        if (el) el.classList.add('active');
+      }
+      
+      if(viewId === 'messages-view') {
+        document.getElementById('chat-window').style.display = 'none';
+        document.getElementById('inbox-list-view').style.display = 'block';
+      }
+
+      if (pushToHistory) {
+        history.pushState({ view: viewId }, '', `#${viewId}`);
+      }
+    };
+
+    // ----- UTILS -----
     window.showToast = function(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -468,17 +885,14 @@
       setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
     };
 
-    // UI Switching & Password Toggle
     window.togglePassword = function(inputId, icon) {
       const input = document.getElementById(inputId);
       if (input.type === "password") {
         input.type = "text";
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
+        icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash');
       } else {
         input.type = "password";
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
+        icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye');
       }
     };
 
@@ -490,47 +904,25 @@
       document.getElementById('auth-title').innerText = type === 'login' ? 'Welcome Back' : 'Create an Account';
     };
 
-    window.toggleAuthMode = function(type) { handleLogout(); switchAuthTab(type); };
-
-    window.switchView = function(viewId, element) {
-      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
-      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-      document.getElementById(viewId).classList.add('active');
-      if (element) element.classList.add('active');
-      
-      if(viewId === 'messages-view') {
-        unreadMessages = 0;
-        updateBadge();
-      }
+    window.toggleAuthMode = function(type) { 
+      document.getElementById('reset-password-panel').style.display = 'none';
+      document.getElementById('auth-panel').style.display = 'block';
+      switchAuthTab(type); 
     };
 
-    // AUTHENTICATION LOGIC
-    window.handleLogin = async function(e) {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const pass = document.getElementById('login-password').value;
-      const btn = document.getElementById('btn-login');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
-
-      if (window.auth) {
-        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ signInWithEmailAndPassword }) => {
-          signInWithEmailAndPassword(window.auth, email, pass).then((userCredential) => {
-            finalizeLogin("User", email, userCredential.user.emailVerified);
-          }).catch((error) => {
-            btn.innerHTML = 'Sign In';
-            // Suppress long codes, show generic incorrect credential message
-            if(error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-               showToast("Incorrect email or password.", 'error');
-            } else {
-               showToast("Login failed. Please try again.", 'error');
-            }
-          });
-        });
-      } else {
-        setTimeout(() => { finalizeLogin("Demo User", email, true); }, 1000); // Simulation
+    window.handleLogout = function() {
+      if (window.auth && window.fb) { 
+        window.fb.signOut(window.auth);
       }
+      document.body.classList.remove('dashboard-active');
+      document.getElementById('auth-panel').style.display = 'block';
+      history.replaceState(null, '', window.location.pathname);
+      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>`;
+      switchAuthTab('login');
+      showToast('Logged out successfully.', 'info');
     };
 
+    // --- AUTHENTICATION ---
     window.handleRegister = async function(e) {
       e.preventDefault();
       const name = document.getElementById('reg-name').value;
@@ -538,260 +930,751 @@
       const pass = document.getElementById('reg-password').value;
       const confirmPass = document.getElementById('reg-confirm-password').value;
       const dob = document.getElementById('reg-dob').value;
+      const country = document.getElementById('reg-country').value;
       
-      if (pass !== confirmPass) {
-        showToast("Passwords do not match!", 'error');
-        return;
-      }
+      if (pass !== confirmPass) { showToast("Passwords do not match!", 'error'); return; }
 
       const btn = document.getElementById('btn-register');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
 
-      if (window.auth) {
-        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ createUserWithEmailAndPassword, sendEmailVerification }) => {
-          createUserWithEmailAndPassword(window.auth, email, pass).then((userCredential) => {
-            sendEmailVerification(userCredential.user).then(() => {
-              showToast("Account created! Verification link sent to your inbox.", "success");
-              finalizeLogin(name, email, false);
-            });
-          }).catch((error) => {
-            btn.innerHTML = 'Create Account';
-            // Specific catch for already in use
-            if(error.code === 'auth/email-already-in-use') {
-               showToast("Email already exists. Please log in.", 'error');
-               switchAuthTab('login');
-               document.getElementById('login-email').value = email;
-            } else {
-               showToast("Registration Error. Please check details.", 'error');
-            }
-          });
+      try {
+        const userCredential = await window.fb.createUserWithEmailAndPassword(window.auth, email, pass);
+        const user = userCredential.user;
+        await window.fb.sendEmailVerification(user);
+
+        await window.fb.setDoc(window.fb.doc(window.db, "users", user.uid), {
+          uid: user.uid, name: name, email: email, country: country, createdAt: window.fb.serverTimestamp(), role: "teacher",
+          qualifications: [], messages: []
         });
-      } else {
-        setTimeout(() => {
-          showToast("Account created! Verification email simulated.", "success");
-          finalizeLogin(name, email, false); 
-        }, 1200);
+        showToast("Account created!", "success");
+        finalizeLogin(name, email, false, "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700");
+      } catch (error) {
+        btn.innerHTML = 'Create Account';
+        if(error.code === 'auth/email-already-in-use') {
+           showToast("Email already exists. Please log in.", 'error'); switchAuthTab('login'); document.getElementById('login-email').value = email;
+        } else { showToast(error.message, 'error'); }
+      }
+    };
+
+    window.handleLogin = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-login');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+
+      try {
+        await window.fb.signInWithEmailAndPassword(window.auth, email, pass);
+      } catch (error) {
+        btn.innerHTML = 'Sign In';
+        showToast("Incorrect email or password.", 'error');
       }
     };
 
     window.handleForgotPassword = function() {
       const email = document.getElementById('login-email').value;
-      if (!email) {
-        showToast("Please enter your email address in the field above first.", "error");
-        document.getElementById('login-email').focus();
-        return;
-      }
-
-      if (window.auth) {
-        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ sendPasswordResetEmail }) => {
-          sendPasswordResetEmail(window.auth, email).then(() => {
-             showToast("Password reset link sent to your email!", "success");
-          }).catch((error) => {
-             showToast("Error sending reset link. Please try again.", "error");
-          });
-        });
-      } else {
-         showToast("Simulated: Password reset link sent to your email!", "success");
-      }
+      if (!email) { showToast("Please enter your email address first.", "error"); return; }
+      window.fb.sendPasswordResetEmail(window.auth, email).then(() => {
+         showToast("Password reset link sent!", "success");
+      });
     };
 
-    window.handleChangePassword = function(e) {
+    window.handleNewPasswordSubmit = function(e) {
       e.preventDefault();
-      const newPass = document.getElementById('profile-new-pass').value;
-      const confirmPass = document.getElementById('profile-confirm-pass').value;
-      const btn = document.getElementById('btn-change-pass');
+      const pass = document.getElementById('new-reset-pass').value;
+      const confirm = document.getElementById('confirm-reset-pass').value;
+      const btn = document.getElementById('btn-save-new-pass');
 
-      if (newPass !== confirmPass) {
-        showToast("New passwords do not match!", "error");
-        return;
-      }
-      
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
-
-      if (window.auth && window.auth.currentUser) {
-        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ updatePassword }) => {
-          updatePassword(window.auth.currentUser, newPass).then(() => {
-            showToast("Password updated successfully!", "success");
-            btn.innerHTML = 'Update Password';
-            document.getElementById('profile-new-pass').value = '';
-            document.getElementById('profile-confirm-pass').value = '';
-          }).catch((error) => {
-            btn.innerHTML = 'Update Password';
-            if (error.code === 'auth/requires-recent-login') {
-              showToast("Security require you to log out and log back in to change your password.", "error");
-            } else {
-              showToast("Error updating password.", "error");
-            }
-          });
-        });
-      } else {
-        setTimeout(() => {
-          showToast("Simulated: Password updated successfully!", "success");
-          btn.innerHTML = 'Update Password';
-          document.getElementById('profile-new-pass').value = '';
-          document.getElementById('profile-confirm-pass').value = '';
-        }, 1000);
-      }
+      if (pass !== confirm) { showToast("Passwords do not match", "error"); return; }
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      window.fb.confirmPasswordReset(window.auth, window.resetOobCode, pass).then(() => {
+        showToast("Password updated successfully! Please log in.", "success");
+        setTimeout(() => { window.location.href = window.location.pathname; }, 2000);
+      }).catch(err => {
+        btn.innerHTML = 'Save New Password';
+        showToast("Link expired or invalid.", "error");
+      });
     };
 
-    function finalizeLogin(name, email, isVerified) {
-      currentUser = { name, email, isVerified };
+    function finalizeLogin(name, email, isVerified, avatarUrl) {
+      if (window.auth && window.auth.currentUser) window.currentUser.uid = window.auth.currentUser.uid;
+      window.currentUser.name = name; 
+      window.currentUser.email = email; 
+      window.currentUser.isVerified = isVerified; 
+      window.currentUser.avatarUrl = avatarUrl;
+
       document.body.classList.add('dashboard-active');
       document.getElementById('auth-panel').style.display = 'none';
       
-      if (window.innerWidth > 768) document.getElementById('app-sidebar').style.display = 'flex';
+      switchView('profile-view', document.querySelector('.sidebar-item[onclick*="profile-view"]'), false);
+      history.replaceState({ view: 'profile-view' }, '', '#profile-view');
       
-      document.getElementById('app-content').style.display = 'flex';
       document.getElementById('display-name').innerText = name;
-      document.getElementById('display-email').innerText = email;
-      
+      document.getElementById('profile-avatar').src = avatarUrl;
+      document.getElementById('prof-display-name').value = name;
+
       const vBadge = document.getElementById('verification-badge');
       if (isVerified) {
-        vBadge.innerText = 'Email Verified';
-        vBadge.className = 'badge badge-navy';
+        vBadge.innerText = 'Email Verified'; vBadge.className = 'badge badge-navy';
       } else {
-        vBadge.innerText = 'Unverified (Check Inbox)';
-        vBadge.className = 'badge';
-        vBadge.style.background = 'var(--error-red)';
-        vBadge.style.color = 'white';
+        vBadge.innerText = 'Unverified (Check Inbox)'; vBadge.className = 'badge'; vBadge.style.background = 'var(--error-red)'; vBadge.style.color = 'white';
       }
 
       document.getElementById('nav-actions').innerHTML = `
         <div style="display:flex; align-items:center; gap:1rem;">
-          <span style="font-weight:600; color:var(--surface-white);" class="hide-mobile">${name}</span>
+          <img src="${avatarUrl}" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
+          <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">${name}</span>
           <button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
         </div>
       `;
-      showToast('Logged in successfully', 'success');
     }
 
-    window.handleLogout = function() {
-      if (window.auth) { import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ signOut }) => { signOut(window.auth); }); }
-      document.body.classList.remove('dashboard-active');
-      document.getElementById('auth-panel').style.display = 'block';
-      document.getElementById('app-sidebar').style.display = 'none';
-      document.getElementById('app-content').style.display = 'none';
-      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>`;
-      
-      document.getElementById('btn-login').innerHTML = 'Sign In';
-      document.getElementById('btn-register').innerHTML = 'Create Account';
-      showToast('Logged out.', 'info');
+    // --- AUTOMATIC FIRESTORE SYNCHRONIZATION ---
+    window.saveProfileToFirestore = async function() {
+      if (!window.auth || !window.auth.currentUser || !window.fb) return;
+      try {
+        await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), {
+          qualifications: window.currentUser.quals || [],
+          videoUrl: window.currentUser.videoUrl || "",
+          messages: window.currentUser.messages || []
+        });
+      } catch (e) {
+        console.error("Firestore sync failed:", e);
+      }
     };
 
-    // JOB BOARD LOGIC
-    window.applyForJob = function(jobTitle) {
-      if (!currentUser.isVerified) {
-        showToast("Access Denied: You must verify your email address to apply for jobs.", "error");
+    // --- 1. PROFILE PICTURE UPLOAD VIA GOOGLE DRIVE ---
+    window.openCropperModal = function(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('cropper-image');
+          img.src = e.target.result;
+          document.getElementById('cropper-modal').classList.add('active');
+          if(currentCropper) currentCropper.destroy();
+          currentCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 0.8, restore: false, guides: false, center: false, highlight: false, cropBoxMovable: false, cropBoxResizable: false, toggleDragModeOnDblclick: false });
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+      input.value = ''; 
+    };
+
+    window.cancelCrop = function() {
+      document.getElementById('cropper-modal').classList.remove('active');
+      if(currentCropper) currentCropper.destroy();
+    };
+
+    window.applyCrop = async function() {
+      const btn = document.getElementById('btn-crop-save');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      const canvas = currentCropper.getCroppedCanvas({ width: 250, height: 250 });
+      
+      canvas.toBlob(async (blob) => {
+        if(!window.auth.currentUser) { btn.innerHTML = 'Crop & Save'; return cancelCrop(); }
+        try {
+           const fileName = `avatar_${window.auth.currentUser.uid}.jpg`;
+           const url = await uploadToGoogleDrive(blob, fileName, "/avatars");
+           
+           document.getElementById('profile-avatar').src = url;
+           window.currentUser.avatarUrl = url;
+           const navImg = document.getElementById('nav-avatar-img');
+           if(navImg) navImg.src = url;
+           
+           await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { avatarUrl: url });
+           btn.innerHTML = 'Crop & Save';
+           cancelCrop();
+           showToast('Profile picture saved!', 'success');
+        } catch(e) { 
+           console.error(e);
+           showToast(e.message, "error"); 
+           btn.innerHTML = 'Crop & Save'; 
+           cancelCrop(); 
+        }
+      }, 'image/jpeg', 0.85);
+    };
+
+    // --- VIDEO UPLOAD VIA GOOGLE DRIVE ---
+    window.handleVideoUpload = async function(input) {
+      const file = input.files[0];
+      if(!file || !window.auth.currentUser) return;
+      
+      const pContainer = document.getElementById('video-progress-bar');
+      const pFill = document.getElementById('video-progress-fill');
+      const pText = document.getElementById('video-progress-text');
+      
+      pContainer.style.display = 'block';
+      pText.style.display = 'block';
+      pText.innerText = 'Uploading video... 0%';
+      pFill.style.width = '0%';
+
+      try {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const url = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, "/videos", (percent) => {
+          pFill.style.width = `${percent}%`;
+          pText.innerText = `Uploading video... ${percent}%`;
+        });
+
+        window.currentUser.videoUrl = url;
+        saveProfileToFirestore();
+        
+        const vPreview = document.getElementById('prof-video-preview');
+        vPreview.src = url;
+        vPreview.style.display = 'block';
+        
+        pContainer.style.display = 'none'; 
+        pText.style.display = 'none';
+        showToast("Video uploaded & saved automatically!", "success");
+        input.value = '';
+      } catch (err) {
+        console.error(err);
+        showToast(err.message, "error");
+        pContainer.style.display = 'none'; 
+        pText.style.display = 'none';
+      }
+    };
+
+    // --- 2. QUALIFICATIONS & CERTIFICATES VIA GOOGLE DRIVE ---
+    window.handleQualFileSelect = function(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const titleInput = document.getElementById('new-qual-title');
+        if (!titleInput.value) {
+          const cleanName = file.name.replace(/\.[^/.]+$/, "");
+          titleInput.value = cleanName;
+        }
+      }
+    };
+
+    window.toggleAddQualForm = function() {
+      const form = document.getElementById('add-qual-form');
+      if(form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+        document.getElementById('new-qual-title').value = '';
+        document.getElementById('new-qual-file').value = '';
+        document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate';
+        editQualIndex = -1;
+      } else {
+        form.style.display = 'none';
+      }
+    };
+
+    window.cancelQualificationUpload = function() {
+      document.getElementById('qual-progress-bar').style.display = 'none';
+      document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate';
+      document.getElementById('new-qual-file').value = '';
+      toggleAddQualForm();
+    };
+
+    window.saveNewQualification = async function() {
+      const title = document.getElementById('new-qual-title').value.trim();
+      const fileInput = document.getElementById('new-qual-file');
+      
+      if(!title) { showToast("Please enter a qualification title.", "error"); return; }
+      
+      if(fileInput.files.length > 0 && window.auth && window.auth.currentUser) {
+        const file = fileInput.files[0];
+        
+        // File Size Check (Warn if over 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+           showToast("File is very large. Upload may timeout.", "info");
+        }
+
+        const btn = document.getElementById('btn-save-qual');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading Certificate...';
+        
+        const pContainer = document.getElementById('qual-progress-bar');
+        const pFill = document.getElementById('qual-progress-fill');
+        pContainer.style.display = 'block'; pFill.style.width = '0%';
+        
+        try {
+          const blobOrFile = await window.compressOrGetBlob(file);
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          
+          const url = await uploadToGoogleDrive(blobOrFile, `${Date.now()}_${safeName}`, "/qualifications", (percent) => {
+            pFill.style.width = `${percent}%`;
+          });
+
+          finalizeSaveQual(title, url, file.name);
+          btn.disabled = false;
+          btn.innerHTML = 'Upload & Save Certificate';
+          pContainer.style.display = 'none';
+        } catch (err) {
+          console.error(err);
+          btn.disabled = false;
+          btn.innerHTML = 'Upload & Save Certificate';
+          pContainer.style.display = 'none';
+          
+          showToast(err.message, "error"); 
+        }
+      } else {
+        let url = "", fName = "";
+        if (editQualIndex > -1 && window.currentUser.quals[editQualIndex]) {
+          url = window.currentUser.quals[editQualIndex].url;
+          fName = window.currentUser.quals[editQualIndex].fileName;
+        }
+        finalizeSaveQual(title, url, fName);
+      }
+    };
+
+    function finalizeSaveQual(title, url, fileName) {
+      if (editQualIndex > -1) {
+        window.currentUser.quals[editQualIndex] = { title, url, fileName };
+      } else {
+        window.currentUser.quals.push({ id: Date.now().toString(), title, url, fileName });
+      }
+      
+      saveProfileToFirestore();
+      renderQualifications();
+      toggleAddQualForm();
+      showToast("Certificate uploaded and saved automatically!", "success");
+    }
+
+    window.renderQualifications = function() {
+      const container = document.getElementById('saved-quals-container');
+      container.innerHTML = '';
+      if(!window.currentUser.quals || window.currentUser.quals.length === 0) {
+        container.innerHTML = '<p style="font-size:0.9rem; color:var(--text-muted);">No qualifications uploaded yet.</p>';
         return;
       }
-      showToast(`Application sent for ${jobTitle}`, "success");
       
-      setTimeout(() => {
-        receiveMessage(
-          "Application Received", 
-          `Hi ${currentUser.name}, we have received your application for the <b>${jobTitle}</b> position. A recruiter will review your profile shortly.`
-        );
-      }, 1500);
+      window.currentUser.quals.forEach((q, index) => {
+        const fileLink = q.url ? `<a href="${q.url}" target="_blank" style="color:var(--primary-navy); font-weight:600;"><i class="fa-solid fa-file-pdf"></i> View Certificate Document</a>` : '';
+        const html = `
+          <div class="qual-item">
+            <div class="qual-item-info">
+              <h4>${q.title}</h4>
+              ${fileLink}
+            </div>
+            <div class="qual-actions">
+              <button type="button" class="btn btn-outline btn-small" onclick="editQualification(${index})"><i class="fa-solid fa-pen"></i></button>
+              <button type="button" class="btn btn-danger btn-small" onclick="deleteQualification(${index})"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+      });
+    };
+
+    window.editQualification = function(index) {
+      const q = window.currentUser.quals[index];
+      document.getElementById('add-qual-form').style.display = 'block';
+      document.getElementById('new-qual-title').value = q.title;
+      document.getElementById('btn-save-qual').innerHTML = 'Update Qualification';
+      editQualIndex = index;
+    };
+
+    window.deleteQualification = function(index) {
+      if(confirm("Are you sure you want to delete this qualification?")) {
+        window.currentUser.quals.splice(index, 1);
+        saveProfileToFirestore();
+        renderQualifications();
+        showToast("Qualification removed.", "info");
+      }
+    };
+
+    // --- MAIN PROFILE SAVING ---
+    window.handleProfileUpdate = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-profile');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Profile...';
+
+      const displayName = document.getElementById('prof-display-name').value;
+      const age = document.getElementById('prof-age').value;
+      const gender = document.getElementById('prof-gender').value;
+      const experience = document.getElementById('prof-experience').value;
+      const languages = document.getElementById('prof-languages').value;
+      const bio = document.getElementById('prof-bio').value;
+
+      if (window.auth && window.auth.currentUser) {
+        try {
+          await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), {
+            name: displayName, age: age, gender: gender, experience: experience,
+            languages: languages, bio: bio, lastUpdated: new Date()
+          });
+          
+          window.currentUser.name = displayName;
+          document.getElementById('display-name').innerText = displayName;
+          const navDisplayName = document.getElementById('nav-display-name');
+          if (navDisplayName) navDisplayName.innerText = displayName;
+
+          btn.innerHTML = 'Save Full Profile';
+          showToast('Profile updated successfully!', 'success');
+        } catch (err) {
+          btn.innerHTML = 'Save Full Profile';
+          showToast('Error updating profile.', 'error');
+        }
+      }
+    };
+
+    // --- RECRUITER VIEW MODAL ---
+    window.openRecruiterView = function() {
+      document.getElementById('rv-name').innerText = window.currentUser.name || document.getElementById('prof-display-name').value;
+      document.getElementById('rv-avatar').src = window.currentUser.avatarUrl || "https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700";
+      
+      const gender = document.getElementById('prof-gender').value || 'Not specified';
+      const age = document.getElementById('prof-age').value;
+      const exp = document.getElementById('prof-experience').value;
+      const langs = document.getElementById('prof-languages').value || 'English';
+      const bio = document.getElementById('prof-bio').value;
+
+      document.getElementById('rv-gender').innerHTML = `<i class="fa-solid fa-venus-mars"></i> ${gender}`;
+      
+      const ageSpan = document.getElementById('rv-age');
+      if (age) { ageSpan.style.display = 'inline-block'; ageSpan.innerHTML = `<i class="fa-regular fa-calendar"></i> ${age} yrs`; } 
+      else { ageSpan.style.display = 'none'; }
+
+      document.getElementById('rv-exp').innerHTML = `<i class="fa-solid fa-briefcase"></i> ${exp ? exp + ' Years Exp.' : 'Entry Level'}`;
+      document.getElementById('rv-langs').innerHTML = `<i class="fa-solid fa-language"></i> ${langs}`;
+      document.getElementById('rv-bio-text').innerText = bio || 'No biography provided.';
+      
+      const vidSec = document.getElementById('rv-video-section');
+      if(window.currentUser.videoUrl) {
+        vidSec.style.display = 'block';
+        document.getElementById('rv-video-player').src = window.currentUser.videoUrl;
+      } else {
+        vidSec.style.display = 'none';
+      }
+
+      document.getElementById('rv-msg-btn').style.display = 'none';
+
+      const qualList = document.getElementById('rv-qual-list');
+      qualList.innerHTML = '';
+      if(window.currentUser.quals && window.currentUser.quals.length > 0) {
+        window.currentUser.quals.forEach(q => {
+             const clickableAttr = q.url ? `onclick="window.open('${q.url}', '_blank')"` : '';
+             const linkClass = q.url ? `qual-doc-link` : ``;
+             const iconMarkup = q.url ? `<i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.85rem; color:var(--text-muted); margin-left:auto;"></i>` : ``;
+             
+             qualList.insertAdjacentHTML('beforeend', `<div class="${linkClass}" ${clickableAttr} style="padding:0.75rem; background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; display:flex; align-items:center; gap:1rem;"><i class="fa-solid fa-certificate" style="color:var(--primary-navy); font-size:1.5rem;"></i> <span style="font-weight:600; font-size:0.9rem;">${q.title}</span> ${iconMarkup} </div>`);
+        });
+      } else {
+        qualList.innerHTML = '<p class="elegant-text">No qualifications attached.</p>';
+      }
+
+      document.getElementById('recruiter-modal').classList.add('active');
+    };
+
+    // --- JOB BOARD ---
+    window.viewJobDetails = function(jobId, pushToHistory = true) {
+      const job = jobsData[jobId];
+      if(!job) return;
+      document.getElementById('job-modal-title').innerText = job.title;
+      document.getElementById('job-modal-meta').innerHTML = `<span><i class="fa-solid fa-coins"></i> ${job.pay}</span> <span><i class="fa-solid fa-location-dot"></i> ${job.loc}</span> <span class="badge badge-yellow">${job.type}</span>`;
+      document.getElementById('job-modal-desc').innerText = job.desc;
+
+      const applyBtn = document.getElementById('job-modal-apply');
+      applyBtn.onclick = () => { applyForJob(job.title); closeJobModal(); };
+
+      document.getElementById('job-detail-modal').classList.add('active');
+      if (pushToHistory) history.pushState({ view: 'job-details', jobId }, '', '#job-details');
+    };
+
+    window.closeJobModal = function() {
+      document.getElementById('job-detail-modal').classList.remove('active');
+      if(history.state && history.state.view === 'job-details') {
+          history.back();
+      }
+    };
+
+    window.applyForJob = async function(jobTitle) {
+      if (!window.currentUser.isVerified) { showToast("Verify your email address to apply for jobs.", "error"); return; }
+      showToast(`Application successfully sent for ${jobTitle}`, "success");
+      receiveMessage(
+        `Application: ${jobTitle}`, 
+        `Hi ${window.currentUser.name}, your application for <b>${jobTitle}</b> has been received by the recruitment team. We will review your attached profile shortly. Click here to chat with us.`
+      );
     };
 
     window.filterJobBoard = function() {
       const searchTxt = document.getElementById('search-jobs').value.toLowerCase();
+      const locTxt = document.getElementById('search-location').value.toLowerCase();
       const typeFilter = document.getElementById('filter-type').value;
-      const sortOrder = document.getElementById('sort-order').value;
       
-      let cards = Array.from(document.querySelectorAll('.job-card'));
-      
-      cards.forEach(card => {
-        const textMatch = card.innerText.toLowerCase().includes(searchTxt);
+      document.querySelectorAll('.job-card').forEach(card => {
+        const textMatch = card.querySelector('h3').innerText.toLowerCase().includes(searchTxt) || card.querySelector('.job-desc').innerText.toLowerCase().includes(searchTxt);
+        const locMatch = card.getAttribute('data-location').toLowerCase().includes(locTxt);
         const typeMatch = (typeFilter === 'all' || card.getAttribute('data-type') === typeFilter);
-        if (textMatch && typeMatch) card.style.display = 'block';
-        else card.style.display = 'none';
+        card.style.display = (textMatch && locMatch && typeMatch) ? 'flex' : 'none';
       });
-
-      const container = document.getElementById('job-list-container');
-      cards.sort((a, b) => {
-        if(sortOrder === 'salary') return parseInt(b.getAttribute('data-salary')) - parseInt(a.getAttribute('data-salary'));
-        return 0; 
-      });
-      cards.forEach(card => container.appendChild(card)); 
     };
 
-    // INBOX & MESSAGING
-    window.receiveMessage = function(subject, body) {
-      document.getElementById('empty-inbox').style.display = 'none';
-      const container = document.getElementById('inbox-container');
-      
-      const msgId = 'msg-' + Date.now();
-      const msgHTML = `
-        <div class="message-item" id="${msgId}">
-          <div class="msg-content">
-            <h4><i class="fa-solid fa-bell" style="color:var(--accent-yellow);"></i> ${subject}</h4>
-            <p>${body}</p>
-            <span class="msg-date">${new Date().toLocaleString()}</span>
+    // --- 3. INBOX MEDIA ATTACHMENTS VIA GOOGLE DRIVE ---
+    window.handleChatMediaUpload = async function(input) {
+      const file = input.files[0];
+      if (!file || !window.auth || !window.auth.currentUser) return;
+
+      const activeMsgId = window.activeChatMsgId;
+      let targetMsg = window.currentUser.messages.find(m => m.id === activeMsgId);
+      if (!targetMsg && window.currentUser.messages.length > 0) {
+        targetMsg = window.currentUser.messages[0];
+      }
+      if (!targetMsg) {
+        targetMsg = {
+          id: 'msg-' + Date.now(),
+          subject: 'Recruiter Chat',
+          body: 'Conversation with recruiter',
+          date: new Date().toISOString(),
+          read: true,
+          chatHistory: []
+        };
+        window.currentUser.messages.unshift(targetMsg);
+      }
+
+      if (!targetMsg.chatHistory) targetMsg.chatHistory = [];
+
+      const tempId = 'temp-msg-' + Date.now();
+      const isImg = file.type.startsWith('image/');
+      const hist = document.getElementById('chat-history');
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const tempBubbleHtml = `
+        <div class="chat-bubble bubble-out" id="${tempId}">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>Uploading ${isImg ? 'photo' : 'file'}... <strong id="prog-${tempId}">0%</strong></span>
           </div>
-          <button class="btn btn-outline btn-small" style="border-color:var(--border-color); color:var(--text-muted);" onclick="deleteMessage('${msgId}')"><i class="fa-solid fa-trash"></i></button>
+          <span class="msg-time-stamp">${timeStr}</span>
         </div>
       `;
-      container.insertAdjacentHTML('afterbegin', msgHTML);
-      showToast("New message received in Inbox!", "info");
-      
-      unreadMessages++;
-      updateBadge();
-    };
+      hist.insertAdjacentHTML('beforeend', tempBubbleHtml);
+      hist.scrollTop = hist.scrollHeight;
 
-    window.deleteMessage = function(id) {
-      document.getElementById(id).remove();
-      showToast("Message deleted.", "info");
-      if (document.querySelectorAll('.message-item').length === 0) {
-        document.getElementById('empty-inbox').style.display = 'block';
+      try {
+        const blobOrFile = await window.compressOrGetBlob(file);
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+
+        const mediaUrl = await uploadToGoogleDrive(blobOrFile, `${Date.now()}_${safeName}`, "/chat_media", (percent) => {
+          const progEl = document.getElementById(`prog-${tempId}`);
+          if (progEl) progEl.innerText = `${percent}%`;
+        });
+
+        const chatMsgItem = {
+          sender: 'me',
+          text: isImg ? '' : file.name,
+          mediaUrl: mediaUrl,
+          fileName: file.name,
+          isImage: isImg,
+          time: timeStr,
+          type: 'media'
+        };
+
+        targetMsg.chatHistory.push(chatMsgItem);
+        saveProfileToFirestore();
+
+        const bubbleEl = document.getElementById(tempId);
+        let contentHtml = '';
+        if (isImg) {
+          contentHtml = `
+            <div style="margin-top:2px;">
+              <img src="${mediaUrl}" style="max-width:240px; max-height:240px; border-radius:10px; display:block; cursor:pointer; object-fit:cover;" onclick="window.open('${mediaUrl}', '_blank')" />
+            </div>
+          `;
+        } else {
+          contentHtml = `
+            <div style="display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; background:rgba(255,255,255,0.15); margin-top:2px;">
+              <i class="fa-solid fa-file-lines" style="font-size:1.2rem;"></i>
+              <a href="${mediaUrl}" target="_blank" style="color:white; font-weight:600; text-decoration:underline; font-size:0.85rem; word-break:break-all;">${file.name}</a>
+            </div>
+          `;
+        }
+
+        if (bubbleEl) {
+          bubbleEl.innerHTML = `${contentHtml} <span class="msg-time-stamp">${timeStr}</span>`;
+        }
+        hist.scrollTop = hist.scrollHeight;
+        showToast("Attachment sent!", "success");
+        input.value = '';
+      } catch (err) {
+        console.error(err);
+        showToast(err.message, "error");
+        const tempEl = document.getElementById(tempId);
+        if(tempEl) tempEl.remove();
       }
     };
 
-    window.clearAllMessages = function() {
-      document.querySelectorAll('.message-item').forEach(m => m.remove());
-      document.getElementById('empty-inbox').style.display = 'block';
-      showToast("Inbox cleared.", "info");
+    window.receiveMessage = function(subject, body) {
+      const msg = { 
+        id: 'msg-' + Date.now(), 
+        subject, 
+        body, 
+        date: new Date().toISOString(), 
+        read: false,
+        chatHistory: [
+          { sender: 'them', text: `Hi ${window.currentUser.name || 'there'}, your application has been logged! Feel free to ask questions or share further documents here.`, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), type: 'text' }
+        ]
+      };
+      window.currentUser.messages.unshift(msg);
+      saveProfileToFirestore();
+      renderInbox();
     };
 
     function updateBadge() {
       const badge = document.getElementById('msg-badge');
-      if(unreadMessages > 0) {
-        badge.style.display = 'inline-block';
+      if (unreadMessages > 0) {
         badge.innerText = unreadMessages;
+        badge.style.display = 'inline-block';
       } else {
         badge.style.display = 'none';
       }
     }
 
-    // UPLOADS
-    window.simulateFileUpload = function(type, file) {
-      if(!file) return;
-      document.getElementById(`${type}-dropzone`).style.display = 'none';
-      document.getElementById(`${type}-active`).classList.add('active');
-      document.getElementById(`${type}-filename`).innerText = file.name;
-      showToast('File uploaded successfully!', 'success');
-    };
-
-    window.deleteFile = function(type) {
-      document.getElementById(`${type}-active`).classList.remove('active');
-      document.getElementById(`${type}-dropzone`).style.display = 'block';
-      document.querySelector(`#${type}-dropzone input`).value = '';
-      showToast('File removed.', 'info');
-    };
-
-    // RECRUITER PREVIEW MODAL
-    window.openRecruiterView = function() {
-      document.getElementById('preview-name').innerText = currentUser.name || 'User Name';
-      document.getElementById('preview-email').innerText = currentUser.email || 'Email';
-      document.getElementById('recruiter-modal').classList.add('active');
-    };
-    
-    // Resize fix for sidebar
-    window.addEventListener('resize', () => {
-      if (document.body.classList.contains('dashboard-active')) {
-        document.getElementById('app-sidebar').style.display = window.innerWidth > 768 ? 'flex' : '';
+    window.renderInbox = function() {
+      const container = document.getElementById('inbox-container');
+      const empty = document.getElementById('empty-inbox');
+      
+      if(!window.currentUser.messages || window.currentUser.messages.length === 0) {
+        empty.style.display = 'block';
+        document.querySelectorAll('.message-item').forEach(el => el.remove());
+        unreadMessages = 0; updateBadge(); return;
       }
-    });
+      
+      empty.style.display = 'none';
+      document.querySelectorAll('.message-item').forEach(el => el.remove());
+      
+      let unreadCount = 0;
+      window.currentUser.messages.forEach(msg => {
+        if(!msg.read) unreadCount++;
+        const dateStr = new Date(msg.date).toLocaleString();
+        const html = `
+          <div class="message-item ${msg.read ? '' : 'unread'}" id="${msg.id}" onclick="openChat('${msg.subject}', true, '${msg.id}')">
+            <div class="msg-content">
+              <h4><i class="fa-solid fa-bell" style="color:var(--accent-yellow);"></i> ${msg.subject}</h4>
+              <p>${msg.body}</p>
+              <span class="msg-date">${dateStr}</span>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+      });
+      
+      unreadMessages = unreadCount;
+      updateBadge();
+    };
+
+    window.renderChatHistory = function(msg) {
+      const hist = document.getElementById('chat-history');
+      hist.innerHTML = '<div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;">Chat started</div>';
+      
+      if (!msg.chatHistory || msg.chatHistory.length === 0) {
+        msg.chatHistory = [
+          { sender: 'them', text: 'Hello! We received your profile details. Do you have a moment to answer a few quick questions?', time: 'Just now', type: 'text' }
+        ];
+      }
+
+      msg.chatHistory.forEach(item => {
+        const bubbleClass = item.sender === 'me' ? 'bubble-out' : 'bubble-in';
+        let content = '';
+        if (item.type === 'media' || item.mediaUrl) {
+          if (item.isImage) {
+            content = `
+              <div style="margin-top:2px;">
+                <img src="${item.mediaUrl}" style="max-width:240px; max-height:240px; border-radius:10px; display:block; cursor:pointer; object-fit:cover;" onclick="window.open('${item.mediaUrl}', '_blank')" />
+              </div>
+            `;
+          } else {
+            const linkColor = item.sender === 'me' ? 'white' : 'var(--primary-navy)';
+            content = `
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; background:rgba(0,0,0,0.05); margin-top:2px;">
+                <i class="fa-solid fa-file-lines" style="font-size:1.2rem;"></i>
+                <a href="${item.mediaUrl}" target="_blank" style="color:${linkColor}; font-weight:600; text-decoration:underline; font-size:0.85rem; word-break:break-all;">${item.fileName || 'Attachment'}</a>
+              </div>
+            `;
+          }
+        } else {
+          content = `<div>${item.text}</div>`;
+        }
+
+        hist.insertAdjacentHTML('beforeend', `
+          <div class="chat-bubble ${bubbleClass}">
+            ${content}
+            <span class="msg-time-stamp">${item.time || ''}</span>
+          </div>
+        `);
+      });
+
+      hist.scrollTop = hist.scrollHeight;
+    };
+
+    window.openChat = function(title, pushToHistory = true, msgId = null) {
+      let msg = null;
+      if(msgId) {
+        window.activeChatMsgId = msgId;
+        msg = window.currentUser.messages.find(m => m.id === msgId);
+        if(msg && !msg.read) { msg.read = true; saveProfileToFirestore(); renderInbox(); }
+      } else if(window.currentUser.messages.length > 0) {
+        msg = window.currentUser.messages[0];
+        window.activeChatMsgId = msg.id;
+      }
+      
+      document.getElementById('inbox-list-view').style.display = 'none';
+      const chatWin = document.getElementById('chat-window');
+      chatWin.style.display = 'flex';
+      document.getElementById('chat-title').innerText = title || (msg ? msg.subject : 'Recruiter Chat');
+
+      if (msg) {
+        renderChatHistory(msg);
+      }
+
+      if (pushToHistory) {
+        history.pushState({ view: 'chat', title, msgId }, '', '#chat');
+      }
+    };
+
+    window.closeChat = function(pushToHistory = true) {
+      document.getElementById('chat-window').style.display = 'none';
+      document.getElementById('inbox-list-view').style.display = 'block';
+      window.activeChatMsgId = null;
+      if (pushToHistory && history.state && history.state.view === 'chat') {
+        history.back();
+      }
+    };
+
+    window.sendChatMessage = function() {
+      const input = document.getElementById('chat-input-box');
+      const text = input.value.trim();
+      if (!text) return;
+
+      let targetMsg = window.currentUser.messages.find(m => m.id === window.activeChatMsgId);
+      if (!targetMsg && window.currentUser.messages.length > 0) {
+        targetMsg = window.currentUser.messages[0];
+      }
+      if (!targetMsg) {
+        targetMsg = {
+          id: 'msg-' + Date.now(),
+          subject: 'Recruiter Chat',
+          body: text,
+          date: new Date().toISOString(),
+          read: true,
+          chatHistory: []
+        };
+        window.currentUser.messages.unshift(targetMsg);
+      }
+
+      if (!targetMsg.chatHistory) targetMsg.chatHistory = [];
+
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      targetMsg.chatHistory.push({
+        sender: 'me',
+        text: text,
+        time: timeStr,
+        type: 'text'
+      });
+
+      input.value = '';
+      saveProfileToFirestore();
+      renderChatHistory(targetMsg);
+    };
+
+    // --- LIVE SEMINAR & TRAINING WORKSHOPS LOGIC ---
+    window.autoRegisterWorkshop = function(title) {
+      showToast(`Successfully registered for: ${title}`, 'success');
+    };
+
+    // --- TEFL SUPPORT ENQUIRY LOGIC ---
+    window.autoSubmitTeflEnquiry = function() {
+      showToast(`Information request sent successfully!`, 'success');
+    };
   </script>
 </body>
 </html>
