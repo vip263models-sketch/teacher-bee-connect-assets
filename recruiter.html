@@ -3,204 +3,407 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TeacherBee Connect - Recruiter Profile</title>
+  <title>recruiter profile</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Cropper.js for Image Cropping -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   
   <style>
-    /* CORE STYLES */
     :root {
-      --primary-navy: #0A192F; --navy-light: #172A45; --accent-yellow: #FFD700; --yellow-hover: #E5C100;
-      --bg-color: #F8F9FA; --surface-white: #FFFFFF; --text-main: #111827; --text-muted: #6B7280;
-      --border-color: #E5E7EB; --error-red: #EF4444; --success-green: #10B981;
-      --radius-lg: 16px; --radius-md: 8px; --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --secondary: #F3F4F6;
+      --bg-color: #F9FAFB;
+      --surface: #FFFFFF;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --border: #E5E7EB;
+      --danger: #EF4444;
+      --success: #10B981;
+      --warning: #F59E0B;
+      
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-floating: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
-    h1, h2, h3, h4 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; }
-    p { color: var(--text-muted); line-height: 1.5; }
 
-    /* AUTH LOADER STYLES */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+
+    /* AUTH LOADER */
     #auth-loader { position: fixed; inset: 0; background: var(--bg-color); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .spinner { border: 4px solid rgba(10, 25, 47, 0.1); border-left-color: var(--accent-yellow); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+    .spinner { border: 4px solid rgba(79, 70, 229, 0.1); border-left-color: var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
-    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
-    .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
-    .recruiter-badge { background: rgba(255, 215, 0, 0.2); color: var(--accent-yellow); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-left: 10px; }
+    /* Toast Notifications */
+    #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+    .toast { padding: 1rem 1.25rem; border-radius: var(--radius-md); color: white; font-weight: 500; font-size: 0.9rem; box-shadow: var(--shadow-lg); animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; display: flex; align-items: center; gap: 10px; }
+    .toast.error { background-color: var(--danger); }
+    .toast.success { background-color: var(--success); }
+    .toast.info { background-color: var(--text-main); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
-    .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
-    .btn-primary:hover { background-color: var(--yellow-hover); }
-    .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); }
-    .btn-danger { background-color: #FEE2E2; color: var(--error-red); padding: 0.5rem 1rem; }
-    .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
-    
-    .form-group { margin-bottom: 1.25rem; }
-    .form-label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
-    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1); }
-    .form-textarea { resize: vertical; min-height: 100px; }
-    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    /* Buttons */
+    .btn { padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); font-weight: 500; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; outline: none; text-decoration: none; }
+    .btn-primary { background-color: var(--primary); color: white; box-shadow: var(--shadow-sm); }
+    .btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+    .btn-secondary { background-color: var(--surface); border-color: var(--border); color: var(--text-main); }
+    .btn-secondary:hover { background-color: var(--secondary); }
+    .btn-danger { background-color: #FEF2F2; color: var(--danger); border-color: #FCA5A5; }
+    .btn-danger:hover { background-color: var(--danger); color: white; }
+    .btn-small { padding: 0.5rem 0.875rem; font-size: 0.85rem; }
 
-    .app-container { display: none; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
-    .sidebar { width: 250px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
-    .content-area { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
-    
-    .sidebar-item { padding: 1rem; border-radius: var(--radius-md); color: var(--primary-navy); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; text-decoration: none; }
-    .sidebar-item:hover { background-color: var(--bg-color); }
-    .sidebar-item.active { background-color: var(--primary-navy); color: var(--accent-yellow); }
-    
-    .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
+    /* Layout Setup */
+    .app-container { width: 100%; }  /* Full-width, no max-width */
 
-    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2rem; }
-    .avatar-preview { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent-yellow); object-fit: cover; background-color: var(--bg-color); cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-md); }
-    .avatar-preview:hover { opacity: 0.8; filter: brightness(0.9); }
-    .avatar-upload-btn { position: relative; overflow: hidden; }
+    /* Content Area */
+    .content-area { width: 100%; padding: 2rem 2.5rem 6rem 2.5rem; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .page-header h1 { font-size: 1.75rem; color: var(--text-main); font-weight: 700; }
+    
+    /* Profile Summary Card */
+    .profile-summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); flex-wrap: wrap; }
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.6rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; }
+    .badge-employer { background: #EEF2FF; color: var(--primary); }
+
+    /* Forms & Dynamic Inputs */
+    .form-group { margin-bottom: 1.25rem; position: relative; width: 100%; }
+    .form-label { display: block; font-weight: 500; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--text-main); }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.95rem; outline: none; transition: all 0.2s; background: var(--surface); color: var(--text-main); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .grid-2-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+    
+    /* Checkboxes */
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .checkbox-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; color: var(--text-main); background: var(--surface); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border); transition: all 0.2s; }
+    .checkbox-label:has(input:checked) { background: #EEF2FF; border-color: var(--primary); color: var(--primary); font-weight: 500; }
+    .checkbox-label input { display: none; }
+
+    /* Dynamic Tags / Lists */
+    .tag-container { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .tag-item { background: var(--secondary); color: var(--text-main); padding: 0.35rem 0.75rem; border-radius: var(--radius-full); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--border); }
+    .tag-item button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; line-height: 1; transition: color 0.2s; }
+    .tag-item button:hover { color: var(--danger); }
+    .input-with-btn { display: flex; gap: 0.5rem; }
+
+    /* Profile Avatar Upload */
+    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .avatar-preview { width: 120px; height: 120px; border-radius: var(--radius-md); border: 3px solid var(--surface); object-fit: cover; background-color: var(--secondary); cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-md); }
+    .avatar-preview:hover { opacity: 0.9; transform: scale(1.02); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+    .avatar-upload-btn { position: relative; text-align: center; }
     .avatar-upload-btn input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .badge-navy { background: var(--navy-light); color: var(--surface-white); }
+    /* Collapsible Sections (HTML5 Details) */
+    details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 1rem; transition: all 0.3s; box-shadow: var(--shadow-sm); overflow: hidden; }
+    details[open] { box-shadow: var(--shadow-md); }
+    summary { padding: 1.25rem 1.5rem; font-weight: 600; font-size: 1.05rem; color: var(--text-main); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; background: #F9FAFB; border-bottom: 1px solid transparent; }
+    details[open] summary { border-bottom-color: var(--border); background: var(--surface); }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: var(--text-muted); transition: transform 0.3s; font-size: 0.9rem; }
+    details[open] summary::after { transform: rotate(180deg); }
+    .details-content { padding: 1.5rem; background: var(--surface); }
 
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+    /* Floating Save Action Bar */
+    .sticky-save-bar { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(150px); background: var(--surface); padding: 1rem 1.5rem; border-radius: var(--radius-full); border: 1px solid var(--border); box-shadow: var(--shadow-floating); display: flex; justify-content: space-between; align-items: center; gap: 2rem; z-index: 999; opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .sticky-save-bar.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .unsaved-warning { display: flex; align-items: center; gap: 0.5rem; color: var(--warning); font-weight: 500; font-size: 0.9rem; }
+
+    /* Modals */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
-    .modal-content { background: var(--surface-white); width: 100%; max-width: 600px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: var(--surface); width: 100%; max-width: 500px; border-radius: var(--radius-md); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-floating); }
     
-    #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-    .toast { padding: 1rem 1.25rem; border-radius: var(--radius-md); color: var(--surface-white); font-weight: 600; font-size: 0.9rem; box-shadow: var(--shadow-md); animation: slideIn 0.3s ease forwards; display: flex; align-items: center; gap: 10px; }
-    .toast.success { background-color: var(--success-green); }
-    .toast.error { background-color: var(--error-red); }
-    .toast.info { background-color: var(--primary-navy); color: var(--accent-yellow); }
-
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-      .app-container { padding: 1rem; padding-bottom: 85px; }
-      .grid-2-col { grid-template-columns: 1fr; }
-      .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; top: auto; }
-      .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
-      .sidebar-item.active { background: transparent; color: var(--accent-yellow); }
-      .hide-mobile { display: none !important; }
+      .content-area { padding: 1.5rem 1rem 7rem 1rem; }
+      .page-header { flex-direction: column; align-items: flex-start; }
+      
+      .sticky-save-bar { bottom: 2rem; width: 90%; max-width: 400px; padding: 0.75rem 1rem; gap: 1rem; }
+      .unsaved-warning span { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- 1. LOADING SCREEN (Prevents UI flashing before Firebase is ready) -->
+  <!-- LOADING SCREEN (Prevents UI flashing) -->
   <div id="auth-loader">
     <div class="spinner"></div>
-    <h3 style="margin-top: 1.5rem; color: var(--primary-navy);">Verifying Session...</h3>
+    <h3 style="margin-top: 1.5rem; color: var(--text-main); font-weight: 600;">Verifying Session...</h3>
   </div>
 
   <div id="toast-container"></div>
 
-  <!-- HEADER -->
-  <header>
-    <a href="#" class="brand-logo" onclick="return false;">
-      <i class="fa-solid fa-graduation-cap"></i> TeacherBee <span class="recruiter-badge">Employer</span>
-    </a>
-    <div id="nav-actions">
-      <div style="display:flex; align-items:center; gap:1rem;">
-        <img src="https://ui-avatars.com/api/?name=Company&background=0A192F&color=FFD700" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
-        <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">Loading...</span>
-        <button class="btn btn-danger btn-small" onclick="window.handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
-      </div>
-    </div>
-  </header>
-
-  <!-- MAIN APP CONTAINER (Hidden until authenticated) -->
+  <!-- MAIN APP CONTAINER -->
   <div class="app-container" id="main-app">
-    
-    <aside class="sidebar">
-      <a href="recruiter.html" class="sidebar-item active"><i class="fa-regular fa-user"></i> <span>Profile</span></a>
-      <a href="SearchTeachers.html" class="sidebar-item"><i class="fa-solid fa-users"></i> <span>Search Teachers</span></a>
-      <a href="PostJobs.html" class="sidebar-item"><i class="fa-solid fa-briefcase"></i> <span>Manage Jobs</span></a>
-      <a href="RecruiterInbox.html" class="sidebar-item"><i class="fa-regular fa-envelope"></i> <span>Inbox</span></a>
-      <a href="Subscriptions.html" class="sidebar-item"><i class="fa-solid fa-credit-card"></i> <span>Subscriptions</span></a>
-    </aside>
 
+    <!-- MAIN CONTENT (full width, no sidebar) -->
     <main class="content-area">
-      <section id="profile-view">
-        <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap:wrap; gap:1rem;">
-            <div>
-              <h2 id="display-name">Company Profile</h2>
-              <span class="badge badge-navy">Employer Account</span>
-            </div>
-          </div>
+      <div class="page-header">
+        <div>
+          <h1>Employer Profile</h1>
+          <p style="color: var(--text-muted);">Manage your public organization details and hiring preferences.</p>
+        </div>
+        <div>
+          <button type="button" class="btn btn-secondary" onclick="window.previewPublicProfile()">
+            <i class="fa-regular fa-eye"></i> View My Profile
+          </button>
+        </div>
+      </div>
 
-          <form onsubmit="window.handleProfileUpdate(event)">
-            <div class="avatar-upload-container">
-              <label for="avatar-input" class="avatar-upload-btn">
-                <img src="https://ui-avatars.com/api/?name=Company&background=0A192F&color=FFD700" id="profile-avatar" class="avatar-preview" title="Click to change company logo">
-                <input type="file" id="avatar-input" accept="image/png, image/jpeg" onchange="window.openCropperModal(this)">
-              </label>
-              <p style="font-size: 0.8rem;">Click to upload Company Logo</p>
-            </div>
+      <div class="profile-summary-card">
+        <div class="avatar-upload-btn">
+          <label for="avatar-input" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+            <img src="https://ui-avatars.com/api/?name=Company&background=4F46E5&color=fff" id="profile-avatar" class="avatar-preview">
+            <span style="font-size: 0.85rem; color: var(--primary); font-weight: 600;">Click here to upload profile picture</span>
+            <input type="file" id="avatar-input" accept="image/png, image/jpeg, image/webp" onchange="window.openCropperModal(this)">
+          </label>
+        </div>
+        <div style="flex: 1;">
+          <h2 id="display-name" style="margin-bottom: 0.5rem; color: var(--text-main);">Employer Portal</h2>
+          <span class="badge badge-employer"><i class="fa-solid fa-check-circle"></i> Verified Employer</span>
+        </div>
+      </div>
 
-            <h3>Organization Details</h3>
-            
-            <div class="grid-2-col" style="margin-bottom: 1rem;">
+      <form id="profile-form" onsubmit="window.handleProfileUpdate(event)">
+        
+        <!-- SECTION 1: BASIC INFO -->
+        <details open>
+          <summary><div style="display:flex; align-items:center; gap:0.75rem;"><i class="fa-solid fa-building" style="color:var(--primary);"></i> Basic Information</div></summary>
+          <div class="details-content">
+            <div class="grid-2-col">
               <div class="form-group">
-                <label class="form-label">Company / School Name</label>
+                <label class="form-label">Organization / Employer Name *</label>
                 <input type="text" id="prof-company-name" class="form-input" placeholder="e.g. Global English Academy" required>
               </div>
               <div class="form-group">
-                <label class="form-label">Representative Name</label>
-                <input type="text" id="prof-rep-name" class="form-input" placeholder="e.g. John Smith">
+                <label class="form-label">Employer Type *</label>
+                <select id="prof-type" class="form-select" required>
+                  <option value="" disabled selected>Select Type</option>
+                  <option value="School">School</option>
+                  <option value="College">College</option>
+                  <option value="University">University</option>
+                  <option value="Training Centre">Training Centre</option>
+                  <option value="Recruitment Agency">Recruitment Agency</option>
+                  <option value="Company">Company / Corporate</option>
+                  <option value="NGO">NGO / Non-Profit</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
             </div>
 
             <div class="grid-2-col">
               <div class="form-group">
-                <label class="form-label">Headquarters / Location</label>
-                <input type="text" id="prof-location" class="form-input" placeholder="e.g. Beijing, China">
+                <label class="form-label">Location (City, Country) *</label>
+                <input type="text" id="prof-location" class="form-input" placeholder="e.g. Beijing, China" required>
               </div>
               <div class="form-group">
-                <label class="form-label">Institution Type</label>
-                <select id="prof-type" class="form-select">
-                  <option value="Online ESL Platform">Online ESL Platform</option>
-                  <option value="Public School">Public School</option>
-                  <option value="Private Academy">Private Academy / Training Center</option>
-                  <option value="Recruiting Agency">Recruiting Agency</option>
-                </select>
+                <label class="form-label">Industry / Sector</label>
+                <input type="text" id="prof-industry" class="form-input" placeholder="e.g. Primary Education, ESL">
               </div>
             </div>
 
+            <div class="grid-2-col">
+              <div class="form-group">
+                <label class="form-label">Number of Employees</label>
+                <select id="prof-employees" class="form-select">
+                  <option value="">Select Size (Optional)</option>
+                  <option value="1-10">1 - 10 Employees</option>
+                  <option value="11-50">11 - 50 Employees</option>
+                  <option value="51-200">51 - 200 Employees</option>
+                  <option value="201-500">201 - 500 Employees</option>
+                  <option value="500+">500+ Employees</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Representative Name</label>
+                <input type="text" id="prof-rep-name" class="form-input" placeholder="Name of primary contact person">
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- SECTION 2: ABOUT & HIRING STATUS -->
+        <details>
+          <summary><div style="display:flex; align-items:center; gap:0.75rem;"><i class="fa-solid fa-circle-info" style="color:var(--primary);"></i> About the Organization</div></summary>
+          <div class="details-content">
             <div class="form-group">
-              <label class="form-label">Company Description & Mission</label>
-              <textarea id="prof-bio" class="form-textarea" placeholder="Describe your school, the working environment, and what you look for in teachers..."></textarea>
+              <label class="form-label">Organization Description & Mission *</label>
+              <textarea id="prof-bio" class="form-textarea" placeholder="Describe your school, working environment, values, and what you look for in teachers..." required></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Current Hiring Status</label>
+              <select id="prof-hiring-status" class="form-select" style="max-width: 300px;">
+                <option value="Actively Hiring">🟢 Actively Hiring</option>
+                <option value="Occasionally Hiring">🟡 Occasionally Hiring</option>
+                <option value="Not Hiring">🔴 Not Hiring</option>
+              </select>
+            </div>
+          </div>
+        </details>
+
+        <!-- SECTION 3: HIRING PREFERENCES -->
+        <details>
+          <summary><div style="display:flex; align-items:center; gap:0.75rem;"><i class="fa-solid fa-list-check" style="color:var(--primary);"></i> Hiring Preferences</div></summary>
+          <div class="details-content">
+            
+            <div class="form-group">
+              <label class="form-label" style="margin-bottom: 0.75rem;">Employment Types Offered</label>
+              <div class="checkbox-group">
+                <label class="checkbox-label"><input type="checkbox" name="empType" value="Full-Time"> Full-Time</label>
+                <label class="checkbox-label"><input type="checkbox" name="empType" value="Part-Time"> Part-Time</label>
+                <label class="checkbox-label"><input type="checkbox" name="empType" value="Contract"> Contract</label>
+                <label class="checkbox-label"><input type="checkbox" name="empType" value="Temporary"> Temporary</label>
+                <label class="checkbox-label"><input type="checkbox" name="empType" value="Internship"> Internship</label>
+                <label class="checkbox-label"><input type="checkbox" name="empType" value="Online/Remote"> Remote</label>
+              </div>
             </div>
 
-            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1rem; width: 100%;">Save Company Profile</button>
-          </form>
-        </div>
-      </section>
+            <hr style="border:0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+
+            <div class="grid-2-col">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Preferred Teaching Levels</label>
+                <div class="input-with-btn">
+                  <select id="level-input" class="form-select">
+                    <option value="" disabled selected>Select Level</option>
+                    <option value="Early Childhood (Pre-K)">Early Childhood (Pre-K)</option>
+                    <option value="Kindergarten">Kindergarten</option>
+                    <option value="Primary / Elementary">Primary / Elementary</option>
+                    <option value="Middle School / Junior High">Middle School / Junior High</option>
+                    <option value="High School / Secondary">High School / Secondary</option>
+                    <option value="University / College">University / College</option>
+                    <option value="Adult Education">Adult Education</option>
+                  </select>
+                  <button type="button" class="btn btn-secondary" onclick="window.addListTag('levels')">Add</button>
+                </div>
+                <div class="tag-container" id="levels-container"></div>
+              </div>
+
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Subjects Frequently Hired</label>
+                <div class="input-with-btn">
+                  <input type="text" id="subject-input" class="form-input" placeholder="e.g. ESL, Mathematics" onkeypress="if(event.key === 'Enter') { event.preventDefault(); window.addListTag('subjects'); }">
+                  <button type="button" class="btn btn-secondary" onclick="window.addListTag('subjects')">Add</button>
+                </div>
+                <div class="tag-container" id="subjects-container"></div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- SECTION 4: SETTINGS -->
+        <details>
+          <summary><div style="display:flex; align-items:center; gap:0.75rem;"><i class="fa-solid fa-gear" style="color:var(--primary);"></i> Privacy Settings</div></summary>
+          <div class="details-content">
+            <div class="form-group" style="max-width: 300px;">
+              <label class="form-label">Profile Visibility</label>
+              <select id="prof-privacy" class="form-select">
+                <option value="Public">Public (Visible to everyone)</option>
+                <option value="Registered Only">Registered Teachers Only</option>
+                <option value="Private">Private (Hidden from search)</option>
+              </select>
+            </div>
+            <hr style="border:0; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary btn-small" onclick="window.showToast('Password reset link sent to your email.', 'info')">
+                <i class="fa-solid fa-key"></i> Change Password
+              </button>
+              <button type="button" class="btn btn-danger btn-small" onclick="window.confirmDeleteAccount()">
+                <i class="fa-solid fa-trash"></i> Delete Account
+              </button>
+            </div>
+          </div>
+        </details>
+
+      </form>
     </main>
+  </div>
+
+  <!-- STICKY SAVE BAR (Appears when isDirty = true) -->
+  <div class="sticky-save-bar" id="save-bar">
+    <div class="unsaved-warning">
+      <i class="fa-solid fa-circle-exclamation"></i> <span>You have unsaved changes</span>
+    </div>
+    <div style="display:flex; gap:0.75rem;">
+      <button type="button" class="btn btn-secondary" onclick="window.location.reload()">Discard</button>
+      <button type="button" class="btn btn-primary" id="btn-save-sticky" onclick="document.getElementById('profile-form').requestSubmit()">
+        Save Changes
+      </button>
+    </div>
   </div>
 
   <!-- IMAGE CROPPER MODAL -->
   <div class="modal-overlay" id="cropper-modal">
     <div class="modal-content" style="max-width: 500px;">
-      <h3 style="margin-bottom: 1rem;">Crop Company Logo</h3>
+      <h3 style="margin-bottom: 1rem; color: var(--text-main);">Crop Company Logo</h3>
       <div id="image-cropper-container" style="max-height: 400px; margin-bottom: 1rem;">
         <img id="cropper-image" style="max-width: 100%; display: block;">
       </div>
       <div style="display:flex; gap:1rem; margin-top:1rem;">
-        <button class="btn btn-outline" style="flex:1;" onclick="window.cancelCrop()">Cancel</button>
-        <button class="btn btn-primary" style="flex:1;" onclick="window.applyCrop()" id="btn-crop-save">Crop & Save</button>
+        <button type="button" class="btn btn-secondary" style="flex:1;" onclick="window.cancelCrop()">Cancel</button>
+        <button type="button" class="btn btn-primary" style="flex:1;" onclick="window.applyCrop()" id="btn-crop-save">Crop & Save</button>
       </div>
     </div>
   </div>
 
-  <!-- EXTERNAL SCRIPTS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <!-- DYNAMIC PROFILE PREVIEW MODAL -->
+  <div class="modal-overlay" id="preview-modal">
+    <div class="modal-content" style="max-width: 650px;">
+      <button class="btn btn-secondary btn-small" style="position: absolute; top: 1rem; right: 1rem;" onclick="document.getElementById('preview-modal').classList.remove('active')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h3 style="margin-bottom: 1rem; color: var(--primary);"><i class="fa-regular fa-id-card"></i> Employer Profile Preview</h3>
+      
+      <div style="display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border);">
+         <img id="preview-avatar" src="" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; box-shadow: var(--shadow-sm);">
+         <div>
+           <h2 id="preview-name" style="margin: 0; font-size: 1.35rem;"></h2>
+           <p id="preview-location" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;"></p>
+           <span id="preview-hiring-status" class="badge badge-employer" style="margin-top: 0.5rem;"></span>
+         </div>
+      </div>
 
-  <!-- UNIFIED FIREBASE & LOGIC MODULE -->
+      <div style="margin-bottom: 1.5rem;">
+        <h4 style="margin-bottom: 0.5rem; font-size: 1rem;">About the Organization</h4>
+        <p id="preview-bio" style="font-size: 0.95rem; color: var(--text-main); white-space: pre-wrap; line-height: 1.5;"></p>
+      </div>
+
+      <div class="grid-2-col" style="margin-bottom: 1.5rem;">
+        <div>
+          <h4 style="margin-bottom: 0.25rem; font-size: 0.9rem; color: var(--text-muted);">Industry</h4>
+          <p id="preview-industry" style="font-size: 0.95rem; font-weight: 500;"></p>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 0.25rem; font-size: 0.9rem; color: var(--text-muted);">Company Size</h4>
+          <p id="preview-employees" style="font-size: 0.95rem; font-weight: 500;"></p>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 0.25rem; font-size: 0.9rem; color: var(--text-muted);">Employer Type</h4>
+          <p id="preview-type" style="font-size: 0.95rem; font-weight: 500;"></p>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 0.25rem; font-size: 0.9rem; color: var(--text-muted);">Representative</h4>
+          <p id="preview-rep" style="font-size: 0.95rem; font-weight: 500;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIREBASE & CORE LOGIC -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -219,13 +422,12 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Google Drive / Apps Script URL kept safe
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
-
     let currentCropper = null;
     let currentUserData = null;
+    let selectedLevels = [];
+    let selectedSubjects = [];
 
-    // 2. BULLETPROOF AUTH LISTENER
+    // AUTHENTICATION LISTENER
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
@@ -234,88 +436,114 @@
           
           if (docSnap.exists()) {
             const data = docSnap.data();
-            
-            // Fix 1: Make role check case-insensitive so "Recruiter", "recruiter", or "employer" won't crash it
             const userRole = (data.role || '').toLowerCase();
+            
             if (userRole !== 'recruiter' && userRole !== 'employer') {
-              window.location.replace('./index.html'); // Fix 2: 'replace' prevents infinite back-button loops
+              window.location.replace('https://teacherbeeconnect.blogspot.com/p/index_01629774816.html');
               return;
             }
 
             currentUserData = { uid: user.uid, ...data };
-            
-            // Populate UI
-            let name = data.name || user.email.split('@')[0];
-            let avatar = data.avatarUrl || "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
-            
-            document.getElementById('nav-display-name').innerText = name;
-            document.getElementById('display-name').innerText = name;
-            document.getElementById('nav-avatar-img').src = avatar;
-            document.getElementById('profile-avatar').src = avatar;
-            
-            if(data.repName) document.getElementById('prof-rep-name').value = data.repName;
-            if(data.location) document.getElementById('prof-location').value = data.location;
-            if(data.type) document.getElementById('prof-type').value = data.type;
-            if(data.bio) document.getElementById('prof-bio').value = data.bio;
-            document.getElementById('prof-company-name').value = name;
+            populateForm(data, user.email);
 
-            // Fix 3: Reveal the app container only after everything is ready
             document.getElementById('auth-loader').style.display = 'none';
-            document.getElementById('main-app').style.display = 'flex';
-
+            document.getElementById('main-app').style.display = 'block';
           } else {
-             window.location.replace('./index.html');
+             window.location.replace('https://teacherbeeconnect.blogspot.com/p/index_01629774816.html');
           }
         } catch (error) {
           console.error("Firebase read error:", error);
-          window.location.replace('./index.html');
+          window.location.replace('https://teacherbeeconnect.blogspot.com/p/index_01629774816.html');
         }
       } else {
-        window.location.replace('./index.html');
+        window.location.replace('https://teacherbeeconnect.blogspot.com/p/index_01629774816.html');
       }
     });
 
-    // 4. ATTACH FUNCTIONS TO WINDOW (Fixes scope issues in module script)
+    // POPULATE FORM DATA
+    function populateForm(data, email) {
+      const name = data.name || email.split('@')[0];
+      const avatar = data.avatarUrl || `https://ui-avatars.com/api/?name=${name}&background=4F46E5&color=fff`;
+      
+      document.getElementById('display-name').innerText = name;
+      document.getElementById('profile-avatar').src = avatar;
+      
+      if(data.name) document.getElementById('prof-company-name').value = data.name;
+      if(data.type) document.getElementById('prof-type').value = data.type;
+      if(data.location) document.getElementById('prof-location').value = data.location;
+      if(data.industry) document.getElementById('prof-industry').value = data.industry;
+      if(data.employees) document.getElementById('prof-employees').value = data.employees;
+      if(data.repName) document.getElementById('prof-rep-name').value = data.repName;
+      if(data.bio) document.getElementById('prof-bio').value = data.bio;
+      if(data.hiringStatus) document.getElementById('prof-hiring-status').value = data.hiringStatus;
+      if(data.privacy) document.getElementById('prof-privacy').value = data.privacy;
+
+      if(data.empTypes && Array.isArray(data.empTypes)) {
+        document.querySelectorAll('input[name="empType"]').forEach(cb => {
+          if (data.empTypes.includes(cb.value)) cb.checked = true;
+        });
+      }
+
+      selectedLevels = data.levels || [];
+      selectedSubjects = data.subjects || [];
+      window.renderTags('levels');
+      window.renderTags('subjects');
+    }
+
+    // UTILITY: SHOW TOAST
     window.showToast = function(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
-      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : 'fa-exclamation'}"></i> ${message}`;
+      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : (type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-info')}"></i> ${message}`;
       container.appendChild(toast);
       setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
     };
 
+    // LOGOUT
     window.handleLogout = async function() {
       await signOut(auth);
-      window.location.replace('./index.html');
+      window.location.replace('https://teacherbeeconnect.blogspot.com/p/index_01629774816.html');
     };
 
+    // FORM UPDATE TO FIRESTORE
     window.handleProfileUpdate = async function(e) {
       e.preventDefault();
-      const btn = document.getElementById('btn-save-profile');
+      const btn = document.getElementById('btn-save-sticky');
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
       
+      const checkboxes = document.querySelectorAll('input[name="empType"]:checked');
+      const empTypes = Array.from(checkboxes).map(cb => cb.value);
       const compName = document.getElementById('prof-company-name').value;
+
       const updates = {
           name: compName,
-          repName: document.getElementById('prof-rep-name').value,
-          location: document.getElementById('prof-location').value,
           type: document.getElementById('prof-type').value,
-          bio: document.getElementById('prof-bio').value
+          location: document.getElementById('prof-location').value,
+          industry: document.getElementById('prof-industry').value,
+          employees: document.getElementById('prof-employees').value,
+          repName: document.getElementById('prof-rep-name').value,
+          bio: document.getElementById('prof-bio').value,
+          hiringStatus: document.getElementById('prof-hiring-status').value,
+          empTypes: empTypes,
+          levels: selectedLevels,
+          subjects: selectedSubjects,
+          privacy: document.getElementById('prof-privacy').value
       };
 
       try {
         await updateDoc(doc(db, "users", currentUserData.uid), updates);
-        document.getElementById('nav-display-name').innerText = compName;
         document.getElementById('display-name').innerText = compName;
-        btn.innerHTML = 'Save Company Profile';
-        window.showToast('Company profile saved successfully!', 'success');
+        btn.innerHTML = 'Save Changes';
+        document.getElementById('save-bar').classList.remove('visible');
+        window.showToast('Profile updated successfully!', 'success');
       } catch(e) {
-        btn.innerHTML = 'Save Company Profile';
+        btn.innerHTML = 'Save Changes';
         window.showToast('Error saving profile.', 'error');
       }
     };
 
+    // CROPPER LOGIC
     window.openCropperModal = function(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -345,14 +573,70 @@
       try {
         await updateDoc(doc(db, "users", currentUserData.uid), { avatarUrl: dataUrl });
         document.getElementById('profile-avatar').src = dataUrl;
-        document.getElementById('nav-avatar-img').src = dataUrl;
         btn.innerHTML = 'Crop & Save';
         window.cancelCrop();
-        window.showToast('Company logo updated!', 'success');
+        window.showToast('Logo updated!', 'success');
       } catch (err) {
         btn.innerHTML = 'Crop & Save';
         window.showToast('Error uploading logo.', 'error');
       }
+    };
+
+    // DYNAMIC TAGS LOGIC
+    window.addListTag = function(type) {
+      const inputId = type === 'levels' ? 'level-input' : 'subject-input';
+      const inputEl = document.getElementById(inputId);
+      const val = inputEl.value.trim();
+      const targetArray = type === 'levels' ? selectedLevels : selectedSubjects;
+
+      if (val && !targetArray.includes(val)) {
+        targetArray.push(val);
+        window.renderTags(type);
+        document.getElementById('save-bar').classList.add('visible'); // Trigger dirty state
+      }
+      
+      if (type === 'subjects') inputEl.value = '';
+      else inputEl.selectedIndex = 0;
+    };
+
+    window.removeListTag = function(type, index) {
+      const targetArray = type === 'levels' ? selectedLevels : selectedSubjects;
+      targetArray.splice(index, 1);
+      window.renderTags(type);
+      document.getElementById('save-bar').classList.add('visible'); // Trigger dirty state
+    };
+
+    window.renderTags = function(type) {
+      const containerId = type === 'levels' ? 'levels-container' : 'subjects-container';
+      const targetArray = type === 'levels' ? selectedLevels : selectedSubjects;
+      const container = document.getElementById(containerId);
+      
+      container.innerHTML = targetArray.map((item, index) => `
+        <div class="tag-item">
+          ${item} <button type="button" onclick="window.removeListTag('${type}', ${index})"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      `).join('');
+    };
+
+    // DIRTY STATE TRACKING (Shows sticky bar)
+    document.querySelectorAll('.form-input, .form-select, .form-textarea, input[type="checkbox"]').forEach(el => {
+      el.addEventListener('input', () => document.getElementById('save-bar').classList.add('visible'));
+      el.addEventListener('change', () => document.getElementById('save-bar').classList.add('visible'));
+    });
+
+    // PUBLIC PROFILE PREVIEW MODAL
+    window.previewPublicProfile = function() {
+      document.getElementById('preview-name').innerText = document.getElementById('prof-company-name').value || 'Organization Name';
+      document.getElementById('preview-location').innerText = document.getElementById('prof-location').value || 'Location Not Set';
+      document.getElementById('preview-hiring-status').innerHTML = `<i class="fa-solid fa-circle-info"></i> ${document.getElementById('prof-hiring-status').value}`;
+      document.getElementById('preview-bio').innerText = document.getElementById('prof-bio').value || 'No organization description provided.';
+      document.getElementById('preview-industry').innerText = document.getElementById('prof-industry').value || 'Not specified';
+      document.getElementById('preview-employees').innerText = document.getElementById('prof-employees').value || 'Not specified';
+      document.getElementById('preview-type').innerText = document.getElementById('prof-type').value || 'Not specified';
+      document.getElementById('preview-rep').innerText = document.getElementById('prof-rep-name').value || 'Not specified';
+      document.getElementById('preview-avatar').src = document.getElementById('profile-avatar').src;
+      
+      document.getElementById('preview-modal').classList.add('active');
     };
   </script>
 </body>
