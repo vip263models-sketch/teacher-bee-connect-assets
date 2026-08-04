@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Teacher Profile — TeacherBee Connect</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Cropper.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js">
+    </script>
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --primary-light: #EEF2FF;
+            --primary-100: #E0E7FF;
+            --primary-600: #4F46E5;
+            --primary-700: #4338CA;
+
+            --surface: #FFFFFF;
+            --surface-alt: #F8FAFC;
+            --bg-color: #F1F5F9;
+            --bg-alt: #F8FAFC;
+
+            --text-main: #0F172A;
+            --text-secondary: #334155;
+            --text-muted: #64748B;
+            --text-placeholder: #94A3B8;
+
+            --border: #E2E8F0;
+            --border-light: #F1F5F9;
+            --border-focus: #A5B4FC;
+
+            --danger: #EF4444;
+            --danger-light: #FEF2F2;
+            --danger-border: #FECACA;
+            --success: #10B981;
+            --success-light: #D1FAE5;
+            --success-text: #065F46;
+            --warning: #F59E0B;
+            --warning-light: #FEF3C7;
+            --warning-text: #92400E;
+            --info: #3B82F6;
+
+            --radius-xs: 4px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.10), 0 8px 16px rgba(0, 0, 0, 0.05);
+            --shadow-floating: 0 24px 48px rgba(0, 0, 0, 0.12), 0 12px 24px rgba(0, 0, 0, 0.06);
+
+            --sidebar-width: 264px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            letter-spacing: -0.01em;
+        }
+
+        /* ── Toast Notifications ── */
+        #toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-weight: 500;
+            font-size: 0.875rem;
+            box-shadow: var(--shadow-lg);
+            animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: auto;
+            backdrop-filter: blur(8px);
+            letter-spacing: -0.01em;
+        }
+        .toast.error {
+            background: #DC2626;
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+        }
+        .toast.success {
+            background: #059669;
+            box-shadow: 0 8px 24px rgba(5, 150, 105, 0.3);
+        }
+        .toast.info {
+            background: #1E293B;
+            box-shadow: 0 8px 24px rgba(30, 41, 59, 0.3);
+        }
+        @keyframes toastSlideIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            padding: 0.7rem 1.3rem;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            outline: none;
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+            user-select: none;
+            position: relative;
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-xs);
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: var(--surface);
+            border-color: var(--border);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .btn-secondary:hover {
+            background-color: var(--surface-alt);
+            border-color: #CBD5E1;
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-danger {
+            background-color: var(--danger-light);
+            color: var(--danger);
+            border-color: var(--danger-border);
+            font-weight: 500;
+        }
+        .btn-danger:hover {
+            background-color: var(--danger);
+            color: #fff;
+            border-color: var(--danger);
+            box-shadow: var(--shadow-md);
+        }
+        .btn-ghost {
+            background: transparent;
+            border-color: transparent;
+            color: var(--text-muted);
+        }
+        .btn-ghost:hover {
+            background: var(--surface-alt);
+            color: var(--text-main);
+        }
+        .btn-small {
+            padding: 0.45rem 0.85rem;
+            font-size: 0.8rem;
+            border-radius: var(--radius-xs);
+        }
+        .btn-icon {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            border-radius: var(--radius-full);
+            justify-content: center;
+        }
+
+        /* ── Content Area (full width, no sidebar) ── */
+        .content-area {
+            width: 100%;
+            max-width: none;
+            padding: 2rem 2.5rem 6rem 2.5rem;
+            flex: 1;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .page-header h1 {
+            font-size: 1.65rem;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .page-header .btn {
+            font-weight: 500;
+        }
+
+        /* ── Profile Summary Card ── */
+        .profile-summary-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1.75rem;
+            margin-bottom: 1.75rem;
+            box-shadow: var(--shadow-sm);
+            flex-wrap: wrap;
+            transition: box-shadow var(--transition-smooth);
+        }
+        .profile-summary-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .badge-success {
+            background: var(--success-light);
+            color: var(--success-text);
+            border: 1px solid #A7F3D0;
+        }
+        .badge-warning {
+            background: var(--warning-light);
+            color: var(--warning-text);
+            border: 1px solid #FDE68A;
+        }
+        .badge-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+            border: 1px solid #BFDBFE;
+        }
+
+        /* ── Forms ── */
+        .form-group {
+            margin-bottom: 1.1rem;
+            position: relative;
+            width: 100%;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.82rem;
+            margin-bottom: 0.4rem;
+            color: var(--text-secondary);
+            letter-spacing: -0.01em;
+        }
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all var(--transition-fast);
+            background: var(--surface);
+            color: var(--text-main);
+            letter-spacing: -0.01em;
+        }
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-placeholder);
+        }
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
+            background: #FAFBFF;
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 110px;
+            line-height: 1.6;
+        }
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 2.5rem;
+            cursor: pointer;
+        }
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.1rem;
+        }
+        .grid-3-col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.1rem;
+        }
+        .input-with-btn {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .input-with-btn .form-input {
+            flex: 1;
+        }
+
+        /* ── Tags ── */
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-top: 0.6rem;
+        }
+        .tag-item {
+            background: var(--primary-light);
+            color: var(--primary-700);
+            padding: 0.3rem 0.7rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            border: 1px solid var(--primary-100);
+            transition: all var(--transition-fast);
+        }
+        .tag-item:hover {
+            background: #E0E7FF;
+        }
+        .tag-item button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            line-height: 1;
+            transition: color var(--transition-fast);
+            opacity: 0.6;
+            display: flex;
+            align-items: center;
+            padding: 1px;
+        }
+        .tag-item button:hover {
+            opacity: 1;
+            color: var(--danger);
+        }
+
+        /* ── Avatar ── */
+        .avatar-upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+        .avatar-preview {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            object-fit: cover;
+            background-color: var(--border-light);
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            box-shadow: var(--shadow-md), 0 0 0 4px var(--primary-light);
+        }
+        .avatar-preview:hover {
+            transform: scale(1.04);
+            box-shadow: var(--shadow-lg), 0 0 0 6px #E0E7FF;
+        }
+        .avatar-upload-btn {
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .avatar-upload-btn input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* ── Collapsible Sections ── */
+        details {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1rem;
+            transition: all var(--transition-smooth);
+            box-shadow: var(--shadow-xs);
+            overflow: hidden;
+        }
+        details[open] {
+            box-shadow: var(--shadow-md);
+            border-color: #CBD5E1;
+        }
+        summary {
+            padding: 1.1rem 1.4rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface-alt);
+            border-bottom: 1px solid transparent;
+            letter-spacing: -0.01em;
+            user-select: none;
+            transition: background var(--transition-fast);
+        }
+        summary:hover {
+            background: #F1F5F9;
+        }
+        details[open] summary {
+            border-bottom-color: var(--border);
+            background: var(--surface);
+            font-weight: 700;
+        }
+        summary::-webkit-details-marker {
+            display: none;
+        }
+        summary::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--text-muted);
+            transition: transform var(--transition-smooth);
+            font-size: 0.8rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        details[open] summary::after {
+            transform: rotate(180deg);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .details-content {
+            padding: 1.4rem;
+            background: var(--surface);
+        }
+
+        /* ── Dynamic Lists ── */
+        .dynamic-list-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 0.9rem 1.1rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all var(--transition-fast);
+            margin-bottom: 0.4rem;
+            gap: 1rem;
+        }
+        .dynamic-list-item:hover {
+            border-color: #CBD5E1;
+            box-shadow: var(--shadow-sm);
+            background: #FAFBFF;
+        }
+        .item-info h4 {
+            margin-bottom: 0.2rem;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .item-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+        .item-info a {
+            font-size: 0.8rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+        }
+        .item-info a:hover {
+            text-decoration: underline;
+            color: var(--primary-hover);
+        }
+        .add-form-box {
+            background: var(--surface-alt);
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1.5px dashed var(--border);
+            margin-bottom: 1rem;
+            display: none;
+            animation: fadeDown 0.25s ease;
+        }
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Progress Bar ── */
+        .progress-bar-container {
+            width: 100%;
+            background-color: var(--border);
+            border-radius: var(--radius-full);
+            margin-top: 0.5rem;
+            overflow: hidden;
+            display: none;
+            height: 5px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #818CF8);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: var(--radius-full);
+        }
+
+        /* ── Floating Save Bar ── */
+        .sticky-save-bar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(160px);
+            background: var(--surface);
+            padding: 0.9rem 1.5rem;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2.5rem;
+            z-index: 999;
+            opacity: 0;
+            transition: all var(--transition-bounce);
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .sticky-save-bar.visible {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .unsaved-warning {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--warning-text);
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: -0.01em;
+        }
+        .unsaved-warning i {
+            font-size: 1rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* ── Modals ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-content {
+            background: var(--surface);
+            width: 100%;
+            max-width: 700px;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            position: relative;
+            max-height: 88vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.94) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            z-index: 5;
+        }
+        .close-modal:hover {
+            background: var(--danger-light);
+            color: var(--danger);
+            border-color: var(--danger-border);
+        }
+
+        /* ── Recruiter View ── */
+        .rv-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .rv-header img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow-md);
+            flex-shrink: 0;
+        }
+        .rv-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.15rem;
+            letter-spacing: -0.02em;
+        }
+        .rv-headline {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-bottom: 0.6rem;
+        }
+        .rv-section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 1.4rem 0 0.8rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-light);
+            letter-spacing: -0.01em;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ── Divider ── */
+        hr.divider {
+            border: 0;
+            height: 1px;
+            background: var(--border);
+            margin: 1.75rem 0;
+        }
+
+        /* ── Upload Zone ── */
+        .upload-zone {
+            padding: 1.5rem;
+            border: 1.5px dashed var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface-alt);
+            transition: all var(--transition-fast);
+        }
+        .upload-zone:hover {
+            border-color: #CBD5E1;
+            background: #FAFBFF;
+        }
+
+        /* ── Section Subheader ── */
+        .section-subheader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1.75rem 0 0.75rem 0;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .section-subheader h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 1024px) {
+            .content-area {
+                padding: 1.5rem 1.5rem 7rem 1.5rem;
+            }
+            .page-header h1 {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 1.25rem 1rem 7rem 1rem;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            .page-header h1 {
+                font-size: 1.35rem;
+            }
+            .profile-summary-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem 1rem;
+                gap: 1rem;
+            }
+            .profile-summary-card .avatar-preview {
+                width: 90px;
+                height: 90px;
+            }
+
+            .sticky-save-bar {
+                width: 92%;
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: center;
+                padding: 0.9rem 1rem;
+                border-radius: var(--radius-lg);
+            }
+            .grid-2-col,
+            .grid-3-col {
+                grid-template-columns: 1fr;
+            }
+            .modal-content {
+                padding: 1.25rem;
+                max-width: 95%;
+                border-radius: var(--radius-md);
+            }
+            .rv-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+            .rv-header img {
+                width: 75px;
+                height: 75px;
+            }
+            details summary {
+                padding: 0.9rem 1rem;
+                font-size: 0.88rem;
+            }
+            .details-content {
+                padding: 1rem;
+            }
+            .dynamic-list-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.6rem;
+                padding: 0.8rem;
+            }
+            .dynamic-list-item .btn {
+                align-self: flex-end;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .content-area {
+                padding: 1rem 0.75rem 6.5rem 0.75rem;
+            }
+            .sticky-save-bar {
+                width: 95%;
+            }
+            .profile-summary-card {
+                padding: 1rem 0.75rem;
+            }
+            .avatar-preview {
+                width: 75px;
+                height: 75px;
+            }
+        }
+    </style>
+
+    <!-- FIREBASE SDK MODULE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, updatePassword,
+            deleteUser } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+            authDomain: "teacherbee-connect.firebaseapp.com",
+            projectId: "teacherbee-connect",
+            storageBucket: "teacherbee-connect.firebasestorage.app",
+            messagingSenderId: "345613317767",
+            appId: "1:345613317767:web:555713e479f9837e84aa22"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        window.auth = getAuth(app);
+        window.db = getFirestore(app);
+        window.fb = { doc, updateDoc, getDoc, signOut, updatePassword, deleteUser };
+        setPersistence(window.auth, browserLocalPersistence);
+
+        let isRedirecting = false;
+
+        const safeArray = (val) => {
+            if (!val) return [];
+            if (Array.isArray(val)) return val;
+            if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(Boolean);
+            return [];
+        };
+
+        const normalizeDocs = (arr) => {
+            if (!Array.isArray(arr)) return [];
+            return arr.map((item, idx) => {
+                if (typeof item === 'string') return { id: Date.now().toString() + idx, title: item,
+                url: '' };
+                if (item && !item.title && item.documentName) return { id: Date.now().toString() + idx, title: item
+                        .documentName, url: item.url || '' };
+                return item;
+            });
+        };
+
+        onAuthStateChanged(window.auth, async (user) => {
+            if (user) {
+                const docRef = doc(window.db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+
+                let name = user.email.split('@')[0];
+                let avatar = "https://ui-avatars.com/api/?name=" + name + "&background=4F46E5&color=FFFFFF";
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.role === 'recruiter') {
+                        if (!isRedirecting) { isRedirecting = true;
+                            window.location.href = 'recruiter.html'; }
+                        return;
+                    }
+
+                    name = data.name || name;
+                    if (data.avatarUrl) avatar = data.avatarUrl;
+                    if (data.videoUrl) window.currentUser.videoUrl = data.videoUrl;
+                    if (data.resumeUrl) {
+                        window.currentUser.resumeUrl = data.resumeUrl;
+                        document.getElementById('resume-preview-link').innerHTML =
+                            `<a href="${data.resumeUrl}" target="_blank" class="btn btn-secondary btn-small"><i class="fa-solid fa-file-pdf"></i> View Uploaded Resume</a>`;
+                    }
+                    if (data.videoUrl) {
+                        document.getElementById('video-preview-link').innerHTML =
+                            `<a href="${data.videoUrl}" target="_blank" class="btn btn-secondary btn-small"><i class="fa-solid fa-play"></i> View Uploaded Video</a>`;
+                    }
+
+                    const fields = ['age', 'gender', 'experience', 'headline', 'city', 'country', 'employmentStatus',
+                        'curriculum', 'bio', 'privacySetting'
+                    ];
+                    fields.forEach(field => {
+                        if (data[field] && document.getElementById(`prof-${field}`)) {
+                            document.getElementById(`prof-${field}`).value = data[field];
+                        }
+                    });
+
+                    window.currentUser.languages = safeArray(data.languages);
+                    window.currentUser.subjects = safeArray(data.subjects);
+                    window.currentUser.gradeLevels = safeArray(data.gradeLevels);
+                    window.currentUser.skills = safeArray(data.skills);
+
+                    window.currentUser.quals = normalizeDocs(data.qualifications);
+                    window.currentUser.certs = normalizeDocs(data.certs);
+                    window.currentUser.references = data.references || [];
+
+                    document.getElementById('public-url-display').value =
+                        `https://teacherbeeconnect.blogspot.com/p/teacherprofile.html?id=${user.uid}`;
+                }
+
+                finalizeProfileView(name, user.email, user.emailVerified, avatar);
+                window.renderAllDynamicLists();
+                window.setupChangeListeners();
+            } else {
+                window.location.href = 'https://teacherbeeconnect.blogspot.com/p/teacherprofile.html';
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <!-- Main Content (full width, no sidebar) -->
+    <main class="content-area" id="app-content">
+        <div class="page-header">
+            <h1>Edit Profile</h1>
+            <button type="button" class="btn btn-secondary" onclick="openRecruiterView()">
+                <i class="fa-regular fa-eye"></i> Preview My Profile
+            </button>
+        </div>
+
+        <!-- Profile Summary -->
+        <div class="profile-summary-card">
+            <div class="avatar-upload-btn">
+                <img src="https://ui-avatars.com/api/?name=User&background=4F46E5&color=FFFFFF" id="profile-avatar" class="avatar-preview" title="Tap to change picture" alt="Profile avatar">
+                <input type="file" id="avatar-input" accept="image/png, image/jpeg" onchange="openCropperModal(this)">
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+                <h2 id="display-name" style="margin-bottom: 0.2rem; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em;">Loading...</h2>
+                <p id="summary-email" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;"></p>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <span id="verification-badge" class="badge badge-warning">Checking...</span>
+                </div>
+                <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">Tap your photo to upload a new profile picture.</p>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <form id="main-profile-form" onsubmit="handleProfileUpdate(event)">
+            <details open>
+                <summary>Core Personal Details</summary>
+                <div class="details-content">
+                    <div class="grid-2-col">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="prof-display-name" class="form-input" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Professional Headline</label>
+                            <input type="text" id="prof-headline" class="form-input" placeholder="e.g. Passionate High School Math Teacher">
+                        </div>
+                    </div>
+                    <div class="grid-3-col">
+                        <div class="form-group">
+                            <label class="form-label">Age</label>
+                            <input type="number" id="prof-age" class="form-input" min="18" max="100" placeholder="e.g. 28">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gender</label>
+                            <select id="prof-gender" class="form-select">
+                                <option value="Prefer not to say">Prefer not to say</option>
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Experience (Years)</label>
+                            <input type="number" id="prof-experience" class="form-input" min="0" placeholder="5">
+                        </div>
+                    </div>
+                    <div class="grid-3-col">
+                        <div class="form-group">
+                            <label class="form-label">Current City</label>
+                            <input type="text" id="prof-city" class="form-input" placeholder="e.g. London">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Country</label>
+                            <input type="text" id="prof-country" class="form-input" placeholder="e.g. United Kingdom">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Employment Status</label>
+                            <select id="prof-employmentStatus" class="form-select">
+                                <option value="Actively Looking">Actively Looking</option>
+                                <option value="Employed, but open to offers">Employed, but open to offers</option>
+                                <option value="Not looking">Not looking</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <details open>
+                <summary>Teaching Profile &amp; Expertise</summary>
+                <div class="details-content">
+                    <div class="form-group">
+                        <label class="form-label">Professional Summary (Bio)</label>
+                        <textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself to recruiters. Highlight your teaching philosophy and achievements..."></textarea>
+                    </div>
+                    <div class="form-group upload-zone">
+                        <label class="form-label"><i class="fa-solid fa-video" style="color: var(--primary);"></i> Introduction Video Upload</label>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Upload a short 1–3 minute intro video to stand out. <strong>Max Size: 16MB</strong></p>
+                        <input type="file" id="prof-video-file" accept="video/mp4,video/webm,video/ogg" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem; background: var(--surface);">
+                        <div class="progress-bar-container" id="video-progress-bar"><div class="progress-bar-fill" id="video-progress-fill"></div></div>
+                        <div id="video-preview-link" style="margin-top: 10px;"></div>
+                    </div>
+                    <div class="grid-2-col">
+                        <div class="form-group">
+                            <label class="form-label">Teaching Subjects</label>
+                            <div class="input-with-btn">
+                                <input type="text" id="input-subjects" class="form-input" placeholder="e.g. Mathematics, ESL...">
+                                <button type="button" class="btn btn-secondary btn-small" onclick="addTag('subjects', 'input-subjects')">Add</button>
+                            </div>
+                            <div id="container-subjects" class="tag-container"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Grade Levels</label>
+                            <div class="input-with-btn">
+                                <input type="text" id="input-gradeLevels" class="form-input" placeholder="e.g. High School, Primary...">
+                                <button type="button" class="btn btn-secondary btn-small" onclick="addTag('gradeLevels', 'input-gradeLevels')">Add</button>
+                            </div>
+                            <div id="container-gradeLevels" class="tag-container"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Languages Spoken</label>
+                            <div class="input-with-btn">
+                                <input type="text" id="input-languages" class="form-input" placeholder="e.g. English, Spanish...">
+                                <button type="button" class="btn btn-secondary btn-small" onclick="addTag('languages', 'input-languages')">Add</button>
+                            </div>
+                            <div id="container-languages" class="tag-container"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Key Skills</label>
+                            <div class="input-with-btn">
+                                <input type="text" id="input-skills" class="form-input" placeholder="e.g. Classroom Management...">
+                                <button type="button" class="btn btn-secondary btn-small" onclick="addTag('skills', 'input-skills')">Add</button>
+                            </div>
+                            <div id="container-skills" class="tag-container"></div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 0.5rem;">
+                        <label class="form-label">Teaching Curriculum Familiarity</label>
+                        <input type="text" id="prof-curriculum" class="form-input" placeholder="e.g. IB, Cambridge, Common Core, EYFS...">
+                    </div>
+                </div>
+            </details>
+
+            <details open>
+                <summary>Resume, Qualifications &amp; References</summary>
+                <div class="details-content">
+                    <div class="form-group upload-zone">
+                        <label class="form-label"><i class="fa-solid fa-file-pdf" style="color: var(--primary);"></i> Resume / CV</label>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Upload your latest resume (PDF or Word).</p>
+                        <input type="file" id="prof-resume-file" accept=".pdf,.doc,.docx" onchange="handleFileUpload(this, 'resume')" class="form-input" style="padding: 0.5rem; background: var(--surface);">
+                        <div class="progress-bar-container" id="resume-progress-bar"><div class="progress-bar-fill" id="resume-progress-fill"></div></div>
+                        <div id="resume-preview-link" style="margin-top: 10px;"></div>
+                    </div>
+
+                    <div class="section-subheader">
+                        <h4>Qualifications &amp; Degrees</h4>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="toggleForm('add-qual-form')">
+                            <i class="fa-solid fa-plus"></i> Add New
+                        </button>
+                    </div>
+                    <div id="add-qual-form" class="add-form-box">
+                        <div class="form-group">
+                            <label class="form-label">Qualification Title</label>
+                            <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. BSc Mathematics">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Upload Document (Optional)</label>
+                            <input type="file" id="new-qual-file" class="form-input" onchange="handleFileSelect(this, 'new-qual-title')" accept="image/*,.pdf,.doc,.docx">
+                        </div>
+                        <div class="progress-bar-container" id="qual-progress-bar"><div class="progress-bar-fill" id="qual-progress-fill"></div></div>
+                        <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                            <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewDocumentItem('quals')">Save</button>
+                            <button type="button" class="btn btn-secondary btn-small" onclick="toggleForm('add-qual-form')">Cancel</button>
+                        </div>
+                    </div>
+                    <div id="container-quals" style="display: flex; flex-direction: column;"></div>
+
+                    <div class="section-subheader">
+                        <h4>Certifications (TEFL, etc.)</h4>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="toggleForm('add-cert-form')">
+                            <i class="fa-solid fa-plus"></i> Add New
+                        </button>
+                    </div>
+                    <div id="add-cert-form" class="add-form-box">
+                        <div class="form-group">
+                            <label class="form-label">Certification Title</label>
+                            <input type="text" id="new-cert-title" class="form-input" placeholder="e.g. 120-Hour TEFL">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Upload Certificate (Optional)</label>
+                            <input type="file" id="new-cert-file" class="form-input" onchange="handleFileSelect(this, 'new-cert-title')" accept="image/*,.pdf,.doc,.docx">
+                        </div>
+                        <div class="progress-bar-container" id="cert-progress-bar"><div class="progress-bar-fill" id="cert-progress-fill"></div></div>
+                        <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                            <button type="button" class="btn btn-primary btn-small" id="btn-save-cert" onclick="saveNewDocumentItem('certs')">Save</button>
+                            <button type="button" class="btn btn-secondary btn-small" onclick="toggleForm('add-cert-form')">Cancel</button>
+                        </div>
+                    </div>
+                    <div id="container-certs" style="display: flex; flex-direction: column;"></div>
+
+                    <div class="section-subheader">
+                        <h4>Professional References</h4>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="toggleForm('add-ref-form')">
+                            <i class="fa-solid fa-plus"></i> Add New
+                        </button>
+                    </div>
+                    <div id="add-ref-form" class="add-form-box">
+                        <div class="grid-2-col">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">Reference Name</label>
+                                <input type="text" id="new-ref-name" class="form-input" placeholder="e.g. Jane Smith">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">Contact Info (Email/Phone)</label>
+                                <input type="text" id="new-ref-contact" class="form-input" placeholder="e.g. jane@school.edu">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 1rem;">
+                            <label class="form-label">Relationship / Title</label>
+                            <input type="text" id="new-ref-relation" class="form-input" placeholder="e.g. Former Principal at Oakwood High">
+                        </div>
+                        <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                            <button type="button" class="btn btn-primary btn-small" onclick="saveReference()">Save Reference</button>
+                            <button type="button" class="btn btn-secondary btn-small" onclick="toggleForm('add-ref-form')">Cancel</button>
+                        </div>
+                    </div>
+                    <div id="container-references" style="display: flex; flex-direction: column;"></div>
+                </div>
+            </details>
+
+            <details>
+                <summary>Privacy &amp; Account Settings</summary>
+                <div class="details-content">
+                    <div class="form-group">
+                        <label class="form-label">Profile Visibility</label>
+                        <select id="prof-privacySetting" class="form-select">
+                            <option value="Public">Public (Anyone with link can view)</option>
+                            <option value="Employers Only">Employers Only (Verified Recruiters)</option>
+                            <option value="Private">Private (Hidden from searches)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Your Public Profile Link</label>
+                        <div class="input-with-btn">
+                            <input type="text" id="public-url-display" class="form-input" readonly style="background: var(--surface-alt); color: var(--text-muted); cursor: pointer;" onclick="this.select(); document.execCommand('copy'); showToast('Link copied!','success');">
+                            <button type="button" class="btn btn-secondary btn-small" onclick="document.getElementById('public-url-display').select(); document.execCommand('copy'); showToast('Link copied!','success');"><i class="fa-regular fa-copy"></i> Copy</button>
+                        </div>
+                    </div>
+                    <hr class="divider">
+                    <h4 style="color: var(--danger); font-size: 0.95rem; margin-bottom: 0.75rem; font-weight: 700;">Account Management</h4>
+                    <div style="display:flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-secondary btn-small" onclick="promptPasswordChange()"><i class="fa-solid fa-key"></i> Change Password</button>
+                        <button type="button" class="btn btn-danger btn-small" onclick="promptDeleteAccount()"><i class="fa-solid fa-trash"></i> Delete Account</button>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Floating Save Bar -->
+            <div class="sticky-save-bar" id="sticky-save">
+                <div class="unsaved-warning">
+                    <i class="fa-solid fa-circle-exclamation"></i> Unsaved changes
+                </div>
+                <button type="submit" class="btn btn-primary" id="btn-save-profile">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Cropper Modal -->
+    <div class="modal-overlay" id="cropper-modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="close-modal" onclick="cancelCrop()"><i class="fa-solid fa-xmark"></i></button>
+            <h3 style="margin-bottom: 1.25rem; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em;">Crop Profile Picture</h3>
+            <div id="image-cropper-container" style="max-height: 380px; margin-bottom: 1.25rem; border-radius: var(--radius-md); overflow: hidden;">
+                <img id="cropper-image" style="max-width: 100%; display: block;">
+            </div>
+            <div style="display:flex; gap:0.75rem;">
+                <button type="button" class="btn btn-secondary" style="flex:1;" onclick="cancelCrop()">Cancel</button>
+                <button type="button" class="btn btn-primary" style="flex:1;" onclick="applyCrop()" id="btn-crop-save">Crop &amp; Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recruiter View Modal -->
+    <div class="modal-overlay" id="recruiter-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('recruiter-modal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="rv-header">
+                <img id="rv-avatar" src="https://ui-avatars.com/api/?name=User&background=4F46E5&color=FFFFFF" alt="Profile">
+                <div>
+                    <h2 id="rv-name" class="rv-name">Name Loading...</h2>
+                    <p id="rv-headline" class="rv-headline"></p>
+                    <div style="display:flex; gap:0.4rem; flex-wrap:wrap;" id="rv-badges"></div>
+                </div>
+            </div>
+            <div id="rv-extended-info" style="margin-bottom: 1.25rem;"></div>
+            <div id="rv-bio-section">
+                <h3 class="rv-section-title">Professional Summary</h3>
+                <p id="rv-bio-text" style="color: var(--text-secondary); line-height: 1.7; font-size: 0.9rem;">No summary provided.</p>
+            </div>
+            <div class="grid-2-col" style="margin-top: 0.75rem;">
+                <div>
+                    <h3 class="rv-section-title">Subjects &amp; Expertise</h3>
+                    <div id="rv-subjects-list" class="tag-container"></div>
+                </div>
+                <div>
+                    <h3 class="rv-section-title">Core Skills</h3>
+                    <div id="rv-skills-list" class="tag-container"></div>
+                </div>
+            </div>
+            <div id="rv-docs-section" style="margin-top: 0.75rem;">
+                <h3 class="rv-section-title">Documents &amp; Qualifications</h3>
+                <div id="rv-docs-list" style="display:flex; flex-direction:column; gap:0.4rem;"></div>
+            </div>
+            <div id="rv-ref-section" style="margin-top: 0.75rem;">
+                <h3 class="rv-section-title">References</h3>
+                <div id="rv-ref-list" style="display:flex; flex-direction:column; gap:0.4rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WEB_APP_URL =
+            "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+
+        window.currentUser = {
+            uid: '',
+            name: '',
+            email: '',
+            isVerified: false,
+            avatarUrl: '',
+            resumeUrl: '',
+            videoUrl: '',
+            quals: [],
+            certs: [],
+            subjects: [],
+            gradeLevels: [],
+            languages: [],
+            skills: [],
+            references: []
+        };
+        let currentCropper = null;
+        let hasUnsavedChanges = false;
+
+        window.showToast = function(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = 'fa-circle-info';
+            if (type === 'success') icon = 'fa-circle-check';
+            if (type === 'error') icon = 'fa-circle-exclamation';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300); }, 3500);
+        };
+
+        window.handleLogout = function() {
+            if (window.auth && window.fb) window.fb.signOut(window.auth);
+            window.location.href = "https://teacherbeeconnect.blogspot.com/p/index_01629774816.html";
+        };
+
+        function finalizeProfileView(name, email, isVerified, avatarUrl) {
+            if (window.auth && window.auth.currentUser) window.currentUser.uid = window.auth.currentUser.uid;
+            window.currentUser.name = name;
+            window.currentUser.email = email;
+            window.currentUser.isVerified = isVerified;
+            window.currentUser.avatarUrl = avatarUrl;
+
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('summary-email').innerText = email;
+            document.getElementById('profile-avatar').src = avatarUrl;
+
+            if (!document.getElementById('prof-display-name').value) document.getElementById('prof-display-name').value =
+                name;
+            const vBadge = document.getElementById('verification-badge');
+            if (isVerified) {
+                vBadge.innerHTML = '<i class="fa-solid fa-check-circle"></i> Email Verified';
+                vBadge.className = 'badge badge-success';
+            } else {
+                vBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Unverified';
+                vBadge.className = 'badge badge-warning';
+            }
+        }
+
+        window.setupChangeListeners = function() {
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    if (input.id === 'public-url-display') return;
+                    hasUnsavedChanges = true;
+                    document.getElementById('sticky-save').classList.add('visible');
+                });
+            });
+            window.addEventListener('beforeunload', (e) => {
+                if (hasUnsavedChanges) { e.preventDefault();
+                    e.returnValue = ''; }
+            });
+        };
+
+        window.markSaved = function() {
+            hasUnsavedChanges = false;
+            document.getElementById('sticky-save').classList.remove('visible');
+        };
+
+        window.addTag = function(arrayName, inputId) {
+            const input = document.getElementById(inputId);
+            const val = input.value.trim();
+            if (val && !window.currentUser[arrayName].includes(val)) {
+                window.currentUser[arrayName].push(val);
+                input.value = '';
+                hasUnsavedChanges = true;
+                document.getElementById('sticky-save').classList.add('visible');
+                renderTagList(arrayName);
+            }
+        };
+
+        window.removeTag = function(arrayName, index) {
+            window.currentUser[arrayName].splice(index, 1);
+            hasUnsavedChanges = true;
+            document.getElementById('sticky-save').classList.add('visible');
+            renderTagList(arrayName);
+        };
+
+        window.renderTagList = function(arrayName) {
+            const container = document.getElementById(`container-${arrayName}`);
+            if (!container) return;
+            container.innerHTML = '';
+            window.currentUser[arrayName].forEach((item, idx) => {
+                container.insertAdjacentHTML('beforeend',
+                    `<div class="tag-item">${item} <button type="button" onclick="removeTag('${arrayName}', ${idx})" aria-label="Remove ${item}"><i class="fa-solid fa-xmark"></i></button></div>`
+                    );
+            });
+        };
+
+        window.toggleForm = (id) => { const f = document.getElementById(id);
+            f.style.display = f.style.display === 'none' || f.style.display === '' ? 'block' : 'none'; };
+        window.handleFileSelect = (inp, titleId) => { if (inp.files[0] && !document.getElementById(titleId).value) document
+                .getElementById(titleId).value = inp.files[0].name.replace(/\.[^/.]+$/, ""); };
+
+        window.removeItem = function(arrayName, index) {
+            if (confirm("Delete this item?")) {
+                window.currentUser[arrayName].splice(index, 1);
+                hasUnsavedChanges = true;
+                document.getElementById('sticky-save').classList.add('visible');
+                if (arrayName === 'references') renderReferenceList();
+                else renderDocList(arrayName);
+            }
+        };
+
+        window.renderDocList = function(arrayName) {
+            const container = document.getElementById(`container-${arrayName}`);
+            container.innerHTML = '';
+            if (window.currentUser[arrayName].length === 0) {
+                container.innerHTML =
+                    `<p style="font-size:0.82rem; color:var(--text-muted); padding: 1rem; text-align: center; background: var(--surface-alt); border-radius: var(--radius-sm);">No items added yet.</p>`;
+                return;
+            }
+            window.currentUser[arrayName].forEach((q, idx) => {
+                const link = q.url ?
+                    `<a href="${q.url}" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Document</a>` :
+                    '';
+                const icon = arrayName === 'quals' ? 'fa-graduation-cap' : 'fa-certificate';
+                container.insertAdjacentHTML('beforeend', `
+              <div class="dynamic-list-item">
+                <div class="item-info">
+                  <h4><i class="fa-solid ${icon}" style="color:var(--primary); margin-right:0.4rem;"></i> ${q.title}</h4>
+                  ${link}
+                </div>
+                <button type="button" class="btn btn-danger btn-small" onclick="removeItem('${arrayName}', ${idx})"><i class="fa-regular fa-trash-can"></i></button>
+              </div>
+            `);
+            });
+        };
+
+        window.saveReference = function() {
+            const name = document.getElementById('new-ref-name').value.trim();
+            const contact = document.getElementById('new-ref-contact').value.trim();
+            const relation = document.getElementById('new-ref-relation').value.trim();
+            if (!name || !contact) { showToast("Name and Contact Info are required.", "error"); return; }
+            window.currentUser.references.push({ id: Date.now().toString(), name, contact, relation });
+            document.getElementById('new-ref-name').value = '';
+            document.getElementById('new-ref-contact').value = '';
+            document.getElementById('new-ref-relation').value = '';
+            toggleForm('add-ref-form');
+            hasUnsavedChanges = true;
+            document.getElementById('sticky-save').classList.add('visible');
+            renderReferenceList();
+        };
+
+        window.renderReferenceList = function() {
+            const container = document.getElementById('container-references');
+            container.innerHTML = '';
+            if (window.currentUser.references.length === 0) {
+                container.innerHTML =
+                    `<p style="font-size:0.82rem; color:var(--text-muted); padding: 1rem; text-align: center; background: var(--surface-alt); border-radius: var(--radius-sm);">No references added yet.</p>`;
+                return;
+            }
+            window.currentUser.references.forEach((ref, idx) => {
+                container.insertAdjacentHTML('beforeend', `
+              <div class="dynamic-list-item">
+                <div class="item-info">
+                  <h4><i class="fa-regular fa-id-badge" style="color:var(--primary); margin-right:0.4rem;"></i> ${ref.name}</h4>
+                  <p>${ref.relation ? ref.relation + ' &bull; ' : ''}${ref.contact}</p>
+                </div>
+                <button type="button" class="btn btn-danger btn-small" onclick="removeItem('references', ${idx})"><i class="fa-regular fa-trash-can"></i></button>
+              </div>
+            `);
+            });
+        };
+
+        window.renderAllDynamicLists = function() {
+            ['subjects', 'gradeLevels', 'languages', 'skills'].forEach(renderTagList);
+            ['quals', 'certs'].forEach(renderDocList);
+            renderReferenceList();
+        };
+
+        window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    let action = 'uploadFile';
+                    if (folder.includes('avatars')) action = 'uploadProfile';
+                    if (folder.includes('qualifications') || folder.includes('certs')) action =
+                        'uploadCertificate';
+
+                    const payload = { action: action, fileName: fileName, mimeType: fileOrBlob.type ||
+                            "application/octet-stream", file: e.target.result };
+                    let progressInterval;
+                    if (onProgress) {
+                        let percent = 0;
+                        progressInterval = setInterval(() => { percent += Math.floor(Math.random() * 10) + 5; if (
+                                percent >= 90) percent = 90;
+                            onProgress(percent); }, 400);
+                    }
+
+                    try {
+                        const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(
+                                payload) });
+                        const data = await response.json();
+                        if (progressInterval) { clearInterval(progressInterval); if (onProgress) onProgress(
+                            100); }
+                        if (data.status === "success") {
+                            let finalUrl = "";
+                            if (action === 'uploadProfile' && data.profilePic && data.profilePic.url)
+                                finalUrl = data.profilePic.url;
+                            else if (action === 'uploadCertificate' && data.certificates && data.certificates
+                                .length > 0) finalUrl = data.certificates[data.certificates.length - 1].url ||
+                                data.certificates[data.certificates.length - 1].fileUrl;
+                            else if (data.url) finalUrl = data.url;
+                            resolve(finalUrl ||
+                                "https://via.placeholder.com/150?text=Uploaded");
+                        } else { reject(new Error("Drive Error: " + (data.message || "Unknown error"))); }
+                    } catch (error) { if (progressInterval) clearInterval(progressInterval);
+                        reject(new Error("Network error during upload.")); }
+                };
+                reader.onerror = () => reject(new Error("Browser failed to read file."));
+                reader.readAsDataURL(fileOrBlob);
+            });
+        };
+
+        window.handleFileUpload = async function(input, type) {
+            const file = input.files[0];
+            if (!file || !window.auth.currentUser) return;
+            const pContainer = document.getElementById(`${type}-progress-bar`),
+                pFill = document.getElementById(`${type}-progress-fill`);
+            pContainer.style.display = 'block';
+            pFill.style.width = '0%';
+            try {
+                const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                const url = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, `/${type}s`, (pct) => { pFill
+                        .style.width = `${pct}%`; });
+                window.currentUser.resumeUrl = url;
+                document.getElementById('resume-preview-link').innerHTML =
+                    `<a href="${url}" target="_blank" class="btn btn-secondary btn-small"><i class="fa-solid fa-file-pdf"></i> View Uploaded Resume</a>`;
+                hasUnsavedChanges = true;
+                document.getElementById('sticky-save').classList.add('visible');
+                pContainer.style.display = 'none';
+                showToast(`Resume uploaded successfully.`, "success");
+                input.value = '';
+            } catch (err) { console.error(err);
+                showToast(err.message, "error");
+                pContainer.style.display = 'none'; }
+        };
+
+        window.handleVideoUpload = async function(input) {
+            const file = input.files[0];
+            if (!file || !window.auth.currentUser) return;
+            if (file.size > 16777216) {
+                showToast("Video exceeds the 16MB limit. Please compress it before uploading.", "error");
+                input.value = '';
+                return;
+            }
+            const pContainer = document.getElementById(`video-progress-bar`),
+                pFill = document.getElementById(`video-progress-fill`);
+            pContainer.style.display = 'block';
+            pFill.style.width = '0%';
+            try {
+                const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                const url = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, `/videos`, (pct) => { pFill.style
+                        .width = `${pct}%`; });
+                window.currentUser.videoUrl = url;
+                document.getElementById('video-preview-link').innerHTML =
+                    `<a href="${url}" target="_blank" class="btn btn-secondary btn-small"><i class="fa-solid fa-play"></i> View Uploaded Video</a>`;
+                hasUnsavedChanges = true;
+                document.getElementById('sticky-save').classList.add('visible');
+                pContainer.style.display = 'none';
+                showToast(`Video uploaded successfully.`, "success");
+                input.value = '';
+            } catch (err) { console.error(err);
+                showToast(err.message, "error");
+                pContainer.style.display = 'none'; }
+        };
+
+        window.saveNewDocumentItem = async function(arrayName) {
+            const isQual = arrayName === 'quals';
+            const titlePrefix = isQual ? 'qual' : 'cert';
+            const title = document.getElementById(`new-${titlePrefix}-title`).value.trim();
+            const fileInput = document.getElementById(`new-${titlePrefix}-file`);
+            if (!title) { showToast("Title is required.", "error"); return; }
+
+            let url = "";
+            let fileName = "";
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const btn = document.getElementById(`btn-save-${titlePrefix}`);
+                btn.disabled = true;
+                btn.innerHTML = 'Uploading...';
+                const pContainer = document.getElementById(`${titlePrefix}-progress-bar`),
+                    pFill = document.getElementById(`${titlePrefix}-progress-fill`);
+                pContainer.style.display = 'block';
+                pFill.style.width = '0%';
+                try {
+                    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                    url = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, `/${arrayName}`, (pct) => {
+                        pFill.style.width = `${pct}%`; });
+                    fileName = file.name;
+                } catch (err) {
+                    showToast(err.message, "error");
+                    pContainer.style.display = 'none';
+                    btn.disabled = false;
+                    btn.innerHTML = 'Save';
+                    return;
+                }
+                pContainer.style.display = 'none';
+                btn.disabled = false;
+                btn.innerHTML = 'Save';
+            }
+
+            window.currentUser[arrayName].push({ id: Date.now().toString(), title, url, fileName });
+            toggleForm(`add-${titlePrefix}-form`);
+            document.getElementById(`new-${titlePrefix}-title`).value = '';
+            fileInput.value = '';
+            hasUnsavedChanges = true;
+            document.getElementById('sticky-save').classList.add('visible');
+            renderDocList(arrayName);
+            showToast("Added successfully. Remember to Save Changes!", "success");
+        };
+
+        window.openCropperModal = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('cropper-image');
+                    img.src = e.target.result;
+                    document.getElementById('cropper-modal').classList.add('active');
+                    if (currentCropper) currentCropper.destroy();
+                    currentCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, autoCropArea: 0.8, guides: false,
+                        center: false, highlight: false, cropBoxMovable: false, cropBoxResizable: false });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+            input.value = '';
+        };
+
+        window.cancelCrop = function() { document.getElementById('cropper-modal').classList.remove('active'); if (
+                currentCropper) currentCropper.destroy(); };
+        window.applyCrop = async function() {
+            const btn = document.getElementById('btn-crop-save');
+            btn.innerHTML = 'Saving...';
+            const canvas = currentCropper.getCroppedCanvas({ width: 300, height: 300 });
+            canvas.toBlob(async (blob) => {
+                if (!window.auth.currentUser) { btn.innerHTML = 'Crop & Save'; return cancelCrop(); }
+                try {
+                    const url = await uploadToGoogleDrive(blob,
+                        `avatar_${window.auth.currentUser.uid}.jpg`, "/avatars");
+                    document.getElementById('profile-avatar').src = url;
+                    window.currentUser.avatarUrl = url;
+                    hasUnsavedChanges = true;
+                    document.getElementById('sticky-save').classList.add('visible');
+                    btn.innerHTML = 'Crop & Save';
+                    cancelCrop();
+                    showToast('Profile picture set. Remember to save changes!', 'success');
+                } catch (e) { showToast(e.message, "error");
+                    btn.innerHTML = 'Crop & Save';
+                    cancelCrop(); }
+            }, 'image/jpeg', 0.85);
+        };
+
+        window.handleProfileUpdate = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-profile');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+            const payload = {
+                name: document.getElementById('prof-display-name').value,
+                headline: document.getElementById('prof-headline').value,
+                age: document.getElementById('prof-age').value,
+                gender: document.getElementById('prof-gender').value,
+                experience: document.getElementById('prof-experience').value,
+                city: document.getElementById('prof-city').value,
+                country: document.getElementById('prof-country').value,
+                employmentStatus: document.getElementById('prof-employmentStatus').value,
+                curriculum: document.getElementById('prof-curriculum').value,
+                bio: document.getElementById('prof-bio').value,
+                privacySetting: document.getElementById('prof-privacySetting').value,
+                avatarUrl: window.currentUser.avatarUrl,
+                resumeUrl: window.currentUser.resumeUrl,
+                videoUrl: window.currentUser.videoUrl,
+                qualifications: window.currentUser.quals,
+                certs: window.currentUser.certs,
+                subjects: window.currentUser.subjects,
+                gradeLevels: window.currentUser.gradeLevels,
+                languages: window.currentUser.languages,
+                skills: window.currentUser.skills,
+                references: window.currentUser.references,
+                lastUpdated: new Date()
+            };
+
+            if (window.auth && window.auth.currentUser) {
+                try {
+                    await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid),
+                        payload);
+                    window.currentUser.name = payload.name;
+                    document.getElementById('display-name').innerText = payload.name;
+                    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+                    markSaved();
+                    showToast('Profile updated successfully!', 'success');
+                } catch (err) {
+                    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+                    showToast('Error updating profile.', 'error');
+                }
+            }
+        };
+
+        window.openRecruiterView = function() {
+            const name = document.getElementById('prof-display-name').value;
+            document.getElementById('rv-name').innerText = name || "Anonymous User";
+            document.getElementById('rv-avatar').src = window.currentUser.avatarUrl ||
+                "https://ui-avatars.com/api/?name=User&background=4F46E5&color=FFFFFF";
+            document.getElementById('rv-headline').innerText = document.getElementById('prof-headline').value || "";
+
+            let badgesHtml = '';
+            const city = document.getElementById('prof-city').value,
+                country = document.getElementById('prof-country').value;
+            if (city || country) badgesHtml +=
+                `<span class="badge badge-success"><i class="fa-solid fa-location-dot"></i> ${city ? city : ''}${city && country ? ', ' : ''}${country ? country : ''}</span>`;
+            const exp = document.getElementById('prof-experience').value;
+            if (exp) badgesHtml +=
+                `<span class="badge badge-info"><i class="fa-solid fa-briefcase"></i> ${exp} Years Exp.</span>`;
+            const empStatus = document.getElementById('prof-employmentStatus').value;
+            if (empStatus) badgesHtml +=
+                `<span class="badge badge-warning"><i class="fa-solid fa-magnifying-glass"></i> ${empStatus}</span>`;
+            document.getElementById('rv-badges').innerHTML = badgesHtml;
+
+            let extendedHtml = `
+            <div style="background: var(--surface-alt); border: 1px solid var(--border); padding: 1rem; border-radius: var(--radius-md); display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+                <div><strong>Age:</strong> ${document.getElementById('prof-age').value || 'Not specified'}</div>
+                <div><strong>Gender:</strong> ${document.getElementById('prof-gender').value || 'Not specified'}</div>
+                <div><strong>Curriculum:</strong> ${document.getElementById('prof-curriculum').value || 'Not specified'}</div>
+            </div>
+          `;
+            if (window.currentUser.videoUrl) {
+                extendedHtml +=
+                    `<div style="margin-top:1rem;"><a href="${window.currentUser.videoUrl}" target="_blank" class="btn btn-primary btn-small"><i class="fa-solid fa-play"></i> Watch Intro Video</a></div>`;
+            }
+            document.getElementById('rv-extended-info').innerHTML = extendedHtml;
+
+            document.getElementById('rv-bio-text').innerText = document.getElementById('prof-bio').value ||
+                'No summary provided.';
+
+            const makeTags = arr => arr.map(t =>
+                `<span class="tag-item" style="border:none;">${t}</span>`).join('');
+            document.getElementById('rv-subjects-list').innerHTML = window.currentUser.subjects.length ? makeTags(window
+                .currentUser.subjects) :
+                '<p style="font-size:0.82rem; color:var(--text-muted);">Not specified</p>';
+            document.getElementById('rv-skills-list').innerHTML = window.currentUser.skills.length ? makeTags(window
+                .currentUser.skills) :
+                '<p style="font-size:0.82rem; color:var(--text-muted);">Not specified</p>';
+
+            const docsHtml = [...window.currentUser.quals, ...window.currentUser.certs].map(q => {
+                const linkStr = q.url ? `onclick="window.open('${q.url}', '_blank')"` : '';
+                const cursor = q.url ? 'cursor:pointer;' : '';
+                return `<div ${linkStr} class="dynamic-list-item" style="${cursor}">
+                <div class="item-info"><h4><i class="fa-solid fa-certificate" style="color:var(--primary); margin-right:0.4rem;"></i> ${q.title}</h4></div>
+                ${q.url ? `<i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.8rem; color:var(--text-muted);"></i>` : ''}
+            </div>`;
+            }).join('');
+            document.getElementById('rv-docs-list').innerHTML = docsHtml ||
+                '<p style="font-size:0.82rem; color:var(--text-muted);">No qualifications attached.</p>';
+
+            const refHtml = window.currentUser.references.map(r => {
+                return `<div class="dynamic-list-item">
+                <div class="item-info">
+                    <h4>${r.name}</h4><p>${r.relation ? r.relation + ' &bull; ' : ''}${r.contact}</p>
+                </div>
+            </div>`;
+            }).join('');
+            document.getElementById('rv-ref-list').innerHTML = refHtml ||
+                '<p style="font-size:0.82rem; color:var(--text-muted);">No references available.</p>';
+
+            document.getElementById('recruiter-modal').classList.add('active');
+        };
+
+        window.promptPasswordChange = async function() {
+            const newPassword = prompt("Enter your new password (min 6 characters):");
+            if (newPassword && window.auth.currentUser) {
+                try { await window.fb.updatePassword(window.auth.currentUser, newPassword);
+                    showToast("Password updated successfully.", "success"); } catch (e) { showToast(e.message,
+                        "error"); }
+            }
+        };
+
+        window.promptDeleteAccount = async function() {
+            if (confirm(
+                    "DANGER: Are you absolutely sure you want to delete your account? This cannot be undone and will delete all your data."
+                    )) {
+                if (window.auth.currentUser) {
+                    try { await window.fb.deleteUser(window.auth.currentUser);
+                        window.location.href =
+                        "https://teacherbeeconnect.blogspot.com/p/index_01629774816.html"; } catch (e) { showToast(e
+                            .message +
+                            " (You may need to log out and log back in first).", "error"); }
+                }
+            }
+        };
+    </script>
+</body>
+</html>
