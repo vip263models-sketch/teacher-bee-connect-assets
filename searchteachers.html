@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TeacherBee Connect - Talent Directory</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-navy: #0F172A;
+            --navy-light: #1E293B;
+            --brand-blue: #0A66C2;
+            --brand-blue-hover: #004182;
+            --accent-gold: #F5A623;
+            --bg-color: #F3F6F9;
+            --surface-white: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --error-red: #DC2626;
+            --success-green: #10B981;
+
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .btn {
+            padding: 0.65rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background-color: var(--brand-blue);
+            color: var(--surface-white);
+        }
+        .btn-primary:hover {
+            background-color: var(--brand-blue-hover);
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-outline {
+            background-color: transparent;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-main);
+        }
+        .btn-outline:hover {
+            background-color: var(--bg-color);
+            border-color: var(--text-muted);
+        }
+        .btn-block {
+            width: 100%;
+        }
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--surface-white);
+            color: var(--text-main);
+        }
+        .form-input:focus,
+        .form-select:focus {
+            border-color: var(--brand-blue);
+            box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.12);
+        }
+
+        .app-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 2rem 1.5rem;
+            flex: 1;
+        }
+
+        .header-section {
+            margin-bottom: 1.5rem;
+        }
+        .header-section h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 0.35rem;
+        }
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .filter-card {
+            background: var(--surface-white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+        .search-input-wrapper {
+            position: relative;
+        }
+        .search-input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        .search-input-wrapper input {
+            padding-left: 2.75rem;
+        }
+
+        .teacher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .teacher-card {
+            background: var(--surface-white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        .teacher-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: #CBD5E1;
+        }
+
+        .card-banner {
+            height: 70px;
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            position: relative;
+        }
+        .card-body {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+        }
+        .avatar-wrapper {
+            margin-top: -40px;
+            position: relative;
+            margin-bottom: 0.75rem;
+        }
+        .teacher-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--surface-white);
+            background: var(--surface-white);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .avatar-video-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 0;
+            background: var(--brand-blue);
+            color: var(--surface-white);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            border: 2px solid var(--surface-white);
+        }
+
+        .teacher-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 0.25rem;
+        }
+        .teacher-headline {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .teacher-bio-preview {
+            font-size: 0.88rem;
+            color: #334155;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.6rem;
+        }
+
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-navy {
+            background: #F1F5F9;
+            color: var(--primary-navy);
+        }
+        .badge-blue {
+            background: #EFF6FF;
+            color: var(--brand-blue);
+        }
+
+        .card-footer {
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            margin-top: auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* MODAL STYLING */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+        .modal-content {
+            background: var(--surface-white);
+            width: 100%;
+            max-width: 740px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .modal-header-banner {
+            height: 110px;
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            position: relative;
+            flex-shrink: 0;
+        }
+        /* CLOSE BUTTON - now fixed position relative to viewport to stay always visible */
+        .close-modal {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            color: #0F172A;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            z-index: 10000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            font-weight: 700;
+            line-height: 1;
+        }
+        .close-modal:hover {
+            background: #FFFFFF;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+            transform: scale(1.08);
+        }
+
+        /* Profile header outside scroll area */
+        .modal-profile-header {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+            margin-top: -50px;
+            margin-bottom: 0;
+            position: relative;
+            z-index: 5;
+            padding: 0 2rem;
+            flex-shrink: 0;
+        }
+        .modal-profile-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--surface-white);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: var(--surface-white);
+            flex-shrink: 0;
+        }
+        .modal-profile-info {
+            padding-bottom: 0.25rem;
+        }
+        .modal-profile-info h2 {
+            font-size: 1.6rem;
+            color: var(--primary-navy);
+            margin-bottom: 0.2rem;
+        }
+
+        .modal-scroll-body {
+            padding: 1.25rem 2rem 2rem 2rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .section-title {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.4rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .detail-item {
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .detail-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+        .detail-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            word-break: break-word;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .tag-item {
+            background: #EFF6FF;
+            color: var(--brand-blue);
+            border: 1px solid #BFDBFE;
+            padding: 0.35rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            color: var(--surface-white);
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-md);
+            animation: slideIn 0.3s ease forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.success {
+            background-color: var(--success-green);
+        }
+        .toast.error {
+            background-color: var(--error-red);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .filter-card {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            .modal-profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 0 1.25rem;
+                margin-top: -45px;
+            }
+            .modal-profile-header img {
+                width: 85px;
+                height: 85px;
+            }
+            .modal-profile-info h2 {
+                font-size: 1.3rem;
+            }
+            .app-container {
+                padding: 1rem;
+            }
+            .modal-content {
+                max-height: 95vh;
+            }
+            .modal-scroll-body {
+                padding: 1rem 1.25rem 1.5rem 1.25rem;
+            }
+            .close-modal {
+                width: 40px;
+                height: 40px;
+                font-size: 1.3rem;
+                top: 1rem;
+                right: 1.2rem;
+            }
+        }
+    </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+            authDomain: "teacherbee-connect.firebaseapp.com",
+            projectId: "teacherbee-connect",
+            storageBucket: "teacherbee-connect.firebasestorage.app",
+            messagingSenderId: "345613317767",
+            appId: "1:345613317767:web:555713e479f9837e84aa22"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        window.auth = getAuth(app);
+        window.db = getFirestore(app);
+        window.fb = { doc, setDoc, updateDoc, getDoc, serverTimestamp, collection, query, where, getDocs, addDoc, signOut };
+        setPersistence(window.auth, browserLocalPersistence);
+
+        let isRedirecting = false;
+
+        onAuthStateChanged(window.auth, async (user) => {
+            if (user) {
+                const docRef = doc(window.db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.role !== 'recruiter') {
+                        if (!isRedirecting) { isRedirecting = true;
+                            window.location.href = 'index.html'; }
+                        return;
+                    }
+
+                    window.currentUser = { uid: user.uid, ...data };
+                    window.fetchTeachers();
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <div class="app-container">
+        <div class="header-section">
+            <h1>Educator Talent Directory</h1>
+            <p>Discover and invite qualified teachers to interview directly through your recruitment portal.</p>
+        </div>
+
+        <div class="filter-card">
+            <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="form-input" id="search-keyword" placeholder="Search by name, language, or subject..." oninput="filterTeachers()">
+            </div>
+            <select class="form-select" id="search-exp" onchange="filterTeachers()">
+                <option value="">All Experience Levels</option>
+                <option value="1">1+ Years Experience</option>
+                <option value="3">3+ Years Experience</option>
+                <option value="5">5+ Years Experience</option>
+            </select>
+            <select class="form-select" id="search-video" onchange="filterTeachers()">
+                <option value="">All Profiles</option>
+                <option value="yes">With Intro Video Only</option>
+            </select>
+        </div>
+
+        <div class="teacher-grid" id="teacher-results-container">
+            <div style="text-align:center; padding: 4rem 1rem; color:var(--text-muted); grid-column: 1/-1;" id="teacher-loading">
+                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2.2rem; color: var(--brand-blue); margin-bottom: 1rem;"></i>
+                <p style="font-weight: 500;">Loading educator profiles...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- LINKEDIN-STYLE TEACHER PROFILE MODAL -->
+    <div class="modal-overlay" id="teacher-modal">
+        <div class="modal-content">
+            <div class="modal-header-banner"></div>
+
+            <!-- Profile header outside scroll area -->
+            <div class="modal-profile-header">
+                <img id="tm-avatar" src="" alt="Teacher Avatar">
+                <div class="modal-profile-info">
+                    <h2 id="tm-name"></h2>
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.3rem;" id="tm-badges"></div>
+                </div>
+            </div>
+
+            <div class="modal-scroll-body">
+                <div class="section-title">Professional Summary</div>
+                <p id="tm-bio" style="color:var(--text-main); font-size:0.95rem; line-height:1.6; margin-bottom:1rem;"></p>
+
+                <div id="tm-video-section" style="display:none; margin-bottom:1rem;">
+                    <div class="section-title">Video Introduction</div>
+                    <video id="tm-video" controls style="width:100%; border-radius:var(--radius-md); background:#000; max-height:360px;"></video>
+                </div>
+
+                <div class="section-title">Professional Details & Qualifications</div>
+                <div id="tm-dynamic-details" class="details-grid"></div>
+
+                <div id="tm-dynamic-tags"></div>
+
+                <div style="margin-top: 2rem;">
+                    <button class="btn btn-primary btn-block" onclick="handleInvite()">
+                        <i class="fa-solid fa-paper-plane"></i> Invite to Interview
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Fixed close button outside modal-content so it's always on top -->
+        <button class="close-modal" id="close-modal-btn" title="Close profile">&times;</button>
+    </div>
+
+    <script>
+        let allTeachers = [];
+        let currentTeacherContext = null;
+
+        // ──────────────────────────────────────────────
+        // SENSITIVE FIELD DETECTION (unchanged logic)
+        // ──────────────────────────────────────────────
+        const SENSITIVE_EXACT_MATCH = [
+            'uid', 'id', 'role', 'avatarurl', 'videourl', 'name', 'bio',
+            'createdat', 'updatedat', 'password', 'messages', 'privacysettings',
+            'privacysetting', 'email', 'e-mail', 'mail', 'phone', 'phonenumber',
+            'phone_number', 'telephone', 'mobile', 'cell', 'cellphone',
+            'contactnumber', 'contact_number', 'contactemail', 'personalemail',
+            'workemail', 'emailaddress', 'pass', 'pwd', 'passcode',
+            'userpassword', 'loginpassword', 'securityanswer', 'secretanswer'
+        ];
+
+        function isSensitiveField(cleanKey) {
+            if (SENSITIVE_EXACT_MATCH.includes(cleanKey)) return true;
+            if (cleanKey.includes('email')) return true;
+            if (cleanKey.includes('phone')) return true;
+            if (cleanKey.includes('password')) return true;
+            if (cleanKey.includes('mobile')) return true;
+            if (cleanKey.includes('telephone')) return true;
+            if (cleanKey.includes('passcode')) return true;
+            if (cleanKey.startsWith('pass') && cleanKey !== 'passport' && cleanKey !== 'passportnumber') return true;
+            return false;
+        }
+
+        // ──────────────────────────────────────────────
+        // TOAST NOTIFICATIONS
+        // ──────────────────────────────────────────────
+        window.showToast = function(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML =
+                `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300); }, 3500);
+        };
+
+        // ──────────────────────────────────────────────
+        // FETCH & RENDER TEACHERS
+        // ──────────────────────────────────────────────
+        window.fetchTeachers = async function() {
+            try {
+                const q = window.fb.query(window.fb.collection(window.db, "users"), window.fb.where("role", "==",
+                    "teacher"));
+                const snapshot = await window.fb.getDocs(q);
+                document.getElementById('teacher-loading').style.display = 'none';
+
+                allTeachers = [];
+                snapshot.forEach(docSnap => allTeachers.push({ id: docSnap.id, ...docSnap.data() }));
+                window.renderTeachers(allTeachers);
+            } catch (e) {
+                console.error(e);
+                showToast("Error loading teacher directory.", "error");
+            }
+        };
+
+        window.renderTeachers = function(teachersArray) {
+            const container = document.getElementById('teacher-results-container');
+            container.innerHTML = '';
+            if (teachersArray.length === 0) {
+                container.innerHTML =
+                    '<p style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding: 3rem 0;">No teachers found matching your criteria.</p>';
+                return;
+            }
+
+            teachersArray.forEach(t => {
+                const avatar = t.avatarUrl ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=0F172A&color=FFFFFF`;
+                const expStr = t.experience ? `${t.experience} yrs exp` : 'Entry Level';
+                const locationStr = t.country || t.location || 'Global Educator';
+                const videoIcon = t.videoUrl ?
+                    '<div class="avatar-video-badge" title="Video Intro Available"><i class="fa-solid fa-video"></i></div>' :
+                    '';
+                const bioText = t.bio ? t.bio : 'No professional summary provided.';
+
+                const html = `
+                    <div class="teacher-card" onclick="openTeacherProfile('${t.id}')">
+                        <div class="card-banner"></div>
+                        <div class="card-body">
+                            <div class="avatar-wrapper">
+                                <img src="${avatar}" alt="${t.name}">
+                                ${videoIcon}
+                            </div>
+                            <h3 class="teacher-name">${t.name}</h3>
+                            <p class="teacher-headline"><i class="fa-solid fa-location-dot"></i> ${locationStr}</p>
+
+                            <div class="badge-list">
+                                <span class="badge badge-navy"><i class="fa-solid fa-briefcase"></i> ${expStr}</span>
+                                <span class="badge badge-blue"><i class="fa-solid fa-language"></i> ${t.languages || 'English'}</span>
+                            </div>
+
+                            <p class="teacher-bio-preview">${bioText}</p>
+
+                            <div class="card-footer">
+                                <button class="btn btn-outline btn-block" onclick="event.stopPropagation(); openTeacherProfile('${t.id}')">
+                                    View Profile
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        };
+
+        // ──────────────────────────────────────────────
+        // FILTERING
+        // ──────────────────────────────────────────────
+        window.filterTeachers = function() {
+            const keyword = document.getElementById('search-keyword').value.toLowerCase().trim();
+            const expFilter = document.getElementById('search-exp').value;
+            const videoFilter = document.getElementById('search-video').value;
+
+            const filtered = allTeachers.filter(t => {
+                const matchKey = !keyword ||
+                    (t.name && t.name.toLowerCase().includes(keyword)) ||
+                    (t.languages && t.languages.toLowerCase().includes(keyword)) ||
+                    (t.bio && t.bio.toLowerCase().includes(keyword)) ||
+                    (t.subjects && JSON.stringify(t.subjects).toLowerCase().includes(keyword)) ||
+                    (t.qualifications && JSON.stringify(t.qualifications).toLowerCase().includes(keyword));
+
+                let matchExp = true;
+                if (expFilter) {
+                    const yrs = parseInt(t.experience) || 0;
+                    if (expFilter === "1" && yrs < 1) matchExp = false;
+                    if (expFilter === "3" && yrs < 3) matchExp = false;
+                    if (expFilter === "5" && yrs < 5) matchExp = false;
+                }
+
+                let matchVideo = true;
+                if (videoFilter === "yes" && !t.videoUrl) matchVideo = false;
+
+                return matchKey && matchExp && matchVideo;
+            });
+            window.renderTeachers(filtered);
+        };
+
+        // ──────────────────────────────────────────────
+        // HELPER: check if a string is a URL
+        // ──────────────────────────────────────────────
+        const isUrl = (str) => typeof str === 'string' && (str.startsWith('http://') || str.startsWith('https://'));
+
+        // ──────────────────────────────────────────────
+        // MODAL HISTORY MANAGEMENT
+        // ──────────────────────────────────────────────
+        const modal = document.getElementById('teacher-modal');
+        const closeBtn = document.getElementById('close-modal-btn');
+
+        function openModal() {
+            modal.classList.add('active');
+            // Push a new state to enable back button closing
+            history.pushState({ modalOpen: true }, '', '#teacher-profile');
+        }
+
+        function closeModal(suppressHistory = false) {
+            modal.classList.remove('active');
+            if (!suppressHistory && history.state && history.state.modalOpen) {
+                history.back();
+            }
+        }
+
+        window.addEventListener('popstate', (event) => {
+            if (modal.classList.contains('active')) {
+                modal.classList.remove('active');
+            }
+        });
+
+        closeBtn.addEventListener('click', () => {
+            closeModal(false);
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal(false);
+            }
+        });
+
+        // ──────────────────────────────────────────────
+        // CHECK SUBSCRIPTION STATUS
+        // ──────────────────────────────────────────────
+        async function checkSubscriptionStatus(uid) {
+            try {
+                const subDoc = await window.fb.getDoc(window.fb.doc(window.db, 'subscriptions', uid));
+                if (subDoc.exists()) {
+                    const data = subDoc.data();
+                    if (data.status === 'active' && data.expiryDate && data.expiryDate.toMillis() > Date.now()) {
+                        return true;
+                    }
+                }
+                return false;
+            } catch (e) {
+                console.error('Subscription check failed', e);
+                return false;
+            }
+        }
+
+        // ──────────────────────────────────────────────
+        // OPEN TEACHER PROFILE MODAL
+        // ──────────────────────────────────────────────
+        window.openTeacherProfile = function(tid) {
+            const t = allTeachers.find(x => x.id === tid);
+            if (!t) return;
+            currentTeacherContext = t;
+
+            document.getElementById('tm-name').innerText = t.name || 'Unnamed Teacher';
+            document.getElementById('tm-avatar').src = t.avatarUrl ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name || 'T')}&background=0F172A&color=FFFFFF`;
+            document.getElementById('tm-bio').innerText = t.bio || "No professional summary provided by this teacher.";
+
+            let badges =
+                `<span class="badge badge-navy"><i class="fa-solid fa-briefcase"></i> ${t.experience ? t.experience + ' Years Experience' : 'Entry Level'}</span>`;
+            if (t.languages) badges +=
+                `<span class="badge badge-blue"><i class="fa-solid fa-language"></i> ${t.languages}</span>`;
+            if (t.country || t.location) badges +=
+                `<span class="badge badge-navy"><i class="fa-solid fa-location-dot"></i> ${t.country || t.location}</span>`;
+            document.getElementById('tm-badges').innerHTML = badges;
+
+            const vidSec = document.getElementById('tm-video-section');
+            if (t.videoUrl) {
+                vidSec.style.display = 'block';
+                document.getElementById('tm-video').src = t.videoUrl;
+            } else {
+                vidSec.style.display = 'none';
+                document.getElementById('tm-video').src = "";
+            }
+
+            const detailsContainer = document.getElementById('tm-dynamic-details');
+            const tagsContainer = document.getElementById('tm-dynamic-tags');
+            detailsContainer.innerHTML = '';
+            tagsContainer.innerHTML = '';
+
+            Object.keys(t).forEach(key => {
+                const cleanKey = key.toLowerCase().trim();
+                const value = t[key];
+
+                if (isSensitiveField(cleanKey)) return;
+                if (value === null || value === undefined || value === '') return;
+                if (Array.isArray(value) && value.length === 0) return;
+
+                const formattedLabel = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+
+                if (Array.isArray(value)) {
+                    let listHtml =
+                        `<div style="margin-bottom: 1.25rem; grid-column: 1/-1;"><div class="detail-label" style="margin-bottom:0.4rem;">${formattedLabel}</div><div class="tag-container">`;
+
+                    value.forEach(item => {
+                        if (typeof item === 'object' && item !== null) {
+                            const docUrl = item.url || item.link || item.file;
+                            const docName = item.name || item.title || item.degree || "Document";
+                            if (docUrl) {
+                                listHtml +=
+                                    `<a href="${docUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm"><i class="fa-regular fa-file-pdf"></i> View ${docName}</a>`;
+                            }
+                        } else if (isUrl(item)) {
+                            listHtml +=
+                                `<a href="${item}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm"><i class="fa-solid fa-link"></i> View Document</a>`;
+                        } else if (item) {
+                            listHtml += `<span class="tag-item">${item}</span>`;
+                        }
+                    });
+
+                    listHtml += `</div></div>`;
+                    tagsContainer.insertAdjacentHTML('beforeend', listHtml);
+
+                } else if (typeof value === 'object' && value !== null) {
+                    const docUrl = value.url || value.link || value.file;
+                    if (docUrl) {
+                        detailsContainer.insertAdjacentHTML('beforeend', `
+                            <div class="detail-item">
+                                <div class="detail-label">${formattedLabel}</div>
+                                <a href="${docUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Document</a>
+                            </div>
+                        `);
+                    }
+
+                } else if (isUrl(value)) {
+                    detailsContainer.insertAdjacentHTML('beforeend', `
+                        <div class="detail-item">
+                            <div class="detail-label">${formattedLabel}</div>
+                            <a href="${value}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Link</a>
+                        </div>
+                    `);
+
+                } else {
+                    detailsContainer.insertAdjacentHTML('beforeend', `
+                        <div class="detail-item">
+                            <div class="detail-label">${formattedLabel}</div>
+                            <div class="detail-value">${String(value)}</div>
+                        </div>
+                    `);
+                }
+            });
+
+            openModal();
+        };
+
+        // ──────────────────────────────────────────────
+        // HANDLE INVITE (SUBSCRIPTION CHECK)
+        // ──────────────────────────────────────────────
+        window.handleInvite = async function() {
+            // Close modal first
+            if (modal.classList.contains('active')) {
+                if (history.state && history.state.modalOpen) {
+                    history.back();
+                } else {
+                    modal.classList.remove('active');
+                }
+            }
+
+            // Check subscription
+            const isSubscribed = await checkSubscriptionStatus(window.currentUser.uid);
+            if (!isSubscribed) {
+                showToast("You need an active subscription to invite teachers. Redirecting...", "error");
+                setTimeout(() => {
+                    window.location.href = 'subscriptions.html';
+                }, 1500);
+                return;
+            }
+
+            // Proceed with invitation
+            try {
+                const threadData = {
+                    participants: [currentTeacherContext.id, window.currentUser.uid],
+                    jobTitle: `Interview Invite from ${window.currentUser.name}`,
+                    updatedAt: window.fb.serverTimestamp(),
+                    teacherName: currentTeacherContext.name
+                };
+                const threadRef = await window.fb.addDoc(window.fb.collection(window.db, "threads"), threadData);
+
+                await window.fb.addDoc(window.fb.collection(window.db, `threads/${threadRef.id}/messages`), {
+                    senderId: window.currentUser.uid,
+                    text: `Hello ${currentTeacherContext.name}, we are incredibly impressed by your qualifications and experience! We are highly interested in the prospect of working with you and would love to invite you for an interview to discuss this further.`,
+                    timestamp: window.fb.serverTimestamp()
+                });
+
+                showToast("Invitation sent! Redirecting to messages...", "success");
+                setTimeout(() => {
+                    window.location.href = 'https://teacherbeeconnect.blogspot.com/p/recruiterinboxhtml.html';
+                }, 1200);
+            } catch (e) {
+                showToast("Error sending invitation.", "error");
+            }
+        };
+    </script>
+</body>
+</html>
