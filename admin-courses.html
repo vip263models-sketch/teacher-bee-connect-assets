@@ -4,39 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Course Manager · TeacherBee Connect</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     :root {
-      --primary: #4F46E5;
-      --primary-hover: #4338CA;
-      --primary-light: #EEF2FF;
-      --surface: #FFFFFF;
-      --surface-alt: #F8FAFC;
-      --bg-color: #F1F5F9;
-      --text-main: #0F172A;
-      --text-secondary: #334155;
-      --text-muted: #64748B;
-      --border: #E2E8F0;
-      --danger: #EF4444;
-      --success: #10B981;
-      --warning: #F59E0B;
-      --radius-sm: 10px;
-      --radius-md: 16px;
-      --radius-lg: 24px;
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --primary: #4F46E5; --primary-hover: #4338CA; --primary-light: #EEF2FF;
+      --surface: #FFFFFF; --surface-alt: #F8FAFC; --bg-color: #F1F5F9;
+      --text-main: #0F172A; --text-secondary: #334155; --text-muted: #64748B;
+      --border: #E2E8F0; --danger: #EF4444; --success: #10B981;
+      --radius-sm: 10px; --radius-md: 16px; --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
       --shadow-md: 0 8px 30px rgba(0,0,0,0.08);
-      --transition: 0.2s ease;
+      --transition: 0.15s ease;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-    body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; font-size: 1rem; line-height: 1.5; }
+    body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; line-height: 1.5; }
     .container { max-width: 1440px; margin: 0 auto; padding: 2rem 1.5rem; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
     .header h1 { font-size: 1.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem; }
     .badge-unread { background: var(--danger); color: #fff; border-radius: 20px; padding: 0.2rem 0.7rem; font-size: 0.75rem; font-weight: 700; margin-left: 0.5rem; display: none; }
     .badge-unread.visible { display: inline-flex; }
-
-    /* Tabs */
     .tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
     .tab {
       padding: 0.8rem 1.5rem; border-radius: var(--radius-sm); font-weight: 500; font-size: 0.95rem;
@@ -48,8 +34,6 @@
     .tab:hover:not(.active) { background: var(--surface-alt); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-
-    /* Buttons */
     .btn {
       padding: 0.7rem 1.4rem; border-radius: var(--radius-sm); font-weight: 500; font-size: 0.9rem;
       cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 0.5rem;
@@ -62,11 +46,6 @@
     .btn-danger { background: #FEF2F2; color: var(--danger); }
     .btn-danger:hover { background: var(--danger); color: #fff; }
     .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
-    .btn-approve { background: var(--success); color: #fff; }
-    .btn-reject { background: var(--danger); color: #fff; }
-    .btn-delete { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-
-    /* Course grid */
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.75rem; }
     .course-card {
       background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border);
@@ -100,7 +79,6 @@
     .modal-close { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
     .modal-close:hover { color: var(--text-main); }
 
-    /* Form */
     .form-group { margin-bottom: 1.4rem; }
     .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; }
     .form-group input, .form-group select, .form-group textarea {
@@ -122,30 +100,23 @@
       padding: 1rem; background: white; outline: none; font-size: 1rem; line-height: 1.6;
     }
 
-    /* Attachment rows */
+    /* Attachment row (compact) */
     .attachment-row {
-      display: flex; align-items: center; gap: 0.8rem; background: var(--surface-alt);
-      padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 0.5rem; background: var(--surface-alt);
+      padding: 0.5rem 0.8rem; border-radius: var(--radius-sm); margin-bottom: 0.5rem;
       border: 1px solid var(--border); flex-wrap: wrap;
     }
-    .attachment-row .file-info { flex: 1; display: flex; align-items: center; gap: 0.5rem; }
-    .attachment-row .file-name { font-weight: 500; word-break: break-all; }
-    .attachment-row input.rename, .attachment-row input.instruction {
-      padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem;
+    .attachment-row .file-icon { color: var(--text-muted); }
+    .attachment-row input.rename {
+      width: 120px; padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; font-size: 0.8rem;
     }
-    .attachment-row input.rename { flex: 0 0 180px; }
-    .attachment-row input.instruction { flex: 2; }
+    .attachment-row input.instruction {
+      flex: 1; padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; font-size: 0.8rem;
+    }
+    .attachment-row .btn-sm { padding: 0.2rem 0.5rem; }
 
-    /* Quiz */
     .quiz-builder { background: var(--surface-alt); border-radius: var(--radius-sm); padding: 1.5rem; margin: 1.25rem 0; }
-    .quiz-question {
-      margin-bottom: 1.2rem; border-left: 4px solid var(--primary); padding-left: 1rem;
-      background: #fff; border-radius: 0 8px 8px 0; padding: 0.9rem;
-    }
-    .quiz-question input[type="text"] { width: 100%; margin-bottom: 0.4rem; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; }
-    .quiz-option-row { display: flex; align-items: center; gap: 0.5rem; margin: 0.3rem 0; }
-
-    /* Module list */
+    .quiz-question { margin-bottom: 1.2rem; border-left: 4px solid var(--primary); padding: 0.9rem; background: #fff; border-radius: 0 8px 8px 0; }
     .module-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
     .module-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
@@ -153,46 +124,28 @@
       transition: var(--transition);
     }
     .module-card:hover { box-shadow: var(--shadow-sm); }
-    .module-card h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
 
-    /* Payments redesigned */
-    .payments-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem;
-      margin-top: 1rem;
-    }
+    /* Payments cards */
+    .payments-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
     .payment-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
-      padding: 1.5rem; box-shadow: var(--shadow-sm); transition: var(--transition);
+      padding: 1.5rem; box-shadow: var(--shadow-sm);
     }
-    .payment-card:hover { box-shadow: var(--shadow-md); }
     .payment-card .customer-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-    .payment-card .avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); }
-    .payment-card .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-    .payment-card .details { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; }
+    .payment-card .avatar {
+      width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light);
+      display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); overflow: hidden;
+    }
+    .payment-card .avatar img { width: 100%; height: 100%; object-fit: cover; }
     .status-badge { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
     .status-pending { background: #FEF3C7; color: #92400E; }
     .status-approved { background: #D1FAE5; color: #065F46; }
     .status-rejected { background: #FEE2E2; color: #991B1B; }
-    .payment-card .actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
 
-    /* Preview course modal */
-    .course-preview-modal .modal-content { max-width: 900px; max-height: 85vh; overflow-y: auto; padding: 2rem; }
-    .preview-module { margin-bottom: 2rem; }
-    .preview-module h3 { font-size: 1.3rem; margin-bottom: 0.8rem; }
-    .preview-attachment { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; }
-
-    /* Toast */
-    .toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
-    .toast { padding: 14px 24px; border-radius: 10px; color: #fff; font-weight: 500; font-size: 0.9rem; animation: slideIn 0.3s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-    .toast.success { background: #059669; }
-    .toast.error { background: #DC2626; }
-    .toast.info { background: #1E293B; }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-    /* Image / Document preview modals (inbox style) */
+    /* Preview modals (inbox style) */
     .preview-modal {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; flex-direction: column;
+      background: rgba(0,0,0,0.75); z-index: 10000; align-items: center; justify-content: center; flex-direction: column;
     }
     .preview-modal.active { display: flex; }
     .preview-modal-content {
@@ -204,19 +157,26 @@
       padding: 14px 20px; border-bottom: 1px solid var(--border);
       background: var(--primary); color: #fff;
     }
+    .preview-modal-header h3 { font-size: 1rem; }
+    .preview-modal-header button { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
     .preview-modal-iframe { flex: 1; border: none; }
     .image-modal {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.9); z-index: 10001; flex-direction: column;
-      align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.9); z-index: 10001; flex-direction: column; align-items: center; justify-content: center;
     }
     .image-modal.active { display: flex; }
     .image-modal-img { max-width: 90vw; max-height: 80vh; border-radius: 8px; }
 
+    .toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
+    .toast { padding: 14px 24px; border-radius: 10px; color: #fff; font-weight: 500; font-size: 0.9rem; animation: slideIn 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .toast.success { background: #059669; }
+    .toast.error { background: #DC2626; }
+    .toast.info { background: #1E293B; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
     @media (max-width: 768px) {
       .container { padding: 1rem; }
       .modal { padding: 1.5rem; }
-      .payment-card { padding: 1rem; }
     }
   </style>
 </head>
@@ -284,7 +244,7 @@
           <div class="form-group">
             <label>Thumbnail</label>
             <input type="file" id="thumbnail-input" accept="image/*" onchange="uploadThumbnail(this)" />
-            <div id="thumbnail-preview" style="margin-top:0.7rem;"></div>
+            <div id="thumbnail-preview" style="margin-top:0.7rem; max-width:200px;"></div>
           </div>
           <div class="form-group"><label>Start Date</label><input type="date" id="course-start-date" /></div>
           <div class="form-group"><label>Status</label><select id="course-status"><option value="published">Published</option><option value="draft">Draft</option><option value="closed">Closed</option></select></div>
@@ -295,7 +255,7 @@
 
     <!-- MODULE EDITOR MODAL -->
     <div class="modal-overlay" id="module-modal">
-      <div class="modal" style="max-width:900px;">
+      <div class="modal" style="max-width:850px;">
         <button class="modal-close" onclick="closeModal('module-modal')"><i class="fa-solid fa-times"></i></button>
         <h2 id="module-modal-title">New Module</h2>
         <form id="module-form" onsubmit="return false;">
@@ -314,7 +274,7 @@
           <div class="form-group">
             <label>Attachments</label>
             <input type="file" id="module-attachment-input" onchange="uploadModuleFile(this)" multiple />
-            <div id="module-attachments"></div>
+            <div id="module-attachments" style="margin-top:0.5rem;"></div>
           </div>
           <div class="quiz-builder">
             <h4>Quiz (optional)</h4>
@@ -326,22 +286,31 @@
       </div>
     </div>
 
-    <!-- COURSE PREVIEW MODAL -->
+    <!-- COURSE PREVIEW MODAL (basic info) -->
     <div class="modal-overlay" id="course-preview-modal">
-      <div class="modal course-preview-modal">
+      <div class="modal" style="max-width:500px; text-align:center;">
         <button class="modal-close" onclick="closeModal('course-preview-modal')"><i class="fa-solid fa-times"></i></button>
-        <h2 id="preview-course-title">Course Preview</h2>
-        <div id="preview-course-content"></div>
+        <img id="preview-thumb" src="" style="max-width:100%; border-radius:12px; margin-bottom:1rem;" />
+        <h2 id="preview-title"></h2>
+        <p style="color:var(--text-muted); margin:0.5rem 0;" id="preview-desc"></p>
+        <p style="font-weight:700; font-size:1.2rem;">$<span id="preview-price"></span></p>
+        <p id="preview-date" style="color:var(--text-secondary);"></p>
+        <p><span class="status-badge" id="preview-status"></span></p>
       </div>
     </div>
 
-    <!-- IMAGE / DOCUMENT PREVIEW MODALS -->
+    <!-- DOCUMENT PREVIEW MODAL (inbox) -->
     <div class="preview-modal" id="previewModal">
       <div class="preview-modal-content">
-        <div class="preview-modal-header"><h3 id="previewModalTitle">Document Preview</h3><button onclick="closePreviewModal()" style="background:none; border:none; color:#fff; font-size:1.5rem;">&times;</button></div>
+        <div class="preview-modal-header">
+          <h3 id="previewModalTitle">Document Preview</h3>
+          <button onclick="closePreviewModal()">&times;</button>
+        </div>
         <iframe id="previewIframe" class="preview-modal-iframe" src="" allowfullscreen></iframe>
       </div>
     </div>
+
+    <!-- IMAGE PREVIEW MODAL (inbox) -->
     <div class="image-modal" id="imageModal">
       <img id="imageModalImg" class="image-modal-img" src="" alt="" />
       <div style="margin-top:1.5rem; display:flex; gap:1rem;">
@@ -369,7 +338,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const GAS_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
 
     let currentAdmin = null;
     let allCourses = [];
@@ -388,7 +357,6 @@
       listenForPayments();
     });
 
-    // TABS
     window.switchTab = (tabName) => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -399,17 +367,18 @@
     };
     document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
 
-    // COURSES
+    // ────── COURSES ──────
     async function loadCourses() {
       const q = query(collection(db, 'courses'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
       allCourses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderCoursesGrid();
     }
+
     function renderCoursesGrid() {
       const grid = document.getElementById('courses-grid');
       if (allCourses.length === 0) {
-        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:var(--text-muted);">No courses yet.</div>';
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem;">No courses yet.</div>';
         return;
       }
       grid.innerHTML = allCourses.map(c => {
@@ -421,7 +390,7 @@
             <div class="card-body">
               <span class="badge ${catBadge}">${c.category}</span>
               <h3>${escapeHTML(c.title)}</h3>
-              <p style="color:var(--text-muted); font-size:0.9rem;">$${c.price} · ${c.enrolledCount||0} enrolled</p>
+              <p style="color:var(--text-muted); font-size:0.9rem;">$${c.price} · ${c.enrolledCount || 0} enrolled</p>
               <div class="card-actions">
                 <button class="btn btn-outline btn-sm" onclick="editCourse('${c.id}')">Edit</button>
                 <button class="btn btn-primary btn-sm" onclick="openBuilder('${c.id}')">Modules</button>
@@ -459,26 +428,45 @@
     }
     window.closeModal = (modalId) => document.getElementById(modalId).classList.remove('active');
 
-    // THUMBNAIL UPLOAD (inbox style)
+    // ────── THUMBNAIL UPLOAD (inbox logic) ──────
     window.uploadThumbnail = async (input) => {
       const file = input.files[0];
       if (!file) return;
       const toast = showToast(`Uploading ${file.name}…`, 'info');
       try {
-        const uploaded = await uploadFileToDrive(file);
+        const uploaded = await uploadToDrive(file);
         document.getElementById('thumbnail-preview').innerHTML = `<img src="${uploaded.url}" style="max-width:200px; border-radius:8px;" />`;
-        showToast('Thumbnail uploaded!', 'success');
-        // store url hidden? we'll handle in saveCourse
         window._thumbUrl = uploaded.url;
+        toast.remove();
+        showToast('Thumbnail uploaded!', 'success');
       } catch (e) {
-        showToast('Upload error: ' + e.message, 'error');
+        toast.remove();
+        showToast('Upload failed – please check your connection', 'error');
       }
-      if (toast) toast.remove();
       input.value = '';
     };
 
-    // DRIVE UPLOAD (shared)
-    async function uploadFileToDrive(file) {
+    // ────── MODULE FILE UPLOAD ──────
+    window.uploadModuleFile = async (input) => {
+      const files = input.files;
+      if (!files.length) return;
+      for (let file of files) {
+        const toast = showToast(`Uploading ${file.name}…`, 'info');
+        try {
+          const uploaded = await uploadToDrive(file);
+          tempAttachments.push({ ...uploaded, newName: file.name, instructions: '' });
+          renderTempAttachments();
+          toast.remove();
+          showToast('Upload complete!', 'success');
+        } catch (e) {
+          toast.remove();
+          showToast('Upload failed', 'error');
+        }
+      }
+      input.value = '';
+    };
+
+    async function uploadToDrive(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = async (e) => {
@@ -489,7 +477,7 @@
             file: e.target.result
           };
           try {
-            const res = await fetch(GAS_UPLOAD_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
             const data = await res.json();
             if (data.status === 'success' && data.certificates?.length > 0) {
               const cert = data.certificates[0];
@@ -499,10 +487,28 @@
             }
           } catch (err) { reject(err); }
         };
+        reader.onerror = () => reject(new Error('Read error'));
         reader.readAsDataURL(file);
       });
     }
 
+    function renderTempAttachments() {
+      const container = document.getElementById('module-attachments');
+      container.innerHTML = tempAttachments.map((att, i) => `
+        <div class="attachment-row">
+          <i class="fa-solid fa-paperclip file-icon"></i>
+          <span style="flex:1; word-break:break-all; font-size:0.9rem;">${escapeHTML(att.newName || att.name)}</span>
+          <input type="text" class="rename" placeholder="Rename" value="${escapeHTML(att.newName || att.name)}" onchange="updateAttachmentName(${i}, this.value)" />
+          <input type="text" class="instruction" placeholder="Instructions" value="${escapeHTML(att.instructions || '')}" onchange="updateAttachmentInstruction(${i}, this.value)" />
+          <button class="btn btn-danger btn-sm" onclick="removeTempAttachment(${i})">✕</button>
+        </div>
+      `).join('');
+    }
+    window.updateAttachmentName = (i, val) => { if (tempAttachments[i]) tempAttachments[i].newName = val; };
+    window.updateAttachmentInstruction = (i, val) => { if (tempAttachments[i]) tempAttachments[i].instructions = val; };
+    window.removeTempAttachment = (i) => { tempAttachments.splice(i, 1); renderTempAttachments(); };
+
+    // ────── SAVE COURSE ──────
     window.saveCourse = async () => {
       const title = document.getElementById('course-title').value.trim();
       const category = document.getElementById('course-category').value;
@@ -510,7 +516,7 @@
       const description = document.getElementById('course-description').value.trim();
       const status = document.getElementById('course-status').value;
       const startDate = document.getElementById('course-start-date').value;
-      const thumbnailUrl = window._thumbUrl || ''; // from upload
+      const thumbnailUrl = window._thumbUrl || document.querySelector('#thumbnail-preview img')?.src || '';
       if (!title || isNaN(price)) { showToast('Title and price required', 'error'); return; }
       const courseData = { title, category, price, description, thumbnailUrl, status, startDate: startDate ? new Date(startDate) : null, updatedAt: serverTimestamp() };
       const courseId = document.getElementById('course-id').value;
@@ -527,7 +533,7 @@
         closeModal('course-modal');
         loadCourses();
         showToast('Course saved!', 'success');
-      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+      } catch (e) { showToast('Error saving course', 'error'); }
     };
 
     window.deleteCourse = async (courseId) => {
@@ -537,42 +543,22 @@
       showToast('Course deleted.', 'info');
     };
 
-    // COURSE PREVIEW (Teacher View)
-    window.previewCourse = async (courseId) => {
+    // ────── COURSE PREVIEW (basic info only) ──────
+    window.previewCourse = (courseId) => {
       const course = allCourses.find(c => c.id === courseId);
       if (!course) return;
-      const modSnap = await getDocs(collection(db, `courses/${courseId}/modules`));
-      let html = `<h3 style="margin-top:1rem;">${escapeHTML(course.title)}</h3><p>${escapeHTML(course.description || '')}</p>`;
-      if (modSnap.empty) html += '<p>No modules yet.</p>';
-      else {
-        modSnap.forEach((doc, idx) => {
-          const mod = doc.data();
-          html += `<div class="preview-module"><h3>Module ${idx+1}: ${escapeHTML(mod.title)}</h3><div>${mod.content || ''}</div>`;
-          if (mod.attachments && mod.attachments.length) {
-            html += '<h4>Attachments</h4>';
-            mod.attachments.forEach(att => {
-              html += `<div class="preview-attachment"><i class="fa-solid fa-paperclip"></i> <strong>${escapeHTML(att.name)}</strong>`;
-              if (att.instructions) html += `<span style="color:var(--text-muted); margin-left:0.5rem;">– ${escapeHTML(att.instructions)}</span>`;
-              html += `<a href="${att.url}" target="_blank" style="margin-left:auto;" class="btn btn-sm btn-outline">Open</a></div>`;
-            });
-          }
-          if (mod.quiz && mod.quiz.length) {
-            html += '<h4>Quiz</h4>';
-            mod.quiz.forEach(q => {
-              html += `<p><strong>${escapeHTML(q.question)}</strong></p><ul>`;
-              q.options.forEach((opt, oi) => html += `<li>${String.fromCharCode(65+oi)}) ${escapeHTML(opt)}</li>`);
-              html += '</ul>';
-            });
-          }
-          html += '</div>';
-        });
-      }
-      document.getElementById('preview-course-title').textContent = course.title;
-      document.getElementById('preview-course-content').innerHTML = html;
+      document.getElementById('preview-thumb').src = course.thumbnailUrl || '';
+      document.getElementById('preview-title').textContent = course.title;
+      document.getElementById('preview-desc').textContent = course.description || '';
+      document.getElementById('preview-price').textContent = course.price;
+      document.getElementById('preview-date').textContent = course.startDate ? 'Starts: ' + course.startDate.toDate().toLocaleDateString() : 'No start date';
+      const statusEl = document.getElementById('preview-status');
+      statusEl.textContent = course.status;
+      statusEl.className = 'status-badge status-' + (course.status === 'published' ? 'approved' : course.status === 'draft' ? 'pending' : 'rejected');
       document.getElementById('course-preview-modal').classList.add('active');
     };
 
-    // MODULE BUILDER
+    // ────── MODULE BUILDER ──────
     window.openBuilder = async (courseId) => {
       currentCourseId = courseId;
       const course = allCourses.find(c => c.id === courseId);
@@ -603,29 +589,12 @@
             <p style="font-size:0.85rem; color:var(--text-muted);">${m.quiz?.length||0} quiz · ${m.attachments?.length||0} files</p>
           </div>
           <div style="display:flex; gap:0.5rem;">
-            <button class="btn btn-outline btn-sm" onclick="previewSingleModule('${m.id}')">Preview</button>
             <button class="btn btn-outline btn-sm" onclick="editModule('${m.id}')">Edit</button>
             <button class="btn btn-danger btn-sm" onclick="deleteModule('${m.id}')">Delete</button>
           </div>
         </div>
       `).join('');
     }
-
-    window.previewSingleModule = (moduleId) => {
-      const mod = modules.find(m => m.id === moduleId);
-      if (!mod) return;
-      const course = allCourses.find(c => c.id === currentCourseId);
-      document.getElementById('preview-course-title').textContent = mod.title;
-      document.getElementById('preview-course-content').innerHTML = `
-        <div class="preview-module">
-          <h3>${escapeHTML(mod.title)}</h3>
-          <div>${mod.content || ''}</div>
-          ${mod.attachments && mod.attachments.length ? `<h4>Attachments</h4>` + mod.attachments.map(att => `<div class="preview-attachment"><i class="fa-solid fa-paperclip"></i> <strong>${escapeHTML(att.name)}</strong> ${att.instructions ? `<span style="color:var(--text-muted);">– ${escapeHTML(att.instructions)}</span>` : ''} <a href="${att.url}" target="_blank" class="btn btn-sm btn-outline">Open</a></div>`).join('') : ''}
-          ${mod.quiz && mod.quiz.length ? '<h4>Quiz</h4>' + mod.quiz.map(q => `<p><strong>${escapeHTML(q.question)}</strong></p><ul>${q.options.map((opt,oi)=>`<li>${String.fromCharCode(65+oi)}) ${escapeHTML(opt)}</li>`).join('')}</ul>`).join('') : ''}
-        </div>
-      `;
-      document.getElementById('course-preview-modal').classList.add('active');
-    };
 
     window.openModuleModal = (moduleId = null) => {
       document.getElementById('module-modal-title').textContent = moduleId ? 'Edit Module' : 'New Module';
@@ -654,42 +623,7 @@
 
     window.formatDoc = (cmd) => { document.execCommand(cmd, false, null); document.getElementById('module-content').focus(); };
 
-    // UPLOAD MODULE FILES
-    window.uploadModuleFile = async (input) => {
-      const files = input.files;
-      if (!files.length) return;
-      for (let file of files) {
-        const toast = showToast(`Uploading ${file.name}…`, 'info');
-        try {
-          const uploaded = await uploadFileToDrive(file);
-          tempAttachments.push({ ...uploaded, newName: file.name, instructions: '' });
-          renderTempAttachments();
-          showToast('Uploaded!', 'success');
-        } catch (e) { showToast('Upload error: ' + e.message, 'error'); }
-        if (toast) toast.remove();
-      }
-      input.value = '';
-    };
-
-    function renderTempAttachments() {
-      const container = document.getElementById('module-attachments');
-      container.innerHTML = tempAttachments.map((att, i) => `
-        <div class="attachment-row">
-          <div class="file-info">
-            <i class="fa-solid fa-paperclip"></i>
-            <span class="file-name">${escapeHTML(att.newName || att.name)}</span>
-          </div>
-          <input type="text" class="rename" placeholder="Rename file" value="${escapeHTML(att.newName || att.name)}" onchange="updateAttachmentName(${i}, this.value)" />
-          <input type="text" class="instruction" placeholder="Instructions (e.g. Watch this video)" value="${escapeHTML(att.instructions || '')}" onchange="updateAttachmentInstruction(${i}, this.value)" />
-          <button type="button" class="btn btn-danger btn-sm" onclick="removeTempAttachment(${i})">✕</button>
-        </div>
-      `).join('');
-    }
-    window.updateAttachmentName = (i, val) => { if (tempAttachments[i]) tempAttachments[i].newName = val; };
-    window.updateAttachmentInstruction = (i, val) => { if (tempAttachments[i]) tempAttachments[i].instructions = val; };
-    window.removeTempAttachment = (i) => { tempAttachments.splice(i, 1); renderTempAttachments(); };
-
-    // QUIZ
+    // Quiz
     window.addQuizQuestion = () => renderQuizQuestion({ question: '', options: [''], correctIndex: 0 }, document.querySelectorAll('#quiz-questions .quiz-question').length);
     function renderQuizQuestion(q, index) {
       const container = document.getElementById('quiz-questions');
@@ -713,7 +647,16 @@
       `;
       container.appendChild(div);
     }
-    window.addOptionToQuestion = (btn) => { /* unchanged */ };
+    window.addOptionToQuestion = (btn) => {
+      const qDiv = btn.closest('.quiz-question');
+      const optionsDiv = qDiv.querySelector('.quiz-options');
+      const radioName = qDiv.querySelector('input[type="radio"]').name;
+      const optCount = optionsDiv.querySelectorAll('.quiz-opt-input').length;
+      const row = document.createElement('div');
+      row.className = 'quiz-option-row';
+      row.innerHTML = `<input type="text" class="quiz-opt-input" placeholder="Option ${String.fromCharCode(65+optCount)}" /><label><input type="radio" name="${radioName}" value="${optCount}" /> Correct</label>`;
+      optionsDiv.appendChild(row);
+    };
     window.removeQuizQuestion = (btn) => btn.closest('.quiz-question').remove();
 
     window.saveModule = async () => {
@@ -746,7 +689,7 @@
         showToast('Module saved!', 'success');
         closeModal('module-modal');
         loadModules();
-      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+      } catch (e) { showToast('Error saving module', 'error'); }
     };
 
     window.deleteModule = async (moduleId) => {
@@ -756,7 +699,7 @@
       showToast('Module deleted.', 'info');
     };
 
-    // PAYMENTS (redesigned with cards and avatars)
+    // ────── PAYMENTS ──────
     function listenForPayments() {
       const q = query(collection(db, 'payments'), where('type', 'in', ['workshop', 'tefl']), orderBy('createdAt', 'desc'));
       onSnapshot(q, async (snap) => {
@@ -764,7 +707,6 @@
         let pendingCount = 0;
         for (let docSnap of snap.docs) {
           const data = docSnap.data();
-          // fetch user data if not cached
           if (!userCache[data.userId] && data.userId) {
             const userDoc = await getDoc(doc(db, 'users', data.userId));
             if (userDoc.exists()) userCache[data.userId] = userDoc.data();
@@ -816,14 +758,14 @@
               </div>
               <span class="status-badge status-${p.status}" style="margin-left:auto;">${p.status}</span>
             </div>
-            <div class="details">
+            <div style="margin:0.8rem 0;">
               <div><span style="color:var(--text-muted);">Invoice:</span> #${p.id.substring(0,8).toUpperCase()}</div>
               <div><span style="color:var(--text-muted);">Course:</span> ${escapeHTML(p.courseName || 'Loading...')}</div>
               <div><strong>$${p.amount || 0}</strong></div>
             </div>
-            <div class="actions">
-              ${p.status === 'pending' ? `<button class="btn btn-approve btn-sm" onclick="approvePayment('${p.id}')">Approve</button><button class="btn btn-reject btn-sm" onclick="rejectPayment('${p.id}')">Reject</button>` : ''}
-              <button class="btn btn-delete btn-sm" onclick="deletePayment('${p.id}')">Delete</button>
+            <div style="display:flex; gap:0.5rem;">
+              ${p.status === 'pending' ? `<button class="btn btn-sm" style="background:var(--success); color:#fff;" onclick="approvePayment('${p.id}')">Approve</button><button class="btn btn-sm" style="background:var(--danger); color:#fff;" onclick="rejectPayment('${p.id}')">Reject</button>` : ''}
+              <button class="btn btn-sm" style="color:var(--danger); border:1px solid var(--danger);" onclick="deletePayment('${p.id}')">Delete</button>
             </div>
           </div>
         `;
@@ -856,7 +798,7 @@
       showToast('Invoice deleted.', 'success');
     };
 
-    // PREVIEW MODALS (inbox style)
+    // ────── PREVIEW MODALS (inbox) ──────
     window.openPreviewModal = (url, fileName) => {
       document.getElementById('previewModalTitle').textContent = fileName || 'Document Preview';
       document.getElementById('previewIframe').src = url;
@@ -885,12 +827,7 @@
       setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
       return toast;
     }
-
-    function escapeHTML(str) {
-      const div = document.createElement('div');
-      div.textContent = str || '';
-      return div.innerHTML;
-    }
+    function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
   </script>
 </body>
-  </html>
+</html>
