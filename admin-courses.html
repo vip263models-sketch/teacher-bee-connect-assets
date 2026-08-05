@@ -299,7 +299,7 @@
         }
         .course-card-banner {
             width: 100%;
-            height: 150px;
+            height: 160px;
             object-fit: cover;
             display: block;
             background: #E8ECF2;
@@ -477,7 +477,7 @@
             }
         }
 
-        /* ── UPLOAD ZONE ── */
+        /* ── UPLOAD ZONE (Banner) ── */
         .upload-zone {
             border: 2px dashed var(--border-strong);
             border-radius: var(--radius-xs);
@@ -491,13 +491,13 @@
             border-color: var(--primary);
             background: #F8FAFD;
         }
-        .upload-thumb-preview {
-            max-width: 200px;
-            max-height: 120px;
+        .upload-banner-preview {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
             border-radius: 6px;
             margin-top: 0.7rem;
             display: none;
-            object-fit: cover;
             border: 1px solid var(--border-light);
         }
         .upload-progress-text {
@@ -668,6 +668,12 @@
             align-items: center;
             gap: 0.4rem;
             margin: 0.2rem 0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        .quiz-option-row.correct {
+            background: #ECFDF5;
         }
         .quiz-option-row input[type="text"] {
             flex: 1;
@@ -682,6 +688,15 @@
             gap: 3px;
             white-space: nowrap;
             cursor: pointer;
+        }
+        .quiz-correct-indicator {
+            display: none;
+            color: var(--success);
+            font-size: 0.75rem;
+            margin-left: 2px;
+        }
+        .quiz-option-row.correct .quiz-correct-indicator {
+            display: inline;
         }
 
         /* ── PAYMENTS ── */
@@ -929,6 +944,17 @@
             gap: 0.75rem;
         }
 
+        /* ── COURSE PREVIEW BANNER ── */
+        .preview-course-banner {
+            width: 100%;
+            max-height: 240px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            background: #E8ECF2;
+            display: block;
+        }
+
         /* ── TOAST ── */
         .toast-container {
             position: fixed;
@@ -964,14 +990,8 @@
             background: var(--primary);
         }
         @keyframes slideInToast {
-            from {
-                transform: translateX(40px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(40px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         .hidden {
             display: none !important;
@@ -1001,19 +1021,16 @@
         </div>
     </div>
 
-    <!-- Course Preview Modal -->
+    <!-- Course Preview Modal (no modules) -->
     <div class="modal-overlay" id="course-preview-modal">
         <div class="modal-dialog wide">
             <div class="modal-header-bar"></div>
             <button class="modal-close-btn" onclick="closeModal('course-preview-modal')"><i class="fa-solid fa-times"></i></button>
-            <div class="modal-body" id="course-preview-body">
-                <!-- filled dynamically -->
-            </div>
+            <div class="modal-body" id="course-preview-body"></div>
         </div>
     </div>
 
     <div class="app-wrapper">
-        <!-- Header -->
         <div class="page-header">
             <div class="page-brand">
                 <div class="page-brand-icon">TB</div>
@@ -1021,14 +1038,12 @@
             </div>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs-nav">
             <button class="tab-btn active" data-tab="courses"><i class="fa-solid fa-list"></i> Courses <span class="tab-badge" id="courses-badge">0</span></button>
             <button class="tab-btn" data-tab="builder" id="builder-tab-btn" style="display:none;"><i class="fa-solid fa-puzzle-piece"></i> Module Builder</button>
             <button class="tab-btn" data-tab="payments"><i class="fa-solid fa-file-invoice-dollar"></i> Payments <span class="tab-badge" id="payments-badge">0</span></button>
         </div>
 
-        <!-- Tab: Courses -->
         <div class="tab-content-panel active" id="content-courses">
             <div class="section-header">
                 <h2>All Courses</h2>
@@ -1042,7 +1057,6 @@
             </div>
         </div>
 
-        <!-- Tab: Module Builder -->
         <div class="tab-content-panel" id="content-builder">
             <div class="section-header">
                 <div style="display:flex;align-items:center;gap:0.75rem;">
@@ -1059,7 +1073,6 @@
             </div>
         </div>
 
-        <!-- Tab: Payments -->
         <div class="tab-content-panel" id="content-payments">
             <div class="section-header">
                 <h2>Course Payments</h2>
@@ -1113,14 +1126,14 @@
                     <div class="form-row">
                         <div class="form-group"><label class="form-label">Start Date (optional)</label><input type="date" class="form-input" id="course-start-date" /></div>
                         <div class="form-group">
-                            <label class="form-label">Thumbnail Image</label>
-                            <div class="upload-zone" onclick="document.getElementById('thumbnail-input').click()">
-                                <input type="file" id="thumbnail-input" accept="image/*" style="display:none;" onchange="uploadThumbnail(this)" />
-                                <input type="hidden" id="thumbnail-url" />
+                            <label class="form-label">Course Banner Image</label>
+                            <div class="upload-zone" onclick="document.getElementById('banner-input').click()">
+                                <input type="file" id="banner-input" accept="image/*" style="display:none;" onchange="uploadBanner(this)" />
+                                <input type="hidden" id="banner-url" />
                                 <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.3rem;color:var(--text-muted);"></i>
-                                <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Click to select image</p>
-                                <img id="thumbnail-preview-img" class="upload-thumb-preview" src="" alt="Preview" />
-                                <div class="upload-progress-text" id="thumbnail-progress"><i class="fa-solid fa-spinner fa-spin"></i> Uploading…</div>
+                                <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Click to select banner</p>
+                                <img id="banner-preview-img" class="upload-banner-preview" src="" alt="Banner Preview" />
+                                <div class="upload-progress-text" id="banner-progress"><i class="fa-solid fa-spinner fa-spin"></i> Uploading…</div>
                             </div>
                         </div>
                     </div>
@@ -1207,7 +1220,6 @@
             listenForPayments();
         });
 
-        // ── TAB SWITCHING ──
         window.switchTab = (tabName) => {
             document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content-panel').forEach(c => c.classList.remove('active'));
@@ -1220,7 +1232,6 @@
         };
         document.querySelectorAll('.tab-btn').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
 
-        // ── TOAST ──
         function showToast(msg, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -1232,10 +1243,8 @@
             return toast;
         }
 
-        // ── MODAL ──
         window.closeModal = (modalId) => document.getElementById(modalId).classList.remove('active');
 
-        // ── FILE UPLOAD ──
         function uploadFileWithToast(file) {
             return new Promise((resolve, reject) => {
                 const toastEl = showToast(`Uploading ${file.name}…`, 'info');
@@ -1257,33 +1266,30 @@
                         reject(err);
                     }
                 };
-                reader.onerror = () => { if (toastEl.parentNode) toastEl.remove();
-                    reject(new Error('Read error')); };
+                reader.onerror = () => { if (toastEl.parentNode) toastEl.remove(); reject(new Error('Read error')); };
                 reader.readAsDataURL(file);
             });
         }
 
-        // ── THUMBNAIL UPLOAD ──
-        window.uploadThumbnail = async (input) => {
+        window.uploadBanner = async (input) => {
             const file = input.files[0];
             if (!file) return;
-            document.getElementById('thumbnail-progress').style.display = 'block';
+            document.getElementById('banner-progress').style.display = 'block';
             try {
                 const uploaded = await uploadFileWithToast(file);
-                document.getElementById('thumbnail-url').value = uploaded.url;
-                const preview = document.getElementById('thumbnail-preview-img');
+                document.getElementById('banner-url').value = uploaded.url;
+                const preview = document.getElementById('banner-preview-img');
                 preview.src = uploaded.url;
                 preview.style.display = 'block';
-                showToast('Thumbnail uploaded!', 'success');
+                showToast('Banner uploaded!', 'success');
             } catch (e) {
                 showToast('Upload error: ' + e.message, 'error');
             } finally {
-                document.getElementById('thumbnail-progress').style.display = 'none';
+                document.getElementById('banner-progress').style.display = 'none';
             }
             input.value = '';
         };
 
-        // ── MODULE FILE UPLOAD ──
         window.uploadModuleFile = async (input) => {
             const files = input.files;
             if (!files.length) return;
@@ -1323,7 +1329,6 @@
             renderTempAttachments();
         };
 
-        // ── PREVIEW ATTACHMENT ──
         window.previewAttachment = (index) => {
             const att = tempAttachments[index];
             if (!att) return;
@@ -1336,7 +1341,6 @@
             }
         };
 
-        // ── PREVIEW MODALS ──
         window.openPreviewModal = (url, fileName) => {
             document.getElementById('previewModalTitle').textContent = fileName || 'Document Preview';
             document.getElementById('previewIframe').src = url;
@@ -1356,7 +1360,6 @@
             document.getElementById('imageModal').classList.remove('active');
         };
 
-        // ── COURSES ──
         async function loadCourses() {
             const q = query(collection(db, 'courses'), orderBy('createdAt', 'desc'));
             const snap = await getDocs(q);
@@ -1417,19 +1420,18 @@
             document.getElementById('course-description').value = course.description || '';
             document.getElementById('course-status').value = course.status || 'published';
             document.getElementById('course-start-date').value = course.startDate ? course.startDate.toDate().toISOString().split('T')[0] : '';
-            document.getElementById('thumbnail-url').value = course.thumbnailUrl || '';
-            const preview = document.getElementById('thumbnail-preview-img');
-            if (course.thumbnailUrl) { preview.src = course.thumbnailUrl;
-                preview.style.display = 'block'; } else { preview.style.display = 'none'; }
+            document.getElementById('banner-url').value = course.thumbnailUrl || '';
+            const preview = document.getElementById('banner-preview-img');
+            if (course.thumbnailUrl) { preview.src = course.thumbnailUrl; preview.style.display = 'block'; } else { preview.style.display = 'none'; }
             document.getElementById('course-modal').classList.add('active');
         };
 
         function resetCourseForm() {
             document.getElementById('course-form').reset();
             document.getElementById('course-id').value = '';
-            document.getElementById('thumbnail-url').value = '';
-            document.getElementById('thumbnail-preview-img').style.display = 'none';
-            document.getElementById('thumbnail-progress').style.display = 'none';
+            document.getElementById('banner-url').value = '';
+            document.getElementById('banner-preview-img').style.display = 'none';
+            document.getElementById('banner-progress').style.display = 'none';
         }
 
         window.saveCourse = async () => {
@@ -1439,10 +1441,9 @@
             const description = document.getElementById('course-description').value.trim();
             const status = document.getElementById('course-status').value;
             const startDate = document.getElementById('course-start-date').value;
-            const thumbnailUrl = document.getElementById('thumbnail-url').value;
+            const thumbnailUrl = document.getElementById('banner-url').value;
             if (!title || isNaN(price)) { showToast('Title and price are required', 'error'); return; }
-            const courseData = { title, category, price, description, thumbnailUrl, status, startDate: startDate ? new Date(startDate) : null,
-                updatedAt: serverTimestamp() };
+            const courseData = { title, category, price, description, thumbnailUrl, status, startDate: startDate ? new Date(startDate) : null, updatedAt: serverTimestamp() };
             const courseId = document.getElementById('course-id').value;
             try {
                 if (courseId) {
@@ -1469,48 +1470,30 @@
             showToast('Course deleted.', 'info');
         };
 
-        // ── COURSE PREVIEW ──
-        window.previewCourse = async (courseId) => {
+        window.previewCourse = (courseId) => {
             const course = allCourses.find(c => c.id === courseId);
             if (!course) return;
-            const modSnap = await getDocs(query(collection(db, `courses/${courseId}/modules`), orderBy('order', 'asc')));
-            const previewMods = modSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-            let html = `
+            const startDateStr = course.startDate ? new Date(course.startDate).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : 'Flexible';
+            const statusBadge = course.status === 'published' ? 'status-approved' : course.status === 'draft' ? 'status-pending' : 'status-rejected';
+            const statusText = course.status.charAt(0).toUpperCase() + course.status.slice(1);
+            const html = `
+            ${course.thumbnailUrl ? `<img src="${course.thumbnailUrl}" class="preview-course-banner" alt="Course Banner" />` : ''}
             <div style="text-align:center;margin-bottom:1.5rem;">
-              ${course.thumbnailUrl ? `<img src="${course.thumbnailUrl}" style="max-width:100%;max-height:220px;border-radius:10px;object-fit:cover;margin-bottom:1rem;" />` : ''}
-              <h2 style="font-size:1.4rem;color:var(--primary);">${escapeHTML(course.title)}</h2>
-              <p style="color:var(--text-muted);">${escapeHTML(course.description || 'No description')}</p>
-              <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:0.75rem;">
-                <span class="status-pill ${course.category==='tefl'?'status-approved':'status-pending'}" style="font-size:0.8rem;">${course.category.toUpperCase()}</span>
-                <span style="font-weight:700;color:var(--primary);">$${course.price}</span>
-                <span style="color:var(--text-muted);">${course.enrolledCount || 0} enrolled</span>
+              <h2 style="font-size:1.5rem;color:var(--primary);">${escapeHTML(course.title)}</h2>
+              <p style="color:var(--text-muted);font-size:0.95rem;margin-top:0.3rem;">${escapeHTML(course.description || 'No description')}</p>
+              <div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">
+                <span class="status-pill" style="background:var(--bg-input);color:var(--text-primary);font-weight:600;font-size:0.85rem;"><i class="fa-solid fa-dollar-sign"></i> $${course.price}</span>
+                <span class="status-pill" style="background:var(--bg-input);color:var(--text-primary);font-weight:600;font-size:0.85rem;"><i class="fa-solid fa-calendar"></i> ${startDateStr}</span>
+                <span class="status-pill ${statusBadge}" style="font-size:0.85rem;">${statusText}</span>
               </div>
             </div>
             <hr style="border-color:var(--border-light);margin:1rem 0;" />
-            <h4 style="margin-bottom:0.75rem;">Modules (${previewMods.length})</h4>
+            <p style="color:var(--text-muted); text-align:center; font-style:italic;">Full curriculum and enrollment details are available after purchase.</p>
           `;
-            if (previewMods.length === 0) {
-                html += '<p style="color:var(--text-muted);">No modules added yet.</p>';
-            } else {
-                previewMods.forEach((m, i) => {
-                    html +=
-                        `<div style="background:#FAFBFC;border:1px solid var(--border-light);border-radius:8px;padding:1rem;margin-bottom:0.6rem;"><strong>Module ${i+1}: ${escapeHTML(m.title)}</strong>`;
-                    if (m.attachments && m.attachments.length) {
-                        html +=
-                            `<div style="margin-top:0.4rem;font-size:0.8rem;color:var(--text-muted);">📎 ${m.attachments.length} attachment(s)</div>`;
-                    }
-                    if (m.quiz && m.quiz.length) {
-                        html +=
-                            `<div style="margin-top:0.4rem;font-size:0.8rem;color:var(--text-muted);">❓ ${m.quiz.length} quiz question(s)</div>`;
-                    }
-                    html += '</div>';
-                });
-            }
             document.getElementById('course-preview-body').innerHTML = html;
             document.getElementById('course-preview-modal').classList.add('active');
         };
 
-        // ── MODULE BUILDER ──
         window.openBuilder = async (courseId) => {
             currentCourseId = courseId;
             const course = allCourses.find(c => c.id === courseId);
@@ -1556,23 +1539,19 @@
             const mod = modules.find(m => m.id === moduleId);
             if (!mod) return;
             let html = `<h2>${escapeHTML(mod.title)}</h2>`;
-            html +=
-                `<div style="font-size:0.95rem;line-height:1.6;margin:1rem 0;padding:1rem;background:#FAFBFC;border-radius:8px;">${mod.content || '<p style="color:var(--text-muted);">No content</p>'}</div>`;
+            html += `<div style="font-size:0.95rem;line-height:1.6;margin:1rem 0;padding:1rem;background:#FAFBFC;border-radius:8px;">${mod.content || '<p style="color:var(--text-muted);">No content</p>'}</div>`;
             if (mod.attachments && mod.attachments.length) {
                 html += '<h4 style="margin-top:1rem;">Attachments</h4>';
                 mod.attachments.forEach(att => {
-                    html +=
-                        `<div style="display:flex;align-items:center;gap:0.5rem;background:#F8FAFC;padding:0.5rem 0.8rem;border-radius:6px;margin:0.3rem 0;border:1px solid var(--border-light);"><i class="fa-solid fa-paperclip"></i> <strong>${escapeHTML(att.name)}</strong> ${att.instructions ? `<span style="color:var(--text-muted);">– ${escapeHTML(att.instructions)}</span>` : ''}</div>`;
+                    html += `<div style="display:flex;align-items:center;gap:0.5rem;background:#F8FAFC;padding:0.5rem 0.8rem;border-radius:6px;margin:0.3rem 0;border:1px solid var(--border-light);"><i class="fa-solid fa-paperclip"></i> <strong>${escapeHTML(att.name)}</strong> ${att.instructions ? `<span style="color:var(--text-muted);">– ${escapeHTML(att.instructions)}</span>` : ''}</div>`;
                 });
             }
             if (mod.quiz && mod.quiz.length) {
                 html += '<h4 style="margin-top:1rem;">Quiz</h4>';
                 mod.quiz.forEach((q, qi) => {
-                    html +=
-                        `<p><strong>${qi+1}. ${escapeHTML(q.question)}</strong></p>`;
+                    html += `<p><strong>${qi+1}. ${escapeHTML(q.question)}</strong></p>`;
                     q.options.forEach((opt, oi) => {
-                        html +=
-                            `<p style="margin-left:1.5rem;">${String.fromCharCode(65+oi)}) ${escapeHTML(opt)}</p>`;
+                        html += `<p style="margin-left:1.5rem;">${String.fromCharCode(65+oi)}) ${escapeHTML(opt)}</p>`;
                     });
                     html += '<br/>';
                 });
@@ -1596,8 +1575,7 @@
                     document.getElementById('module-title').value = mod.title || '';
                     document.getElementById('module-content').innerHTML = mod.content || '';
                     if (mod.attachments) {
-                        tempAttachments = mod.attachments.map(a => ({ ...a, instructions: a.instructions || '',
-                            isImage: a.type === 'image' || (a.url && a.url.match(/\.(jpg|jpeg|png|gif|webp)($|\?)/i)) }));
+                        tempAttachments = mod.attachments.map(a => ({ ...a, instructions: a.instructions || '', isImage: a.type === 'image' || (a.url && a.url.match(/\.(jpg|jpeg|png|gif|webp)($|\?)/i)) }));
                         renderTempAttachments();
                     }
                     if (mod.quiz) mod.quiz.forEach((q, qi) => renderQuizQuestion(q, qi));
@@ -1608,11 +1586,9 @@
 
         window.editModule = (moduleId) => openModuleModal(moduleId);
 
-        window.formatDoc = (cmd) => { document.execCommand(cmd, false, null);
-            document.getElementById('module-content').focus(); };
+        window.formatDoc = (cmd) => { document.execCommand(cmd, false, null); document.getElementById('module-content').focus(); };
 
-        window.addQuizQuestion = () => renderQuizQuestion({ question: '', options: [''], correctIndex: 0 }, document
-            .querySelectorAll('#quiz-questions .quiz-question-block').length);
+        window.addQuizQuestion = () => renderQuizQuestion({ question: '', options: [''], correctIndex: 0 }, document.querySelectorAll('#quiz-questions .quiz-question-block').length);
 
         function renderQuizQuestion(q, index) {
             const container = document.getElementById('quiz-questions');
@@ -1620,13 +1596,17 @@
             div.className = 'quiz-question-block';
             const radioName = `correct-${Date.now()}-${Math.random()}`;
             div.innerHTML = `
-            <p style="font-weight:600;font-size:0.85rem;margin-bottom:0.3rem;">Q${index+1}:</p>
+            <p style="font-weight:600;font-size:0.85rem;margin-bottom:0.3rem;">Question ${index+1}</p>
             <input type="text" class="quiz-q-input" value="${escapeHTML(q.question)}" placeholder="Enter question" />
-            <div class="quiz-options" style="margin-top:0.4rem;">
+            <p style="font-size:0.7rem;color:var(--text-muted);margin:0.4rem 0 0.2rem;">Options – select the <strong>correct answer</strong>:</p>
+            <div class="quiz-options">
               ${q.options.map((opt, oi) => `
-                <div class="quiz-option-row">
+                <div class="quiz-option-row ${oi === q.correctIndex ? 'correct' : ''}">
                   <input type="text" class="quiz-opt-input" value="${escapeHTML(opt)}" placeholder="Option ${String.fromCharCode(65+oi)}" />
-                  <label><input type="radio" name="${radioName}" value="${oi}" ${oi===q.correctIndex?'checked':''} /> Correct</label>
+                  <label>
+                    <input type="radio" name="${radioName}" value="${oi}" ${oi === q.correctIndex ? 'checked' : ''} />
+                    <i class="fa-solid fa-check quiz-correct-indicator"></i> Correct
+                  </label>
                 </div>
               `).join('')}
             </div>
@@ -1635,6 +1615,14 @@
               <button type="button" class="btn btn-danger btn-xs" onclick="this.closest('.quiz-question-block').remove()">Remove</button>
             </div>
           `;
+            const radios = div.querySelectorAll('input[type="radio"]');
+            const rows = div.querySelectorAll('.quiz-option-row');
+            radios.forEach((radio, idx) => {
+                radio.addEventListener('change', () => {
+                    rows.forEach(r => r.classList.remove('correct'));
+                    if (radio.checked) rows[idx].classList.add('correct');
+                });
+            });
             container.appendChild(div);
         }
 
@@ -1647,8 +1635,17 @@
             row.className = 'quiz-option-row';
             row.innerHTML = `
             <input type="text" class="quiz-opt-input" placeholder="Option ${String.fromCharCode(65+optCount)}" />
-            <label><input type="radio" name="${radioName}" value="${optCount}" /> Correct</label>
+            <label>
+              <input type="radio" name="${radioName}" value="${optCount}" />
+              <i class="fa-solid fa-check quiz-correct-indicator"></i> Correct
+            </label>
           `;
+            const radio = row.querySelector('input[type="radio"]');
+            const allRows = optionsDiv.querySelectorAll('.quiz-option-row');
+            radio.addEventListener('change', () => {
+                allRows.forEach(r => r.classList.remove('correct'));
+                row.classList.add('correct');
+            });
             optionsDiv.appendChild(row);
         };
 
@@ -1659,12 +1656,10 @@
             const quizQuestions = [];
             document.querySelectorAll('#quiz-questions .quiz-question-block').forEach(qDiv => {
                 const question = qDiv.querySelector('.quiz-q-input')?.value.trim();
-                const optionInputs = [...qDiv.querySelectorAll('.quiz-opt-input')].map(inp => inp.value
-                    .trim());
+                const optionInputs = [...qDiv.querySelectorAll('.quiz-opt-input')].map(inp => inp.value.trim());
                 const correctRadio = qDiv.querySelector('input[type="radio"]:checked');
                 if (question && optionInputs.length > 0) {
-                    quizQuestions.push({ question, options: optionInputs, correctIndex: correctRadio ? parseInt(
-                            correctRadio.value) : 0 });
+                    quizQuestions.push({ question, options: optionInputs, correctIndex: correctRadio ? parseInt(correctRadio.value) : 0 });
                 }
             });
             const moduleData = { title, content, attachments: tempAttachments, quiz: quizQuestions, order: modules.length };
@@ -1688,10 +1683,8 @@
             showToast('Module deleted.', 'info');
         };
 
-        // ── PAYMENTS ──
         function listenForPayments() {
-            const q = query(collection(db, 'payments'), where('type', 'in', ['workshop', 'tefl']), orderBy('createdAt',
-                'desc'));
+            const q = query(collection(db, 'payments'), where('type', 'in', ['workshop', 'tefl']), orderBy('createdAt', 'desc'));
             onSnapshot(q, async (snap) => {
                 allPayments = [];
                 let pendingCount = 0;
@@ -1700,20 +1693,18 @@
                     if (!data.courseName && data.itemId) {
                         if (!courseNameCache[data.itemId]) {
                             const courseSnap = await getDoc(doc(db, 'courses', data.itemId));
-                            courseNameCache[data.itemId] = courseSnap.exists() ? courseSnap.data().title :
-                                'Unknown';
+                            courseNameCache[data.itemId] = courseSnap.exists() ? courseSnap.data().title : 'Unknown';
                         }
                         data.courseName = courseNameCache[data.itemId];
                     }
-                    if (data.customer && data.customer.uid && !data.customer.avatarUrl && !userCache[data.customer
-                            .uid]) {
+                    if (data.customer && data.customer.uid && !data.customer.avatarUrl && !userCache[data.customer.uid]) {
                         try {
                             const userSnap = await getDoc(doc(db, 'users', data.customer.uid));
                             if (userSnap.exists()) {
                                 userCache[data.customer.uid] = userSnap.data();
                                 data.customer.avatarUrl = userSnap.data().avatarUrl || null;
                             }
-                        } catch (e) { /* ignore */ }
+                        } catch (e) {}
                     }
                     allPayments.push({ id: docSnap.id, ...data });
                     if (data.status === 'pending') pendingCount++;
@@ -1760,11 +1751,8 @@
                 const invId = p.id.substring(0, 8).toUpperCase();
                 const cust = p.customer || {};
                 const avatarUrl = cust.avatarUrl || null;
-                const initials = (cust.name || '?').split(' ').map(n => n[0]).join('').substring(0, 2)
-                    .toUpperCase() || '?';
-                const avatarHTML = avatarUrl ?
-                    `<img src="${avatarUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<span>${initials}</span>';" />` :
-                    `<span>${initials}</span>`;
+                const initials = (cust.name || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
+                const avatarHTML = avatarUrl ? `<img src="${avatarUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<span>${initials}</span>';" />` : `<span>${initials}</span>`;
                 return `
               <tr>
                 <td><strong>#${invId}</strong></td>
@@ -1792,11 +1780,8 @@
                 const invId = p.id.substring(0, 8).toUpperCase();
                 const cust = p.customer || {};
                 const avatarUrl = cust.avatarUrl || null;
-                const initials = (cust.name || '?').split(' ').map(n => n[0]).join('').substring(0, 2)
-                    .toUpperCase() || '?';
-                const avatarHTML = avatarUrl ?
-                    `<img src="${avatarUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<span>${initials}</span>';" />` :
-                    `<span>${initials}</span>`;
+                const initials = (cust.name || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
+                const avatarHTML = avatarUrl ? `<img src="${avatarUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<span>${initials}</span>';" />` : `<span>${initials}</span>`;
                 return `
               <div class="payment-mobile-card">
                 <div class="pmc-row"><span class="pmc-label">Invoice</span><span class="pmc-value">#${invId}</span></div>
@@ -1824,17 +1809,14 @@
             try {
                 const payment = allPayments.find(p => p.id === paymentId);
                 if (!payment) return;
-                await updateDoc(doc(db, 'payments', paymentId), { status: 'approved', approvedBy: currentAdmin.uid,
-                    approvedAt: serverTimestamp() });
+                await updateDoc(doc(db, 'payments', paymentId), { status: 'approved', approvedBy: currentAdmin.uid, approvedAt: serverTimestamp() });
                 const enrollmentQuery = query(collection(db, 'course_enrollments'), where('paymentId', '==', paymentId));
                 const enrollSnap = await getDocs(enrollmentQuery);
-                enrollSnap.forEach(async (enrollmentDoc) => await updateDoc(doc(db, 'course_enrollments', enrollmentDoc
-                    .id), { status: 'active', activatedAt: serverTimestamp() }));
+                enrollSnap.forEach(async (enrollmentDoc) => await updateDoc(doc(db, 'course_enrollments', enrollmentDoc.id), { status: 'active', activatedAt: serverTimestamp() }));
                 if (payment.itemId) {
                     const courseRef = doc(db, 'courses', payment.itemId);
                     const courseSnap = await getDoc(courseRef);
-                    if (courseSnap.exists()) await updateDoc(courseRef, { enrolledCount: (courseSnap.data()
-                            .enrolledCount || 0) + 1 });
+                    if (courseSnap.exists()) await updateDoc(courseRef, { enrolledCount: (courseSnap.data().enrolledCount || 0) + 1 });
                 }
                 showToast('Payment approved!', 'success');
             } catch (e) { showToast('Error: ' + e.message, 'error'); }
@@ -1843,8 +1825,7 @@
         window.rejectPayment = async (paymentId) => {
             if (!confirm('Reject this payment?')) return;
             try {
-                await updateDoc(doc(db, 'payments', paymentId), { status: 'rejected', rejectedBy: currentAdmin.uid,
-                    rejectedAt: serverTimestamp() });
+                await updateDoc(doc(db, 'payments', paymentId), { status: 'rejected', rejectedBy: currentAdmin.uid, rejectedAt: serverTimestamp() });
                 showToast('Payment rejected.', 'info');
             } catch (e) { showToast('Error: ' + e.message, 'error'); }
         };
@@ -1861,7 +1842,6 @@
             return div.innerHTML;
         }
 
-        // ── RESPONSIVE HANDLER ──
         window.addEventListener('resize', () => {
             if (document.getElementById('content-payments').classList.contains('active')) renderPayments();
         });
