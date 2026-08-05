@@ -24,9 +24,9 @@
             --radius-lg: 14px;
             --radius-md: 10px;
             --radius-sm: 6px;
-            --shadow-sm: 0 1px 3px rgba(15,23,42,0.06);
-            --shadow-md: 0 10px 30px rgba(15,23,42,0.08);
-            --shadow-lg: 0 20px 50px rgba(15,23,42,0.12);
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
             --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -363,6 +363,16 @@
             .view:not(#view-invoice) { display: none !important; }
             #view-invoice .btn { display: none !important; }
         }
+        /* Loading overlay */
+        .loading-overlay {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            gap: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -371,8 +381,17 @@
         <span class="blue">Teacher Bee</span><span class="orange">Connect</span><span class="bee">🐝</span>
     </div>
 
+    <!-- LOADING STATE -->
+    <div class="view active" id="view-loading">
+        <div class="card">
+            <div class="loading-overlay">
+                <span class="spinner"></span> Loading your subscription status...
+            </div>
+        </div>
+    </div>
+
     <!-- VIEW 1: SUBSCRIBE -->
-    <div class="view active" id="view-subscribe">
+    <div class="view" id="view-subscribe">
         <div class="card">
             <h2>🎯 Unlock Full Recruiting Power</h2>
             <p>Connect with verified teachers, post unlimited jobs, and manage your hiring pipeline.</p>
@@ -930,6 +949,8 @@
         } else {
             currentUser = user;
             console.log('✅ User authenticated:', currentUser.uid);
+            // Show loading view immediately
+            showView('view-loading');
             await initPage();
         }
     });
@@ -937,106 +958,100 @@
     async function initPage() {
         if (!currentUser) return;
 
-        // 1. Check subscription doc
-        const subDocRef = doc(db, 'subscriptions', currentUser.uid);
-        let subDoc;
         try {
-            subDoc = await getDoc(subDocRef);
-        } catch (e) {
-            console.error('Error reading subscription doc:', e);
-            showToast('Error reading subscription data. Check console.', 'error');
-            return;
-        }
+            // PRIORITY 1: Look for any pending payment directly (most reliable)
+            const payment = await fetchLatestPendingPayment();
+            if (payment) {
+                pendingPaymentId = payment.id;
+                pendingPaymentData = payment.data;
+                console.log('✅ Found pending payment, showing dashboard');
+                // Ensure subscription doc is updated to reflect pending state
+                await setDoc(doc(db, 'subscriptions', currentUser.uid), {
+                    status: 'pending_payment',
+                    pendingPaymentId: payment.id,
+                    billingPeriod: payment.data.billingPeriod || 'monthly',
+                    amount: payment.data.amount || 8,
+                    updatedAt: serverTimestamp(),
+                    customer: payment.data.customer || {}
+                }, { merge: true }).catch(e => console.warn('Could not update subscription doc, but payment exists:', e));
+                showPendingDashboard();
+                return;
+            }
 
-        console.log('📄 Subscription doc exists:', subDoc.exists());
-        if (subDoc.exists()) {
-            const subData = subDoc.data();
-            console.log('📊 Subscription status:', subData.status);
-            const now = Date.now();
+            // PRIORITY 2: No pending payment — check subscription doc for active/expired
+            const subDoc = await getDoc(doc(db, 'subscriptions', currentUser.uid));
+            console.log('📄 Subscription doc exists:', subDoc.exists());
+            if (subDoc.exists()) {
+                const subData = subDoc.data();
+                console.log('📊 Subscription status:', subData.status);
+                const now = Date.now();
 
-            if (subData.status === 'active' && subData.expiryDate?.toMillis() > now) {
-                console.log('→ Showing active plan');
-                showCurrentPlan(subData);
-                return;
-            } else if (subData.status === 'active' && subData.expiryDate?.toMillis() <= now) {
-                console.log('→ Active but expired, updating to expired');
-                await updateDoc(subDocRef, { status: 'expired' });
-                showExpiredPlan(subData);
-                return;
-            } else if (subData.status === 'expired') {
-                console.log('→ Showing expired plan');
-                showExpiredPlan(subData);
-                return;
-            } else if (subData.status === 'pending_payment') {
-                console.log('→ Subscription is pending payment, looking for pending invoice...');
-                const payment = await fetchLatestPendingPayment();
-                if (payment) {
-                    pendingPaymentId = payment.id;
-                    pendingPaymentData = payment.data;
-                    console.log('→ Showing pending dashboard');
-                    showPendingDashboard();
+                if (subData.status === 'active' && subData.expiryDate?.toMillis() > now) {
+                    console.log('→ Showing active plan');
+                    showCurrentPlan(subData);
                     return;
-                } else {
-                    console.warn('⚠️ No pending payment found despite pending_payment status. Resetting to subscribe.');
-                    // Optionally clean up the subscription doc
-                    await setDoc(subDocRef, { status: 'cancelled', cancelledAt: serverTimestamp() }, { merge: true });
-                    showSubscribe();
+                } else if (subData.status === 'active' && subData.expiryDate?.toMillis() <= now) {
+                    console.log('→ Active but expired, updating to expired');
+                    await updateDoc(doc(db, 'subscriptions', currentUser.uid), { status: 'expired' });
+                    showExpiredPlan(subData);
+                    return;
+                } else if (subData.status === 'expired') {
+                    console.log('→ Showing expired plan');
+                    showExpiredPlan(subData);
                     return;
                 }
+                // If status is something else (cancelled, etc.), fall through to subscribe
             }
-        }
 
-        // 2. No subscription doc or status not handled above — search for any pending payment directly
-        const payment = await fetchLatestPendingPayment();
-        if (payment) {
-            pendingPaymentId = payment.id;
-            pendingPaymentData = payment.data;
-            console.log('→ Found pending payment without subscription doc, showing dashboard');
-            // Also create/update subscription doc to reflect state
-            await setDoc(subDocRef, {
-                status: 'pending_payment',
-                pendingPaymentId: payment.id,
-                billingPeriod: payment.data.billingPeriod || 'monthly',
-                amount: payment.data.amount || 8,
-                updatedAt: serverTimestamp(),
-                customer: payment.data.customer || {}
-            }, { merge: true });
-            showPendingDashboard();
-            return;
+            // PRIORITY 3: Nothing found — show subscribe
+            console.log('→ No active or pending state, showing subscribe');
+            showSubscribe();
+        } catch (e) {
+            console.error('❌ Error initializing page:', e);
+            showToast('Error loading subscription data. Please refresh.', 'error');
+            // Fallback to subscribe view
+            showSubscribe();
         }
-
-        // 3. Nothing found → show subscribe
-        console.log('→ No active or pending state, showing subscribe');
-        showSubscribe();
     }
 
     async function fetchLatestPendingPayment() {
         try {
             const payRef = collection(db, 'payments');
-            const qSnap = await getDocs(query(payRef, where('userId', '==', currentUser.uid), where('status', '==', 'pending'), orderBy('createdAt', 'desc'), limit(1)));
-            console.log('🔍 Pending payments found:', qSnap.size);
+            const qSnap = await getDocs(query(
+                payRef,
+                where('userId', '==', currentUser.uid),
+                where('status', '==', 'pending'),
+                orderBy('createdAt', 'desc'),
+                limit(1)
+            ));
+            console.log('🔍 Pending payments query result size:', qSnap.size);
             if (!qSnap.empty) {
                 const doc = qSnap.docs[0];
+                console.log('📄 Pending payment doc data:', doc.data());
                 return { id: doc.id, data: doc.data() };
             }
             return null;
         } catch (e) {
-            console.error('Error fetching pending payments:', e);
+            console.error('❌ Error fetching pending payments:', e);
             return null;
         }
     }
 
     function showView(viewId) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
+        const target = document.getElementById(viewId);
+        if (target) target.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function showSubscribe() { showView('view-subscribe'); resetCheckoutForm(); }
+
     function showPendingDashboard() {
         showView('view-pending');
         const invId = pendingPaymentId ? pendingPaymentId.substring(0,8).toUpperCase() : 'INV-XXXX';
-        const created = pendingPaymentData?.createdAt?.toDate ? pendingPaymentData.createdAt.toDate().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : new Date().toLocaleDateString();
+        const created = pendingPaymentData?.createdAt?.toDate ? 
+            pendingPaymentData.createdAt.toDate().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : 
+            new Date().toLocaleDateString();
         document.getElementById('pending-dashboard-content').innerHTML = `
             <p>Your invoice <strong>#${invId}</strong> ($${pendingPaymentData?.amount || 8}) is pending admin verification.</p>
             <p class="text-sm">Generated on ${created}</p>
