@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Courses · TeacherBee Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0F172A; --brand-blue: #0D4054; --accent-mustard: #F5A623;
+            --accent-mustard-hover: #D4920E; --bg: #F3F6F9; --surface: #FFFFFF;
+            --text: #0F172A; --text-muted: #64748B; --border: #E2E8F0;
+            --danger: #DC2626; --success: #10B981;
+            --radius-xl: 20px; --radius-lg: 14px; --radius-md: 10px; --radius-sm: 6px;
+            --shadow-sm: 0 1px 3px rgba(15,23,42,0.06); --shadow-md: 0 10px 30px rgba(15,23,42,0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+        .app-container { width: 100%; max-width: 900px; margin: 0 auto; }
+        .logo { display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: 1.6rem; color: var(--navy); margin-bottom: 2rem; justify-content: center; }
+        .logo .blue { color: #0D4054; } .logo .orange { color: var(--accent-mustard); }
+        .logo .bee { font-size: 1.4rem; margin-left: 3px; animation: wiggle 3s infinite; }
+        @keyframes wiggle { 0%,100%{transform:rotate(0)}15%{transform:rotate(-5deg)}30%{transform:rotate(5deg)}45%{transform:rotate(-3deg)}60%{transform:rotate(0)} }
+
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .tab { padding: 0.6rem 1.2rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text); transition: 0.15s; }
+        .tab.active { background: var(--accent-mustard); border-color: var(--accent-mustard); color: #1A1A1A; }
+        .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .course-card { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+        .course-card img { width: 100%; height: 140px; object-fit: cover; }
+        .card-body { padding: 1.2rem; flex: 1; display: flex; flex-direction: column; }
+        .card-body h3 { font-weight: 700; margin-bottom: 0.3rem; }
+        .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .badge-workshop { background: #EEF2FF; color: #4F46E5; }
+        .badge-tefl { background: #D1FAE5; color: #065F46; }
+        .price { font-weight: 700; color: var(--navy); margin: 0.5rem 0; font-size: 1.2rem; }
+        .desc-preview { font-size: 0.85rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1rem; }
+        .btn { padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: 0.15s; text-decoration: none; }
+        .btn-primary { background: var(--accent-mustard); color: #1A1A1A; }
+        .btn-primary:hover { background: var(--accent-mustard-hover); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { background: var(--surface); }
+        .btn-block { width: 100%; justify-content: center; }
+
+        /* Modal styles (reused from subscription page) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; justify-content: center; align-items: center; padding: 1.5rem; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--surface); border-radius: var(--radius-xl); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2rem; position: relative; box-shadow: var(--shadow-md); }
+        .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.3rem; cursor: pointer; }
+        .form-group { margin-bottom: 1.1rem; }
+        .form-group label { display: block; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-muted); text-transform: uppercase; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem 0.95rem; border: 1.5px solid var(--border); border-radius: var(--radius-md); font-size: 0.93rem; background: #F8FAFC; }
+        .agreement { display: flex; align-items: flex-start; gap: 0.7rem; background: #FFFDF5; border: 1px solid #FDE68A; padding: 0.9rem 1rem; border-radius: var(--radius-md); margin: 1.2rem 0; font-size: 0.84rem; }
+        .secure-badge { display: flex; align-items: center; gap: 0.4rem; color: var(--success); font-weight: 600; font-size: 0.84rem; margin-bottom: 0.8rem; background: #ECFDF5; padding: 0.55rem 1rem; border-radius: 20px; width: fit-content; }
+        .invoice-box { background: #FAFBFC; border: 2px dashed #D1D5DB; border-radius: var(--radius-lg); padding: 1.8rem; margin: 1.2rem 0; font-size: 0.9rem; }
+        .status-badge { display: inline-block; padding: 0.3rem 0.85rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .status-active { background: #D1FAE5; color: #065F46; }
+        .status-pending { background: #FEF3C7; color: #92400E; }
+        .status-completed { background: #DBEAFE; color: #1E40AF; }
+
+        .my-learning-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .progress-bar { width: 100%; height: 6px; background: #E2E8F0; border-radius: 3px; margin: 0.5rem 0; }
+        .progress-fill { height: 100%; background: var(--success); border-radius: 3px; }
+
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+        .toast { padding: 12px 20px; border-radius: var(--radius-sm); color: #fff; font-weight: 500; font-size: 0.85rem; animation: slideIn 0.3s; }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        @media (max-width: 500px) { .tabs { flex-wrap: wrap; } .course-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="logo"><span class="blue">Teacher Bee</span><span class="orange">Connect</span> <span class="bee">🐝</span></div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="workshops">Workshops</div>
+        <div class="tab" data-tab="tefl">TEFL</div>
+        <div class="tab" data-tab="mylearning">My Learning</div>
+    </div>
+
+    <div class="course-grid" id="course-list"></div>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeDetailModal()">&times;</button>
+            <h2 id="detail-title"></h2>
+            <p id="detail-category-badge"></p>
+            <img id="detail-thumb" style="max-width:100%; border-radius:8px; margin:1rem 0;" src="" alt="">
+            <div id="detail-desc"></div>
+            <div class="price" id="detail-price"></div>
+            <button class="btn btn-primary btn-block" id="btn-enroll">Enroll Now – Pay $</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeCheckoutModal()">&times;</button>
+            <h2>Enroll in Course</h2>
+            <div id="checkout-step-1">
+                <div class="form-group"><label>Full Name *</label><input type="text" id="c-name" required></div>
+                <div class="form-group"><label>Email *</label><input type="email" id="c-email" required></div>
+                <div class="form-group"><label>Phone *</label><input type="tel" id="c-phone" required></div>
+                <button class="btn btn-primary btn-block" onclick="checkoutNext()">Continue</button>
+            </div>
+            <div id="checkout-step-2" style="display:none;">
+                <div class="agreement">
+                    <input type="checkbox" id="c-agree" required>
+                    <label>I agree to manual payment via Ecocash / Bank Transfer and will submit proof for admin verification.</label>
+                </div>
+                <button class="btn btn-outline btn-block" onclick="document.getElementById('checkout-step-2').style.display='none'; document.getElementById('checkout-step-1').style.display='block';">Back</button>
+                <button class="btn btn-primary btn-block" onclick="generateCourseInvoice()">Generate Invoice</button>
+            </div>
+            <div id="checkout-step-3" style="display:none;">
+                <div id="invoice-view"></div>
+                <button class="btn btn-outline btn-block" onclick="window.print()">Print Invoice</button>
+                <button class="btn btn-outline btn-block" onclick="closeCheckoutModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc, query, where, getDocs, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+        authDomain: "teacherbee-connect.firebaseapp.com",
+        projectId: "teacherbee-connect",
+        storageBucket: "teacherbee-connect.firebasestorage.app",
+        messagingSenderId: "345613317767",
+        appId: "1:345613317767:web:555713e479f9837e84aa22"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let allCourses = [];
+    let currentTab = 'workshops';
+    let selectedCourse = null;
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) { window.location.href = 'login.html'; return; }
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists() || userDoc.data().role !== 'teacher') {
+            window.location.href = 'login.html';
+            return;
+        }
+        currentUser = user;
+        loadCourses();
+        setupTabs();
+    });
+
+    function loadCourses() {
+        const q = query(collection(db, 'courses'), where('status', '==', 'published'), orderBy('createdAt', 'desc'));
+        onSnapshot(q, (snap) => {
+            allCourses = [];
+            snap.forEach(d => allCourses.push({ id: d.id, ...d.data() }));
+            renderCourses();
+        });
+    }
+
+    function renderCourses() {
+        const filtered = currentTab === 'mylearning' ? [] : allCourses.filter(c => c.category === currentTab);
+        const container = document.getElementById('course-list');
+        if (currentTab === 'mylearning') {
+            loadMyLearning();
+            return;
+        }
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-muted);">No courses available.</p>';
+            return;
+        }
+        container.innerHTML = filtered.map(c => {
+            const thumb = c.thumbnailUrl ? `<img src="${c.thumbnailUrl}" alt="">` : '';
+            const catBadge = c.category === 'tefl' ? 'badge-tefl' : 'badge-workshop';
+            return `
+                <div class="course-card">
+                    ${thumb}
+                    <div class="card-body">
+                        <span class="badge ${catBadge}">${c.category}</span>
+                        <h3>${escapeHTML(c.title)}</h3>
+                        <div class="desc-preview">${c.description || 'No description'}</div>
+                        <div class="price">$${c.price}</div>
+                        <button class="btn btn-primary btn-block" onclick="openDetail('${c.id}')">View Details</button>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    function loadMyLearning() {
+        const container = document.getElementById('course-list');
+        const enrollmentsQuery = query(collection(db, 'course_enrollments'), where('userId', '==', currentUser.uid));
+        onSnapshot(enrollmentsQuery, async (snap) => {
+            const enrollments = [];
+            snap.forEach(d => enrollments.push({ id: d.id, ...d.data() }));
+            if (enrollments.length === 0) {
+                container.innerHTML = '<p>You are not enrolled in any course.</p>';
+                return;
+            }
+            let html = '';
+            for (const enr of enrollments) {
+                const courseDoc = await getDoc(doc(db, 'courses', enr.courseId));
+                const course = courseDoc.exists() ? courseDoc.data() : null;
+                const title = course ? course.title : 'Unknown Course';
+                const statusClass = enr.status === 'active' ? 'status-active' : (enr.status === 'pending_payment' ? 'status-pending' : 'status-completed');
+                const progress = enr.progress || 0;
+                html += `
+                    <div class="my-learning-card">
+                        <div style="flex:1;">
+                            <strong>${escapeHTML(title)}</strong>
+                            <div style="font-size:0.8rem; color:var(--text-muted);">${enr.status.replace('_',' ')}</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+                        </div>
+                        ${enr.status === 'active' ? `<a href="classroom.html?courseId=${enr.courseId}" class="btn btn-primary">Go to Class</a>` : ''}
+                        ${enr.status === 'completed' ? `<button class="btn btn-outline" onclick="window.location.href='classroom.html?courseId=${enr.courseId}'">View Certificate</button>` : ''}
+                    </div>`;
+            }
+            container.innerHTML = html;
+        });
+    }
+
+    function setupTabs() {
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentTab = tab.dataset.tab;
+                renderCourses();
+            });
+        });
+    }
+
+    window.openDetail = (courseId) => {
+        selectedCourse = allCourses.find(c => c.id === courseId);
+        if (!selectedCourse) return;
+        document.getElementById('detail-title').textContent = selectedCourse.title;
+        document.getElementById('detail-category-badge').innerHTML = `<span class="badge badge-${selectedCourse.category}">${selectedCourse.category}</span>`;
+        document.getElementById('detail-thumb').src = selectedCourse.thumbnailUrl || '';
+        document.getElementById('detail-desc').innerHTML = selectedCourse.description || '';
+        document.getElementById('detail-price').textContent = `$${selectedCourse.price}`;
+        document.getElementById('btn-enroll').textContent = `Enroll Now – Pay $${selectedCourse.price}`;
+        document.getElementById('btn-enroll').onclick = () => startCheckout(selectedCourse);
+        document.getElementById('detail-modal').classList.add('active');
+    };
+
+    window.closeDetailModal = () => document.getElementById('detail-modal').classList.remove('active');
+
+    function startCheckout(course) {
+        selectedCourse = course;
+        document.getElementById('checkout-step-1').style.display = 'block';
+        document.getElementById('checkout-step-2').style.display = 'none';
+        document.getElementById('checkout-step-3').style.display = 'none';
+        document.getElementById('checkout-modal').classList.add('active');
+    }
+
+    window.checkoutNext = () => {
+        if (!document.getElementById('c-name').value.trim() || !document.getElementById('c-email').value.trim() || !document.getElementById('c-phone').value.trim()) {
+            showToast('Please fill all fields.', 'error');
+            return;
+        }
+        document.getElementById('checkout-step-1').style.display = 'none';
+        document.getElementById('checkout-step-2').style.display = 'block';
+    };
+
+    window.closeCheckoutModal = () => document.getElementById('checkout-modal').classList.remove('active');
+
+    window.generateCourseInvoice = async () => {
+        if (!document.getElementById('c-agree').checked) {
+            showToast('You must agree to the terms.', 'error');
+            return;
+        }
+        const name = document.getElementById('c-name').value.trim();
+        const email = document.getElementById('c-email').value.trim();
+        const phone = document.getElementById('c-phone').value.trim();
+        const amount = selectedCourse.price;
+
+        let ip = 'unknown';
+        try { const r = await fetch('https://api.ipify.org?format=json'); ip = (await r.json()).ip; } catch(e){}
+
+        const paymentData = {
+            userId: currentUser.uid,
+            type: selectedCourse.category, // "workshop" or "tefl"
+            itemId: selectedCourse.id,
+            amount: amount,
+            currency: 'USD',
+            status: 'pending',
+            customer: { name, email, phone },
+            ipAddress: ip,
+            createdAt: serverTimestamp(),
+            instructions: { ecocashNumber: '+263 77 123 4567', ecocashName: 'TeacherBee Connect', bankAccount: '1234567890', bankName: 'Bank XYZ', branchCode: '000' }
+        };
+
+        try {
+            const payRef = await addDoc(collection(db, 'payments'), paymentData);
+            // Create enrollment
+            await setDoc(doc(db, 'course_enrollments', payRef.id), {
+                userId: currentUser.uid,
+                courseId: selectedCourse.id,
+                paymentId: payRef.id,
+                status: 'pending_payment',
+                enrolledAt: serverTimestamp(),
+                progress: 0,
+                completedModules: [],
+                quizResults: {}
+            });
+            // Show invoice
+            const invId = payRef.id.substring(0,8).toUpperCase();
+            document.getElementById('invoice-view').innerHTML = `
+                <div class="invoice-box">
+                    <h3>Invoice #${invId}</h3>
+                    <p>Course: ${escapeHTML(selectedCourse.title)}</p>
+                    <p>Amount: <strong>$${amount}</strong></p>
+                    <p>Status: <span class="status-badge status-pending">Pending</span></p>
+                    <div style="margin-top:1rem;">
+                        <strong>Payment Instructions:</strong><br>
+                        Ecocash: +263 77 123 4567 · TeacherBee Connect<br>
+                        Bank: #1234567890 · Bank XYZ
+                    </div>
+                </div>`;
+            document.getElementById('checkout-step-2').style.display = 'none';
+            document.getElementById('checkout-step-3').style.display = 'block';
+            showToast('Invoice generated! Submit proof of payment.', 'success');
+        } catch (e) {
+            showToast('Error: ' + e.message, 'error');
+        }
+    };
+
+    function showToast(msg, type='info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = msg;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
+
+    function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
+    window.showToast = showToast;
+</script>
+</body>
+</html>
