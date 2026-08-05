@@ -354,7 +354,7 @@
         </div>
     </div>
 
-    <!-- VIEW 2: CHECKOUT STEPS (inside subscribe view) -->
+    <!-- VIEW 2: CHECKOUT STEPS -->
     <div class="view" id="view-checkout">
         <div class="card">
             <div class="steps" id="steps-indicator">
@@ -459,12 +459,12 @@
 
     let currentUser = null;
     let currentStep = 1;
-    let pendingPaymentId = null;  // holds the ID of the current pending invoice
+    let pendingPaymentId = null;
 
     // Wait for auth
     onAuthStateChanged(auth, async (user) => {
         if (!user) {
-            window.location.href = 'login.html'; // redirect to your login
+            window.location.href = 'login.html'; // adjust to your login page
         } else {
             currentUser = user;
             await initPage();
@@ -473,7 +473,6 @@
 
     async function initPage() {
         if (!currentUser) return;
-        // Check for active subscription
         const subDoc = await getDoc(doc(db, 'subscriptions', currentUser.uid));
         if (subDoc.exists()) {
             const subData = subDoc.data();
@@ -483,7 +482,6 @@
             }
         }
 
-        // Check for pending payment
         const paymentsRef = collection(db, 'payments');
         const q = query(paymentsRef, where('userId', '==', currentUser.uid), where('status', '==', 'pending'), orderBy('createdAt', 'desc'), limit(1));
         const snap = await getDocs(q);
@@ -495,7 +493,6 @@
             return;
         }
 
-        // Nothing active → show subscribe
         showSubscribe();
     }
 
@@ -535,11 +532,10 @@
         `;
     }
 
-    // Step navigation
+    // Step navigation – attach to window for onclick
     window.nextStep = function(step) {
         const currentContent = document.getElementById(`step-${currentStep}`);
         if (step === 2) {
-            // validate step 1
             if (!document.getElementById('cust-name').value || !document.getElementById('cust-company').value || !document.getElementById('cust-email').value) {
                 showToast('Please fill all required fields.', 'error');
                 return;
@@ -580,8 +576,7 @@
         else if (period === 'biannually') amount = 48;
         else if (period === 'annually') amount = 96;
 
-        const summaryDiv = document.getElementById('summary-details');
-        summaryDiv.innerHTML = `
+        document.getElementById('summary-details').innerHTML = `
             <strong>Name:</strong> ${name}<br>
             <strong>Company:</strong> ${company}<br>
             <strong>Email:</strong> ${email}<br>
@@ -589,7 +584,7 @@
         `;
     }
 
-    // Generate invoice and save to Firestore
+    // Generate invoice – attach to window
     window.generateInvoice = async function() {
         const name = document.getElementById('cust-name').value;
         const company = document.getElementById('cust-company').value;
@@ -601,7 +596,6 @@
         else if (period === 'biannually') amount = 48;
         else if (period === 'annually') amount = 96;
 
-        // Get IP (for security)
         let ip = 'unknown';
         try {
             const ipRes = await fetch('https://api.ipify.org?format=json');
@@ -616,13 +610,11 @@
             currency: 'USD',
             billingPeriod: period,
             status: 'pending',
-            customer: {
-                name, company, email, phone
-            },
+            customer: { name, company, email, phone },
             ipAddress: ip,
             createdAt: serverTimestamp(),
             instructions: {
-                ecocashNumber: '+263 77 123 4567',  // replace with real
+                ecocashNumber: '+263 77 123 4567',
                 ecocashName: 'TeacherBee Connect',
                 bankAccount: '1234567890 · Bank XYZ · Branch Code 000',
                 bankName: 'TeacherBee Connect'
@@ -632,20 +624,18 @@
         try {
             const docRef = await addDoc(collection(db, 'payments'), paymentData);
             pendingPaymentId = docRef.id;
-            paymentData.paymentId = docRef.id; // for invoice display
+            paymentData.paymentId = docRef.id;
             showInvoice(paymentData, docRef.id);
             showToast('Invoice generated! Please submit proof of payment.', 'success');
         } catch (e) {
-            showToast('Error generating invoice. Try again.', 'error');
-            console.error(e);
+            showToast('Error generating invoice.', 'error');
         }
     };
 
     function buildInvoiceHTML(paymentData, paymentId) {
-        const invoiceContainer = document.getElementById('invoice-content');
         const cust = paymentData.customer || {};
         const periodMap = { monthly:'Monthly', quarterly:'3 Months', biannually:'6 Months', annually:'Yearly' };
-        invoiceContainer.innerHTML = `
+        document.getElementById('invoice-content').innerHTML = `
             <div class="invoice-box" id="printable-invoice">
                 <div class="logo-small">
                     <span style="color:#0D4054;">Teacher Bee</span><span style="color:#F5A623;">Connect</span> 🐝
@@ -679,39 +669,43 @@
     }
 
     window.contactAdmin = function() {
-        // Placeholder: could open mailto or chat
         showToast('Contact admin at admin@teacherbee.com', 'info');
     };
 
-    // Cancel active subscription
     window.cancelSubscription = async function() {
-        if (!confirm('Cancel your active subscription? This action cannot be undone.')) return;
+        if (!confirm('Cancel your active subscription?')) return;
         try {
             await deleteDoc(doc(db, 'subscriptions', currentUser.uid));
-            // Also cancel any pending payment?
             if (pendingPaymentId) {
                 await updateDoc(doc(db, 'payments', pendingPaymentId), { status: 'cancelled' });
                 pendingPaymentId = null;
             }
-            showToast('Subscription cancelled. You can re-subscribe anytime.', 'info');
+            showToast('Subscription cancelled.', 'info');
             showSubscribe();
         } catch (e) {
-            showToast('Error cancelling subscription.', 'error');
+            showToast('Error cancelling.', 'error');
         }
     };
 
-    // Toast helper
     function showToast(msg, type = 'info') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
+        toast.className = 'toast';
         toast.style.cssText = `background:${type==='error'?'#DC2626':type==='success'?'#10B981':'#1E293B'}; color:white; padding:0.8rem 1.2rem; border-radius:8px; font-weight:600; animation:slideIn 0.3s;`;
         toast.innerText = msg;
         container.appendChild(toast);
         setTimeout(() => toast.remove(), 4000);
     }
 
-    // CSS animation for toasts
+    // Expose needed functions globally for inline onclick
+    window.startCheckout = startCheckout;
+    window.nextStep = window.nextStep;
+    window.prevStep = window.prevStep;
+    window.generateInvoice = window.generateInvoice;
+    window.contactAdmin = window.contactAdmin;
+    window.cancelSubscription = window.cancelSubscription;
+
+    // Style for toast animation
     const style = document.createElement('style');
     style.textContent = `@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}`;
     document.head.appendChild(style);
