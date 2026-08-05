@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Subscribe · TeacherBee Connect</title>
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --navy: #0F172A;
+            --navy-light: #1E293B;
             --brand-blue: #0D4054;
             --accent-mustard: #F5A623;
-            --accent-hover: #D4920E;
+            --accent-mustard-hover: #D4920E;
             --bg: #F3F6F9;
             --surface: #FFFFFF;
             --text: #0F172A;
@@ -22,16 +21,22 @@
             --border: #E2E8F0;
             --danger: #DC2626;
             --success: #10B981;
+            --info: #3B82F6;
             --radius-xl: 20px;
             --radius-lg: 14px;
             --radius-md: 10px;
             --radius-sm: 6px;
-            --shadow-sm: 0 1px 3px rgba(15,23,42,0.06);
-            --shadow-md: 0 10px 30px rgba(15,23,42,0.08);
-            --shadow-lg: 0 20px 50px rgba(15,23,42,0.12);
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg);
@@ -42,91 +47,188 @@
             justify-content: center;
             padding: 1.5rem;
             -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
         }
 
         .subscription-app {
             width: 100%;
-            max-width: 700px;
+            max-width: 720px;
             margin: 0 auto;
         }
 
+        /* ── LOGO ── */
         .logo {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             font-weight: 800;
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             color: var(--navy);
             margin-bottom: 2rem;
             justify-content: center;
             letter-spacing: -0.4px;
+            white-space: nowrap;
         }
-        .logo .blue { color: var(--brand-blue); }
-        .logo .orange { color: var(--accent-mustard); }
+        .logo .blue {
+            color: #0D4054;
+        }
+        .logo .orange {
+            color: var(--accent-mustard);
+        }
         .logo .bee {
             font-size: 1.5rem;
-            margin-left: 4px;
+            margin-left: 3px;
             animation: wiggle 3s infinite ease-in-out;
+            display: inline-block;
         }
         @keyframes wiggle {
-            0%,100% { transform: rotate(0deg) translateY(0); }
-            15% { transform: rotate(-5deg) translateY(-2px); }
-            30% { transform: rotate(5deg) translateY(-1px); }
-            45% { transform: rotate(-3deg) translateY(0); }
-            60% { transform: rotate(0deg) translateY(0); }
+            0%,
+            100% {
+                transform: rotate(0deg) translateY(0);
+            }
+            15% {
+                transform: rotate(-5deg) translateY(-2px);
+            }
+            30% {
+                transform: rotate(5deg) translateY(-1px);
+            }
+            45% {
+                transform: rotate(-3deg) translateY(0);
+            }
+            60% {
+                transform: rotate(0deg) translateY(0);
+            }
         }
 
+        /* ── CARDS ── */
         .card {
             background: var(--surface);
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow-lg);
-            padding: 2rem;
+            padding: 2rem 1.8rem;
             border: 1px solid var(--border);
             margin-bottom: 1.5rem;
-            transition: all 0.2s;
+            transition: var(--transition);
         }
-        .view { display: none; }
-        .view.active { display: block; }
+        @media (max-width: 500px) {
+            .card {
+                padding: 1.5rem 1rem;
+            }
+            body {
+                padding: 0.8rem;
+            }
+            .logo {
+                font-size: 1.3rem;
+            }
+        }
 
-        h2 { font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--navy); }
-        p { color: var(--text-muted); line-height: 1.6; }
+        .view {
+            display: none;
+            animation: fadeSlideIn 0.35s ease;
+        }
+        .view.active {
+            display: block;
+        }
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.6rem;
+            color: var(--navy);
+            font-weight: 700;
+        }
+        h3 {
+            font-size: 1.1rem;
+            color: var(--navy);
+            font-weight: 700;
+        }
+        p {
+            color: var(--text-muted);
+            line-height: 1.65;
+        }
+        .text-sm {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        /* ── BENEFITS ── */
         .benefits-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin: 1.5rem 0;
+            gap: 0.85rem;
+            margin: 1.4rem 0;
         }
-        @media (max-width: 500px) { .benefits-grid { grid-template-columns: 1fr; } }
-
+        @media (max-width: 500px) {
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
         .benefit-item {
             background: #F8FAFC;
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 1rem;
+            padding: 1rem 0.9rem;
             display: flex;
-            gap: 0.75rem;
+            gap: 0.7rem;
             align-items: flex-start;
+            transition: var(--transition);
+        }
+        .benefit-item:hover {
+            border-color: var(--accent-mustard);
+            box-shadow: 0 4px 12px rgba(245, 166, 35, 0.08);
         }
         .benefit-item i {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             color: var(--accent-mustard);
             margin-top: 2px;
+            flex-shrink: 0;
         }
-        .benefit-item strong { display: block; margin-bottom: 4px; color: var(--navy); }
-        .benefit-item span { font-size: 0.85rem; color: var(--text-muted); }
+        .benefit-item strong {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--navy);
+            font-size: 0.9rem;
+        }
+        .benefit-item span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
 
+        /* ── PRICE TAG ── */
         .price-tag {
-            background: #FEF9E7;
+            background: #FFFDF5;
             border: 2px solid var(--accent-mustard);
             border-radius: var(--radius-lg);
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 1.5rem;
             text-align: center;
-            margin: 1.5rem 0;
+            margin: 1.4rem 0;
         }
-        .price-tag .amount { font-size: 2.2rem; font-weight: 800; color: var(--navy); }
-        .price-tag .period { font-size: 0.9rem; color: var(--text-muted); }
+        .price-tag .amount {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1;
+        }
+        .price-tag .amount small {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .price-tag .period {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
 
+        /* ── BUTTONS ── */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -135,13 +237,13 @@
             padding: 0.8rem 1.5rem;
             border-radius: var(--radius-md);
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.93rem;
             border: none;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all var(--transition);
             text-decoration: none;
-            background: transparent;
-            color: var(--text);
+            font-family: inherit;
+            white-space: nowrap;
         }
         .btn-primary {
             background: var(--accent-mustard);
@@ -149,141 +251,279 @@
             box-shadow: var(--shadow-sm);
         }
         .btn-primary:hover {
-            background: var(--accent-hover);
+            background: var(--accent-mustard-hover);
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
         .btn-outline {
+            background: transparent;
             border: 1.5px solid var(--border);
             color: var(--text);
         }
-        .btn-outline:hover { background: var(--bg); }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-block { width: 100%; justify-content: center; }
-        .btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; }
+        .btn-outline:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #B91C1C;
+            transform: translateY(-1px);
+        }
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+        .btn-info {
+            background: var(--info);
+            color: #fff;
+        }
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.82rem;
+            border-radius: var(--radius-sm);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
 
+        /* ── STEPS INDICATOR ── */
         .steps {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             position: relative;
+            gap: 0;
         }
-        .step {
-            flex: 1;
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            position: relative;
-        }
-        .step.active { color: var(--accent-mustard); }
-        .step::before {
-            content: '';
-            display: block;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--border);
-            margin: 0 auto 6px;
-            position: relative;
-            z-index: 2;
-        }
-        .step.active::before { background: var(--accent-mustard); }
         .steps::after {
             content: '';
             position: absolute;
             top: 14px;
-            left: 10%;
-            right: 10%;
+            left: 12%;
+            right: 12%;
             height: 3px;
             background: var(--border);
             z-index: 1;
+            border-radius: 2px;
+        }
+        .step {
+            flex: 1;
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 2;
+        }
+        .step::before {
+            content: '';
+            display: block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--border);
+            margin: 0 auto 7px;
+            transition: all var(--transition);
+        }
+        .step.active {
+            color: var(--accent-mustard);
+        }
+        .step.active::before {
+            background: var(--accent-mustard);
+            box-shadow: 0 0 0 6px rgba(245, 166, 35, 0.18);
+        }
+        .step.done {
+            color: var(--success);
+        }
+        .step.done::before {
+            background: var(--success);
         }
 
+        /* ── FORMS ── */
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.1rem;
         }
         .form-group label {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 700;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.35rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .form-group input, .form-group select, .form-group textarea {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            padding: 0.85rem 1rem;
+            padding: 0.8rem 0.95rem;
             border: 1.5px solid var(--border);
             border-radius: var(--radius-md);
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 0.93rem;
             background: #F8FAFC;
-            transition: 0.2s;
+            transition: var(--transition);
+            color: var(--text);
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: var(--accent-mustard);
-            box-shadow: 0 0 0 3px rgba(245,166,35,0.12);
-            background: white;
+            box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.12);
+            background: #fff;
+        }
+        .form-row {
+            display: flex;
+            gap: 0.6rem;
+        }
+        .form-row>* {
+            flex: 1;
+        }
+        @media (max-width: 500px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
         }
         .phone-group {
             display: flex;
             gap: 0.5rem;
         }
-        .phone-group select { width: 30%; min-width: 100px; }
-        .phone-group input { width: 70%; }
+        .phone-group select {
+            width: 34%;
+            min-width: 105px;
+            flex-shrink: 0;
+        }
+        .phone-group input {
+            flex: 1;
+            min-width: 0;
+        }
 
+        /* ── AGREEMENT ── */
         .agreement {
             display: flex;
             align-items: flex-start;
             gap: 0.7rem;
-            background: #FEF9E7;
-            padding: 1rem;
+            background: #FFFDF5;
+            border: 1px solid #FDE68A;
+            padding: 0.9rem 1rem;
             border-radius: var(--radius-md);
             margin: 1.2rem 0;
-            font-size: 0.85rem;
+            font-size: 0.84rem;
+            color: #92400E;
+            cursor: pointer;
         }
-        .agreement input { margin-top: 3px; }
+        .agreement input {
+            margin-top: 2px;
+            accent-color: var(--accent-mustard);
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .agreement label {
+            cursor: pointer;
+            line-height: 1.5;
+        }
 
+        /* ── SECURE BADGE ── */
         .secure-badge {
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.45rem;
             color: var(--success);
             font-weight: 600;
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
+            font-size: 0.84rem;
+            margin-bottom: 0.8rem;
+            background: #ECFDF5;
+            padding: 0.55rem 1rem;
+            border-radius: 20px;
+            width: fit-content;
         }
 
+        /* ── INVOICE BOX ── */
         .invoice-box {
-            background: #F8FAFC;
-            border: 2px dashed var(--border);
+            background: #FAFBFC;
+            border: 2px dashed #D1D5DB;
             border-radius: var(--radius-lg);
-            padding: 2rem;
-            margin: 1.5rem 0;
+            padding: 1.8rem;
+            margin: 1.2rem 0;
             font-size: 0.9rem;
         }
-        .invoice-box .logo-small {
-            font-size: 1.2rem;
+        @media (max-width: 500px) {
+            .invoice-box {
+                padding: 1.2rem;
+            }
+        }
+        .invoice-logo {
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 800;
-            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            letter-spacing: -0.3px;
+        }
+        .invoice-logo .blu {
+            color: #0D4054;
+        }
+        .invoice-logo .org {
+            color: #F5A623;
         }
         .invoice-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 0.8rem;
+            gap: 0.6rem 1rem;
             margin: 1rem 0;
+            font-size: 0.84rem;
         }
-        .invoice-details div { font-weight: 500; }
-        .invoice-details span { color: var(--text-muted); font-size: 0.85rem; }
+        @media (max-width: 500px) {
+            .invoice-details {
+                grid-template-columns: 1fr;
+            }
+        }
+        .invoice-details div {
+            font-weight: 500;
+            word-break: break-word;
+        }
+        .invoice-details span {
+            color: var(--text-muted);
+            font-size: 0.76rem;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .invoice-highlight {
+            background: #fff;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+        .payment-instructions {
+            background: #FFFBF0;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.86rem;
+            border: 1px solid #FDE68A;
+        }
+        .payment-instructions i {
+            color: var(--accent-mustard);
+            width: 20px;
+            text-align: center;
+        }
 
-        .hidden { display: none !important; }
-
+        /* ── PLAN CARD ── */
         .plan-card {
-            background: #FEF9E7;
-            border: 2px solid var(--accent-mustard);
+            background: #F0FDF4;
+            border: 2px solid var(--success);
             border-radius: var(--radius-lg);
             padding: 1.5rem;
             text-align: center;
@@ -291,25 +531,47 @@
         .plan-card .dates {
             display: flex;
             justify-content: space-around;
+            gap: 1rem;
             margin: 1rem 0;
+            flex-wrap: wrap;
         }
         .plan-card .dates div {
-            background: white;
-            padding: 0.8rem 1rem;
+            background: #fff;
+            padding: 0.8rem 1.2rem;
             border-radius: var(--radius-sm);
             box-shadow: var(--shadow-sm);
+            flex: 1;
+            min-width: 100px;
+        }
+        .plan-card .dates div small {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
         .status-badge {
             display: inline-block;
-            padding: 0.3rem 0.8rem;
+            padding: 0.3rem 0.85rem;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .status-active { background: #D1FAE5; color: #065F46; }
-        .status-pending { background: #FEF3C7; color: #92400E; }
+        .status-active {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        .status-expired {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
 
+        /* ── TOAST ── */
         #toast-container {
             position: fixed;
             top: 20px;
@@ -320,498 +582,1205 @@
             flex-direction: column;
             gap: 8px;
             width: auto;
-            max-width: 90%;
+            max-width: 92%;
+            pointer-events: none;
         }
         .toast {
-            padding: 0.8rem 1.2rem;
+            padding: 0.75rem 1.3rem;
             border-radius: 8px;
             font-weight: 600;
-            color: white;
-            animation: slideDown 0.3s;
+            font-size: 0.88rem;
+            color: #fff;
+            animation: slideDown 0.35s ease;
             text-align: center;
+            pointer-events: auto;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
         @keyframes slideDown {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-24px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
+        /* ── HIDDEN ── */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ── PRINT ── */
         @media print {
-            body { background: white; padding: 0; }
-            .subscription-app { max-width: 100%; }
-            .card { box-shadow: none; border: none; padding: 0; }
-            .btn, .steps, .agreement, .secure-badge, .form-group { display: none; }
-            .invoice-box { border: none; }
+            body {
+                background: #fff;
+                padding: 0;
+                font-size: 12px;
+            }
+            .subscription-app {
+                max-width: 100%;
+            }
+            .card {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+            }
+            .btn,
+            .steps,
+            .agreement,
+            .secure-badge,
+            .form-group,
+            #toast-container,
+            .logo {
+                display: none !important;
+            }
+            .invoice-box {
+                border: 1px solid #ccc;
+                padding: 1rem;
+            }
+            .view {
+                display: block !important;
+            }
+            .view:not(#view-invoice) {
+                display: none !important;
+            }
+            #view-invoice {
+                display: block !important;
+            }
+            #view-invoice .btn {
+                display: none !important;
+            }
+            #invoice-content .btn {
+                display: none !important;
+            }
+        }
+
+        /* ── LOADING SPINNER ── */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2.5px solid #ccc;
+            border-top-color: var(--accent-mustard);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── BILLING SELECT ENHANCED ── */
+        .billing-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin: 0.5rem 0 0;
+        }
+        @media (max-width: 400px) {
+            .billing-options {
+                grid-template-columns: 1fr;
+            }
+        }
+        .billing-option {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: #F8FAFC;
+            font-weight: 600;
+            font-size: 0.85rem;
+            user-select: none;
+        }
+        .billing-option:hover {
+            border-color: #CBD5E1;
+            background: #fff;
+        }
+        .billing-option.selected {
+            border-color: var(--accent-mustard);
+            background: #FFFDF5;
+            box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+        }
+        .billing-option .price {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--navy);
+        }
+        .billing-option .period-label {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
-<div class="subscription-app" id="app">
-    <!-- Logo -->
-    <div class="logo">
-        <span class="blue">Teacher Bee</span><span class="orange">Connect</span><span class="bee">🐝</span>
-    </div>
-
-    <!-- VIEW 1: SUBSCRIBE LANDING -->
-    <div class="view active" id="view-subscribe">
-        <div class="card">
-            <h2>🎯 Unlock Full Recruiting Power</h2>
-            <p>Connect with verified teachers, post unlimited jobs, and manage your hiring pipeline — all with an active subscription.</p>
-            <div class="benefits-grid">
-                <div class="benefit-item"><i class="fa-solid fa-paper-plane"></i><div><strong>Invite Teachers</strong><span>Directly message and invite educators to interviews.</span></div></div>
-                <div class="benefit-item"><i class="fa-solid fa-briefcase"></i><div><strong>Post Jobs</strong><span>Create unlimited job listings visible to all teachers.</span></div></div>
-                <div class="benefit-item"><i class="fa-solid fa-comments"></i><div><strong>Real‑time Chat</strong><span>Built‑in inbox to communicate with candidates.</span></div></div>
-                <div class="benefit-item"><i class="fa-solid fa-magnifying-glass"></i><div><strong>Advanced Search</strong><span>Filter teachers by subject, experience, and more.</span></div></div>
-            </div>
-            <div class="price-tag">
-                <div class="amount">$8<span style="font-size:1rem;">/month</span></div>
-                <div class="period">Billed manually · Cancel anytime</div>
-            </div>
-            <button class="btn btn-primary btn-block" onclick="startCheckout()">
-                <i class="fa-solid fa-crown"></i> Start Subscription
-            </button>
-            <p style="text-align:center; margin-top:0.8rem; font-size:0.8rem;">All payments are manually verified by our admin for your security.</p>
+    <div class="subscription-app" id="app">
+        <!-- Logo -->
+        <div class="logo">
+            <span class="blue">Teacher Bee</span><span class="orange">Connect</span><span class="bee">🐝</span>
         </div>
-    </div>
 
-    <!-- VIEW 2: CHECKOUT STEPS -->
-    <div class="view" id="view-checkout">
-        <div class="card">
-            <div class="steps" id="steps-indicator">
-                <div class="step active" data-step="1">Details</div>
-                <div class="step" data-step="2">Billing & Plan</div>
-                <div class="step" data-step="3">Confirm</div>
+        <!-- VIEW 1: SUBSCRIBE -->
+        <div class="view active" id="view-subscribe">
+            <div class="card">
+                <h2>🎯 Unlock Full Recruiting Power</h2>
+                <p>Connect with verified teachers, post unlimited jobs, and manage your hiring pipeline — all with an active subscription.</p>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <div><strong>Invite Teachers</strong><span>Directly message and invite educators to interviews.</span></div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <div><strong>Post Unlimited Jobs</strong><span>Create job listings visible to all qualified teachers.</span></div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fa-solid fa-comments"></i>
+                        <div><strong>Real‑time Chat</strong><span>Built‑in inbox to communicate with candidates instantly.</span></div>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <div><strong>Advanced Search</strong><span>Filter teachers by subject, experience, location & more.</span></div>
+                    </div>
+                </div>
+                <div class="price-tag">
+                    <div class="amount">$8<small>/month</small></div>
+                    <div class="period">Billed monthly · Quarterly · Bi‑annually · Annually</div>
+                    <div class="period" style="margin-top:2px;">Cancel anytime — no hidden fees</div>
+                </div>
+                <button class="btn btn-primary btn-block" id="btn-start-subscription" onclick="startCheckout()">
+                    <i class="fa-solid fa-crown"></i> Start Subscription
+                </button>
+                <p class="text-sm" style="text-align:center;margin-top:0.7rem;">All payments are manually verified by our admin for your security.</p>
             </div>
+        </div>
 
-            <form id="checkout-form" onsubmit="return false;">
-                <!-- Step 1: Personal Details -->
-                <div class="step-content" id="step-1">
-                    <h2>Your Details</h2>
-                    <div class="form-group"><label>Full Name *</label><input type="text" id="cust-name" required></div>
-                    <div class="form-group"><label>Company / School (optional)</label><input type="text" id="cust-company"></div>
-                    <div class="form-group"><label>Email *</label><input type="email" id="cust-email" required></div>
-                    <div class="form-group"><label>Phone Number *</label>
-                        <div class="phone-group">
-                            <select id="phone-code">
-                                <option value="+263">🇿🇼 +263</option>
-                                <option value="+27">🇿🇦 +27</option>
-                                <option value="+1">🇺🇸 +1</option>
-                                <option value="+44">🇬🇧 +44</option>
-                                <!-- many more country codes omitted for brevity, you can paste full list from your old code -->
-                            </select>
-                            <input type="tel" id="cust-phone" placeholder="Phone number" required>
+        <!-- VIEW 2: CHECKOUT STEPS -->
+        <div class="view" id="view-checkout">
+            <div class="card">
+                <div class="steps" id="steps-indicator">
+                    <div class="step active" data-step="1">Your Details</div>
+                    <div class="step" data-step="2">Billing & Agreement</div>
+                    <div class="step" data-step="3">Confirm & Pay</div>
+                </div>
+
+                <form id="checkout-form" onsubmit="return false;">
+                    <!-- Step 1: Personal Details + Billing Period -->
+                    <div class="step-content" id="step-1">
+                        <h2>Your Details</h2>
+                        <div class="form-group"><label>Full Name *</label><input type="text" id="cust-name" placeholder="e.g. John Moyo" required></div>
+                        <div class="form-group"><label>Company / School (optional)</label><input type="text" id="cust-company" placeholder="e.g. Hillside Academy"></div>
+                        <div class="form-group"><label>Email Address *</label><input type="email" id="cust-email" placeholder="you@example.com" required></div>
+                        <div class="form-group"><label>Phone Number *</label>
+                            <div class="phone-group">
+                                <select id="phone-code">
+                                    <option value="+263">🇿🇼 +263</option>
+                                    <option value="+27">🇿🇦 +27</option>
+                                    <option value="+1">🇺🇸 +1</option>
+                                    <option value="+44">🇬🇧 +44</option>
+                                    <option value="+254">🇰🇪 +254</option>
+                                    <option value="+256">🇺🇬 +256</option>
+                                    <option value="+260">🇿🇲 +260</option>
+                                    <option value="+265">🇲🇼 +265</option>
+                                    <option value="+267">🇧🇼 +267</option>
+                                    <option value="+264">🇳🇦 +264</option>
+                                    <option value="+255">🇹🇿 +255</option>
+                                    <option value="+250">🇷🇼 +250</option>
+                                    <option value="+251">🇪🇹 +251</option>
+                                    <option value="+20">🇪🇬 +20</option>
+                                    <option value="+234">🇳🇬 +234</option>
+                                    <option value="+233">🇬🇭 +233</option>
+                                    <option value="+258">🇲🇿 +258</option>
+                                    <option value="+244">🇦🇴 +244</option>
+                                    <option value="+237">🇨🇲 +237</option>
+                                    <option value="+225">🇨🇮 +225</option>
+                                    <option value="+221">🇸🇳 +221</option>
+                                    <option value="+223">🇲🇱 +223</option>
+                                    <option value="+226">🇧🇫 +226</option>
+                                    <option value="+229">🇧🇯 +229</option>
+                                    <option value="+227">🇳🇪 +227</option>
+                                    <option value="+228">🇹🇬 +228</option>
+                                    <option value="+231">🇱🇷 +231</option>
+                                    <option value="+232">🇸🇱 +232</option>
+                                    <option value="+235">🇹🇩 +235</option>
+                                    <option value="+236">🇨🇫 +236</option>
+                                    <option value="+238">🇨🇻 +238</option>
+                                    <option value="+239">🇸🇹 +239</option>
+                                    <option value="+240">🇬🇶 +240</option>
+                                    <option value="+241">🇬🇦 +241</option>
+                                    <option value="+242">🇨🇬 +242</option>
+                                    <option value="+243">🇨🇩 +243</option>
+                                    <option value="+245">🇬🇼 +245</option>
+                                    <option value="+248">🇸🇨 +248</option>
+                                    <option value="+253">🇩🇯 +253</option>
+                                    <option value="+257">🇧🇮 +257</option>
+                                    <option value="+261">🇲🇬 +261</option>
+                                    <option value="+266">🇱🇸 +266</option>
+                                    <option value="+268">🇸🇿 +268</option>
+                                    <option value="+269">🇰🇲 +269</option>
+                                    <option value="+291">🇪🇷 +291</option>
+                                    <option value="+252">🇸🇴 +252</option>
+                                    <option value="+249">🇸🇩 +249</option>
+                                    <option value="+211">🇸🇸 +211</option>
+                                    <option value="+212">🇲🇦 +212</option>
+                                    <option value="+213">🇩🇿 +213</option>
+                                    <option value="+216">🇹🇳 +216</option>
+                                    <option value="+218">🇱🇾 +218</option>
+                                    <option value="+220">🇬🇲 +220</option>
+                                    <option value="+222">🇲🇷 +222</option>
+                                    <option value="+224">🇬🇳 +224</option>
+                                    <option value="+230">🇲🇺 +230</option>
+                                    <option value="+262">🇷🇪 +262</option>
+                                    <option value="+290">🇸🇭 +290</option>
+                                    <option value="+30">🇬🇷 +30</option>
+                                    <option value="+31">🇳🇱 +31</option>
+                                    <option value="+32">🇧🇪 +32</option>
+                                    <option value="+33">🇫🇷 +33</option>
+                                    <option value="+34">🇪🇸 +34</option>
+                                    <option value="+350">🇬🇮 +350</option>
+                                    <option value="+351">🇵🇹 +351</option>
+                                    <option value="+352">🇱🇺 +352</option>
+                                    <option value="+353">🇮🇪 +353</option>
+                                    <option value="+354">🇮🇸 +354</option>
+                                    <option value="+355">🇦🇱 +355</option>
+                                    <option value="+356">🇲🇹 +356</option>
+                                    <option value="+357">🇨🇾 +357</option>
+                                    <option value="+358">🇫🇮 +358</option>
+                                    <option value="+359">🇧🇬 +359</option>
+                                    <option value="+36">🇭🇺 +36</option>
+                                    <option value="+370">🇱🇹 +370</option>
+                                    <option value="+371">🇱🇻 +371</option>
+                                    <option value="+372">🇪🇪 +372</option>
+                                    <option value="+373">🇲🇩 +373</option>
+                                    <option value="+374">🇦🇲 +374</option>
+                                    <option value="+375">🇧🇾 +375</option>
+                                    <option value="+376">🇦🇩 +376</option>
+                                    <option value="+377">🇲🇨 +377</option>
+                                    <option value="+378">🇸🇲 +378</option>
+                                    <option value="+380">🇺🇦 +380</option>
+                                    <option value="+381">🇷🇸 +381</option>
+                                    <option value="+382">🇲🇪 +382</option>
+                                    <option value="+383">🇽🇰 +383</option>
+                                    <option value="+385">🇭🇷 +385</option>
+                                    <option value="+386">🇸🇮 +386</option>
+                                    <option value="+387">🇧🇦 +387</option>
+                                    <option value="+389">🇲🇰 +389</option>
+                                    <option value="+39">🇮🇹 +39</option>
+                                    <option value="+40">🇷🇴 +40</option>
+                                    <option value="+41">🇨🇭 +41</option>
+                                    <option value="+420">🇨🇿 +420</option>
+                                    <option value="+421">🇸🇰 +421</option>
+                                    <option value="+423">🇱🇮 +423</option>
+                                    <option value="+43">🇦🇹 +43</option>
+                                    <option value="+45">🇩🇰 +45</option>
+                                    <option value="+46">🇸🇪 +46</option>
+                                    <option value="+47">🇳🇴 +47</option>
+                                    <option value="+48">🇵🇱 +48</option>
+                                    <option value="+49">🇩🇪 +49</option>
+                                    <option value="+500">🇫🇰 +500</option>
+                                    <option value="+501">🇧🇿 +501</option>
+                                    <option value="+502">🇬🇹 +502</option>
+                                    <option value="+503">🇸🇻 +503</option>
+                                    <option value="+504">🇭🇳 +504</option>
+                                    <option value="+505">🇳🇮 +505</option>
+                                    <option value="+506">🇨🇷 +506</option>
+                                    <option value="+507">🇵🇦 +507</option>
+                                    <option value="+509">🇭🇹 +509</option>
+                                    <option value="+51">🇵🇪 +51</option>
+                                    <option value="+52">🇲🇽 +52</option>
+                                    <option value="+53">🇨🇺 +53</option>
+                                    <option value="+54">🇦🇷 +54</option>
+                                    <option value="+55">🇧🇷 +55</option>
+                                    <option value="+56">🇨🇱 +56</option>
+                                    <option value="+57">🇨🇴 +57</option>
+                                    <option value="+58">🇻🇪 +58</option>
+                                    <option value="+591">🇧🇴 +591</option>
+                                    <option value="+592">🇬🇾 +592</option>
+                                    <option value="+593">🇪🇨 +593</option>
+                                    <option value="+595">🇵🇾 +595</option>
+                                    <option value="+597">🇸🇷 +597</option>
+                                    <option value="+598">🇺🇾 +598</option>
+                                    <option value="+60">🇲🇾 +60</option>
+                                    <option value="+61">🇦🇺 +61</option>
+                                    <option value="+62">🇮🇩 +62</option>
+                                    <option value="+63">🇵🇭 +63</option>
+                                    <option value="+64">🇳🇿 +64</option>
+                                    <option value="+65">🇸🇬 +65</option>
+                                    <option value="+66">🇹🇭 +66</option>
+                                    <option value="+673">🇧🇳 +673</option>
+                                    <option value="+675">🇵🇬 +675</option>
+                                    <option value="+676">🇹🇴 +676</option>
+                                    <option value="+677">🇸🇧 +677</option>
+                                    <option value="+678">🇻🇺 +678</option>
+                                    <option value="+679">🇫🇯 +679</option>
+                                    <option value="+685">🇼🇸 +685</option>
+                                    <option value="+686">🇰🇮 +686</option>
+                                    <option value="+687">🇳🇨 +687</option>
+                                    <option value="+689">🇵🇫 +689</option>
+                                    <option value="+691">🇫🇲 +691</option>
+                                    <option value="+692">🇲🇭 +692</option>
+                                    <option value="+7">🇷🇺 +7</option>
+                                    <option value="+81">🇯🇵 +81</option>
+                                    <option value="+82">🇰🇷 +82</option>
+                                    <option value="+84">🇻🇳 +84</option>
+                                    <option value="+850">🇰🇵 +850</option>
+                                    <option value="+852">🇭🇰 +852</option>
+                                    <option value="+853">🇲🇴 +853</option>
+                                    <option value="+855">🇰🇭 +855</option>
+                                    <option value="+856">🇱🇦 +856</option>
+                                    <option value="+86">🇨🇳 +86</option>
+                                    <option value="+880">🇧🇩 +880</option>
+                                    <option value="+886">🇹🇼 +886</option>
+                                    <option value="+90">🇹🇷 +90</option>
+                                    <option value="+91">🇮🇳 +91</option>
+                                    <option value="+92">🇵🇰 +92</option>
+                                    <option value="+93">🇦🇫 +93</option>
+                                    <option value="+94">🇱🇰 +94</option>
+                                    <option value="+95">🇲🇲 +95</option>
+                                    <option value="+960">🇲🇻 +960</option>
+                                    <option value="+961">🇱🇧 +961</option>
+                                    <option value="+962">🇯🇴 +962</option>
+                                    <option value="+963">🇸🇾 +963</option>
+                                    <option value="+964">🇮🇶 +964</option>
+                                    <option value="+965">🇰🇼 +965</option>
+                                    <option value="+966">🇸🇦 +966</option>
+                                    <option value="+967">🇾🇪 +967</option>
+                                    <option value="+968">🇴🇲 +968</option>
+                                    <option value="+970">🇵🇸 +970</option>
+                                    <option value="+971">🇦🇪 +971</option>
+                                    <option value="+972">🇮🇱 +972</option>
+                                    <option value="+973">🇧🇭 +973</option>
+                                    <option value="+974">🇶🇦 +974</option>
+                                    <option value="+975">🇧🇹 +975</option>
+                                    <option value="+976">🇲🇳 +976</option>
+                                    <option value="+977">🇳🇵 +977</option>
+                                    <option value="+98">🇮🇷 +98</option>
+                                    <option value="+992">🇹🇯 +992</option>
+                                    <option value="+993">🇹🇲 +993</option>
+                                    <option value="+994">🇦🇿 +994</option>
+                                    <option value="+995">🇬🇪 +995</option>
+                                    <option value="+996">🇰🇬 +996</option>
+                                    <option value="+998">🇺🇿 +998</option>
+                                </select>
+                                <input type="tel" id="cust-phone" placeholder="Phone number" required>
+                            </div>
                         </div>
+                        <div class="form-group">
+                            <label>Billing Period *</label>
+                            <div class="billing-options" id="billing-period-options">
+                                <div class="billing-option selected" data-period="monthly" data-amount="8" onclick="selectBillingPeriod(this)">
+                                    <span class="price">$8</span>
+                                    <span class="period-label">Monthly</span>
+                                </div>
+                                <div class="billing-option" data-period="quarterly" data-amount="24" onclick="selectBillingPeriod(this)">
+                                    <span class="price">$24</span>
+                                    <span class="period-label">3 Months (Quarterly)</span>
+                                </div>
+                                <div class="billing-option" data-period="biannually" data-amount="48" onclick="selectBillingPeriod(this)">
+                                    <span class="price">$48</span>
+                                    <span class="period-label">6 Months (Bi‑annually)</span>
+                                </div>
+                                <div class="billing-option" data-period="annually" data-amount="96" onclick="selectBillingPeriod(this)">
+                                    <span class="price">$96</span>
+                                    <span class="period-label">12 Months (Annually)</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="billing-period" value="monthly">
+                            <input type="hidden" id="billing-amount" value="8">
+                        </div>
+                        <button type="button" class="btn btn-primary btn-block" onclick="nextStep(2)">Continue <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
-                    <button type="button" class="btn btn-primary btn-block" onclick="nextStep(2)">Continue</button>
-                </div>
 
-                <!-- Step 2: Billing Address & Plan Selection -->
-                <div class="step-content hidden" id="step-2">
-                    <h2>Billing Address & Plan</h2>
-                    <div class="form-group"><label>Street Address *</label><input type="text" id="cust-street" required></div>
-                    <div class="form-group"><label>City / Location *</label><input type="text" id="cust-city" required></div>
-                    <div class="form-group"><label>Province / State</label><input type="text" id="cust-province"></div>
-                    <div class="form-group"><label>Country *</label>
-                        <select id="cust-country" required>
-                            <option value="">Select Country</option>
-                            <option value="Zimbabwe">Zimbabwe</option>
-                            <!-- full country list as in your old code -->
-                        </select>
+                    <!-- Step 2: Billing Address & Agreement -->
+                    <div class="step-content hidden" id="step-2">
+                        <h2>Billing Address</h2>
+                        <div class="form-group"><label>Street Address *</label><input type="text" id="cust-street" placeholder="e.g. 45 Samora Machel Ave" required></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>City / Location *</label><input type="text" id="cust-city" placeholder="e.g. Harare" required></div>
+                            <div class="form-group"><label>Province / State</label><input type="text" id="cust-province" placeholder="e.g. Mashonaland"></div>
+                        </div>
+                        <div class="form-group"><label>Country *</label>
+                            <select id="cust-country" required>
+                                <option value="">— Select Country —</option>
+                                <optgroup label="Africa">
+                                    <option value="Zimbabwe">Zimbabwe</option>
+                                    <option value="South Africa">South Africa</option>
+                                    <option value="Kenya">Kenya</option>
+                                    <option value="Uganda">Uganda</option>
+                                    <option value="Zambia">Zambia</option>
+                                    <option value="Malawi">Malawi</option>
+                                    <option value="Botswana">Botswana</option>
+                                    <option value="Namibia">Namibia</option>
+                                    <option value="Tanzania">Tanzania</option>
+                                    <option value="Rwanda">Rwanda</option>
+                                    <option value="Burundi">Burundi</option>
+                                    <option value="Somalia">Somalia</option>
+                                    <option value="Ethiopia">Ethiopia</option>
+                                    <option value="Sudan">Sudan</option>
+                                    <option value="South Sudan">South Sudan</option>
+                                    <option value="Egypt">Egypt</option>
+                                    <option value="Nigeria">Nigeria</option>
+                                    <option value="Ghana">Ghana</option>
+                                    <option value="Ivory Coast">Ivory Coast</option>
+                                    <option value="Senegal">Senegal</option>
+                                    <option value="Mali">Mali</option>
+                                    <option value="Burkina Faso">Burkina Faso</option>
+                                    <option value="Benin">Benin</option>
+                                    <option value="Niger">Niger</option>
+                                    <option value="Togo">Togo</option>
+                                    <option value="Liberia">Liberia</option>
+                                    <option value="Sierra Leone">Sierra Leone</option>
+                                    <option value="Chad">Chad</option>
+                                    <option value="Central African Republic">Central African Republic</option>
+                                    <option value="Cameroon">Cameroon</option>
+                                    <option value="Cape Verde">Cape Verde</option>
+                                    <option value="Equatorial Guinea">Equatorial Guinea</option>
+                                    <option value="Gabon">Gabon</option>
+                                    <option value="Congo">Congo</option>
+                                    <option value="DR Congo">DR Congo</option>
+                                    <option value="Angola">Angola</option>
+                                    <option value="Guinea-Bissau">Guinea-Bissau</option>
+                                    <option value="Guinea">Guinea</option>
+                                    <option value="Gambia">Gambia</option>
+                                    <option value="Mauritania">Mauritania</option>
+                                    <option value="Seychelles">Seychelles</option>
+                                    <option value="Djibouti">Djibouti</option>
+                                    <option value="Mozambique">Mozambique</option>
+                                    <option value="Madagascar">Madagascar</option>
+                                    <option value="Lesotho">Lesotho</option>
+                                    <option value="Eswatini">Eswatini</option>
+                                    <option value="Comoros">Comoros</option>
+                                    <option value="Eritrea">Eritrea</option>
+                                    <option value="Mauritius">Mauritius</option>
+                                    <option value="Algeria">Algeria</option>
+                                    <option value="Morocco">Morocco</option>
+                                    <option value="Tunisia">Tunisia</option>
+                                    <option value="Libya">Libya</option>
+                                    <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+                                </optgroup>
+                                <optgroup label="Europe">
+                                    <option value="United Kingdom">United Kingdom</option>
+                                    <option value="France">France</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="Italy">Italy</option>
+                                    <option value="Spain">Spain</option>
+                                    <option value="Portugal">Portugal</option>
+                                    <option value="Netherlands">Netherlands</option>
+                                    <option value="Belgium">Belgium</option>
+                                    <option value="Switzerland">Switzerland</option>
+                                    <option value="Austria">Austria</option>
+                                    <option value="Sweden">Sweden</option>
+                                    <option value="Norway">Norway</option>
+                                    <option value="Denmark">Denmark</option>
+                                    <option value="Finland">Finland</option>
+                                    <option value="Ireland">Ireland</option>
+                                    <option value="Poland">Poland</option>
+                                    <option value="Czech Republic">Czech Republic</option>
+                                    <option value="Slovakia">Slovakia</option>
+                                    <option value="Hungary">Hungary</option>
+                                    <option value="Romania">Romania</option>
+                                    <option value="Bulgaria">Bulgaria</option>
+                                    <option value="Greece">Greece</option>
+                                    <option value="Ukraine">Ukraine</option>
+                                    <option value="Serbia">Serbia</option>
+                                    <option value="Croatia">Croatia</option>
+                                    <option value="Slovenia">Slovenia</option>
+                                    <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+                                    <option value="Albania">Albania</option>
+                                    <option value="North Macedonia">North Macedonia</option>
+                                    <option value="Montenegro">Montenegro</option>
+                                    <option value="Kosovo">Kosovo</option>
+                                    <option value="Malta">Malta</option>
+                                    <option value="Cyprus">Cyprus</option>
+                                    <option value="Iceland">Iceland</option>
+                                    <option value="Luxembourg">Luxembourg</option>
+                                    <option value="Liechtenstein">Liechtenstein</option>
+                                    <option value="Monaco">Monaco</option>
+                                    <option value="Andorra">Andorra</option>
+                                    <option value="San Marino">San Marino</option>
+                                    <option value="Estonia">Estonia</option>
+                                    <option value="Latvia">Latvia</option>
+                                    <option value="Lithuania">Lithuania</option>
+                                    <option value="Belarus">Belarus</option>
+                                    <option value="Moldova">Moldova</option>
+                                    <option value="Armenia">Armenia</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Azerbaijan">Azerbaijan</option>
+                                </optgroup>
+                                <optgroup label="Asia">
+                                    <option value="China">China</option>
+                                    <option value="India">India</option>
+                                    <option value="Japan">Japan</option>
+                                    <option value="South Korea">South Korea</option>
+                                    <option value="Singapore">Singapore</option>
+                                    <option value="Malaysia">Malaysia</option>
+                                    <option value="Indonesia">Indonesia</option>
+                                    <option value="Thailand">Thailand</option>
+                                    <option value="Vietnam">Vietnam</option>
+                                    <option value="Philippines">Philippines</option>
+                                    <option value="Pakistan">Pakistan</option>
+                                    <option value="Bangladesh">Bangladesh</option>
+                                    <option value="Sri Lanka">Sri Lanka</option>
+                                    <option value="Nepal">Nepal</option>
+                                    <option value="Myanmar">Myanmar</option>
+                                    <option value="Cambodia">Cambodia</option>
+                                    <option value="Laos">Laos</option>
+                                    <option value="Mongolia">Mongolia</option>
+                                    <option value="Taiwan">Taiwan</option>
+                                    <option value="Hong Kong">Hong Kong</option>
+                                    <option value="Macau">Macau</option>
+                                    <option value="North Korea">North Korea</option>
+                                    <option value="Brunei">Brunei</option>
+                                    <option value="Maldives">Maldives</option>
+                                    <option value="Bhutan">Bhutan</option>
+                                    <option value="Kazakhstan">Kazakhstan</option>
+                                    <option value="Kyrgyzstan">Kyrgyzstan</option>
+                                    <option value="Tajikistan">Tajikistan</option>
+                                    <option value="Turkmenistan">Turkmenistan</option>
+                                    <option value="Uzbekistan">Uzbekistan</option>
+                                </optgroup>
+                                <optgroup label="Middle East">
+                                    <option value="United Arab Emirates">United Arab Emirates</option>
+                                    <option value="Saudi Arabia">Saudi Arabia</option>
+                                    <option value="Qatar">Qatar</option>
+                                    <option value="Kuwait">Kuwait</option>
+                                    <option value="Bahrain">Bahrain</option>
+                                    <option value="Oman">Oman</option>
+                                    <option value="Jordan">Jordan</option>
+                                    <option value="Lebanon">Lebanon</option>
+                                    <option value="Israel">Israel</option>
+                                    <option value="Palestine">Palestine</option>
+                                    <option value="Iraq">Iraq</option>
+                                    <option value="Iran">Iran</option>
+                                    <option value="Syria">Syria</option>
+                                    <option value="Yemen">Yemen</option>
+                                    <option value="Turkey">Turkey</option>
+                                </optgroup>
+                                <optgroup label="Americas">
+                                    <option value="United States">United States</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="Mexico">Mexico</option>
+                                    <option value="Brazil">Brazil</option>
+                                    <option value="Argentina">Argentina</option>
+                                    <option value="Chile">Chile</option>
+                                    <option value="Colombia">Colombia</option>
+                                    <option value="Peru">Peru</option>
+                                    <option value="Venezuela">Venezuela</option>
+                                    <option value="Ecuador">Ecuador</option>
+                                    <option value="Bolivia">Bolivia</option>
+                                    <option value="Paraguay">Paraguay</option>
+                                    <option value="Uruguay">Uruguay</option>
+                                    <option value="Guyana">Guyana</option>
+                                    <option value="Suriname">Suriname</option>
+                                    <option value="Panama">Panama</option>
+                                    <option value="Costa Rica">Costa Rica</option>
+                                    <option value="Nicaragua">Nicaragua</option>
+                                    <option value="Honduras">Honduras</option>
+                                    <option value="El Salvador">El Salvador</option>
+                                    <option value="Guatemala">Guatemala</option>
+                                    <option value="Belize">Belize</option>
+                                    <option value="Cuba">Cuba</option>
+                                    <option value="Haiti">Haiti</option>
+                                    <option value="Dominican Republic">Dominican Republic</option>
+                                    <option value="Jamaica">Jamaica</option>
+                                    <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+                                    <option value="Bahamas">Bahamas</option>
+                                    <option value="Barbados">Barbados</option>
+                                </optgroup>
+                                <optgroup label="Oceania">
+                                    <option value="Australia">Australia</option>
+                                    <option value="New Zealand">New Zealand</option>
+                                    <option value="Fiji">Fiji</option>
+                                    <option value="Papua New Guinea">Papua New Guinea</option>
+                                    <option value="Solomon Islands">Solomon Islands</option>
+                                    <option value="Vanuatu">Vanuatu</option>
+                                    <option value="Samoa">Samoa</option>
+                                    <option value="Tonga">Tonga</option>
+                                    <option value="Kiribati">Kiribati</option>
+                                    <option value="Micronesia">Micronesia</option>
+                                    <option value="Marshall Islands">Marshall Islands</option>
+                                    <option value="Palau">Palau</option>
+                                    <option value="Nauru">Nauru</option>
+                                    <option value="Tuvalu">Tuvalu</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="agreement" onclick="document.getElementById('agreement').click()">
+                            <input type="checkbox" id="agreement" required onclick="event.stopPropagation()">
+                            <label for="agreement">I understand and agree that all payments are <strong>manual</strong> — processed via <strong>Ecocash</strong> or <strong>Bank Transfer</strong>. I will submit proof of payment for admin verification to activate my subscription.</label>
+                        </div>
+                        <button type="button" class="btn btn-outline btn-block" onclick="prevStep(1)" style="margin-bottom:0.5rem;"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button type="button" class="btn btn-primary btn-block" onclick="nextStep(3)">Review Summary <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
-                    <div class="form-group">
-                        <label>Billing Period *</label>
-                        <select id="billing-period" required>
-                            <option value="monthly">Monthly - $8</option>
-                            <option value="quarterly">3 Months - $24</option>
-                            <option value="biannually">6 Months - $48</option>
-                            <option value="annually">Yearly - $96</option>
-                        </select>
-                    </div>
-                    <div class="agreement">
-                        <input type="checkbox" id="agreement" required>
-                        <label for="agreement">I agree that all payments are manual and processed via Ecocash / Bank Transfer. I will submit proof of payment for admin verification.</label>
-                    </div>
-                    <button type="button" class="btn btn-outline btn-block" onclick="prevStep(1)" style="margin-bottom:0.5rem;">Back</button>
-                    <button type="button" class="btn btn-primary btn-block" onclick="nextStep(3)">Review Summary</button>
-                </div>
 
-                <!-- Step 3: Summary & Checkout -->
-                <div class="step-content hidden" id="step-3">
-                    <h2>Payment Summary</h2>
-                    <div id="summary-details" style="background:#F8FAFC; padding:1rem; border-radius:var(--radius-md); margin:1rem 0;"></div>
-                    <div class="secure-badge">
-                        <i class="fa-solid fa-lock"></i> Secure Checkout · Your IP is logged for fraud prevention
+                    <!-- Step 3: Summary & Checkout -->
+                    <div class="step-content hidden" id="step-3">
+                        <h2>📋 Payment Summary</h2>
+                        <div id="summary-details" style="background:#F8FAFC;padding:1.2rem;border-radius:var(--radius-md);margin:1rem 0;font-size:0.9rem;line-height:1.7;"></div>
+                        <div class="secure-badge">
+                            <i class="fa-solid fa-lock"></i> Secure Checkout · Your data is encrypted
+                        </div>
+                        <button type="button" class="btn btn-outline btn-block" onclick="prevStep(2)" style="margin-bottom:0.5rem;"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button type="button" class="btn btn-primary btn-block" id="btn-generate-invoice" onclick="generateInvoice()">
+                            <i class="fa-solid fa-file-invoice"></i> Generate Invoice &amp; Pay
+                        </button>
                     </div>
-                    <button type="button" class="btn btn-outline btn-block" onclick="prevStep(2)" style="margin-bottom:0.5rem;">Back</button>
-                    <button type="button" class="btn btn-primary btn-block" onclick="generateInvoice()">
-                        <i class="fa-solid fa-file-invoice"></i> Generate Invoice & Pay
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- VIEW 3: INVOICE (pending payment) -->
-    <div class="view" id="view-invoice">
-        <div class="card">
-            <div id="invoice-content"></div>
-            <div style="margin-top:1.5rem;">
-                <button class="btn btn-outline btn-block" onclick="window.print()"><i class="fa-solid fa-print"></i> Print / Download Invoice</button>
-                <button class="btn btn-outline btn-block" style="margin-top:0.5rem;" onclick="contactAdmin()"><i class="fa-solid fa-headset"></i> Contact Admin</button>
-                <button class="btn btn-danger btn-block" style="margin-top:0.5rem;" id="cancel-invoice-btn" onclick="cancelInvoice()">
-                    <i class="fa-solid fa-xmark"></i> Cancel This Invoice
+        <!-- VIEW 3: INVOICE (pending payment) -->
+        <div class="view" id="view-invoice">
+            <div class="card" id="invoice-card">
+                <div id="invoice-content">
+                    <!-- Invoice filled dynamically -->
+                </div>
+                <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.5rem;">
+                    <button class="btn btn-outline btn-block" onclick="printInvoice()"><i class="fa-solid fa-print"></i> Print / Download Invoice</button>
+                    <button class="btn btn-outline btn-block" onclick="contactAdmin()"><i class="fa-solid fa-headset"></i> Contact Admin</button>
+                    <button class="btn btn-danger btn-block btn-sm" onclick="cancelPendingInvoice()" style="margin-top:0.3rem;"><i class="fa-solid fa-xmark"></i> Cancel This Invoice</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 4: CURRENT ACTIVE PLAN -->
+        <div class="view" id="view-current-plan">
+            <div class="card">
+                <h2>✅ Active Subscription</h2>
+                <div id="current-plan-details"></div>
+                <button class="btn btn-danger btn-block" style="margin-top:1.5rem;" onclick="cancelSubscription()">
+                    <i class="fa-solid fa-ban"></i> Cancel Subscription
+                </button>
+                <p class="text-sm" style="text-align:center;margin-top:0.5rem;">Cancellation takes effect immediately. You can re‑subscribe anytime.</p>
+                <button class="btn btn-outline btn-block btn-sm" style="margin-top:0.5rem;" onclick="contactAdmin()">
+                    <i class="fa-solid fa-headset"></i> Contact Admin
                 </button>
             </div>
         </div>
-    </div>
 
-    <!-- VIEW 4: CURRENT ACTIVE PLAN -->
-    <div class="view" id="view-current-plan">
-        <div class="card">
-            <h2>✅ Active Subscription</h2>
-            <div id="current-plan-details"></div>
-            <button class="btn btn-danger btn-block" style="margin-top:1.5rem;" onclick="cancelSubscription()">
-                <i class="fa-solid fa-ban"></i> Cancel Subscription
-            </button>
-            <p style="font-size:0.8rem; margin-top:0.5rem; text-align:center;">Cancellation takes effect immediately. You can re‑subscribe later.</p>
-        </div>
-    </div>
-
-    <!-- Toast container -->
-    <div id="toast-container"></div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, addDoc, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
-        authDomain: "teacherbee-connect.firebaseapp.com",
-        projectId: "teacherbee-connect",
-        storageBucket: "teacherbee-connect.firebasestorage.app",
-        messagingSenderId: "345613317767",
-        appId: "1:345613317767:web:555713e479f9837e84aa22"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    let currentUser = null;
-    let currentStep = 1;
-    let pendingPaymentId = null;
-    let currentPaymentData = null;
-
-    // ── Auth & init ──
-    onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-            window.location.href = 'login.html'; // adjust to your login page
-            return;
-        }
-        currentUser = user;
-        await initPage();
-    });
-
-    async function initPage() {
-        if (!currentUser) return;
-
-        // 1. Check active subscription
-        const subDoc = await getDoc(doc(db, 'subscriptions', currentUser.uid));
-        if (subDoc.exists()) {
-            const subData = subDoc.data();
-            if (subData.status === 'active' && subData.expiryDate && subData.expiryDate.toMillis() > Date.now()) {
-                showCurrentPlan(subData);
-                return;
-            }
-        }
-
-        // 2. Check for pending payment (only one allowed)
-        const paymentsRef = collection(db, 'payments');
-        const q = query(paymentsRef, where('userId', '==', currentUser.uid), where('status', '==', 'pending'), orderBy('createdAt', 'desc'), limit(1));
-        const snap = await getDocs(q);
-        if (!snap.empty) {
-            const paymentDoc = snap.docs[0];
-            pendingPaymentId = paymentDoc.id;
-            currentPaymentData = paymentDoc.data();
-            showInvoice(currentPaymentData, pendingPaymentId);
-            return;
-        }
-
-        // 3. Nothing active → show subscribe
-        showSubscribe();
-    }
-
-    function showView(viewId) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-    }
-
-    function showSubscribe() {
-        showView('view-subscribe');
-        pendingPaymentId = null;
-        currentPaymentData = null;
-    }
-
-    function startCheckout() {
-        showView('view-checkout');
-        currentStep = 1;
-        updateSteps();
-    }
-
-    function showInvoice(paymentData, paymentId) {
-        showView('view-invoice');
-        buildInvoiceHTML(paymentData, paymentId);
-        // Show/hide cancel button (only for pending payments)
-        const cancelBtn = document.getElementById('cancel-invoice-btn');
-        if (cancelBtn) cancelBtn.style.display = paymentData.status === 'pending' ? 'flex' : 'none';
-    }
-
-    function showCurrentPlan(subData) {
-        showView('view-current-plan');
-        const container = document.getElementById('current-plan-details');
-        container.innerHTML = `
-            <div class="plan-card">
-                <span class="status-badge status-active">Active</span>
-                <p style="margin-top:0.5rem;"><strong>${subData.plan || 'Monthly'}</strong> · $${subData.amount || 8}/month</p>
-                <div class="dates">
-                    <div><small>Start</small><br>${subData.startDate ? subData.startDate.toDate().toLocaleDateString() : 'N/A'}</div>
-                    <div><small>Expiry</small><br>${subData.expiryDate ? subData.expiryDate.toDate().toLocaleDateString() : 'N/A'}</div>
-                </div>
-                <p style="font-size:0.85rem; margin-top:0.5rem;">Approved by admin</p>
+        <!-- VIEW 5: EXPIRED / RENEW -->
+        <div class="view" id="view-expired">
+            <div class="card">
+                <h2>⏰ Subscription Expired</h2>
+                <div id="expired-plan-details" style="margin:1rem 0;"></div>
+                <p>Your subscription has expired. Renew now to regain access to all recruiting features.</p>
+                <button class="btn btn-primary btn-block" style="margin-top:1rem;" onclick="startCheckout()">
+                    <i class="fa-solid fa-rotate"></i> Renew Subscription
+                </button>
+                <button class="btn btn-outline btn-block btn-sm" style="margin-top:0.5rem;" onclick="contactAdmin()">
+                    <i class="fa-solid fa-headset"></i> Contact Admin
+                </button>
             </div>
-        `;
-    }
+        </div>
 
-    // ── STEP NAVIGATION ──
-    window.nextStep = function(step) {
-        // Validate step 1 → 2
-        if (step === 2) {
-            const name = document.getElementById('cust-name').value.trim();
-            const email = document.getElementById('cust-email').value.trim();
-            const phone = document.getElementById('cust-phone').value.trim();
-            if (!name || !email || !phone) {
-                showToast('Please fill all required fields (Name, Email, Phone).', 'error');
+        <!-- Toast container -->
+        <div id="toast-container"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, addDoc, query, where, getDocs, orderBy,
+            limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // ── FIREBASE CONFIG ──
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+            authDomain: "teacherbee-connect.firebaseapp.com",
+            projectId: "teacherbee-connect",
+            storageBucket: "teacherbee-connect.firebasestorage.app",
+            messagingSenderId: "345613317767",
+            appId: "1:345613317767:web:555713e479f9837e84aa22"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ── STATE ──
+        let currentUser = null;
+        let currentStep = 1;
+        let pendingPaymentId = null;
+        let pendingPaymentData = null;
+        let selectedBillingPeriod = 'monthly';
+        let selectedBillingAmount = 8;
+
+        // ── AUTH LISTENER ──
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                currentUser = user;
+                await initPage();
+            }
+        });
+
+        // ── INIT PAGE ──
+        async function initPage() {
+            if (!currentUser) return;
+
+            // 1. Check for active subscription
+            const subDoc = await getDoc(doc(db, 'subscriptions', currentUser.uid));
+            if (subDoc.exists()) {
+                const subData = subDoc.data();
+                const now = Date.now();
+                const expiryMs = subData.expiryDate ? subData.expiryDate.toMillis() : 0;
+
+                if (subData.status === 'active' && expiryMs > now) {
+                    showCurrentPlan(subData);
+                    return;
+                } else if (subData.status === 'active' && expiryMs <= now) {
+                    // Auto-expire
+                    await updateDoc(doc(db, 'subscriptions', currentUser.uid), { status: 'expired' });
+                    showExpiredPlan(subData);
+                    return;
+                } else if (subData.status === 'expired') {
+                    showExpiredPlan(subData);
+                    return;
+                }
+            }
+
+            // 2. Check for pending payment
+            const paymentsRef = collection(db, 'payments');
+            const q = query(
+                paymentsRef,
+                where('userId', '==', currentUser.uid),
+                where('status', '==', 'pending'),
+                orderBy('createdAt', 'desc'),
+                limit(1)
+            );
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+                const paymentDoc = snap.docs[0];
+                pendingPaymentId = paymentDoc.id;
+                pendingPaymentData = paymentDoc.data();
+                showInvoice(pendingPaymentData, pendingPaymentId);
                 return;
             }
+
+            // 3. Nothing active — show subscribe
+            showView('view-subscribe');
         }
 
-        // Validate step 2 → 3
-        if (step === 3) {
+        // ── VIEW MANAGEMENT ──
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            const target = document.getElementById(viewId);
+            if (target) target.classList.add('active');
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showSubscribe() {
+            showView('view-subscribe');
+            resetCheckoutForm();
+        }
+
+        function showInvoice(paymentData, paymentId) {
+            showView('view-invoice');
+            buildInvoiceHTML(paymentData, paymentId);
+        }
+
+        function showCurrentPlan(subData) {
+            showView('view-current-plan');
+            const container = document.getElementById('current-plan-details');
+            const periodMap = { monthly: 'Monthly', quarterly: '3 Months (Quarterly)', biannually: '6 Months (Bi-annually)',
+                annually: '12 Months (Annually)' };
+            container.innerHTML = `
+            <div class="plan-card">
+              <span class="status-badge status-active">Active</span>
+              <p style="margin-top:0.6rem;"><strong>${periodMap[subData.billingPeriod] || subData.billingPeriod || 'Monthly'}</strong> · $${subData.amount || 8}</p>
+              <div class="dates">
+                <div><small>Start Date</small><br><strong>${subData.startDate ? subData.startDate.toDate().toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : 'N/A'}</strong></div>
+                <div><small>Expiry Date</small><br><strong>${subData.expiryDate ? subData.expiryDate.toDate().toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : 'N/A'}</strong></div>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-muted);">Approved by admin · Payment ID: <code>${(subData.paymentId || 'N/A').substring(0,8)}</code></p>
+            </div>
+          `;
+        }
+
+        function showExpiredPlan(subData) {
+            showView('view-expired');
+            const container = document.getElementById('expired-plan-details');
+            const periodMap = { monthly: 'Monthly', quarterly: '3 Months', biannually: '6 Months', annually: '12 Months' };
+            container.innerHTML = `
+            <div class="plan-card" style="border-color:#FCA5A5;background:#FEF2F2;">
+              <span class="status-badge status-expired">Expired</span>
+              <p style="margin-top:0.5rem;"><strong>${periodMap[subData.billingPeriod] || 'Monthly'}</strong> · $${subData.amount || 8}</p>
+              <p style="font-size:0.82rem;">Expired on: ${subData.expiryDate ? subData.expiryDate.toDate().toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : 'N/A'}</p>
+            </div>
+          `;
+        }
+
+        function resetCheckoutForm() {
+            document.getElementById('checkout-form').reset();
+            document.getElementById('billing-period').value = 'monthly';
+            document.getElementById('billing-amount').value = '8';
+            selectedBillingPeriod = 'monthly';
+            selectedBillingAmount = 8;
+            currentStep = 1;
+            // Reset billing options visual
+            document.querySelectorAll('#billing-period-options .billing-option').forEach(el => el.classList.remove(
+                'selected'));
+            const firstOption = document.querySelector('#billing-period-options .billing-option[data-period="monthly"]');
+            if (firstOption) firstOption.classList.add('selected');
+            // Show step 1, hide others
+            document.getElementById('step-1').classList.remove('hidden');
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.add('hidden');
+            updateSteps();
+        }
+
+        // ── BILLING PERIOD SELECTION ──
+        window.selectBillingPeriod = function(element) {
+            document.querySelectorAll('#billing-period-options .billing-option').forEach(el => el.classList.remove(
+                'selected'));
+            element.classList.add('selected');
+            selectedBillingPeriod = element.dataset.period;
+            selectedBillingAmount = parseInt(element.dataset.amount);
+            document.getElementById('billing-period').value = selectedBillingPeriod;
+            document.getElementById('billing-amount').value = selectedBillingAmount;
+        };
+
+        // ── STEP NAVIGATION ──
+        window.nextStep = function(step) {
+            // Validate step 1 → 2
+            if (step === 2) {
+                const name = document.getElementById('cust-name').value.trim();
+                const email = document.getElementById('cust-email').value.trim();
+                const phone = document.getElementById('cust-phone').value.trim();
+                if (!name || !email || !phone) {
+                    showToast('Please fill all required fields: Name, Email, and Phone.', 'error');
+                    return;
+                }
+                // Basic email validation
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    showToast('Please enter a valid email address.', 'error');
+                    return;
+                }
+            }
+
+            // Validate step 2 → 3
+            if (step === 3) {
+                const street = document.getElementById('cust-street').value.trim();
+                const city = document.getElementById('cust-city').value.trim();
+                const country = document.getElementById('cust-country').value;
+                if (!street || !city || !country) {
+                    showToast('Please complete all required address fields: Street, City, and Country.', 'error');
+                    return;
+                }
+                if (!document.getElementById('agreement').checked) {
+                    showToast('You must agree to the manual payment terms to continue.', 'error');
+                    return;
+                }
+                updateSummary();
+            }
+
+            // Transition
+            document.getElementById(`step-${currentStep}`).classList.add('hidden');
+            document.getElementById(`step-${step}`).classList.remove('hidden');
+            currentStep = step;
+            updateSteps();
+            document.getElementById('step-' + step).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+
+        window.prevStep = function(step) {
+            document.getElementById(`step-${currentStep}`).classList.add('hidden');
+            document.getElementById(`step-${step}`).classList.remove('hidden');
+            currentStep = step;
+            updateSteps();
+            document.getElementById('step-' + step).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+
+        function updateSteps() {
+            document.querySelectorAll('.step').forEach(el => {
+                el.classList.remove('active', 'done');
+                const stepNum = parseInt(el.dataset.step);
+                if (stepNum === currentStep) el.classList.add('active');
+                else if (stepNum < currentStep) el.classList.add('done');
+            });
+        }
+
+        function updateSummary() {
+            const name = document.getElementById('cust-name').value.trim();
+            const company = document.getElementById('cust-company').value.trim() || 'N/A';
+            const email = document.getElementById('cust-email').value.trim();
+            const phoneCode = document.getElementById('phone-code').value;
+            const phone = document.getElementById('cust-phone').value.trim();
             const street = document.getElementById('cust-street').value.trim();
             const city = document.getElementById('cust-city').value.trim();
+            const province = document.getElementById('cust-province').value.trim() || 'N/A';
             const country = document.getElementById('cust-country').value;
-            const period = document.getElementById('billing-period').value;
-            if (!street || !city || !country || !period) {
-                showToast('Please complete all required fields (Street, City, Country, Billing Period).', 'error');
+            const periodMap = { monthly: 'Monthly', quarterly: '3 Months (Quarterly)', biannually: '6 Months (Bi-annually)',
+                annually: '12 Months (Annually)' };
+
+            document.getElementById('summary-details').innerHTML = `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1rem;">
+              <div><span style="color:var(--text-muted);font-size:0.75rem;">Name</span><br><strong>${escapeHTML(name)}</strong></div>
+              <div><span style="color:var(--text-muted);font-size:0.75rem;">Company</span><br><strong>${escapeHTML(company)}</strong></div>
+              <div><span style="color:var(--text-muted);font-size:0.75rem;">Email</span><br><strong>${escapeHTML(email)}</strong></div>
+              <div><span style="color:var(--text-muted);font-size:0.75rem;">Phone</span><br><strong>${escapeHTML(phoneCode)} ${escapeHTML(phone)}</strong></div>
+              <div style="grid-column:1/-1;"><span style="color:var(--text-muted);font-size:0.75rem;">Address</span><br><strong>${escapeHTML(street)}, ${escapeHTML(city)}, ${escapeHTML(province)}, ${escapeHTML(country)}</strong></div>
+            </div>
+            <div style="margin-top:1rem;padding-top:0.8rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+              <span>Plan: <strong>${periodMap[selectedBillingPeriod]}</strong></span>
+              <span style="font-size:1.3rem;font-weight:800;">$${selectedBillingAmount} USD</span>
+            </div>
+          `;
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ── INVOICE GENERATION ──
+        window.generateInvoice = async function() {
+            const name = document.getElementById('cust-name').value.trim();
+            const company = document.getElementById('cust-company').value.trim() || '';
+            const email = document.getElementById('cust-email').value.trim();
+            const phoneCode = document.getElementById('phone-code').value;
+            const phone = document.getElementById('cust-phone').value.trim();
+            const street = document.getElementById('cust-street').value.trim();
+            const city = document.getElementById('cust-city').value.trim();
+            const province = document.getElementById('cust-province').value.trim() || '';
+            const country = document.getElementById('cust-country').value;
+
+            if (!name || !email || !phone || !street || !city || !country) {
+                showToast('Please complete all required fields before generating the invoice.', 'error');
                 return;
             }
             if (!document.getElementById('agreement').checked) {
                 showToast('You must agree to the manual payment terms.', 'error');
                 return;
             }
-            updateSummary();
-        }
 
-        // Switch step content
-        document.getElementById(`step-${currentStep}`).classList.add('hidden');
-        document.getElementById(`step-${step}`).classList.remove('hidden');
-        currentStep = step;
-        updateSteps();
-    };
+            // Disable button to prevent double-click
+            const btn = document.getElementById('btn-generate-invoice');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Generating Invoice...';
 
-    window.prevStep = function(step) {
-        document.getElementById(`step-${currentStep}`).classList.add('hidden');
-        document.getElementById(`step-${step}`).classList.remove('hidden');
-        currentStep = step;
-        updateSteps();
-    };
+            // Get IP
+            let ip = 'unknown';
+            try {
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
+                ip = ipData.ip;
+            } catch (e) {
+                console.warn('Could not fetch IP:', e);
+            }
 
-    function updateSteps() {
-        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-        const activeStep = document.querySelector(`.step[data-step="${currentStep}"]`);
-        if (activeStep) activeStep.classList.add('active');
-    }
+            const paymentData = {
+                userId: currentUser.uid,
+                userEmail: currentUser.email || email,
+                type: 'subscription',
+                amount: selectedBillingAmount,
+                currency: 'USD',
+                billingPeriod: selectedBillingPeriod,
+                status: 'pending',
+                customer: {
+                    name,
+                    company,
+                    email,
+                    phone: phoneCode + ' ' + phone,
+                    street,
+                    city,
+                    province,
+                    country
+                },
+                ipAddress: ip,
+                createdAt: serverTimestamp(),
+                verifiedAt: null,
+                verifiedBy: null,
+                instructions: {
+                    ecocashNumber: '+263 77 123 4567',
+                    ecocashName: 'TeacherBee Connect',
+                    bankAccount: '1234567890',
+                    bankName: 'Bank XYZ',
+                    branchCode: '000'
+                }
+            };
 
-    function updateSummary() {
-        const name = document.getElementById('cust-name').value;
-        const company = document.getElementById('cust-company').value || 'N/A';
-        const email = document.getElementById('cust-email').value;
-        const phoneCode = document.getElementById('phone-code').value;
-        const phone = document.getElementById('cust-phone').value;
-        const period = document.getElementById('billing-period').value;
-        let amount = 8;
-        if (period === 'quarterly') amount = 24;
-        else if (period === 'biannually') amount = 48;
-        else if (period === 'annually') amount = 96;
-
-        document.getElementById('summary-details').innerHTML = `
-            <strong>Name:</strong> ${name}<br>
-            <strong>Company:</strong> ${company}<br>
-            <strong>Email:</strong> ${email}<br>
-            <strong>Phone:</strong> ${phoneCode} ${phone}<br>
-            <strong>Plan:</strong> ${period} · <strong>$${amount}</strong>
-        `;
-    }
-
-    // ── INVOICE GENERATION ──
-    window.generateInvoice = async function() {
-        const name = document.getElementById('cust-name').value.trim();
-        const company = document.getElementById('cust-company').value.trim() || '';
-        const email = document.getElementById('cust-email').value.trim();
-        const phoneCode = document.getElementById('phone-code').value;
-        const phone = document.getElementById('cust-phone').value.trim();
-        const street = document.getElementById('cust-street').value.trim();
-        const city = document.getElementById('cust-city').value.trim();
-        const province = document.getElementById('cust-province').value.trim() || '';
-        const country = document.getElementById('cust-country').value;
-        const period = document.getElementById('billing-period').value;
-        let amount = 8;
-        if (period === 'quarterly') amount = 24;
-        else if (period === 'biannually') amount = 48;
-        else if (period === 'annually') amount = 96;
-
-        if (!name || !email || !phone || !street || !city || !country || !period) {
-            showToast('Please complete all required fields.', 'error');
-            return;
-        }
-
-        // Get IP (optional)
-        let ip = 'unknown';
-        try {
-            const ipRes = await fetch('https://api.ipify.org?format=json');
-            const ipData = await ipRes.json();
-            ip = ipData.ip;
-        } catch(e) { console.warn('IP fetch failed'); }
-
-        const paymentData = {
-            userId: currentUser.uid,
-            type: 'subscription',
-            amount: amount,
-            currency: 'USD',
-            billingPeriod: period,
-            status: 'pending',
-            customer: {
-                name, company, email,
-                phone: phoneCode + ' ' + phone,
-                street, city, province, country
-            },
-            ipAddress: ip,
-            createdAt: serverTimestamp(),
-            instructions: {
-                ecocashNumber: '+263 77 123 4567',       // replace with your real number
-                ecocashName: 'TeacherBee Connect',
-                bankAccount: '1234567890 · Bank XYZ · Branch 000',
-                bankName: 'TeacherBee Connect'
+            try {
+                const docRef = await addDoc(collection(db, 'payments'), paymentData);
+                pendingPaymentId = docRef.id;
+                pendingPaymentData = { ...paymentData, paymentId: docRef.id, createdAt: new Date() };
+                // Also save a lightweight reference in the user's subscription doc for admin tracking
+                await setDoc(doc(db, 'subscriptions', currentUser.uid), {
+                    status: 'pending_payment',
+                    pendingPaymentId: docRef.id,
+                    billingPeriod: selectedBillingPeriod,
+                    amount: selectedBillingAmount,
+                    updatedAt: serverTimestamp(),
+                    customer: paymentData.customer
+                }, { merge: true });
+                showView('view-invoice');
+                buildInvoiceHTML(pendingPaymentData, docRef.id);
+                showToast('✅ Invoice generated! Please submit proof of payment.', 'success');
+            } catch (e) {
+                showToast('Error generating invoice. Please try again.', 'error');
+                console.error('Invoice generation error:', e);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Generate Invoice & Pay';
             }
         };
 
-        try {
-            const docRef = await addDoc(collection(db, 'payments'), paymentData);
-            pendingPaymentId = docRef.id;
-            currentPaymentData = paymentData;
-            paymentData.paymentId = docRef.id;
-            showInvoice(paymentData, docRef.id);
-            showToast('Invoice generated! Please submit proof of payment.', 'success');
-        } catch (e) {
-            showToast('Error generating invoice. Check console.', 'error');
-            console.error(e);
-        }
-    };
+        function buildInvoiceHTML(paymentData, paymentId) {
+            const cust = paymentData.customer || {};
+            const periodMap = { monthly: 'Monthly', quarterly: '3 Months (Quarterly)', biannually: '6 Months (Bi-annually)',
+                annually: '12 Months (Annually)' };
+            const createdDate = paymentData.createdAt ?
+                (paymentData.createdAt.toDate ? paymentData.createdAt.toDate().toLocaleDateString('en-US', { year: 'numeric',
+                        month: 'short', day: 'numeric' }) :
+                    new Date(paymentData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short',
+                    day: 'numeric' })) :
+                new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            const invId = paymentId ? paymentId.substring(0, 8).toUpperCase() : 'INV-XXXXXX';
 
-    function buildInvoiceHTML(paymentData, paymentId) {
-        const cust = paymentData.customer || {};
-        const periodMap = { monthly:'Monthly', quarterly:'3 Months', biannually:'6 Months', annually:'Yearly' };
-        const invoiceHTML = `
+            document.getElementById('invoice-content').innerHTML = `
             <div class="invoice-box" id="printable-invoice">
-                <div class="logo-small">
-                    <span style="color:#0D4054; font-weight:800;">Teacher Bee</span>
-                    <span style="color:#F5A623; font-weight:800;">Connect</span> 🐝
-                </div>
-                <h3 style="margin-bottom:0.3rem;">Invoice #${paymentId.substring(0,8).toUpperCase()}</h3>
-                <p style="font-size:0.85rem;">Date: ${paymentData.createdAt ? new Date(paymentData.createdAt.toMillis()).toLocaleDateString() : new Date().toLocaleDateString()}</p>
-                <div class="invoice-details">
-                    <div><span>Customer</span> ${cust.name}</div>
-                    <div><span>Company</span> ${cust.company || 'N/A'}</div>
-                    <div><span>Email</span> ${cust.email}</div>
-                    <div><span>Phone</span> ${cust.phone}</div>
-                    <div><span>Address</span> ${cust.street}, ${cust.city}, ${cust.province || ''}, ${cust.country}</div>
-                </div>
-                <div style="background:white; padding:1rem; border-radius:var(--radius-sm); margin:1rem 0;">
-                    <strong>Plan:</strong> ${periodMap[paymentData.billingPeriod] || paymentData.billingPeriod}<br>
-                    <strong>Amount:</strong> $${paymentData.amount} USD<br>
-                    <strong>Status:</strong> <span class="status-badge status-pending">Pending Admin Verification</span>
-                </div>
-                <div style="font-weight:600; margin-bottom:0.3rem;">Payment Instructions</div>
-                <div style="background:#FFF7E0; padding:1rem; border-radius:var(--radius-sm); font-size:0.9rem;">
-                    <div><i class="fa-solid fa-mobile-screen"></i> <strong>Ecocash:</strong> ${paymentData.instructions.ecocashNumber} · ${paymentData.instructions.ecocashName}</div>
-                    <div style="margin-top:0.5rem;"><i class="fa-solid fa-building-columns"></i> <strong>Bank Transfer:</strong> ${paymentData.instructions.bankAccount} · ${paymentData.instructions.bankName}</div>
-                </div>
-                <p style="margin-top:1rem; font-size:0.85rem;">After payment, send proof to:</p>
-                <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
-                    <a href="#" class="btn btn-outline btn-sm"><i class="fa-solid fa-envelope"></i> Email</a>
-                    <a href="#" class="btn btn-outline btn-sm"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
-                    <a href="#" class="btn btn-outline btn-sm"><i class="fa-solid fa-upload"></i> Upload</a>
-                </div>
+              <div class="invoice-logo">
+                <span class="blu">Teacher Bee</span><span class="org">Connect</span> 🐝
+              </div>
+              <h3 style="margin-bottom:0.2rem;">Invoice #${invId}</h3>
+              <p class="text-sm">Date: ${createdDate}</p>
+              <div class="invoice-details">
+                <div><span>Customer</span> ${escapeHTML(cust.name || 'N/A')}</div>
+                <div><span>Company / School</span> ${escapeHTML(cust.company || 'N/A')}</div>
+                <div><span>Email</span> ${escapeHTML(cust.email || 'N/A')}</div>
+                <div><span>Phone</span> ${escapeHTML(cust.phone || 'N/A')}</div>
+                <div style="grid-column:1/-1;"><span>Billing Address</span> ${escapeHTML((cust.street || '') + ', ' + (cust.city || '') + ', ' + (cust.province || '') + ', ' + (cust.country || ''))}</div>
+              </div>
+              <div class="invoice-highlight">
+                <strong>Plan:</strong> ${periodMap[paymentData.billingPeriod] || paymentData.billingPeriod}<br>
+                <strong>Amount Due:</strong> <span style="font-size:1.3rem;font-weight:800;">$${paymentData.amount} USD</span><br>
+                <strong>Status:</strong> <span class="status-badge status-pending">Pending Admin Verification</span>
+              </div>
+              <div style="font-weight:700;margin-bottom:0.4rem;font-size:0.9rem;">📌 Payment Instructions</div>
+              <div class="payment-instructions">
+                <div style="margin-bottom:0.5rem;"><i class="fa-solid fa-mobile-screen-button"></i> <strong>Ecocash:</strong> ${(paymentData.instructions || {}).ecocashNumber || '+263 77 123 4567'} · <em>${(paymentData.instructions || {}).ecocashName || 'TeacherBee Connect'}</em></div>
+                <div><i class="fa-solid fa-building-columns"></i> <strong>Bank Transfer:</strong> Account #${(paymentData.instructions || {}).bankAccount || '1234567890'} · ${(paymentData.instructions || {}).bankName || 'Bank XYZ'} · Branch: ${(paymentData.instructions || {}).branchCode || '000'} · <em>${(paymentData.instructions || {}).ecocashName || 'TeacherBee Connect'}</em></div>
+              </div>
+              <p style="margin-top:1rem;font-size:0.84rem;font-weight:600;">After payment, send your proof of payment:</p>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+                <a href="#" class="btn btn-outline btn-sm" onclick="event.preventDefault();showToast('Email: admin@teacherbee.com','info');"><i class="fa-solid fa-envelope"></i> Email Proof</a>
+                <a href="#" class="btn btn-outline btn-sm" onclick="event.preventDefault();showToast('WhatsApp: +263 77 123 4567','info');"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                <a href="#" class="btn btn-outline btn-sm" onclick="event.preventDefault();showToast('Upload feature coming soon. Please use Email or WhatsApp for now.','info');"><i class="fa-solid fa-upload"></i> Upload Proof</a>
+              </div>
+              <p class="text-sm" style="margin-top:0.3rem;">Your subscription will be activated once the admin verifies your payment.</p>
             </div>
-        `;
-        document.getElementById('invoice-content').innerHTML = invoiceHTML;
-    }
-
-    window.contactAdmin = function() {
-        showToast('Contact admin at admin@teacherbee.com', 'info');
-    };
-
-    // ── CANCEL INVOICE (allows recruiter to start over) ──
-    window.cancelInvoice = async function() {
-        if (!confirm('Are you sure you want to cancel this pending invoice? You can start a new subscription afterwards.')) return;
-        if (!pendingPaymentId) return;
-        try {
-            await deleteDoc(doc(db, 'payments', pendingPaymentId));
-            showToast('Invoice cancelled.', 'info');
-            pendingPaymentId = null;
-            currentPaymentData = null;
-            showSubscribe();
-        } catch (e) {
-            showToast('Error cancelling invoice. Contact admin.', 'error');
+          `;
         }
-    };
 
-    // ── CANCEL ACTIVE SUBSCRIPTION ──
-    window.cancelSubscription = async function() {
-        if (!confirm('Cancel your active subscription? This will immediately revoke your recruiter features.')) return;
-        try {
-            await deleteDoc(doc(db, 'subscriptions', currentUser.uid));
-            showToast('Subscription cancelled. You can re-subscribe anytime.', 'info');
-            showSubscribe();
-        } catch (e) {
-            showToast('Error cancelling.', 'error');
+        // ── CANCEL PENDING INVOICE ──
+        window.cancelPendingInvoice = async function() {
+            if (!confirm('Are you sure you want to cancel this pending invoice? You can generate a new one later.')) return;
+            try {
+                if (pendingPaymentId) {
+                    await updateDoc(doc(db, 'payments', pendingPaymentId), { status: 'cancelled',
+                        cancelledAt: serverTimestamp() });
+                }
+                // Update subscription doc
+                await setDoc(doc(db, 'subscriptions', currentUser.uid), {
+                    status: 'cancelled',
+                    cancelledAt: serverTimestamp()
+                }, { merge: true });
+                pendingPaymentId = null;
+                pendingPaymentData = null;
+                showToast('Invoice cancelled. You can subscribe again anytime.', 'info');
+                showSubscribe();
+            } catch (e) {
+                showToast('Error cancelling invoice. Please try again.', 'error');
+                console.error(e);
+            }
+        };
+
+        // ── CANCEL ACTIVE SUBSCRIPTION ──
+        window.cancelSubscription = async function() {
+            if (!confirm(
+                    'Are you sure you want to cancel your active subscription? This takes effect immediately and you will lose access to premium features.'
+                    )) return;
+            try {
+                await updateDoc(doc(db, 'subscriptions', currentUser.uid), {
+                    status: 'cancelled',
+                    cancelledAt: serverTimestamp()
+                });
+                // Also cancel any pending payment if exists
+                if (pendingPaymentId) {
+                    await updateDoc(doc(db, 'payments', pendingPaymentId), { status: 'cancelled',
+                        cancelledAt: serverTimestamp() });
+                    pendingPaymentId = null;
+                    pendingPaymentData = null;
+                }
+                showToast('Subscription cancelled successfully.', 'info');
+                showSubscribe();
+            } catch (e) {
+                showToast('Error cancelling subscription. Please try again.', 'error');
+                console.error(e);
+            }
+        };
+
+        // ── START CHECKOUT ──
+        window.startCheckout = function() {
+            showView('view-checkout');
+            currentStep = 1;
+            resetCheckoutForm();
+            updateSteps();
+            document.getElementById('step-1').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+
+        // ── PRINT INVOICE ──
+        window.printInvoice = function() {
+            window.print();
+        };
+
+        // ── CONTACT ADMIN ──
+        window.contactAdmin = function() {
+            showToast('📧 admin@teacherbee.com | 📞 +263 77 123 4567 (WhatsApp)', 'info');
+        };
+
+        // ── TOAST SYSTEM ──
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            const bgMap = { error: '#DC2626', success: '#10B981', info: '#1E293B', warning: '#F59E0B' };
+            toast.style.background = bgMap[type] || bgMap.info;
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 4500);
         }
-    };
 
-    // ── Toast ──
-    function showToast(msg, type = 'info') {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.style.background = type === 'error' ? '#DC2626' : type === 'success' ? '#10B981' : '#1E293B';
-        toast.innerText = msg;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 4000);
-    }
+        // ── GLOBAL EXPOSURE ──
+        window.showToast = showToast;
+        window.selectBillingPeriod = window.selectBillingPeriod;
+        window.nextStep = window.nextStep;
+        window.prevStep = window.prevStep;
+        window.generateInvoice = window.generateInvoice;
+        window.cancelPendingInvoice = window.cancelPendingInvoice;
+        window.cancelSubscription = window.cancelSubscription;
+        window.startCheckout = window.startCheckout;
+        window.printInvoice = window.printInvoice;
+        window.contactAdmin = window.contactAdmin;
 
-    // Expose functions globally
-    window.startCheckout = startCheckout;
-    window.nextStep = window.nextStep;
-    window.prevStep = window.prevStep;
-    window.generateInvoice = window.generateInvoice;
-    window.contactAdmin = window.contactAdmin;
-    window.cancelInvoice = window.cancelInvoice;
-    window.cancelSubscription = window.cancelSubscription;
-
-    console.log('✅ TeacherBee Connect – Subscription page ready');
-</script>
-
+        console.log('✅ TeacherBee Connect Subscription Page Ready');
+        console.log('📋 Firestore collections: payments, subscriptions');
+        console.log('🔐 Auth required — redirects to login.html if not signed in');
+    </script>
 </body>
 </html>
