@@ -49,7 +49,7 @@
         }
 
         /* ==========================================
-           SMART HEADER (always visible)
+           SMART HEADER (forced visible always)
            ========================================== */
         .smart-header {
             position: fixed;
@@ -61,33 +61,40 @@
             -webkit-backdrop-filter: blur(24px);
             z-index: 99990;
             box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(13,64,84,0.05);
-            transition: all var(--transition-smooth);
+            transition: none; /* no transform animation */
+            transform: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
         .smart-header-inner {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 24px;
-            height: 68px;
+            padding: 0 20px;
+            height: 60px;
             max-width: 1200px;
             margin: 0 auto;
         }
         .smart-logo {
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             display: flex;
             align-items: center;
             text-decoration: none;
-            letter-spacing: -0.4px;
+            letter-spacing: -0.3px;
             gap: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .smart-logo-blue { color: var(--navy); }
         .smart-logo-orange { color: var(--orange); }
         .smart-logo-emoji {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             margin-left: 5px;
             animation: beeWiggle 3s ease-in-out infinite;
+            flex-shrink: 0;
         }
         @keyframes beeWiggle {
             0%,100% { transform: rotate(0deg) translateY(0); }
@@ -104,19 +111,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             transition: all var(--transition-fast);
             color: var(--navy);
             position: relative;
+            flex-shrink: 0;
         }
         .smart-hamburger:hover { background: rgba(13,64,84,0.06); }
         .smart-hamburger:active svg { transform: scale(0.9); }
         .smart-hamburger-dot {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             width: 8px;
             height: 8px;
             background: var(--red);
@@ -167,13 +175,13 @@
         .smart-menu-close:hover { background:rgba(0,0,0,0.05); }
 
         /* ==========================================
-           MAIN CONTAINER (desktop wider)
+           MAIN CONTAINER
            ========================================== */
         .app-container {
             width: 100%;
             max-width: 960px;
             margin: 0 auto;
-            padding: 96px 24px 100px;
+            padding: 80px 20px 70px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -183,7 +191,7 @@
 
         /* Toast */
         #toast-container {
-            position: fixed; top:88px; right:24px; z-index:99999;
+            position: fixed; top:80px; right:20px; z-index:99999;
             display:flex; flex-direction:column; gap:12px; pointer-events:none;
         }
         .toast {
@@ -207,7 +215,7 @@
             width:100%;
             background:var(--card-bg);
             border-radius:var(--radius-xl);
-            padding:3rem 2.5rem;
+            padding:2.5rem 2rem;
             box-shadow:var(--shadow-card);
             border:1px solid var(--border-gray);
             transition:all var(--transition-smooth);
@@ -221,11 +229,9 @@
             background:linear-gradient(90deg, var(--navy) 0%, var(--orange) 40%, var(--red) 80%, var(--navy) 100%);
         }
 
-        /* Welcome illustration instead of second logo */
         .auth-welcome {
             text-align:center;
-            margin-bottom:2.2rem;
-            position:relative;
+            margin-bottom:2rem;
         }
         .auth-welcome-icon {
             width:70px;
@@ -254,7 +260,7 @@
 
         .role-switcher {
             display:flex; background:#f5f7fa; border-radius:60px; padding:6px;
-            margin-bottom:2rem; border:1px solid var(--border-gray);
+            margin-bottom:1.8rem; border:1px solid var(--border-gray);
         }
         .role-btn {
             flex:1; text-align:center; padding:0.85rem 1rem; border-radius:60px;
@@ -302,7 +308,7 @@
         .forgot-link { font-size:0.85rem; color:var(--navy); font-weight:700; text-decoration:none; transition:color var(--transition-fast); }
         .forgot-link:hover { color:var(--orange); }
 
-        .auth-footer-prompt { margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border-gray); text-align:center; }
+        .auth-footer-prompt { margin-top:1.8rem; padding-top:1.5rem; border-top:1px solid var(--border-gray); text-align:center; }
         .auth-footer-prompt p { color:var(--blue-gray); font-size:0.9rem; margin-bottom:1rem; }
 
         /* ==========================================
@@ -323,74 +329,95 @@
         .welcome-message p { color:var(--blue-gray); font-size:0.95rem; }
 
         /* ==========================================
-           FOOTER NAVIGATION (scrollable)
+           FOOTER NAVIGATION (always visible, scrollable, centered)
            ========================================== */
         .footer-nav-wrapper {
-            position:fixed; bottom:0; left:0; width:100%;
-            background:rgba(255,255,255,0.94); backdrop-filter:blur(24px);
-            -webkit-backdrop-filter:blur(24px);
-            border-top:1px solid rgba(0,0,0,0.05);
-            box-shadow:0 -6px 24px rgba(13,64,84,0.06);
-            z-index:999;
-            padding:10px 8px 14px;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 -6px 24px rgba(13,64,84,0.06);
+            z-index: 999;
+            padding: 8px 0 12px;
         }
         .scroll-hint {
-            display:flex; justify-content:center; margin-bottom:6px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 4px;
             animation: hintBounce 1.8s ease-in-out infinite;
         }
-        .scroll-hint i { color:var(--blue-gray); font-size:0.9rem; opacity:0.7; }
+        .scroll-hint i { color: var(--blue-gray); font-size: 0.9rem; opacity: 0.7; }
         @keyframes hintBounce {
-            0%,100% { transform:translateX(0); }
-            50% { transform:translateX(10px); }
+            0%,100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
         }
         .footer-nav-scroll {
-            display:flex; overflow-x:auto; white-space:nowrap;
-            padding:4px 10px; gap:12px; -webkit-overflow-scrolling:touch;
-            scrollbar-width:none; -ms-overflow-style:none;
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 4px 20px;
+            gap: 12px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            justify-content: flex-start;
         }
-        .footer-nav-scroll::-webkit-scrollbar { display:none; }
+        .footer-nav-scroll::-webkit-scrollbar { display: none; }
         .nav-item {
-            display:flex; flex-direction:column; align-items:center;
-            min-width:68px; text-decoration:none; cursor:pointer;
-            transition:all var(--transition-fast); color:var(--blue-gray);
-            padding:8px 6px; border-radius:14px;
-            background:transparent; border:none; font-family:inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 64px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            color: var(--blue-gray);
+            padding: 8px 8px;
+            border-radius: 14px;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            flex-shrink: 0;
         }
-        .nav-item i { font-size:1.35rem; margin-bottom:5px; transition:color var(--transition-fast); }
-        .nav-item span { font-size:0.72rem; font-weight:600; }
-        .nav-item:hover { color:var(--navy); background:rgba(13,64,84,0.04); }
-        .nav-item:active { transform:scale(0.93); }
-        .nav-item.logout { color:var(--red); }
-        .nav-item.logout:hover { background:var(--red-soft); }
+        .nav-item i { font-size: 1.3rem; margin-bottom: 5px; transition: color var(--transition-fast); }
+        .nav-item span { font-size: 0.7rem; font-weight: 600; white-space: nowrap; }
+        .nav-item:hover { color: var(--navy); background: rgba(13,64,84,0.04); }
+        .nav-item:active { transform: scale(0.93); }
+        .nav-item.logout { color: var(--red); }
+        .nav-item.logout:hover { background: var(--red-soft); }
 
-        /* ==========================================
-           DESKTOP ADJUSTMENTS
-           ========================================== */
+        /* Desktop adjustments */
         @media (min-width: 768px) {
-            .app-container {
-                padding-top: 100px;
-                padding-bottom: 60px;
-            }
-            .auth-card {
-                padding: 3.5rem 3rem;
-                max-width: 700px;
-                margin: 0 auto;
-            }
-            .footer-nav-wrapper {
-                padding: 12px 20px 16px;
-            }
-            .nav-item { min-width: 72px; }
-            .smart-header-inner { height: 72px; }
+            .app-container { padding-top: 90px; padding-bottom: 80px; }
+            .auth-card { padding: 3rem 2.5rem; max-width: 620px; margin: 0 auto; }
+            .smart-header-inner { height: 68px; }
+            .smart-logo { font-size: 1.6rem; }
+            .smart-logo-emoji { font-size: 1.4rem; }
+            .nav-item { min-width: 70px; }
+            .nav-item i { font-size: 1.35rem; }
+            .nav-item span { font-size: 0.72rem; }
+            .footer-nav-wrapper { padding: 10px 0 14px; }
+            .footer-nav-scroll { padding: 4px 30px; }
         }
 
-        @media (max-width: 640px) {
-            .app-container { padding: 80px 12px 100px; }
-            .auth-card { padding: 2rem 1.2rem; border-radius: var(--radius-lg); }
+        @media (max-width: 480px) {
+            .smart-header-inner { height: 56px; padding: 0 14px; }
+            .smart-logo { font-size: 1.1rem; }
+            .smart-logo-emoji { font-size: 1.1rem; }
+            .app-container { padding: 70px 10px 75px; }
+            .auth-card { padding: 1.8rem 1rem; }
             .grid-2-col { grid-template-columns: 1fr; }
-            .footer-nav-wrapper { padding: 8px 4px 12px; }
-            .nav-item { min-width: 60px; }
+            .footer-nav-wrapper { padding: 6px 0 10px; }
+            .footer-nav-scroll { padding: 4px 12px; gap: 8px; }
+            .nav-item { min-width: 56px; padding: 6px 4px; }
             .nav-item i { font-size: 1.2rem; }
-            .nav-item span { font-size: 0.68rem; }
+            .nav-item span { font-size: 0.65rem; }
         }
     </style>
 
@@ -429,7 +456,7 @@
 <body>
     <div id="toast-container"></div>
 
-    <!-- Header always visible -->
+    <!-- Header always visible, no scroll hide -->
     <header class="smart-header" id="smartHeader">
         <div class="smart-header-inner">
             <a href="index.html" class="smart-logo">
@@ -486,7 +513,7 @@
             </form>
         </div>
 
-        <!-- Auth Panel (no duplicate logo) -->
+        <!-- Auth Panel -->
         <div class="auth-card" id="auth-panel">
             <div class="auth-welcome">
                 <div class="auth-welcome-icon"><i class="fa-solid fa-bee"></i></div>
@@ -524,7 +551,7 @@
             </div>
         </div>
 
-        <!-- Dashboard Area (visible after auth) -->
+        <!-- Dashboard Area -->
         <div id="dashboard-area">
             <div class="welcome-message">
                 <h3>Welcome back! 👋</h3>
@@ -533,7 +560,7 @@
         </div>
     </div>
 
-    <!-- Footer Navigation (initially hidden, shown after auth) -->
+    <!-- Footer Navigation (shown after login) -->
     <div class="footer-nav-wrapper" id="footer-nav-wrapper" style="display:none;">
         <div class="scroll-hint"><i class="fa-solid fa-chevron-right"></i></div>
         <div class="footer-nav-scroll" id="footer-nav-scroll">
@@ -677,7 +704,6 @@
                 btn.innerHTML = 'Sign In';
                 showToast("Incorrect email or password.",'error');
             } finally {
-                // ensure button resets even if unexpected error (e.g., promise hanging)
                 if(btn.innerHTML !== 'Sign In') btn.innerHTML = 'Sign In';
             }
         };
