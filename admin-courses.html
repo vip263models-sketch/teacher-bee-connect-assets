@@ -1,462 +1,670 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Course Manager · TeacherBee Connect</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #4F46E5; --primary-hover: #4338CA; --primary-light: #EEF2FF;
-            --surface: #FFFFFF; --surface-alt: #F8FAFC; --bg-color: #F1F5F9;
-            --text-main: #0F172A; --text-secondary: #334155; --text-muted: #64748B;
-            --border: #E2E8F0; --danger: #EF4444; --success: #10B981; --warning: #F59E0B;
-            --radius-sm: 8px; --radius-md: 12px; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-            --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; }
-        .container { max-width: 1300px; margin: 0 auto; padding: 1.5rem; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .header h1 { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
-        .btn {
-            padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); font-weight: 500; font-size: 0.85rem;
-            cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 0.4rem;
-            transition: 0.15s; text-decoration: none;
-        }
-        .btn-primary { background: var(--primary); color: #fff; }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
-        .btn-outline:hover { background: var(--surface-alt); }
-        .btn-danger { background: #FEF2F2; color: var(--danger); }
-        .btn-danger:hover { background: var(--danger); color: #fff; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-        .course-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; }
-        .course-card img { width: 100%; height: 140px; object-fit: cover; }
-        .card-body { padding: 1.2rem; flex: 1; display: flex; flex-direction: column; }
-        .card-body h3 { font-weight: 700; margin-bottom: 0.25rem; }
-        .badge {
-            display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem;
-            font-weight: 700; text-transform: uppercase;
-        }
-        .badge-workshop { background: #EEF2FF; color: var(--primary); }
-        .badge-tefl { background: #D1FAE5; color: #065F46; }
-        .card-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 1000; display: none;
-            justify-content: center; align-items: flex-start; padding: 2rem 1rem;
-            overflow-y: auto;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal {
-            background: var(--surface); border-radius: var(--radius-md); max-width: 800px; width: 100%;
-            padding: 2rem; position: relative; box-shadow: var(--shadow-md);
-        }
-        .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text-muted); text-transform: uppercase; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-            font-size: 0.9rem; background: var(--surface-alt);
-        }
-        .editor-toolbar { display: flex; gap: 0.3rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
-        .editor-toolbar button {
-            background: var(--surface-alt); border: 1px solid var(--border); border-radius: 4px;
-            padding: 0.35rem 0.6rem; cursor: pointer; font-size: 0.85rem;
-        }
-        .editor-content {
-            border: 1.5px solid var(--border); border-radius: var(--radius-sm); min-height: 150px;
-            padding: 0.8rem; background: white; outline: none; font-size: 0.9rem;
-        }
-        .quiz-builder { background: var(--surface-alt); border-radius: var(--radius-sm); padding: 1rem; margin: 1rem 0; }
-        .quiz-question { margin-bottom: 1rem; border-left: 3px solid var(--primary); padding-left: 0.8rem; }
-        .module-item {
-            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
-            padding: 1rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between;
-            align-items: center;
-        }
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-        .toast { padding: 12px 20px; border-radius: var(--radius-sm); color: #fff; font-weight: 500; font-size: 0.85rem; animation: slideIn 0.3s; }
-        .toast.success { background: var(--success); }
-        .toast.error { background: var(--danger); }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @media (max-width: 600px) {
-            .header { flex-direction: column; align-items: flex-start; }
-            .modal { padding: 1.5rem; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Course Manager · TeacherBee Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #4F46E5; --primary-hover: #4338CA; --primary-light: #EEF2FF;
+      --surface: #FFFFFF; --surface-alt: #F8FAFC; --bg-color: #F1F5F9;
+      --text-main: #0F172A; --text-secondary: #334155; --text-muted: #64748B;
+      --border: #E2E8F0; --danger: #EF4444; --success: #10B981; --warning: #F59E0B;
+      --radius-sm: 8px; --radius-md: 12px; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 1.5rem; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .header h1 { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+    .badge-unread { background: var(--danger); color: #fff; border-radius: 20px; padding: 0.2rem 0.6rem; font-size: 0.7rem; margin-left: 0.5rem; display: none; }
+    .badge-unread.visible { display: inline-flex; }
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .tab {
+      padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); font-weight: 500; font-size: 0.85rem;
+      cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary);
+      display: inline-flex; align-items: center; gap: 0.4rem; transition: 0.15s;
+    }
+    .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .tab:hover:not(.active) { background: var(--surface-alt); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .btn {
+      padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); font-weight: 500; font-size: 0.85rem;
+      cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: 0.15s; text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
+    .btn-outline:hover { background: var(--surface-alt); }
+    .btn-danger { background: #FEF2F2; color: var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+    .btn-approve { background: var(--success); color: #fff; }
+    .btn-reject { background: var(--danger); color: #fff; }
+    .btn-delete { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+    .course-card { background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; }
+    .course-card img { width: 100%; height: 140px; object-fit: cover; }
+    .card-body { padding: 1.2rem; flex: 1; display: flex; flex-direction: column; }
+    .card-body h3 { font-weight: 700; margin-bottom: 0.25rem; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+    .badge-workshop { background: #EEF2FF; color: var(--primary); }
+    .badge-tefl { background: #D1FAE5; color: #065F46; }
+    .card-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; justify-content: center; align-items: flex-start; padding: 2rem 1rem; overflow-y: auto; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: var(--surface); border-radius: var(--radius-md); max-width: 600px; width: 100%; padding: 2rem; position: relative; box-shadow: var(--shadow-md); }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text-muted); text-transform: uppercase; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; background: var(--surface-alt); }
+    .editor-toolbar { display: flex; gap: 0.3rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .editor-toolbar button { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.6rem; cursor: pointer; font-size: 0.85rem; }
+    .editor-content { border: 1.5px solid var(--border); border-radius: var(--radius-sm); min-height: 150px; padding: 0.8rem; background: white; outline: none; font-size: 0.9rem; }
+    .attachments { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
+    .attachment-preview { background: var(--surface-alt); padding: 0.5rem; border-radius: 4px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .quiz-builder { background: var(--surface-alt); border-radius: var(--radius-sm); padding: 1rem; margin: 1rem 0; }
+    .quiz-question { margin-bottom: 1rem; border-left: 3px solid var(--primary); padding-left: 0.8rem; }
+    .module-list { display: flex; flex-direction: column; gap: 1rem; }
+    .module-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .module-card h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+    .filters { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .filters select, .filters input { padding: 0.6rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: var(--surface); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-sm); }
+    th { text-align: left; padding: 0.8rem; background: var(--surface-alt); color: var(--text-muted); text-transform: uppercase; }
+    td { padding: 0.8rem; border-bottom: 1px solid var(--border); }
+    .status-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+    .status-pending { background: #FEF3C7; color: #92400E; }
+    .status-approved { background: #D1FAE5; color: #065F46; }
+    .status-rejected { background: #FEE2E2; color: #991B1B; }
+    /* Preview modals (from inbox) */
+    .preview-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); z-index: 10000; align-items: center; justify-content: center; flex-direction: column; }
+    .preview-modal.active { display: flex; }
+    .preview-modal-content { background: #fff; border-radius: 12px; width: 90vw; height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
+    .preview-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--primary); color: #fff; }
+    .preview-modal-header h3 { font-size: 1rem; font-weight: 600; }
+    .preview-modal-header button { background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; }
+    .preview-modal-iframe { flex: 1; border: none; }
+    .image-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 10001; flex-direction: column; align-items: center; justify-content: center; }
+    .image-modal.active { display: flex; }
+    .image-modal-content { max-width: 95vw; max-height: 85vh; display: flex; flex-direction: column; align-items: center; }
+    .image-modal-img { max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 8px; }
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast { padding: 12px 20px; border-radius: var(--radius-sm); color: #fff; font-weight: 500; font-size: 0.85rem; animation: slideIn 0.3s; }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fa-solid fa-chalkboard-user" style="color:var(--primary);"></i> Course Manager</h1>
-            <button class="btn btn-primary" onclick="openCreateCourse()"><i class="fa-solid fa-plus"></i> New Course</button>
-        </div>
-        <div class="grid" id="courses-grid"></div>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fa-solid fa-chalkboard-user" style="color:var(--primary);"></i> Course Manager</h1>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab="courses"><i class="fa-solid fa-list"></i> Courses <span class="badge-unread" id="courses-badge">0</span></div>
+      <div class="tab" data-tab="builder" id="builder-tab" style="display:none;"><i class="fa-solid fa-puzzle-piece"></i> Module Builder</div>
+      <div class="tab" data-tab="payments"><i class="fa-solid fa-file-invoice-dollar"></i> Payments <span class="badge-unread" id="payments-badge">0</span></div>
+    </div>
+
+    <!-- Tab: Courses -->
+    <div class="tab-content active" id="content-courses">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2>All Courses</h2>
+        <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> New Course</button>
+      </div>
+      <div class="grid" id="courses-grid"></div>
+    </div>
+
+    <!-- Tab: Module Builder -->
+    <div class="tab-content" id="content-builder">
+      <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+        <button class="btn btn-outline" onclick="switchTab('courses')"><i class="fa-solid fa-arrow-left"></i> Back to Courses</button>
+        <h2 id="builder-course-title">Module Builder</h2>
+      </div>
+      <button class="btn btn-primary" onclick="openModuleModal()"><i class="fa-solid fa-plus"></i> Add Module</button>
+      <div class="module-list" id="modules-list" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- Tab: Course Payments -->
+    <div class="tab-content" id="content-payments">
+      <h2 style="margin-bottom:1rem;">Course Payments</h2>
+      <div class="filters">
+        <select id="filter-type" onchange="renderPayments()">
+          <option value="all">All Types</option>
+          <option value="workshop">Workshop</option>
+          <option value="tefl">TEFL</option>
+        </select>
+        <select id="filter-status" onchange="renderPayments()">
+          <option value="pending" selected>Pending</option>
+          <option value="all">All Status</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Invoice</th><th>Customer</th><th>Course</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="payments-tbody"></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Create/Edit Course Modal -->
     <div class="modal-overlay" id="course-modal">
-        <div class="modal">
-            <button class="modal-close" onclick="closeCourseModal()"><i class="fa-solid fa-times"></i></button>
-            <h2 id="course-modal-title">Create Course</h2>
-            <form id="course-form">
-                <input type="hidden" id="course-id">
-                <div class="form-group">
-                    <label>Course Title *</label>
-                    <input type="text" id="course-title" required>
-                </div>
-                <div class="form-group">
-                    <label>Category *</label>
-                    <select id="course-category" required>
-                        <option value="workshop">Workshop</option>
-                        <option value="tefl">TEFL</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Price (USD) *</label>
-                    <input type="number" id="course-price" min="0" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>Thumbnail Image (optional)</label>
-                    <input type="file" id="thumbnail-input" accept="image/*" onchange="uploadThumbnail(this)">
-                    <input type="hidden" id="thumbnail-url">
-                    <div id="thumbnail-preview" style="margin-top:0.5rem;"></div>
-                </div>
-                <div class="form-group">
-                    <label>Description *</label>
-                    <div class="editor-toolbar">
-                        <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
-                        <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
-                        <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
-                        <button type="button" onclick="formatDoc('insertUnorderedList')">• List</button>
-                    </div>
-                    <div class="editor-content" id="course-description-editor" contenteditable="true"></div>
-                </div>
-                <div class="form-group">
-                    <label>Instructor</label>
-                    <input type="text" id="course-instructor" placeholder="TeacherBee Admin">
-                </div>
-                <button type="button" class="btn btn-primary" style="width:100%;" onclick="saveCourse()">Save Course</button>
-            </form>
-            <hr style="margin: 2rem 0 1rem;">
-            <h3>Modules</h3>
-            <div id="modules-container"></div>
-            <button class="btn btn-outline" onclick="addModule()"><i class="fa-solid fa-plus"></i> Add Module</button>
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('course-modal')"><i class="fa-solid fa-times"></i></button>
+        <h2 id="course-modal-title">Create Course</h2>
+        <form id="course-form">
+          <input type="hidden" id="course-id" />
+          <div class="form-group"><label>Course Title *</label><input type="text" id="course-title" required /></div>
+          <div class="form-group"><label>Category *</label><select id="course-category" required><option value="workshop">Workshop</option><option value="tefl">TEFL</option></select></div>
+          <div class="form-group"><label>Price (USD) *</label><input type="number" id="course-price" min="0" step="0.01" required /></div>
+          <div class="form-group"><label>Short Description</label><textarea id="course-description" rows="3"></textarea></div>
+          <div class="form-group"><label>Thumbnail Image (optional)</label><input type="file" id="thumbnail-input" accept="image/*" onchange="uploadThumbnail(this)" /><input type="hidden" id="thumbnail-url" /><div id="thumbnail-preview" style="margin-top:0.5rem;"></div></div>
+          <div class="form-group"><label>Start Date (optional)</label><input type="date" id="course-start-date" /></div>
+          <div class="form-group"><label>Status</label><select id="course-status"><option value="published">Published</option><option value="draft">Draft</option><option value="closed">Closed</option></select></div>
+          <button type="button" class="btn btn-primary" style="width:100%;" onclick="saveCourse()">Save Course</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Module Editor Modal -->
+    <div class="modal-overlay" id="module-modal">
+      <div class="modal" style="max-width:800px;">
+        <button class="modal-close" onclick="closeModal('module-modal')"><i class="fa-solid fa-times"></i></button>
+        <h2 id="module-modal-title">New Module</h2>
+        <form id="module-form">
+          <input type="hidden" id="module-id" />
+          <div class="form-group"><label>Module Title *</label><input type="text" id="module-title" required /></div>
+          <div class="form-group"><label>Content</label>
+            <div class="editor-toolbar">
+              <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
+              <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
+              <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
+              <button type="button" onclick="formatDoc('insertUnorderedList')">• List</button>
+            </div>
+            <div class="editor-content" id="module-content" contenteditable="true"></div>
+          </div>
+          <div class="form-group"><label>Attachments</label><input type="file" id="module-attachment-input" onchange="uploadModuleFile(this)" multiple /><div id="module-attachments" class="attachments"></div></div>
+          <div class="quiz-builder" id="quiz-builder"><h4>Quiz (optional)</h4><div id="quiz-questions"></div><button type="button" class="btn btn-outline" onclick="addQuizQuestion()">Add Question</button></div>
+          <button type="button" class="btn btn-primary" style="width:100%;" onclick="saveModule()">Save Module</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Preview Modals (inbox logic) -->
+    <div id="previewModal" class="preview-modal">
+      <div class="preview-modal-content">
+        <div class="preview-modal-header"><h3 id="previewModalTitle">Document Preview</h3><button onclick="closePreviewModal()">&times;</button></div>
+        <iframe id="previewIframe" class="preview-modal-iframe" src="" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div id="imageModal" class="image-modal">
+      <div class="image-modal-content">
+        <img id="imageModalImg" class="image-modal-img" src="" alt="" />
+        <div style="margin-top:20px;display:flex;gap:12px;">
+          <a id="imageModalDownload" class="btn btn-primary" href="#" download>Download</a>
+          <button class="btn btn-outline" onclick="closeImageModal()">Close</button>
         </div>
+      </div>
     </div>
 
     <div class="toast-container" id="toast-container"></div>
+  </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, addDoc, query, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, addDoc, query, getDocs, orderBy, where, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
-            authDomain: "teacherbee-connect.firebaseapp.com",
-            projectId: "teacherbee-connect",
-            storageBucket: "teacherbee-connect.firebasestorage.app",
-            messagingSenderId: "345613317767",
-            appId: "1:345613317767:web:555713e479f9837e84aa22"
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+      authDomain: "teacherbee-connect.firebaseapp.com",
+      projectId: "teacherbee-connect",
+      storageBucket: "teacherbee-connect.firebasestorage.app",
+      messagingSenderId: "345613317767",
+      appId: "1:345613317767:web:555713e479f9837e84aa22"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const GAS_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+
+    let currentAdmin = null;
+    let allCourses = [];
+    let currentCourseId = null; // used for builder & payments
+    let currentModuleId = null;
+    let modules = [];
+    let tempAttachments = [];
+    let allPayments = [];
+
+    // ────────────────── Auth & Init ──────────────────
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = 'admin.html'; return; }
+      const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+      if (!adminDoc.exists()) { await signOut(auth); window.location.href = 'admin.html'; return; }
+      currentAdmin = user;
+      loadCourses();
+      listenForPayments();
+    });
+
+    // ────────────────── Tab Navigation ──────────────────
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    window.switchTab = function(tabName) {
+      tabs.forEach(t => t.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+      document.getElementById(`content-${tabName}`).classList.add('active');
+      if (tabName === 'builder') loadModules();
+      if (tabName === 'payments') renderPayments();
+    };
+    tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+    // ────────────────── Courses Tab ──────────────────
+    async function loadCourses() {
+      const q = query(collection(db, 'courses'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      allCourses = [];
+      snap.forEach(d => allCourses.push({ id: d.id, ...d.data() }));
+      renderCoursesGrid();
+    }
+
+    function renderCoursesGrid() {
+      const grid = document.getElementById('courses-grid');
+      if (allCourses.length === 0) {
+        grid.innerHTML = '<p>No courses yet. Click "New Course" to create one.</p>';
+        return;
+      }
+      grid.innerHTML = allCourses.map(c => {
+        const thumb = c.thumbnailUrl ? `<img src="${c.thumbnailUrl}" alt="">` : '';
+        const catBadge = c.category === 'tefl' ? 'badge-tefl' : 'badge-workshop';
+        return `
+          <div class="course-card">
+            ${thumb}
+            <div class="card-body">
+              <span class="badge ${catBadge}">${c.category}</span>
+              <h3>${escapeHTML(c.title)}</h3>
+              <p style="color:var(--text-muted); font-size:0.85rem;">$${c.price} · ${c.enrolledCount || 0} enrolled</p>
+              <div class="card-actions">
+                <button class="btn btn-outline" onclick="editCourse('${c.id}')">Edit</button>
+                <button class="btn btn-primary" onclick="openBuilder('${c.id}')">Manage Modules</button>
+                <button class="btn btn-danger" onclick="deleteCourse('${c.id}')">Delete</button>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    window.openCreateModal = () => {
+      document.getElementById('course-modal-title').textContent = 'Create Course';
+      document.getElementById('course-form').reset();
+      document.getElementById('course-id').value = '';
+      document.getElementById('thumbnail-url').value = '';
+      document.getElementById('thumbnail-preview').innerHTML = '';
+      document.getElementById('course-modal').classList.add('active');
+    };
+
+    window.editCourse = (courseId) => {
+      const course = allCourses.find(c => c.id === courseId);
+      if (!course) return;
+      document.getElementById('course-modal-title').textContent = 'Edit Course';
+      document.getElementById('course-id').value = courseId;
+      document.getElementById('course-title').value = course.title;
+      document.getElementById('course-category').value = course.category;
+      document.getElementById('course-price').value = course.price;
+      document.getElementById('course-description').value = course.description || '';
+      document.getElementById('course-status').value = course.status || 'published';
+      document.getElementById('course-start-date').value = course.startDate ? course.startDate.toDate().toISOString().split('T')[0] : '';
+      document.getElementById('thumbnail-url').value = course.thumbnailUrl || '';
+      document.getElementById('thumbnail-preview').innerHTML = course.thumbnailUrl ? `<img src="${course.thumbnailUrl}" />` : '';
+      document.getElementById('course-modal').classList.add('active');
+    };
+
+    window.closeModal = (modalId) => document.getElementById(modalId).classList.remove('active');
+
+    // Upload logic (inbox style)
+    async function uploadToDrive(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const payload = { action: 'uploadCertificate', fileName: file.name, mimeType: file.type || 'application/octet-stream', file: e.target.result };
+          try {
+            const res = await fetch(GAS_UPLOAD_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const data = await res.json();
+            if (data.status === 'success' && data.certificates?.length > 0) {
+              const cert = data.certificates[data.certificates.length - 1];
+              resolve({ url: cert.fileUrl || cert.url, driveId: cert.id, name: file.name });
+            } else reject(new Error(data.message || 'Upload failed'));
+          } catch (err) { reject(err); }
         };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        reader.readAsDataURL(file);
+      });
+    }
 
-        // Google Drive upload URL (same as your existing function)
-        const GAS_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+    window.uploadThumbnail = async (input) => {
+      const file = input.files[0];
+      if (!file) return;
+      showToast('Uploading...', 'info');
+      try {
+        const uploaded = await uploadToDrive(file);
+        document.getElementById('thumbnail-url').value = uploaded.url;
+        document.getElementById('thumbnail-preview').innerHTML = `<img src="${uploaded.url}" style="max-width:150px;border-radius:8px;" />`;
+        showToast('Thumbnail uploaded!', 'success');
+      } catch (e) { showToast('Upload error', 'error'); }
+      input.value = '';
+    };
 
-        let currentAdmin = null;
-        let allCourses = [];
-        let currentCourseId = null;
-        let currentModules = []; // temp modules for the editor
+    window.saveCourse = async () => {
+      const title = document.getElementById('course-title').value.trim();
+      const category = document.getElementById('course-category').value;
+      const price = parseFloat(document.getElementById('course-price').value);
+      const description = document.getElementById('course-description').value.trim();
+      const status = document.getElementById('course-status').value;
+      const startDate = document.getElementById('course-start-date').value;
+      const thumbnailUrl = document.getElementById('thumbnail-url').value;
+      if (!title || isNaN(price)) { showToast('Title and price are required', 'error'); return; }
 
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) { window.location.href = 'admin.html'; return; }
-            const adminDoc = await getDoc(doc(db, 'admins', user.uid));
-            if (!adminDoc.exists()) {
-                await signOut(auth);
-                window.location.href = 'admin.html';
-                return;
-            }
-            currentAdmin = user;
-            loadCourses();
+      const courseData = { title, category, price, description, thumbnailUrl, status, startDate: startDate ? new Date(startDate) : null, updatedAt: serverTimestamp() };
+      try {
+        const courseId = document.getElementById('course-id').value;
+        if (courseId) {
+          await updateDoc(doc(db, 'courses', courseId), courseData);
+          showToast('Course updated!', 'success');
+        } else {
+          courseData.createdAt = serverTimestamp();
+          courseData.enrolledCount = 0;
+          const docRef = await addDoc(collection(db, 'courses'), courseData);
+          showToast('Course created!', 'success');
+          // Open builder for new course
+          document.getElementById('course-modal').classList.remove('active');
+          openBuilder(docRef.id);
+        }
+        closeModal('course-modal');
+        loadCourses();
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    };
+
+    window.deleteCourse = async (courseId) => {
+      if (!confirm('Delete this course and all its modules?')) return;
+      await deleteDoc(doc(db, 'courses', courseId));
+      loadCourses();
+      showToast('Course deleted.', 'info');
+    };
+
+    // ────────────────── Module Builder Tab ──────────────────
+    window.openBuilder = async (courseId) => {
+      currentCourseId = courseId;
+      const course = allCourses.find(c => c.id === courseId);
+      document.getElementById('builder-course-title').textContent = `Module Builder: ${course?.title || ''}`;
+      document.getElementById('builder-tab').style.display = 'flex';
+      switchTab('builder');
+      await loadModules();
+    };
+
+    async function loadModules() {
+      if (!currentCourseId) return;
+      const q = query(collection(db, `courses/${currentCourseId}/modules`), orderBy('order', 'asc'));
+      const snap = await getDocs(q);
+      modules = [];
+      snap.forEach(d => modules.push({ id: d.id, ...d.data() }));
+      renderModules();
+    }
+
+    function renderModules() {
+      const container = document.getElementById('modules-list');
+      if (modules.length === 0) {
+        container.innerHTML = '<p>No modules yet.</p>';
+        return;
+      }
+      container.innerHTML = modules.map((m, i) => `
+        <div class="module-card">
+          <div>
+            <h3>Module ${i+1}: ${escapeHTML(m.title)}</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted);">${m.quiz?.length || 0} quiz questions · ${m.attachments?.length || 0} attachments</p>
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-outline" onclick="editModule('${m.id}')">Edit</button>
+            <button class="btn btn-danger" onclick="deleteModule('${m.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.openModuleModal = (moduleId = null) => {
+      currentModuleId = moduleId;
+      document.getElementById('module-modal-title').textContent = moduleId ? 'Edit Module' : 'New Module';
+      document.getElementById('module-form').reset();
+      document.getElementById('module-id').value = moduleId || '';
+      document.getElementById('module-content').innerHTML = '';
+      document.getElementById('module-attachments').innerHTML = '';
+      document.getElementById('quiz-questions').innerHTML = '';
+      tempAttachments = [];
+
+      if (moduleId) {
+        const mod = modules.find(m => m.id === moduleId);
+        if (mod) {
+          document.getElementById('module-title').value = mod.title;
+          document.getElementById('module-content').innerHTML = mod.content || '';
+          if (mod.attachments) {
+            tempAttachments = [...mod.attachments];
+            renderTempAttachments();
+          }
+          if (mod.quiz) mod.quiz.forEach((q, qi) => renderQuizQuestion(q, qi));
+        }
+      }
+      document.getElementById('module-modal').classList.add('active');
+    };
+
+    window.editModule = (moduleId) => openModuleModal(moduleId);
+
+    window.formatDoc = (cmd) => { document.execCommand(cmd, false, null); document.getElementById('module-content').focus(); };
+
+    window.uploadModuleFile = async (input) => {
+      const files = input.files;
+      if (!files.length) return;
+      for (let file of files) {
+        showToast(`Uploading ${file.name}…`, 'info');
+        try {
+          const uploaded = await uploadToDrive(file);
+          tempAttachments.push({ ...uploaded, type: file.type.startsWith('image/') ? 'image' : 'file' });
+          renderTempAttachments();
+          showToast('Uploaded!', 'success');
+        } catch (e) { showToast('Upload failed: ' + e.message, 'error'); }
+      }
+      input.value = '';
+    };
+
+    function renderTempAttachments() {
+      const container = document.getElementById('module-attachments');
+      container.innerHTML = tempAttachments.map((att, i) => `
+        <div class="attachment-preview">
+          <i class="fa-solid fa-paperclip"></i> ${escapeHTML(att.name)}
+          <button type="button" class="btn btn-danger" style="padding:0.2rem 0.4rem; font-size:0.7rem;" onclick="removeTempAttachment(${i})">✕</button>
+        </div>
+      `).join('');
+    }
+
+    window.removeTempAttachment = (index) => { tempAttachments.splice(index, 1); renderTempAttachments(); };
+
+    window.addQuizQuestion = () => renderQuizQuestion({ question: '', options: [''], correctIndex: 0 }, document.querySelectorAll('#quiz-questions .quiz-question').length);
+
+    function renderQuizQuestion(q, index) {
+      const container = document.getElementById('quiz-questions');
+      const div = document.createElement('div');
+      div.className = 'quiz-question';
+      div.innerHTML = `
+        <p><strong>Question ${index+1}:</strong> <input type="text" class="quiz-q-input" value="${escapeHTML(q.question)}" placeholder="Question" /></p>
+        <div class="quiz-options">
+          ${q.options.map((opt, oi) => `<div><input type="text" class="quiz-opt-input" value="${escapeHTML(opt)}" placeholder="Option ${String.fromCharCode(65+oi)}" /><input type="radio" name="correct-${index}" value="${oi}" ${oi === q.correctIndex ? 'checked' : ''} /> Correct</div>`).join('')}
+        </div>
+        <button class="btn btn-outline" onclick="addOptionToQuestion(this)" style="margin-top:0.3rem;">+ Option</button>
+        <button class="btn btn-danger" onclick="removeQuizQuestion(this)" style="margin-left:0.5rem;">Remove</button>
+      `;
+      container.appendChild(div);
+    }
+
+    window.addOptionToQuestion = (btn) => {
+      const qDiv = btn.parentElement;
+      const optionsDiv = qDiv.querySelector('.quiz-options');
+      const optCount = optionsDiv.querySelectorAll('.quiz-opt-input').length;
+      const radioName = `correct-${document.querySelectorAll('.quiz-question').length - 1}`;
+      optionsDiv.innerHTML += `<div><input type="text" class="quiz-opt-input" placeholder="Option ${String.fromCharCode(65+optCount)}" /><input type="radio" name="${radioName}" value="${optCount}" /> Correct</div>`;
+    };
+
+    window.removeQuizQuestion = (btn) => btn.parentElement.remove();
+
+    window.saveModule = async () => {
+      const title = document.getElementById('module-title').value.trim();
+      const content = document.getElementById('module-content').innerHTML;
+      if (!title) { showToast('Module title is required', 'error'); return; }
+
+      const quizQuestions = [];
+      document.querySelectorAll('#quiz-questions .quiz-question').forEach(qDiv => {
+        const question = qDiv.querySelector('.quiz-q-input').value.trim();
+        const options = [...qDiv.querySelectorAll('.quiz-opt-input')].map(inp => inp.value.trim()).filter(o => o);
+        const correctRadio = qDiv.querySelector(`input[name^="correct-"]:checked`);
+        if (question && options.length > 0) {
+          quizQuestions.push({ question, options, correctIndex: correctRadio ? parseInt(correctRadio.value) : 0 });
+        }
+      });
+
+      const moduleData = { title, content, attachments: tempAttachments, quiz: quizQuestions, order: modules.length };
+      try {
+        const moduleId = document.getElementById('module-id').value;
+        if (moduleId) {
+          await updateDoc(doc(db, `courses/${currentCourseId}/modules`, moduleId), moduleData);
+        } else {
+          await addDoc(collection(db, `courses/${currentCourseId}/modules`), moduleData);
+        }
+        showToast('Module saved!', 'success');
+        closeModal('module-modal');
+        loadModules();
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    };
+
+    window.deleteModule = async (moduleId) => {
+      if (!confirm('Delete this module?')) return;
+      await deleteDoc(doc(db, `courses/${currentCourseId}/modules`, moduleId));
+      loadModules();
+      showToast('Module deleted.', 'info');
+    };
+
+    // ────────────────── Payments Tab ──────────────────
+    function listenForPayments() {
+      const q = query(collection(db, 'payments'), where('type', 'in', ['workshop', 'tefl']), orderBy('createdAt', 'desc'));
+      onSnapshot(q, (snap) => {
+        allPayments = [];
+        let pendingCount = 0;
+        snap.forEach(doc => {
+          const data = doc.data();
+          allPayments.push({ id: doc.id, ...data });
+          if (data.status === 'pending') pendingCount++;
         });
+        document.getElementById('payments-badge').textContent = pendingCount;
+        document.getElementById('payments-badge').classList.toggle('visible', pendingCount > 0);
+        document.getElementById('courses-badge').textContent = pendingCount;
+        document.getElementById('courses-badge').classList.toggle('visible', pendingCount > 0);
+        if (document.getElementById('content-payments').classList.contains('active')) renderPayments();
+      });
+    }
 
-        async function loadCourses() {
-            const q = query(collection(db, 'courses'), orderBy('createdAt', 'desc'));
-            const snap = await getDocs(q);
-            allCourses = [];
-            snap.forEach(d => allCourses.push({ id: d.id, ...d.data() }));
-            renderCourses();
+    window.renderPayments = () => {
+      const typeFilter = document.getElementById('filter-type').value;
+      const statusFilter = document.getElementById('filter-status').value;
+      let filtered = allPayments;
+      if (typeFilter !== 'all') filtered = filtered.filter(p => p.type === typeFilter);
+      if (statusFilter !== 'all') filtered = filtered.filter(p => p.status === statusFilter);
+
+      const tbody = document.getElementById('payments-tbody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No payments found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = filtered.map(p => {
+        const invId = p.id.substring(0,8).toUpperCase();
+        const cust = p.customer || {};
+        return `
+          <tr>
+            <td><strong>#${invId}</strong></td>
+            <td>${escapeHTML(cust.name || 'N/A')}<br><small>${escapeHTML(cust.email || '')}</small></td>
+            <td>${escapeHTML(p.courseName || 'Loading...')}</td>
+            <td>$${p.amount || 0}</td>
+            <td><span class="status-badge status-${p.status}">${p.status}</span></td>
+            <td style="display:flex; gap:0.3rem;">
+              ${p.status === 'pending' ? `<button class="btn btn-approve" onclick="approvePayment('${p.id}')">Approve</button><button class="btn btn-reject" onclick="rejectPayment('${p.id}')">Reject</button>` : ''}
+              <button class="btn btn-delete" onclick="deletePayment('${p.id}')">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    };
+
+    window.approvePayment = async (paymentId) => {
+      if (!confirm('Approve this payment and activate enrollment?')) return;
+      try {
+        const payment = allPayments.find(p => p.id === paymentId);
+        if (!payment) return;
+        await updateDoc(doc(db, 'payments', paymentId), { status: 'approved', approvedBy: currentAdmin.uid, approvedAt: serverTimestamp() });
+        const enrollmentQuery = query(collection(db, 'course_enrollments'), where('paymentId', '==', paymentId));
+        const enrollSnap = await getDocs(enrollmentQuery);
+        enrollSnap.forEach(async (enrollmentDoc) => await updateDoc(doc(db, 'course_enrollments', enrollmentDoc.id), { status: 'active', activatedAt: serverTimestamp() }));
+        if (payment.itemId) {
+          const courseRef = doc(db, 'courses', payment.itemId);
+          const courseSnap = await getDoc(courseRef);
+          if (courseSnap.exists()) await updateDoc(courseRef, { enrolledCount: (courseSnap.data().enrolledCount || 0) + 1 });
         }
+        showToast('Payment approved!', 'success');
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    };
 
-        function renderCourses() {
-            const grid = document.getElementById('courses-grid');
-            if (allCourses.length === 0) {
-                grid.innerHTML = '<p style="color:var(--text-muted);">No courses yet. Click "New Course" to create one.</p>';
-                return;
-            }
-            grid.innerHTML = allCourses.map(c => {
-                const thumb = c.thumbnailUrl ? `<img src="${c.thumbnailUrl}" alt="">` : '';
-                const catBadge = c.category === 'tefl' ? 'badge-tefl' : 'badge-workshop';
-                return `
-                    <div class="course-card">
-                        ${thumb}
-                        <div class="card-body">
-                            <span class="badge ${catBadge}">${c.category}</span>
-                            <h3>${escapeHTML(c.title)}</h3>
-                            <p style="color:var(--text-muted); font-size:0.85rem;">$${c.price} · ${c.enrolledCount || 0} enrolled</p>
-                            <div class="card-actions">
-                                <button class="btn btn-outline" onclick="editCourse('${c.id}')">Edit</button>
-                                <button class="btn btn-danger" onclick="deleteCourse('${c.id}')">Delete</button>
-                            </div>
-                        </div>
-                    </div>`;
-            }).join('');
-        }
+    window.rejectPayment = async (paymentId) => {
+      if (!confirm('Reject this payment?')) return;
+      try {
+        await updateDoc(doc(db, 'payments', paymentId), { status: 'rejected', rejectedBy: currentAdmin.uid, rejectedAt: serverTimestamp() });
+        const enrollmentQuery = query(collection(db, 'course_enrollments'), where('paymentId', '==', paymentId));
+        const enrollSnap = await getDocs(enrollmentQuery);
+        enrollSnap.forEach(async (enrollmentDoc) => await updateDoc(doc(db, 'course_enrollments', enrollmentDoc.id), { status: 'cancelled' }));
+        showToast('Payment rejected.', 'info');
+      } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    };
 
-        window.editCourse = async (courseId) => {
-            const course = allCourses.find(c => c.id === courseId);
-            if (!course) return;
-            currentCourseId = courseId;
-            document.getElementById('course-modal-title').textContent = 'Edit Course';
-            document.getElementById('course-id').value = courseId;
-            document.getElementById('course-title').value = course.title;
-            document.getElementById('course-category').value = course.category;
-            document.getElementById('course-price').value = course.price;
-            document.getElementById('thumbnail-url').value = course.thumbnailUrl || '';
-            document.getElementById('course-description-editor').innerHTML = course.description || '';
-            document.getElementById('course-instructor').value = course.instructor || '';
-            if (course.thumbnailUrl) {
-                document.getElementById('thumbnail-preview').innerHTML = `<img src="${course.thumbnailUrl}" style="max-width:150px;border-radius:8px;">`;
-            } else {
-                document.getElementById('thumbnail-preview').innerHTML = '';
-            }
-            // Load modules
-            const modSnap = await getDocs(collection(db, `courses/${courseId}/modules`));
-            currentModules = [];
-            modSnap.forEach(d => currentModules.push({ id: d.id, ...d.data() }));
-            renderModules();
-            openModal();
-        };
+    window.deletePayment = async (paymentId) => {
+      if (!confirm('Permanently delete this invoice?')) return;
+      try { await deleteDoc(doc(db, 'payments', paymentId)); showToast('Invoice deleted.', 'success'); } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    };
 
-        window.openCreateCourse = () => {
-            currentCourseId = null;
-            document.getElementById('course-modal-title').textContent = 'Create Course';
-            document.getElementById('course-form').reset();
-            document.getElementById('course-id').value = '';
-            document.getElementById('thumbnail-url').value = '';
-            document.getElementById('course-description-editor').innerHTML = '';
-            document.getElementById('thumbnail-preview').innerHTML = '';
-            currentModules = [];
-            renderModules();
-            openModal();
-        };
+    // Preview modals (inbox style)
+    window.openPreviewModal = (url, fileName) => {
+      document.getElementById('previewModalTitle').textContent = fileName || 'Document Preview';
+      document.getElementById('previewIframe').src = url;
+      document.getElementById('previewModal').classList.add('active');
+    };
+    window.closePreviewModal = () => { document.getElementById('previewIframe').src = ''; document.getElementById('previewModal').classList.remove('active'); };
+    window.openImageModal = (downloadUrl, imageUrl) => {
+      document.getElementById('imageModalImg').src = imageUrl;
+      document.getElementById('imageModalDownload').href = downloadUrl;
+      document.getElementById('imageModal').classList.add('active');
+    };
+    window.closeImageModal = () => { document.getElementById('imageModalImg').src = ''; document.getElementById('imageModal').classList.remove('active'); };
 
-        function openModal() { document.getElementById('course-modal').classList.add('active'); }
-        window.closeCourseModal = () => document.getElementById('course-modal').classList.remove('active');
-
-        // Rich text formatting
-        window.formatDoc = (cmd) => {
-            document.execCommand(cmd, false, null);
-            document.getElementById('course-description-editor').focus();
-        };
-
-        // Google Drive upload (same logic you use)
-        async function uploadToDrive(fileOrBlob, fileName) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    const payload = {
-                        action: 'uploadFile',
-                        fileName: fileName,
-                        mimeType: fileOrBlob.type || "application/octet-stream",
-                        file: e.target.result
-                    };
-                    try {
-                        const res = await fetch(GAS_UPLOAD_URL, { method: 'POST', body: JSON.stringify(payload) });
-                        const data = await res.json();
-                        if (data.status === 'success') resolve(data.url || 'https://via.placeholder.com/150');
-                        else reject(new Error(data.message || 'Upload failed'));
-                    } catch (err) { reject(err); }
-                };
-                reader.readAsDataURL(fileOrBlob);
-            });
-        }
-
-        window.uploadThumbnail = async (input) => {
-            const file = input.files[0];
-            if (!file) return;
-            showToast('Uploading thumbnail...', 'info');
-            try {
-                const url = await uploadToDrive(file, `course_thumb_${Date.now()}.${file.name.split('.').pop()}`);
-                document.getElementById('thumbnail-url').value = url;
-                document.getElementById('thumbnail-preview').innerHTML = `<img src="${url}" style="max-width:150px;border-radius:8px;">`;
-                showToast('Thumbnail uploaded!', 'success');
-            } catch (e) {
-                showToast('Upload error', 'error');
-            }
-            input.value = '';
-        };
-
-        window.saveCourse = async () => {
-            const title = document.getElementById('course-title').value.trim();
-            const category = document.getElementById('course-category').value;
-            const price = parseFloat(document.getElementById('course-price').value);
-            const desc = document.getElementById('course-description-editor').innerHTML;
-            const instructor = document.getElementById('course-instructor').value.trim();
-            const thumbnailUrl = document.getElementById('thumbnail-url').value;
-
-            if (!title || !price) { showToast('Title and price are required', 'error'); return; }
-
-            const courseData = {
-                title, category, price, description: desc,
-                instructor, thumbnailUrl,
-                updatedAt: serverTimestamp(),
-                status: 'published'
-            };
-
-            try {
-                if (currentCourseId) {
-                    await updateDoc(doc(db, 'courses', currentCourseId), courseData);
-                    // Save modules
-                    await syncModules(currentCourseId);
-                } else {
-                    courseData.createdAt = serverTimestamp();
-                    courseData.enrolledCount = 0;
-                    const docRef = await addDoc(collection(db, 'courses'), courseData);
-                    currentCourseId = docRef.id;
-                    await syncModules(docRef.id);
-                }
-                showToast('Course saved!', 'success');
-                closeCourseModal();
-                loadCourses();
-            } catch (e) { showToast('Error saving: ' + e.message, 'error'); }
-        };
-
-        async function syncModules(courseId) {
-            // Delete old modules not in current list
-            const oldSnap = await getDocs(collection(db, `courses/${courseId}/modules`));
-            const oldIds = oldSnap.docs.map(d => d.id);
-            const newIds = currentModules.map(m => m.id).filter(id => id);
-            const toDelete = oldIds.filter(id => !newIds.includes(id));
-            for (const id of toDelete) await deleteDoc(doc(db, `courses/${courseId}/modules`, id));
-
-            // Add/update modules
-            for (const mod of currentModules) {
-                const modData = { ...mod };
-                delete modData.id;
-                if (mod.id) {
-                    await updateDoc(doc(db, `courses/${courseId}/modules`, mod.id), modData);
-                } else {
-                    await addDoc(collection(db, `courses/${courseId}/modules`), modData);
-                }
-            }
-        }
-
-        // Module management
-        function renderModules() {
-            const container = document.getElementById('modules-container');
-            if (currentModules.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-muted);">No modules added yet.</p>';
-                return;
-            }
-            container.innerHTML = currentModules.map((m, i) => `
-                <div class="module-item">
-                    <div>
-                        <strong>Module ${i+1}:</strong> ${escapeHTML(m.title || 'Untitled')}
-                        ${m.quiz && m.quiz.length ? `<br><small>Quiz: ${m.quiz.length} questions</small>` : ''}
-                    </div>
-                    <div style="display:flex; gap:0.3rem;">
-                        <button class="btn btn-outline" onclick="editModule(${i})">Edit</button>
-                        <button class="btn btn-danger" onclick="removeModule(${i})">✕</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.addModule = () => {
-            currentModules.push({
-                title: '',
-                content: '',
-                attachments: [],
-                quiz: []
-            });
-            renderModules();
-            editModule(currentModules.length - 1);
-        };
-
-        window.removeModule = (index) => {
-            currentModules.splice(index, 1);
-            renderModules();
-        };
-
-        window.editModule = (index) => {
-            const mod = currentModules[index];
-            // Show a simple inline editor (we'll use a prompt-based approach for simplicity)
-            const title = prompt('Module title:', mod.title || '');
-            if (title === null) return;
-            mod.title = title;
-            mod.content = prompt('Module content (HTML supported):', mod.content || '') || mod.content;
-            // Quiz builder
-            const addQuiz = confirm('Add/Edit quiz for this module?');
-            if (addQuiz) {
-                const questions = [];
-                let addMore = true;
-                while (addMore) {
-                    const q = prompt('Question:');
-                    if (!q) break;
-                    const options = [];
-                    for (let i = 0; i < 4; i++) {
-                        const opt = prompt(`Option ${String.fromCharCode(65+i)}:`);
-                        if (opt) options.push(opt);
-                    }
-                    const correct = prompt('Correct answer index (0-3):', '0');
-                    if (q && options.length >= 2 && correct !== null) {
-                        questions.push({
-                            question: q,
-                            options: options,
-                            correctIndex: parseInt(correct)
-                        });
-                    }
-                    addMore = confirm('Add another question?');
-                }
-                mod.quiz = questions;
-            }
-            renderModules();
-        };
-
-        // Attachment upload for modules (can be expanded)
-        // For now we'll leave it simple, you can enhance later
-
-        window.deleteCourse = async (courseId) => {
-            if (!confirm('Delete this course and all its modules?')) return;
-            await deleteDoc(doc(db, 'courses', courseId));
-            loadCourses();
-            showToast('Course deleted.', 'info');
-        };
-
-        function showToast(msg, type='info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = msg;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3500);
-        }
-
-        function escapeHTML(str) {
-            const div = document.createElement('div');
-            div.textContent = str || '';
-            return div.innerHTML;
-        }
-
-        window.showToast = showToast;
-    </script>
+    // Utility
+    function showToast(msg, type='info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3500);
+    }
+    function escapeHTML(str) { const div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
+  </script>
 </body>
 </html>
