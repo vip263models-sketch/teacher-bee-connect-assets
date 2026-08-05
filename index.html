@@ -1,1685 +1,1341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TeacherBee Connect - Portal</title>
-  
-  <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Cropper.js for Image Cropping -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-  
-  <style>
-    :root {
-      --primary-navy: #0A192F;
-      --navy-light: #172A45;
-      --accent-yellow: #FFD700;
-      --yellow-hover: #E5C100;
-      --bg-color: #F8F9FA;
-      --surface-white: #FFFFFF;
-      --text-main: #111827;
-      --text-muted: #6B7280;
-      --border-color: #E5E7EB;
-      --error-red: #EF4444;
-      --success-green: #10B981;
-      --radius-lg: 16px;
-      --radius-md: 8px;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
-      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TeacherBee Connect — Auth & Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
-
-    h1, h2, h3, h4 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; }
-    p { color: var(--text-muted); line-height: 1.5; }
-
-    /* Toast Notifications */
-    #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-    .toast { padding: 1rem 1.25rem; border-radius: var(--radius-md); color: var(--surface-white); font-weight: 600; font-size: 0.9rem; box-shadow: var(--shadow-md); animation: slideIn 0.3s ease forwards; display: flex; align-items: center; gap: 10px; }
-    .toast.error { background-color: var(--error-red); }
-    .toast.success { background-color: var(--success-green); }
-    .toast.info { background-color: var(--primary-navy); color: var(--accent-yellow); }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-    /* Header */
-    header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
-    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; }
-    .brand-logo i { color: var(--accent-yellow); font-size: 1.5rem; }
-    
-    /* Buttons */
-    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
-    .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); }
-    .btn-primary:hover { background-color: var(--yellow-hover); }
-    .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); }
-    .btn-outline:hover { background: rgba(255, 215, 0, 0.1); }
-    .btn-danger { background-color: #FEE2E2; color: var(--error-red); padding: 0.5rem 1rem; }
-    .btn-danger:hover { background-color: #FECACA; }
-    .btn-block { width: 100%; margin-top: 1rem; }
-    .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
-
-    /* Layout Setup */
-    .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
-    .auth-wrapper { max-width: 480px; margin: 2rem auto; background: var(--surface-white); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm); width: 100%; border: 1px solid var(--border-color); }
-    .auth-header { text-align: center; margin-bottom: 2rem; }
-    .auth-tabs { display: flex; background: var(--bg-color); border-radius: var(--radius-md); padding: 0.25rem; margin-bottom: 1.5rem; }
-    .auth-tab { flex: 1; text-align: center; padding: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.9rem; transition: background 0.2s; }
-    .auth-tab.active { background: var(--primary-navy); color: var(--accent-yellow); box-shadow: var(--shadow-sm); }
-
-    /* Forms */
-    .form-group { margin-bottom: 1.25rem; position: relative; }
-    .form-label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
-    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary-navy); box-shadow: 0 0 0 3px rgba(10, 25, 47, 0.1); }
-    .form-textarea { resize: vertical; min-height: 100px; }
-    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .grid-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
-    
-    .password-wrapper { position: relative; }
-    .password-wrapper input { padding-right: 2.5rem; }
-    .password-toggle { position: absolute; right: 1rem; top: 38px; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; }
-
-    /* Profile Avatar Upload */
-    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2rem; }
-    .avatar-preview { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent-yellow); object-fit: cover; background-color: var(--bg-color); cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-md); }
-    .avatar-preview:hover { opacity: 0.8; filter: brightness(0.9); }
-    .avatar-upload-btn { position: relative; overflow: hidden; }
-    .avatar-upload-btn input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-
-    /* Qualifications Dynamic List */
-    .qualifications-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
-    .qual-item { background: var(--surface-white); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); }
-    .qual-item-info h4 { margin-bottom: 0.2rem; font-size: 1rem; }
-    .qual-item-info a { font-size: 0.85rem; color: var(--primary-navy); text-decoration: underline; }
-    .qual-actions { display: flex; gap: 0.5rem; }
-    
-    #add-qual-form { background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--border-color); margin-bottom: 1rem; display: none; }
-    
-    /* Clickable Qualifications in Recruiter View */
-    .qual-doc-link { cursor: pointer; transition: background 0.2s; }
-    .qual-doc-link:hover { background: #E5E7EB !important; }
-
-    /* Progress Bar */
-    .progress-bar-container { width: 100%; background-color: #E5E7EB; border-radius: 8px; margin-top: 0.5rem; overflow: hidden; display: none; }
-    .progress-bar-fill { height: 8px; background-color: var(--success-green); width: 0%; transition: width 0.3s; }
-    .progress-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; display: none; flex: 1; }
-
-    /* --- SIDEBAR & CONTENT VISIBILITY --- */
-    .sidebar { width: 250px; display: none; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
-    .content-area { flex: 1; display: none; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
-    
-    body.dashboard-active .sidebar { display: flex; }
-    body.dashboard-active .content-area { display: flex; }
-    
-    .sidebar-item { padding: 1rem; border-radius: var(--radius-md); color: var(--primary-navy); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; }
-    .sidebar-item:hover { background-color: var(--bg-color); }
-    .sidebar-item.active { background-color: var(--primary-navy); color: var(--accent-yellow); }
-    
-    /* Content Views */
-    .view-panel { display: none; animation: fadeIn 0.3s ease-in-out; }
-    .view-panel.active { display: block; }
-    .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
-    
-    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .badge-yellow { background: var(--accent-yellow); color: var(--primary-navy); }
-    .badge-navy { background: var(--navy-light); color: var(--surface-white); }
-    .badge-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
-
-    /* Job Filters & Search */
-    .filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: var(--surface-white); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
-    
-    .job-card { display: flex; flex-direction: column; justify-content: space-between; }
-    .job-meta { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; flex-wrap: wrap; }
-    .job-desc { font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-
-    /* Messages UI & Chat */
-    .message-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; }
-    .message-item:hover { background: var(--bg-color); }
-    .message-item.unread { background: #f0f7ff; border-left: 4px solid var(--primary-navy); }
-    .message-item:last-child { border-bottom: none; }
-    .msg-content h4 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--primary-navy); }
-    .msg-content p { font-size: 0.9rem; color: var(--text-muted); }
-    .msg-date { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.5rem; }
-    
-    /* Fake Chat Window */
-    #chat-window { display: none; background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; flex-direction: column; height: 550px; }
-    .chat-header { background: var(--primary-navy); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
-    .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; background: var(--bg-color); }
-    .chat-messages::-webkit-scrollbar { width: 6px; }
-    .chat-messages::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.15); border-radius: 4px; }
-    .chat-bubble { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; word-wrap: break-word; position: relative; }
-    .bubble-in { background: white; border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-main); }
-    .bubble-out { background: var(--navy-light); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .msg-time-stamp { display: block; font-size: 0.68rem; opacity: 0.7; margin-top: 4px; text-align: right; }
-    .chat-input-area { padding: 1rem; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; align-items: center; }
-
-    /* Modals */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
-    .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
-    .modal-content { background: var(--surface-white); width: 100%; max-width: 600px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
-    .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); transition: color 0.2s; }
-    .close-modal:hover { color: var(--primary-navy); }
-
-    /* Elegant Recruiter Profile View */
-    .prof-header-elegant { display: flex; align-items: center; gap: 1.5rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
-    .prof-header-elegant img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-yellow); box-shadow: var(--shadow-sm); }
-    .star-rating { color: var(--accent-yellow); font-size: 1.1rem; letter-spacing: 2px; margin-top: 0.5rem; }
-    .section-title-elegant { font-size: 1.1rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem; margin-top: 1.5rem; }
-    .elegant-text { color: var(--text-main); font-size: 0.95rem; line-height: 1.6; }
-    
-    /* Cropper Modal Specifics */
-    #image-cropper-container { max-height: 400px; margin-bottom: 1rem; }
-
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    @media (max-width: 768px) {
-      .app-container { padding: 1rem; padding-bottom: 85px; }
-      .grid-2-col, .grid-3-col, .filter-bar { grid-template-columns: 1fr; }
-      
-      body.dashboard-active .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; box-shadow: 0 -4px 10px rgba(0,0,0,0.15); top: auto; }
-      .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; border-radius: 8px; text-align: center; color: var(--surface-white); }
-      .sidebar-item.active { background: transparent; color: var(--accent-yellow); }
-      .hide-mobile { display: none !important; }
-    }
-  </style>
-
-  <!-- FIREBASE SDK MODULE -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, updateDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
-      authDomain: "teacherbee-connect.firebaseapp.com",
-      projectId: "teacherbee-connect",
-      storageBucket: "teacherbee-connect.firebasestorage.app",
-      messagingSenderId: "345613317767",
-      appId: "1:345613317767:web:555713e479f9837e84aa22"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    window.auth = getAuth(app);
-    window.db = getFirestore(app);
-
-    // Expose Firebase SDK methods globally
-    window.fb = {
-      doc, setDoc, updateDoc, getDoc, serverTimestamp,
-      signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, confirmPasswordReset
-    };
-
-    setPersistence(window.auth, browserLocalPersistence);
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const mode = urlParams.get('mode');
-    const oobCode = urlParams.get('oobCode');
-
-    if (mode === 'resetPassword' && oobCode) {
-      document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById('auth-panel').style.display = 'none';
-        document.getElementById('reset-password-panel').style.display = 'block';
-        window.resetOobCode = oobCode;
-      });
-    }
-
-    onAuthStateChanged(window.auth, async (user) => {
-      if (user && mode !== 'resetPassword') {
-        const docRef = doc(window.db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        let name = user.email.split('@')[0];
-        let avatar = "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
-        
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          name = data.name || name;
-          if(data.avatarUrl) avatar = data.avatarUrl;
-          
-          if(data.age) document.getElementById('prof-age').value = data.age;
-          if(data.gender) document.getElementById('prof-gender').value = data.gender;
-          if(data.experience) document.getElementById('prof-experience').value = data.experience;
-          if(data.languages) document.getElementById('prof-languages').value = data.languages;
-          if(data.bio) document.getElementById('prof-bio').value = data.bio;
-          
-          if(data.videoUrl) {
-              window.currentUser.videoUrl = data.videoUrl;
-              const vPreview = document.getElementById('prof-video-preview');
-              vPreview.src = data.videoUrl;
-              vPreview.style.display = 'block';
-          }
-          
-          window.currentUser.quals = data.qualifications || [];
-          window.currentUser.messages = data.messages || [];
+    <style>
+        :root {
+            --navy: #0D4054;
+            --navy-dark: #082936;
+            --navy-light: #0f4d64;
+            --orange: #F5A623;
+            --orange-hover: #D98E16;
+            --red: #E53E3E;
+            --red-hover: #C53030;
+            --red-soft: #FFF5F5;
+            --blue-gray: #718691;
+            --light-gray: #f0f4f8;
+            --card-bg: #FFFFFF;
+            --border-gray: #e2e8f0;
+            --white: #FFFFFF;
+            --error-red: #DC2626;
+            --success-green: #10B981;
+            --text-dark: #1a202c;
+            --radius-xl: 20px;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 8px;
+            --shadow-card: 0 4px 24px rgba(13, 64, 84, 0.07);
+            --shadow-elevated: 0 12px 40px rgba(13, 64, 84, 0.12);
+            --shadow-nav: 0 2px 16px rgba(13, 64, 84, 0.06);
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        finalizeLogin(name, user.email, user.emailVerified, avatar);
-        window.renderQualifications();
-        window.renderInbox();
-      }
-    });
-  </script>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(160deg, #f0f4f8 0%, #e8eef4 30%, #f5f3f1 70%, #fefefe 100%);
+            background-attachment: fixed;
+            color: var(--navy);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ==========================================
+           SMART HEADER
+           ========================================== */
+        .smart-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 99990;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 4px 20px rgba(13, 64, 84, 0.05);
+            transition: all var(--transition-smooth);
+        }
+
+        .smart-header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 64px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .smart-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            letter-spacing: -0.4px;
+            gap: 3px;
+        }
+        .smart-logo-blue {
+            color: var(--navy);
+        }
+        .smart-logo-orange {
+            color: var(--orange);
+        }
+        .smart-logo-emoji {
+            font-size: 1.3rem;
+            margin-left: 4px;
+            animation: beeWiggle 3s ease-in-out infinite;
+        }
+        @keyframes beeWiggle {
+            0%,
+            100% {
+                transform: rotate(0deg) translateY(0);
+            }
+            15% {
+                transform: rotate(-5deg) translateY(-2px);
+            }
+            30% {
+                transform: rotate(5deg) translateY(-1px);
+            }
+            45% {
+                transform: rotate(-3deg) translateY(0);
+            }
+            60% {
+                transform: rotate(0deg) translateY(0);
+            }
+        }
+
+        .smart-hamburger {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            transition: all var(--transition-fast);
+            color: var(--navy);
+            position: relative;
+        }
+        .smart-hamburger:hover {
+            background: rgba(13, 64, 84, 0.06);
+        }
+        .smart-hamburger svg {
+            transition: transform var(--transition-smooth);
+        }
+        .smart-hamburger:active svg {
+            transform: scale(0.9);
+        }
+        .smart-hamburger-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--red);
+            border-radius: 50%;
+            border: 2px solid #fff;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                transform: scale(1.6);
+                opacity: 0.4;
+            }
+        }
+
+        /* Mobile Menu Overlay */
+        .smart-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10, 10, 20, 0.6);
+            z-index: 99999;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-smooth);
+        }
+        .smart-menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .smart-menu-drawer {
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 350px;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.25);
+            border-radius: 20px 0 0 20px;
+        }
+        .smart-menu-overlay.open .smart-menu-drawer {
+            right: 0;
+        }
+        .smart-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .smart-menu-links {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .smart-menu-links a {
+            padding: 15px 22px;
+            color: var(--navy);
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-bottom: 1px solid #f8f8f8;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .smart-menu-links a:hover {
+            color: var(--orange);
+            background: rgba(245, 166, 35, 0.04);
+            padding-left: 28px;
+        }
+        .smart-menu-links a i {
+            width: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--blue-gray);
+            transition: color var(--transition-fast);
+        }
+        .smart-menu-links a:hover i {
+            color: var(--orange);
+        }
+        .smart-menu-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            color: var(--navy);
+        }
+        .smart-menu-close:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* ==========================================
+           MAIN CONTAINER
+           ========================================== */
+        .app-container {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 80px 16px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Toast */
+        #toast-container {
+            position: fixed;
+            top: 80px;
+            right: 16px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.9rem 1.2rem;
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.88rem;
+            box-shadow: var(--shadow-elevated);
+            animation: slideInToast 0.35s ease forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 260px;
+            pointer-events: auto;
+        }
+        .toast.error {
+            background: var(--error-red);
+        }
+        .toast.success {
+            background: var(--success-green);
+        }
+        .toast.info {
+            background: var(--navy);
+            color: var(--orange);
+        }
+        @keyframes slideInToast {
+            from {
+                transform: translateX(40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ==========================================
+           AUTH CARD
+           ========================================== */
+        .auth-card {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            padding: 2.2rem 1.8rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-gray);
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--navy) 0%, var(--orange) 40%, var(--red) 80%, var(--navy) 100%);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 1.6rem;
+        }
+        .brand-logo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--navy);
+            text-decoration: none;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.35rem;
+        }
+        .brand-logo-link .blue {
+            color: var(--navy);
+        }
+        .brand-logo-link .orange {
+            color: var(--orange);
+        }
+        .brand-logo-link .emoji {
+            font-size: 1.4rem;
+            margin-left: 2px;
+        }
+        .brand-subtitle {
+            color: var(--blue-gray);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Role Switcher */
+        .role-switcher {
+            display: flex;
+            background: #f5f7fa;
+            border-radius: 50px;
+            padding: 5px;
+            margin-bottom: 1.6rem;
+            border: 1px solid var(--border-gray);
+            position: relative;
+        }
+        .role-btn {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem 0.8rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--blue-gray);
+            transition: all var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            border: none;
+            background: transparent;
+            position: relative;
+            z-index: 1;
+        }
+        .role-btn.active {
+            background: var(--navy);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(13, 64, 84, 0.25);
+        }
+        .role-btn.active i {
+            color: var(--orange);
+        }
+        .role-btn.recruiter-active.active {
+            background: #1a1a2e;
+            box-shadow: 0 4px 16px rgba(229, 62, 62, 0.3);
+        }
+        .role-btn.recruiter-active.active i {
+            color: var(--red);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .form-label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.78rem;
+            margin-bottom: 0.4rem;
+            color: var(--navy);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1.8px solid var(--border-gray);
+            border-radius: var(--radius-md);
+            font-size: 0.93rem;
+            outline: none;
+            transition: all var(--transition-fast);
+            background: #fafbfc;
+            color: var(--navy);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .form-input:focus,
+        .form-select:focus {
+            border-color: var(--navy);
+            box-shadow: 0 0 0 4px rgba(13, 64, 84, 0.08);
+            background: #fff;
+        }
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.9rem;
+        }
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper input {
+            padding-right: 2.8rem;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 38px;
+            cursor: pointer;
+            color: var(--blue-gray);
+            font-size: 1rem;
+            transition: color var(--transition-fast);
+            z-index: 2;
+        }
+        .password-toggle:hover {
+            color: var(--navy);
+        }
+
+        .btn {
+            padding: 0.85rem 1.4rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.93rem;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            letter-spacing: 0.2px;
+        }
+        .btn-primary {
+            background: var(--navy);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--navy-dark);
+            box-shadow: 0 8px 24px rgba(13, 64, 84, 0.2);
+            transform: translateY(-1px);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--navy);
+        }
+        .btn-secondary:hover {
+            background: rgba(13, 64, 84, 0.05);
+        }
+        .btn-block {
+            width: 100%;
+        }
+        .btn-recruiter {
+            background: var(--red);
+            color: #fff;
+        }
+        .btn-recruiter:hover {
+            background: var(--red-hover);
+            box-shadow: 0 8px 24px rgba(229, 62, 62, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .auth-footer-prompt {
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-gray);
+            text-align: center;
+        }
+        .auth-footer-prompt p {
+            color: var(--blue-gray);
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .forgot-link {
+            font-size: 0.82rem;
+            color: var(--navy);
+            font-weight: 700;
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        .forgot-link:hover {
+            color: var(--orange);
+        }
+
+        /* ==========================================
+           DASHBOARD NAVIGATION SECTION
+           ========================================== */
+        .dashboard-section {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            padding: 1.6rem 1.4rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-gray);
+            transition: all var(--transition-smooth);
+        }
+        .dashboard-section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.2rem;
+        }
+        .dashboard-section-header .icon-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .icon-circle.teacher {
+            background: #e8f4f8;
+            color: var(--navy);
+        }
+        .icon-circle.recruiter {
+            background: #fff0f0;
+            color: var(--red);
+        }
+        .dashboard-section-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--navy);
+            letter-spacing: -0.2px;
+        }
+        .dashboard-section-subtitle {
+            font-size: 0.78rem;
+            color: var(--blue-gray);
+            font-weight: 500;
+        }
+
+        .dashboard-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        @media (min-width: 500px) {
+            .dashboard-nav-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+            }
+        }
+        .dash-nav-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 8px;
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            background: #fafbfc;
+            border: 1.5px solid transparent;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .dash-nav-card:hover {
+            background: #fff;
+            border-color: #dce5ec;
+            box-shadow: 0 6px 20px rgba(13, 64, 84, 0.08);
+            transform: translateY(-3px);
+        }
+        .dash-nav-card:active {
+            transform: scale(0.94);
+            transition: transform 0.1s ease;
+        }
+        .dash-nav-icon-wrap {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+        }
+        .dash-nav-card:hover .dash-nav-icon-wrap {
+            transform: scale(1.08);
+        }
+        .dash-nav-label {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--navy);
+            line-height: 1.2;
+            letter-spacing: -0.1px;
+        }
+        /* Teacher icon colors */
+        .icon-home {
+            background: #e8f0fe;
+            color: #4a7dcb;
+        }
+        .icon-profile {
+            background: #e8f4f8;
+            color: #0D4054;
+        }
+        .icon-jobs {
+            background: #e6f7ee;
+            color: #2d8a56;
+        }
+        .icon-inbox {
+            background: #fff3e6;
+            color: #e6962b;
+        }
+        .icon-workshops {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+        .icon-tefl {
+            background: #e6faf5;
+            color: #0d9488;
+        }
+        .icon-query {
+            background: #ffeaea;
+            color: #e53e3e;
+        }
+        /* Recruiter icon colors */
+        .icon-search-teachers {
+            background: #e8f0fe;
+            color: #3b6dc7;
+        }
+        .icon-post-jobs {
+            background: #ffe8e8;
+            color: #e53e3e;
+        }
+        .icon-recruiter-inbox {
+            background: #fff3e6;
+            color: #d97706;
+        }
+        .icon-subscriptions {
+            background: #f0f0f5;
+            color: #5c5c8a;
+        }
+
+        /* Dashboard badge */
+        .dash-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+
+        /* ==========================================
+           GLOBAL SIGN OUT
+           ========================================== */
+        .global-action-bar {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .btn-logout {
+            background: none;
+            border: 1.5px solid #e8e8e8;
+            color: var(--blue-gray);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1.2rem;
+            border-radius: 50px;
+            transition: all var(--transition-fast);
+        }
+        .btn-logout:hover {
+            color: var(--red);
+            border-color: #fcc;
+            background: var(--red-soft);
+        }
+
+        /* ==========================================
+           RESPONSIVE
+           ========================================== */
+        @media (max-width: 640px) {
+            body {
+                background: #f5f7fa;
+            }
+            .app-container {
+                padding: 72px 8px 30px;
+                gap: 14px;
+            }
+            .auth-card {
+                border-radius: var(--radius-lg);
+                padding: 1.5rem 1rem;
+                border: 1px solid #e8ecf0;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            }
+            .auth-card::before {
+                height: 2px;
+            }
+            .grid-2-col {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-section {
+                border-radius: var(--radius-lg);
+                padding: 1.2rem 0.9rem;
+            }
+            .dashboard-nav-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .dash-nav-card {
+                padding: 10px 4px;
+                border-radius: var(--radius-md);
+            }
+            .dash-nav-icon-wrap {
+                width: 38px;
+                height: 38px;
+                border-radius: 10px;
+                font-size: 1rem;
+            }
+            .dash-nav-label {
+                font-size: 0.7rem;
+            }
+            .role-btn {
+                font-size: 0.8rem;
+                padding: 0.65rem 0.5rem;
+            }
+            .smart-header-inner {
+                height: 56px;
+                padding: 0 14px;
+            }
+            .smart-logo {
+                font-size: 1.1rem;
+            }
+            .smart-logo-emoji {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .dashboard-nav-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+            .dash-nav-icon-wrap {
+                width: 34px;
+                height: 34px;
+                border-radius: 8px;
+                font-size: 0.9rem;
+            }
+            .dash-nav-label {
+                font-size: 0.65rem;
+            }
+            .dash-nav-card {
+                padding: 8px 2px;
+            }
+        }
+    </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, confirmPasswordReset, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+            authDomain: "teacherbee-connect.firebaseapp.com",
+            projectId: "teacherbee-connect",
+            storageBucket: "teacherbee-connect.firebasestorage.app",
+            messagingSenderId: "345613317767",
+            appId: "1:345613317767:web:555713e479f9837e84aa22"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        window.auth = getAuth(app);
+        window.db = getFirestore(app);
+        window.fb = { doc, setDoc, getDoc, serverTimestamp, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, confirmPasswordReset, signOut };
+
+        setPersistence(window.auth, browserLocalPersistence);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const oobCode = urlParams.get('oobCode');
+
+        if (mode === 'resetPassword' && oobCode) {
+            document.addEventListener("DOMContentLoaded", () => {
+                document.getElementById('auth-panel').style.display = 'none';
+                document.getElementById('dashboard-panel').style.display = 'none';
+                document.getElementById('reset-password-panel').style.display = 'block';
+                window.resetOobCode = oobCode;
+            });
+        }
+    </script>
 </head>
 <body>
 
-  <div id="toast-container"></div>
+    <div id="toast-container"></div>
 
-  <header>
-    <a href="#" class="brand-logo" onclick="handleLogoClick(event)">
-      <i class="fa-solid fa-graduation-cap"></i> TeacherBee
-    </a>
-    <div id="nav-actions">
-      <button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>
-    </div>
-  </header>
+    <!-- ========== SMART HEADER ========== -->
+    <header class="smart-header" id="smartHeader">
+        <div class="smart-header-inner">
+            <a href="/" class="smart-logo">
+                <span class="smart-logo-blue">Teacher Bee</span>
+                <span class="smart-logo-orange">Connect</span>
+                <span class="smart-logo-emoji">🐝</span>
+            </a>
+            <button class="smart-hamburger" id="smartMenuBtn" aria-label="Menu">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+                <span class="smart-hamburger-dot"></span>
+            </button>
+        </div>
+    </header>
 
-  <div class="app-container">
-    
-    <!-- PASSWORD RESET PANEL -->
-    <div class="auth-wrapper" id="reset-password-panel" style="display: none;">
-      <div class="auth-header">
-        <h2>Create New Password</h2>
-        <p>Enter your new password below.</p>
-      </div>
-      <form onsubmit="handleNewPasswordSubmit(event)">
-        <div class="form-group password-wrapper">
-          <label class="form-label">New Password</label>
-          <input type="password" id="new-reset-pass" class="form-input" required minlength="6">
-          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('new-reset-pass', this)"></i>
+    <!-- Mobile Menu Drawer -->
+    <div class="smart-menu-overlay" id="smartMenuOverlay">
+        <div class="smart-menu-drawer">
+            <div class="smart-menu-header">
+                <span class="smart-logo" style="font-size:1.1rem;">
+                    <span class="smart-logo-blue">Teacher Bee</span>
+                    <span class="smart-logo-orange">Connect</span>
+                    <span class="smart-logo-emoji" style="font-size:1rem;">🐝</span>
+                </span>
+                <button class="smart-menu-close" id="smartCloseBtn" aria-label="Close menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="smart-menu-links">
+                <a href="https://teacherbeeconnect.blogspot.com/p/about.html?m=1"><i class="fa-solid fa-circle-info"></i> About Us</a>
+                <a href="https://teacherbeeconnect.blogspot.com/p/services.html?m=1"><i class="fa-solid fa-briefcase"></i> Our Services</a>
+                <a href="https://teacherbeeconnect.blogspot.com/p/contact.html?m=1"><i class="fa-solid fa-envelope"></i> Contact Us</a>
+                <a href="#"><i class="fa-solid fa-circle-question"></i> Help & Support</a>
+            </div>
         </div>
-        <div class="form-group password-wrapper">
-          <label class="form-label">Confirm Password</label>
-          <input type="password" id="confirm-reset-pass" class="form-input" required minlength="6">
-          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('confirm-reset-pass', this)"></i>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block" id="btn-save-new-pass">Save New Password</button>
-      </form>
-    </div>
-
-    <!-- AUTHENTICATION CONTAINER -->
-    <div class="auth-wrapper" id="auth-panel">
-      <div class="auth-header">
-        <h2 id="auth-title">Welcome Back</h2>
-        <p id="auth-subtitle">Sign in to your portal</p>
-      </div>
-
-      <div class="auth-tabs">
-        <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
-        <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</div>
-      </div>
-
-      <!-- Login Form -->
-      <form id="login-form" onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" id="login-email" class="form-input" autocomplete="username" required>
-        </div>
-        <div class="form-group password-wrapper">
-          <label class="form-label">Password</label>
-          <input type="password" id="login-password" class="form-input" autocomplete="current-password" required>
-          <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
-        </div>
-        <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
-          <a href="#" style="font-size: 0.85rem; color: var(--primary-navy); font-weight: 600; text-decoration: none;" onclick="handleForgotPassword()">Forgot Password?</a>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block" id="btn-login">Sign In</button>
-      </form>
-
-      <!-- Registration Form -->
-      <form id="register-form" style="display: none;" onsubmit="handleRegister(event)">
-        <div class="form-group">
-          <label class="form-label">Full Name</label>
-          <input type="text" id="reg-name" class="form-input" autocomplete="name" required>
-        </div>
-        
-        <div class="grid-2-col">
-          <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <input type="email" id="reg-email" class="form-input" autocomplete="email" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Date of Birth</label>
-            <input type="date" id="reg-dob" class="form-input" required>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Country of Residence</label>
-          <select id="reg-country" class="form-select" required>
-            <option value="" disabled selected>Select your country</option>
-            <option value="Zimbabwe">Zimbabwe</option>
-            <option value="South Africa">South Africa</option>
-            <option value="United Kingdom">United Kingdom</option>
-            <option value="United States">United States</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        <div class="grid-2-col">
-          <div class="form-group password-wrapper">
-            <label class="form-label">Password</label>
-            <input type="password" id="reg-password" class="form-input" autocomplete="new-password" required>
-            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-password', this)"></i>
-          </div>
-          <div class="form-group password-wrapper">
-            <label class="form-label">Confirm Password</label>
-            <input type="password" id="reg-confirm-password" class="form-input" autocomplete="new-password" required>
-            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-confirm-password', this)"></i>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block" id="btn-register">Create Account</button>
-      </form>
     </div>
 
-    <!-- SIDEBAR NAVIGATION -->
-    <aside class="sidebar" id="app-sidebar">
-      <div class="sidebar-item active" onclick="switchView('profile-view', this)">
-        <i class="fa-regular fa-user"></i> <span>Profile</span>
-      </div>
-      <div class="sidebar-item" onclick="switchView('jobs-view', this)">
-        <i class="fa-solid fa-briefcase"></i> <span>Jobs</span>
-      </div>
-      <div class="sidebar-item" onclick="switchView('workshops-view', this)">
-        <i class="fa-solid fa-chalkboard-user"></i> <span>Training</span>
-      </div>
-      <div class="sidebar-item" onclick="switchView('tefl-view', this)">
-        <i class="fa-solid fa-certificate"></i> <span>TEFL</span>
-      </div>
-      <div class="sidebar-item" onclick="switchView('messages-view', this)">
-        <i class="fa-regular fa-envelope"></i> <span>Inbox <span id="msg-badge" style="background:var(--error-red); color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none;">0</span></span>
-      </div>
-    </aside>
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="app-container">
 
-    <!-- MAIN DYNAMIC CONTENT -->
-    <main class="content-area" id="app-content">
-
-      <!-- 1. PROFILE VIEW -->
-      <section id="profile-view" class="view-panel active">
-        <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap:wrap; gap:1rem;">
-            <div>
-              <h2 id="display-name">Loading...</h2>
-              <span id="verification-badge" class="badge badge-navy">Email Verified</span>
+        <!-- Reset Password Panel -->
+        <div class="auth-card" id="reset-password-panel" style="display: none;">
+            <div class="brand-header">
+                <a href="#" class="brand-logo-link"><span class="blue">Teacher Bee</span><span class="orange">Connect</span><span class="emoji">🐝</span></a>
+                <p class="brand-subtitle">Set up your new password</p>
             </div>
-            <button type="button" class="btn btn-primary" onclick="openRecruiterView()"><i class="fa-solid fa-user-tie"></i> View My Profile</button>
-          </div>
-
-          <form onsubmit="handleProfileUpdate(event)">
-            
-            <div class="avatar-upload-container">
-              <label for="avatar-input" class="avatar-upload-btn">
-                <img src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" id="profile-avatar" class="avatar-preview" title="Click to change profile picture">
-                <input type="file" id="avatar-input" accept="image/png, image/jpeg" onchange="openCropperModal(this)">
-              </label>
-              <p style="font-size: 0.8rem;">Click image to upload & crop</p>
-            </div>
-
-            <h3>Core Biography & Details</h3>
-            
-            <div class="grid-2-col" style="margin-bottom: 1rem;">
-              <div class="form-group">
-                <label class="form-label">Display Name</label>
-                <input type="text" id="prof-display-name" class="form-input" placeholder="e.g. Jane D.">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Age</label>
-                <input type="number" id="prof-age" class="form-input" min="18" max="100" placeholder="e.g. 28">
-              </div>
-            </div>
-
-            <div class="grid-3-col">
-              <div class="form-group">
-                <label class="form-label">Gender</label>
-                <select id="prof-gender" class="form-select">
-                  <option value="Prefer not to say">Prefer not to say</option>
-                  <option value="Female">Female</option>
-                  <option value="Male">Male</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Years of Experience</label>
-                <input type="number" id="prof-experience" class="form-input" min="0">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Languages (Comma separated)</label>
-                <input type="text" id="prof-languages" class="form-input" placeholder="e.g. English (Native), Spanish (B1)">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Professional Biography</label>
-              <textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself to recruiters. Highlight your teaching philosophy and achievements..."></textarea>
-            </div>
-
-            <div class="form-group" style="margin-top:1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
-              <label class="form-label"><i class="fa-solid fa-video"></i> Introduction Video Upload</label>
-              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Upload a short 1-3 minute intro video.</p>
-              <input type="file" id="prof-video-file" accept="video/mp4,video/webm" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem;">
-              
-              <div class="progress-bar-container" id="video-progress-bar">
-                <div class="progress-bar-fill" id="video-progress-fill"></div>
-              </div>
-              
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;" id="video-progress-wrapper">
-                <p class="progress-text" id="video-progress-text" style="display:none; margin:0;">Uploading video... 0%</p>
-              </div>
-
-              <video id="prof-video-preview" controls style="display:none; width:100%; max-height:300px; margin-top:10px; border-radius:8px;"></video>
-            </div>
-
-            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
-
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
-              <h3>My Qualifications & Certificates</h3>
-              <button type="button" class="btn btn-outline btn-small" onclick="toggleAddQualForm(false)"><i class="fa-solid fa-plus"></i> Add Qualification</button>
-            </div>
-            
-            <div id="add-qual-form">
-              <div class="form-group">
-                <label class="form-label">Qualification Title</label>
-                <input type="text" id="new-qual-title" class="form-input" placeholder="e.g. 120-Hour TEFL Certificate">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Upload Certificate Document / Image</label>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-5px; margin-bottom:5px;">Accepts Images, PDFs, and Word Documents</p>
-                <input type="file" id="new-qual-file" class="form-input" onchange="handleQualFileSelect(this)" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-              </div>
-              <div class="progress-bar-container" id="qual-progress-bar">
-                <div class="progress-bar-fill" id="qual-progress-fill"></div>
-              </div>
-              <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-                <button type="button" class="btn btn-primary btn-small" id="btn-save-qual" onclick="saveNewQualification()">Upload & Save Certificate</button>
-                <button type="button" class="btn btn-outline btn-small" onclick="cancelQualificationUpload()">Cancel</button>
-              </div>
-            </div>
-
-            <div class="qualifications-list" id="saved-quals-container">
-              <!-- Dynamically populated -->
-            </div>
-
-            <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 1.5rem; width: 100%;">Save Full Profile</button>
-          </form>
-        </div>
-      </section>
-
-      <!-- 2. JOB BOARD VIEW -->
-      <section id="jobs-view" class="view-panel">
-        <h2 style="margin-bottom: 1rem;">Recent Job Opportunities</h2>
-        
-        <div class="filter-bar">
-          <input type="text" id="search-jobs" class="form-input" placeholder="Search keyword..." oninput="filterJobBoard()">
-          <input type="text" id="search-location" class="form-input" placeholder="Filter by Country/Location..." oninput="filterJobBoard()">
-          <select id="filter-type" class="form-select" onchange="filterJobBoard()">
-            <option value="all">All Types</option>
-            <option value="Full Time">Full Time</option>
-            <option value="Part Time">Part Time</option>
-          </select>
+            <form onsubmit="handleNewPasswordSubmit(event)">
+                <div class="form-group password-wrapper">
+                    <label class="form-label">New Password</label>
+                    <input type="password" id="new-reset-pass" class="form-input" required minlength="6" placeholder="At least 6 characters">
+                    <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('new-reset-pass', this)"></i>
+                </div>
+                <div class="form-group password-wrapper">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" id="confirm-reset-pass" class="form-input" required minlength="6" placeholder="Repeat new password">
+                    <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('confirm-reset-pass', this)"></i>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="btn-save-new-pass">Update Password</button>
+            </form>
         </div>
 
-        <div class="cards-grid" id="job-list-container">
-          <!-- Job 1 -->
-          <div class="card job-card" data-jobid="job1" data-type="Full Time" data-location="Online - Global">
-            <div>
-              <div style="display:flex; justify-content:space-between;">
-                <span class="badge badge-yellow">Full Time</span>
-                <span class="badge badge-outline"><i class="fa-solid fa-globe"></i> Global</span>
-              </div>
-              <h3 style="font-size: 1.1rem; margin-top:0.5rem;">Online ESL Tutor (K-12)</h3>
-              <div class="job-meta">
-                <span><i class="fa-solid fa-coins"></i> $18-$24/hr</span>
-                <span class="job-loc"><i class="fa-solid fa-location-dot"></i> Online - Global</span>
-              </div>
-              <p class="job-desc">Seeking energetic educators to teach English online to K-12 students in Asian timezones. Must hold a TEFL certificate and bachelor's degree.</p>
+        <!-- Auth Panel -->
+        <div class="auth-card" id="auth-panel">
+            <div class="brand-header">
+                <a href="#" class="brand-logo-link"><span class="blue">Teacher Bee</span><span class="orange">Connect</span><span class="emoji">🐝</span></a>
+                <p class="brand-subtitle" id="auth-subtitle">Sign in to access your recruitment portal</p>
             </div>
-            <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('job1')">View Details</button>
-          </div>
 
-          <!-- Job 2 -->
-          <div class="card job-card" data-jobid="job2" data-type="Part Time" data-location="China">
-            <div>
-              <div style="display:flex; justify-content:space-between;">
-                <span class="badge badge-navy">Part Time</span>
-                <span class="badge badge-outline"><i class="fa-solid fa-building"></i> In-Person</span>
-              </div>
-              <h3 style="font-size: 1.1rem; margin-top:0.5rem;">Adult Business English</h3>
-              <div class="job-meta">
-                <span><i class="fa-solid fa-coins"></i> $30/hr</span>
-                <span class="job-loc"><i class="fa-solid fa-location-dot"></i> Beijing, China</span>
-              </div>
-              <p class="job-desc">Teach conversational and business English to corporate professionals. Housing allowance provided. Minimum 3 years experience required.</p>
+            <!-- Role Switcher -->
+            <div class="role-switcher" id="role-switcher-bar">
+                <button class="role-btn active" id="role-teacher" onclick="selectRole('teacher')">
+                    <i class="fa-regular fa-user"></i> Job Seeker
+                </button>
+                <button class="role-btn recruiter-active" id="role-recruiter" onclick="selectRole('recruiter')">
+                    <i class="fa-solid fa-building-user"></i> Employer
+                </button>
             </div>
-            <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('job2')">View Details</button>
-          </div>
-        </div>
-      </section>
 
-      <!-- 3. WORKSHOPS -->
-      <section id="workshops-view" class="view-panel">
-        <h2 style="margin-bottom: 1.5rem;">Training & Workshops</h2>
-        <div class="card">
-          <span class="badge badge-yellow">Live Seminar</span>
-          <h3>Mastering the Demo Lesson</h3>
-          <p style="margin-bottom: 1rem;">Learn how to impress recruiters during your mock class.</p>
-          <button class="btn btn-primary" onclick="autoRegisterWorkshop('Mastering the Demo Lesson')">Reserve Spot</button>
-        </div>
-      </section>
-
-      <!-- 4. TEFL -->
-      <section id="tefl-view" class="view-panel">
-        <h2 style="margin-bottom: 1.5rem;">TEFL Certification Support</h2>
-        <div class="card">
-          <h3>Partner 120-Hour Accredited TEFL</h3>
-          <p style="margin-bottom: 1rem;">Get certified to teach English globally. High approval rates.</p>
-          <button class="btn btn-primary" onclick="autoSubmitTeflEnquiry()">Request Info</button>
-        </div>
-      </section>
-
-      <!-- 5. INBOX / MESSAGES -->
-      <section id="messages-view" class="view-panel">
-        <div id="inbox-list-view">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
-            <h2>Your Inbox</h2>
-          </div>
-          
-          <div class="card" style="padding: 0;" id="inbox-container">
-            <div style="text-align:center; padding: 3rem; color:var(--text-muted);" id="empty-inbox">
-              <i class="fa-regular fa-envelope-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-              <p>No messages yet.</p>
+            <!-- Login View -->
+            <div id="login-view">
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="login-email" class="form-input" placeholder="name@domain.com" autocomplete="username" required>
+                    </div>
+                    <div class="form-group password-wrapper">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="login-password" class="form-input" placeholder="Enter your password" autocomplete="current-password" required>
+                        <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+                    </div>
+                    <div style="text-align: right; margin-top: -6px; margin-bottom: 18px;">
+                        <a href="#" class="forgot-link" onclick="handleForgotPassword()">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" id="btn-login">Sign In</button>
+                </form>
+                <div class="auth-footer-prompt">
+                    <p>Are you new to TeacherBee Connect?</p>
+                    <button type="button" class="btn btn-secondary btn-block" onclick="switchAuthView('register')">Create an Account</button>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Chat Window Simulation -->
-        <div id="chat-window">
-          <div class="chat-header">
-            <div>
-              <h3 style="color:white; margin:0;" id="chat-title">Recruiter Chat</h3>
-              <span style="font-size:0.8rem; opacity:0.8;">Active now</span>
+            <!-- Register View -->
+            <div id="register-view" style="display: none;">
+                <form id="register-form" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label" id="reg-name-label">Full Name</label>
+                        <input type="text" id="reg-name" class="form-input" placeholder="John Doe" autocomplete="name" required>
+                    </div>
+                    <div class="grid-2-col">
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" id="reg-email" class="form-input" placeholder="name@domain.com" autocomplete="email" required>
+                        </div>
+                        <div class="form-group" id="dob-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" id="reg-dob" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group" id="country-group">
+                        <label class="form-label" id="reg-country-label">Country of Residence</label>
+                        <select id="reg-country" class="form-select" required>
+                            <option value="" disabled selected>Select your country</option>
+                        </select>
+                    </div>
+                    <div class="grid-2-col">
+                        <div class="form-group password-wrapper">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="reg-password" class="form-input" placeholder="Min. 6 characters" autocomplete="new-password" required>
+                            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-password', this)"></i>
+                        </div>
+                        <div class="form-group password-wrapper">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" id="reg-confirm-password" class="form-input" placeholder="Re-enter password" autocomplete="new-password" required>
+                            <i class="fa-regular fa-eye password-toggle" onclick="togglePassword('reg-confirm-password', this)"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" id="btn-register" style="margin-top: 8px;">Register Account</button>
+                </form>
+                <div class="auth-footer-prompt">
+                    <p>Already have an account?</p>
+                    <button type="button" class="btn btn-secondary btn-block" onclick="switchAuthView('login')">Sign In Instead</button>
+                </div>
             </div>
-            <button class="btn btn-small" style="background:transparent; color:white; border:1px solid white;" onclick="closeChat(true)">Back to Inbox</button>
-          </div>
-          <div class="chat-messages" id="chat-history">
-            <!-- Messages go here dynamically -->
-          </div>
-          <div class="chat-input-area">
-            <label for="chat-file-input" class="btn btn-outline btn-small" style="border:none; cursor:pointer;" title="Attach file or image">
-              <i class="fa-solid fa-paperclip" style="font-size:1.2rem;"></i>
-            </label>
-            <input type="file" id="chat-file-input" style="display:none;" onchange="handleChatMediaUpload(this)" accept="image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-            
-            <input type="text" id="chat-input-box" class="form-input" placeholder="Type a message to the recruiter..." style="border-radius:20px;">
-            <button class="btn btn-primary btn-small" style="border-radius:50%; width:40px; height:40px; padding:0;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-          </div>
         </div>
-      </section>
 
-    </main>
-  </div>
+        <!-- ========== DASHBOARD NAVIGATION PANEL ========== -->
+        <div class="dashboard-section" id="dashboard-panel">
+            <!-- Teacher Dashboard -->
+            <div id="teacher-dashboard">
+                <div class="dashboard-section-header">
+                    <div class="icon-circle teacher"><i class="fa-solid fa-user-graduate"></i></div>
+                    <div>
+                        <div class="dashboard-section-title">Job Seeker Dashboard</div>
+                        <div class="dashboard-section-subtitle">Your teaching career hub</div>
+                    </div>
+                </div>
+                <div class="dashboard-nav-grid">
+                    <a href="#" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-home"><i class="fa-solid fa-house"></i></div>
+                        <span class="dash-nav-label">Home</span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/teacherprofile.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-profile"><i class="fa-solid fa-id-card"></i></div>
+                        <span class="dash-nav-label">Profile</span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/jobs.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-jobs"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <span class="dash-nav-label">Find Jobs</span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/inbox.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-inbox"><i class="fa-solid fa-inbox"></i></div>
+                        <span class="dash-nav-label">Inbox</span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/workshops.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-workshops"><i class="fa-solid fa-people-group"></i></div>
+                        <span class="dash-nav-label">Workshops</span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/tefl.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-tefl"><i class="fa-solid fa-globe"></i></div>
+                        <span class="dash-nav-label">TEFL</span>
+                    </a>
+                    <a href="#" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-query"><i class="fa-solid fa-headset"></i></div>
+                        <span class="dash-nav-label">Submit Query</span>
+                    </a>
+                </div>
+            </div>
 
-  <!-- JOB DETAILS MODAL -->
-  <div class="modal-overlay" id="job-detail-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeJobModal()">&times;</button>
-      <h2 id="job-modal-title" style="margin-bottom:0.5rem; color:var(--primary-navy);">Job Title</h2>
-      <div class="job-meta" id="job-modal-meta" style="margin-bottom: 1.5rem;"></div>
-      
-      <h3 class="section-title-elegant">Job Description</h3>
-      <p id="job-modal-desc" class="elegant-text" style="white-space: pre-wrap; margin-bottom: 2rem;"></p>
-      
-      <button class="btn btn-primary btn-block" id="job-modal-apply">Apply Now</button>
+            <!-- Recruiter Dashboard -->
+            <div id="recruiter-dashboard" style="display: none;">
+                <div class="dashboard-section-header">
+                    <div class="icon-circle recruiter"><i class="fa-solid fa-building-user"></i></div>
+                    <div>
+                        <div class="dashboard-section-title">Employer Dashboard</div>
+                        <div class="dashboard-section-subtitle">Find & hire top teaching talent</div>
+                    </div>
+                </div>
+                <div class="dashboard-nav-grid">
+                    <a href="#" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-home"><i class="fa-solid fa-house"></i></div>
+                        <span class="dash-nav-label">Home</span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/recruiter.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-profile"><i class="fa-solid fa-id-card"></i></div>
+                        <span class="dash-nav-label">Profile</span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/searchteachers.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-search-teachers"><i class="fa-solid fa-user-graduate"></i></div>
+                        <span class="dash-nav-label">Search Teachers</span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/postjobs.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-post-jobs"><i class="fa-solid fa-circle-plus"></i></div>
+                        <span class="dash-nav-label">Post Jobs</span>
+                        <span class="dash-badge"></span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/recruiterinbox.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-recruiter-inbox"><i class="fa-solid fa-envelope"></i></div>
+                        <span class="dash-nav-label">Inbox</span>
+                    </a>
+                    <a href="https://teacherbeeconnect.blogspot.com/p/subscriptions.html?m=1" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-subscriptions"><i class="fa-solid fa-credit-card"></i></div>
+                        <span class="dash-nav-label">Subscriptions</span>
+                    </a>
+                    <a href="#" class="dash-nav-card">
+                        <div class="dash-nav-icon-wrap icon-query"><i class="fa-solid fa-headset"></i></div>
+                        <span class="dash-nav-label">Submit Query</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Sign Out -->
+        <div class="global-action-bar">
+            <button class="btn-logout" onclick="handleGlobalSignOut()">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign out of active session
+            </button>
+        </div>
     </div>
-  </div>
 
-  <!-- IMAGE CROPPER MODAL -->
-  <div class="modal-overlay" id="cropper-modal">
-    <div class="modal-content" style="max-width: 500px;">
-      <h3 style="margin-bottom: 1rem;">Crop Profile Picture</h3>
-      <div id="image-cropper-container">
-        <img id="cropper-image" style="max-width: 100%; display: block;">
-      </div>
-      <div style="display:flex; gap:1rem; margin-top:1rem;">
-        <button class="btn btn-outline" style="flex:1;" onclick="cancelCrop()">Cancel</button>
-        <button class="btn btn-primary" style="flex:1;" onclick="applyCrop()" id="btn-crop-save">Crop & Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- RECRUITER VIEW (PROFESSIONAL PROFILE) MODAL -->
-  <div class="modal-overlay" id="recruiter-modal">
-    <div class="modal-content" style="max-width: 700px; padding: 3rem;">
-      <button class="close-modal" onclick="document.getElementById('recruiter-modal').classList.remove('active')">&times;</button>
-      
-      <div class="prof-header-elegant">
-        <img id="rv-avatar" src="https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700" alt="Profile">
-        <div>
-          <h2 id="rv-name" style="font-size: 1.8rem; margin-bottom: 0.2rem;">Jane Doe</h2>
-          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.5rem;">
-            <span class="badge badge-navy" id="rv-gender">Female</span>
-            <span class="badge badge-navy" id="rv-age">28 yrs</span>
-            <span class="badge badge-navy" id="rv-exp">5 Years Exp.</span>
-            <span class="badge badge-yellow" id="rv-langs"><i class="fa-solid fa-language"></i> English</span>
-          </div>
-          
-          <div class="star-rating">
-            <i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
-            <span style="color:var(--text-muted); font-size:0.9rem; font-weight:600; margin-left:0.5rem; letter-spacing: 0;">0.0 (0 Reviews)</span>
-          </div>
-        </div>
-      </div>
-
-      <div id="rv-bio-section">
-        <h3 class="section-title-elegant">Professional Biography</h3>
-        <p class="elegant-text" id="rv-bio-text">No biography provided.</p>
-      </div>
-
-      <div id="rv-video-section" style="display:none; margin-top:2rem;">
-        <h3 class="section-title-elegant">Introduction Video</h3>
-        <video id="rv-video-player" controls style="width:100%; border-radius:8px;"></video>
-      </div>
-
-      <div id="rv-qual-section" style="margin-top:2rem;">
-        <h3 class="section-title-elegant">Certifications & Degrees</h3>
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Click on a qualification to view the attached document.</p>
-        <div id="rv-qual-list" style="display:flex; flex-direction:column; gap:0.5rem;">
-          <!-- Injected dynamically -->
-        </div>
-      </div>
-
-      <div style="margin-top:2rem;">
-        <h3 class="section-title-elegant">Recruiter Feedback</h3>
-        <p class="elegant-text">No feedback has been left for this teacher yet.</p>
-      </div>
-
-      <div style="margin-top: 3rem; text-align:center;">
-        <button class="btn btn-primary btn-block" id="rv-msg-btn" onclick="alert('Recruiters will use this to open a chat with you.')"><i class="fa-regular fa-comment-dots"></i> Send Message to Teacher</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // --- UPDATED GOOGLE DRIVE WEB APP URL (From the working code logic) ---
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
-
-    window.currentUser = { uid: '', name: '', email: '', isVerified: false, avatarUrl: '', videoUrl: '', quals: [], messages: [] };
-    window.activeChatMsgId = null;
-    let unreadMessages = 0;
-    let currentCropper = null;
-    let editQualIndex = -1;
-
-    // ----- REUSABLE GOOGLE DRIVE UPLOADER (USING YOUR NEW FETCH LOGIC) -----
-    window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        
-        reader.onload = async (e) => {
-          // Determine the action for your Google Apps Script based on the folder string
-          let action = 'uploadFile';
-          if (folder.includes('avatars')) action = 'uploadProfile';
-          if (folder.includes('qualifications')) action = 'uploadCertificate';
-          if (folder.includes('videos')) action = 'uploadVideo';
-          
-          const payload = {
-            action: action,
-            fileName: fileName,
-            mimeType: fileOrBlob.type || "application/octet-stream",
-            file: e.target.result // This contains the full Data URL from the working logic
-          };
-
-          let progressInterval;
-          if (onProgress) {
-            let percent = 0;
-            progressInterval = setInterval(() => {
-              percent += Math.floor(Math.random() * 10) + 5;
-              if (percent >= 90) percent = 90;
-              onProgress(percent);
-            }, 400);
-          }
-
-          try {
-            // Replaced old text/plain logic with your JSON stringify fetch setup
-            const response = await fetch(WEB_APP_URL, {
-              method: 'POST',
-              body: JSON.stringify(payload)
-            });
-
-            const data = await response.json();
-
-            if (progressInterval) {
-              clearInterval(progressInterval);
-              if (onProgress) onProgress(100);
-            }
-
-            if (data.status === "success") {
-              // Extract the URL dynamically depending on what your Apps Script sends back
-              let finalUrl = "";
-              if (action === 'uploadProfile' && data.profilePic && data.profilePic.url) {
-                finalUrl = data.profilePic.url;
-              } else if (action === 'uploadCertificate' && data.certificates && data.certificates.length > 0) {
-                // Get the latest uploaded certificate link
-                finalUrl = data.certificates[data.certificates.length - 1].url || data.certificates[data.certificates.length - 1].fileUrl;
-              } else if (data.url) {
-                finalUrl = data.url; // Fallback if your script sends {status: 'success', url: '...'}
-              }
-
-              if (finalUrl) {
-                resolve(finalUrl);
-              } else {
-                console.warn("Upload succeeded, but no URL was returned. Falling back to placeholder.");
-                resolve("https://via.placeholder.com/150?text=Uploaded");
-              }
-            } else {
-              reject(new Error("Drive Error: " + (data.message || "Unknown server error")));
-            }
-          } catch (error) {
-            if (progressInterval) clearInterval(progressInterval);
-            reject(new Error("Network error during upload."));
-          }
-        };
-        
-        reader.onerror = () => reject(new Error("Browser failed to read the file."));
-        // Triggers the exact same read function as your working logic
-        reader.readAsDataURL(fileOrBlob);
-      });
-    };
-
-    // ----- HELPER: COMPRESS IMAGE / CONVERT TO BLOB -----
-    window.compressOrGetBlob = function(file) {
-      return new Promise((resolve) => {
-        if (!file) return resolve(null);
-        if (!file.type.startsWith('image/')) {
-          return resolve(file); 
-        }
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (e) => {
-          const img = new Image();
-          img.src = e.target.result;
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let width = img.width;
-            let height = img.height;
-            const maxDim = 1600;
-            if (width > maxDim || height > maxDim) {
-              if (width > height) {
-                height = Math.round((height * maxDim) / width);
-                width = maxDim;
-              } else {
-                width = Math.round((width * maxDim) / height);
-                height = maxDim;
-              }
-            }
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            canvas.toBlob((blob) => {
-              resolve(blob || file);
-            }, 'image/jpeg', 0.85);
-          };
-          img.onerror = () => resolve(file);
-        };
-        reader.onerror = () => resolve(file);
-      });
-    };
-
-    // ----- LOGO NAV -----
-    window.handleLogoClick = function(e) {
-      e.preventDefault();
-      if(document.body.classList.contains('dashboard-active')) {
-         switchView('profile-view');
-      } else {
-         window.location.href = window.location.pathname;
-      }
-    };
-
-    // ----- HISTORY & SPA NAVIGATION LOGIC -----
-    window.addEventListener('popstate', (event) => {
-      if (!document.body.classList.contains('dashboard-active')) return;
-      
-      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
-
-      if (event.state && event.state.view) {
-        if (event.state.view === 'chat') {
-          openChat(event.state.title, false, event.state.msgId);
-        } else if (event.state.view === 'job-details') {
-          viewJobDetails(event.state.jobId, false);
-        } else {
-          document.getElementById('chat-window').style.display = 'none';
-          document.getElementById('inbox-list-view').style.display = 'block';
-          switchView(event.state.view, null, false);
-        }
-      } else {
-        switchView('profile-view', null, false);
-      }
-    });
-
-    window.switchView = function(viewId, element, pushToHistory = true) {
-      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
-      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-      
-      const targetPanel = document.getElementById(viewId);
-      if(targetPanel) targetPanel.classList.add('active');
-      
-      if (element) {
-        element.classList.add('active');
-      } else {
-        const el = document.querySelector(`.sidebar-item[onclick*="${viewId}"]`);
-        if (el) el.classList.add('active');
-      }
-      
-      if(viewId === 'messages-view') {
-        document.getElementById('chat-window').style.display = 'none';
-        document.getElementById('inbox-list-view').style.display = 'block';
-      }
-
-      if (pushToHistory) {
-        history.pushState({ view: viewId }, '', `#${viewId}`);
-      }
-    };
-
-    // ----- UTILS -----
-    window.showToast = function(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info'}"></i> ${message}`;
-      container.appendChild(toast);
-      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
-    };
-
-    window.togglePassword = function(inputId, icon) {
-      const input = document.getElementById(inputId);
-      if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash');
-      } else {
-        input.type = "password";
-        icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye');
-      }
-    };
-
-    window.switchAuthTab = function(type) {
-      document.getElementById('tab-login').classList.toggle('active', type === 'login');
-      document.getElementById('tab-register').classList.toggle('active', type === 'register');
-      document.getElementById('login-form').style.display = (type === 'login') ? 'block' : 'none';
-      document.getElementById('register-form').style.display = (type === 'register') ? 'block' : 'none';
-      document.getElementById('auth-title').innerText = type === 'login' ? 'Welcome Back' : 'Create an Account';
-    };
-
-    window.toggleAuthMode = function(type) { 
-      document.getElementById('reset-password-panel').style.display = 'none';
-      document.getElementById('auth-panel').style.display = 'block';
-      switchAuthTab(type); 
-    };
-
-    window.handleLogout = function() {
-      if (window.auth && window.fb) { 
-        window.fb.signOut(window.auth);
-      }
-      document.body.classList.remove('dashboard-active');
-      document.getElementById('auth-panel').style.display = 'block';
-      history.replaceState(null, '', window.location.pathname);
-      document.getElementById('nav-actions').innerHTML = `<button class="btn btn-outline" onclick="toggleAuthMode('login')">Sign In</button>`;
-      switchAuthTab('login');
-      showToast('Logged out successfully.', 'info');
-    };
-
-    // --- AUTHENTICATION ---
-    window.handleRegister = async function(e) {
-      e.preventDefault();
-      const name = document.getElementById('reg-name').value;
-      const email = document.getElementById('reg-email').value;
-      const pass = document.getElementById('reg-password').value;
-      const confirmPass = document.getElementById('reg-confirm-password').value;
-      const dob = document.getElementById('reg-dob').value;
-      const country = document.getElementById('reg-country').value;
-      
-      if (pass !== confirmPass) { showToast("Passwords do not match!", 'error'); return; }
-
-      const btn = document.getElementById('btn-register');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
-
-      try {
-        const userCredential = await window.fb.createUserWithEmailAndPassword(window.auth, email, pass);
-        const user = userCredential.user;
-        await window.fb.sendEmailVerification(user);
-
-        await window.fb.setDoc(window.fb.doc(window.db, "users", user.uid), {
-          uid: user.uid, name: name, email: email, country: country, createdAt: window.fb.serverTimestamp(), role: "teacher",
-          qualifications: [], messages: []
-        });
-        showToast("Account created!", "success");
-        finalizeLogin(name, email, false, "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700");
-      } catch (error) {
-        btn.innerHTML = 'Create Account';
-        if(error.code === 'auth/email-already-in-use') {
-           showToast("Email already exists. Please log in.", 'error'); switchAuthTab('login'); document.getElementById('login-email').value = email;
-        } else { showToast(error.message, 'error'); }
-      }
-    };
-
-    window.handleLogin = async function(e) {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const pass = document.getElementById('login-password').value;
-      const btn = document.getElementById('btn-login');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
-
-      try {
-        await window.fb.signInWithEmailAndPassword(window.auth, email, pass);
-      } catch (error) {
-        btn.innerHTML = 'Sign In';
-        showToast("Incorrect email or password.", 'error');
-      }
-    };
-
-    window.handleForgotPassword = function() {
-      const email = document.getElementById('login-email').value;
-      if (!email) { showToast("Please enter your email address first.", "error"); return; }
-      window.fb.sendPasswordResetEmail(window.auth, email).then(() => {
-         showToast("Password reset link sent!", "success");
-      });
-    };
-
-    window.handleNewPasswordSubmit = function(e) {
-      e.preventDefault();
-      const pass = document.getElementById('new-reset-pass').value;
-      const confirm = document.getElementById('confirm-reset-pass').value;
-      const btn = document.getElementById('btn-save-new-pass');
-
-      if (pass !== confirm) { showToast("Passwords do not match", "error"); return; }
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-      window.fb.confirmPasswordReset(window.auth, window.resetOobCode, pass).then(() => {
-        showToast("Password updated successfully! Please log in.", "success");
-        setTimeout(() => { window.location.href = window.location.pathname; }, 2000);
-      }).catch(err => {
-        btn.innerHTML = 'Save New Password';
-        showToast("Link expired or invalid.", "error");
-      });
-    };
-
-    function finalizeLogin(name, email, isVerified, avatarUrl) {
-      if (window.auth && window.auth.currentUser) window.currentUser.uid = window.auth.currentUser.uid;
-      window.currentUser.name = name; 
-      window.currentUser.email = email; 
-      window.currentUser.isVerified = isVerified; 
-      window.currentUser.avatarUrl = avatarUrl;
-
-      document.body.classList.add('dashboard-active');
-      document.getElementById('auth-panel').style.display = 'none';
-      
-      switchView('profile-view', document.querySelector('.sidebar-item[onclick*="profile-view"]'), false);
-      history.replaceState({ view: 'profile-view' }, '', '#profile-view');
-      
-      document.getElementById('display-name').innerText = name;
-      document.getElementById('profile-avatar').src = avatarUrl;
-      document.getElementById('prof-display-name').value = name;
-
-      const vBadge = document.getElementById('verification-badge');
-      if (isVerified) {
-        vBadge.innerText = 'Email Verified'; vBadge.className = 'badge badge-navy';
-      } else {
-        vBadge.innerText = 'Unverified (Check Inbox)'; vBadge.className = 'badge'; vBadge.style.background = 'var(--error-red)'; vBadge.style.color = 'white';
-      }
-
-      document.getElementById('nav-actions').innerHTML = `
-        <div style="display:flex; align-items:center; gap:1rem;">
-          <img src="${avatarUrl}" id="nav-avatar-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-yellow);" class="hide-mobile">
-          <span style="font-weight:600; color:var(--surface-white);" id="nav-display-name" class="hide-mobile">${name}</span>
-          <button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
-        </div>
-      `;
-    }
-
-    // --- AUTOMATIC FIRESTORE SYNCHRONIZATION ---
-    window.saveProfileToFirestore = async function() {
-      if (!window.auth || !window.auth.currentUser || !window.fb) return;
-      try {
-        await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), {
-          qualifications: window.currentUser.quals || [],
-          videoUrl: window.currentUser.videoUrl || "",
-          messages: window.currentUser.messages || []
-        });
-      } catch (e) {
-        console.error("Firestore sync failed:", e);
-      }
-    };
-
-    // --- 1. PROFILE PICTURE UPLOAD VIA GOOGLE DRIVE ---
-    window.openCropperModal = function(input) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const img = document.getElementById('cropper-image');
-          img.src = e.target.result;
-          document.getElementById('cropper-modal').classList.add('active');
-          if(currentCropper) currentCropper.destroy();
-          currentCropper = new Cropper(img, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 0.8, restore: false, guides: false, center: false, highlight: false, cropBoxMovable: false, cropBoxResizable: false, toggleDragModeOnDblclick: false });
-        }
-        reader.readAsDataURL(input.files[0]);
-      }
-      input.value = ''; 
-    };
-
-    window.cancelCrop = function() {
-      document.getElementById('cropper-modal').classList.remove('active');
-      if(currentCropper) currentCropper.destroy();
-    };
-
-    window.applyCrop = async function() {
-      const btn = document.getElementById('btn-crop-save');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-      const canvas = currentCropper.getCroppedCanvas({ width: 250, height: 250 });
-      
-      canvas.toBlob(async (blob) => {
-        if(!window.auth.currentUser) { btn.innerHTML = 'Crop & Save'; return cancelCrop(); }
-        try {
-           const fileName = `avatar_${window.auth.currentUser.uid}.jpg`;
-           const url = await uploadToGoogleDrive(blob, fileName, "/avatars");
-           
-           document.getElementById('profile-avatar').src = url;
-           window.currentUser.avatarUrl = url;
-           const navImg = document.getElementById('nav-avatar-img');
-           if(navImg) navImg.src = url;
-           
-           await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), { avatarUrl: url });
-           btn.innerHTML = 'Crop & Save';
-           cancelCrop();
-           showToast('Profile picture saved!', 'success');
-        } catch(e) { 
-           console.error(e);
-           showToast(e.message, "error"); 
-           btn.innerHTML = 'Crop & Save'; 
-           cancelCrop(); 
-        }
-      }, 'image/jpeg', 0.85);
-    };
-
-    // --- VIDEO UPLOAD VIA GOOGLE DRIVE ---
-    window.handleVideoUpload = async function(input) {
-      const file = input.files[0];
-      if(!file || !window.auth.currentUser) return;
-      
-      const pContainer = document.getElementById('video-progress-bar');
-      const pFill = document.getElementById('video-progress-fill');
-      const pText = document.getElementById('video-progress-text');
-      
-      pContainer.style.display = 'block';
-      pText.style.display = 'block';
-      pText.innerText = 'Uploading video... 0%';
-      pFill.style.width = '0%';
-
-      try {
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const url = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, "/videos", (percent) => {
-          pFill.style.width = `${percent}%`;
-          pText.innerText = `Uploading video... ${percent}%`;
-        });
-
-        window.currentUser.videoUrl = url;
-        saveProfileToFirestore();
-        
-        const vPreview = document.getElementById('prof-video-preview');
-        vPreview.src = url;
-        vPreview.style.display = 'block';
-        
-        pContainer.style.display = 'none'; 
-        pText.style.display = 'none';
-        showToast("Video uploaded & saved automatically!", "success");
-        input.value = '';
-      } catch (err) {
-        console.error(err);
-        showToast(err.message, "error");
-        pContainer.style.display = 'none'; 
-        pText.style.display = 'none';
-      }
-    };
-
-    // --- 2. QUALIFICATIONS & CERTIFICATES VIA GOOGLE DRIVE ---
-    window.handleQualFileSelect = function(input) {
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const titleInput = document.getElementById('new-qual-title');
-        if (!titleInput.value) {
-          const cleanName = file.name.replace(/\.[^/.]+$/, "");
-          titleInput.value = cleanName;
-        }
-      }
-    };
-
-    window.toggleAddQualForm = function() {
-      const form = document.getElementById('add-qual-form');
-      if(form.style.display === 'none' || form.style.display === '') {
-        form.style.display = 'block';
-        document.getElementById('new-qual-title').value = '';
-        document.getElementById('new-qual-file').value = '';
-        document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate';
-        editQualIndex = -1;
-      } else {
-        form.style.display = 'none';
-      }
-    };
-
-    window.cancelQualificationUpload = function() {
-      document.getElementById('qual-progress-bar').style.display = 'none';
-      document.getElementById('btn-save-qual').innerHTML = 'Upload & Save Certificate';
-      document.getElementById('new-qual-file').value = '';
-      toggleAddQualForm();
-    };
-
-    window.saveNewQualification = async function() {
-      const title = document.getElementById('new-qual-title').value.trim();
-      const fileInput = document.getElementById('new-qual-file');
-      
-      if(!title) { showToast("Please enter a qualification title.", "error"); return; }
-      
-      if(fileInput.files.length > 0 && window.auth && window.auth.currentUser) {
-        const file = fileInput.files[0];
-        
-        // File Size Check (Warn if over 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-           showToast("File is very large. Upload may timeout.", "info");
-        }
-
-        const btn = document.getElementById('btn-save-qual');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading Certificate...';
-        
-        const pContainer = document.getElementById('qual-progress-bar');
-        const pFill = document.getElementById('qual-progress-fill');
-        pContainer.style.display = 'block'; pFill.style.width = '0%';
-        
-        try {
-          const blobOrFile = await window.compressOrGetBlob(file);
-          const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-          
-          const url = await uploadToGoogleDrive(blobOrFile, `${Date.now()}_${safeName}`, "/qualifications", (percent) => {
-            pFill.style.width = `${percent}%`;
-          });
-
-          finalizeSaveQual(title, url, file.name);
-          btn.disabled = false;
-          btn.innerHTML = 'Upload & Save Certificate';
-          pContainer.style.display = 'none';
-        } catch (err) {
-          console.error(err);
-          btn.disabled = false;
-          btn.innerHTML = 'Upload & Save Certificate';
-          pContainer.style.display = 'none';
-          
-          showToast(err.message, "error"); 
-        }
-      } else {
-        let url = "", fName = "";
-        if (editQualIndex > -1 && window.currentUser.quals[editQualIndex]) {
-          url = window.currentUser.quals[editQualIndex].url;
-          fName = window.currentUser.quals[editQualIndex].fileName;
-        }
-        finalizeSaveQual(title, url, fName);
-      }
-    };
-
-    function finalizeSaveQual(title, url, fileName) {
-      if (editQualIndex > -1) {
-        window.currentUser.quals[editQualIndex] = { title, url, fileName };
-      } else {
-        window.currentUser.quals.push({ id: Date.now().toString(), title, url, fileName });
-      }
-      
-      saveProfileToFirestore();
-      renderQualifications();
-      toggleAddQualForm();
-      showToast("Certificate uploaded and saved automatically!", "success");
-    }
-
-    window.renderQualifications = function() {
-      const container = document.getElementById('saved-quals-container');
-      container.innerHTML = '';
-      if(!window.currentUser.quals || window.currentUser.quals.length === 0) {
-        container.innerHTML = '<p style="font-size:0.9rem; color:var(--text-muted);">No qualifications uploaded yet.</p>';
-        return;
-      }
-      
-      window.currentUser.quals.forEach((q, index) => {
-        const fileLink = q.url ? `<a href="${q.url}" target="_blank" style="color:var(--primary-navy); font-weight:600;"><i class="fa-solid fa-file-pdf"></i> View Certificate Document</a>` : '';
-        const html = `
-          <div class="qual-item">
-            <div class="qual-item-info">
-              <h4>${q.title}</h4>
-              ${fileLink}
-            </div>
-            <div class="qual-actions">
-              <button type="button" class="btn btn-outline btn-small" onclick="editQualification(${index})"><i class="fa-solid fa-pen"></i></button>
-              <button type="button" class="btn btn-danger btn-small" onclick="deleteQualification(${index})"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', html);
-      });
-    };
-
-    window.editQualification = function(index) {
-      const q = window.currentUser.quals[index];
-      document.getElementById('add-qual-form').style.display = 'block';
-      document.getElementById('new-qual-title').value = q.title;
-      document.getElementById('btn-save-qual').innerHTML = 'Update Qualification';
-      editQualIndex = index;
-    };
-
-    window.deleteQualification = function(index) {
-      if(confirm("Are you sure you want to delete this qualification?")) {
-        window.currentUser.quals.splice(index, 1);
-        saveProfileToFirestore();
-        renderQualifications();
-        showToast("Qualification removed.", "info");
-      }
-    };
-
-    // --- MAIN PROFILE SAVING ---
-    window.handleProfileUpdate = async function(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-save-profile');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Profile...';
-
-      const displayName = document.getElementById('prof-display-name').value;
-      const age = document.getElementById('prof-age').value;
-      const gender = document.getElementById('prof-gender').value;
-      const experience = document.getElementById('prof-experience').value;
-      const languages = document.getElementById('prof-languages').value;
-      const bio = document.getElementById('prof-bio').value;
-
-      if (window.auth && window.auth.currentUser) {
-        try {
-          await window.fb.updateDoc(window.fb.doc(window.db, "users", window.auth.currentUser.uid), {
-            name: displayName, age: age, gender: gender, experience: experience,
-            languages: languages, bio: bio, lastUpdated: new Date()
-          });
-          
-          window.currentUser.name = displayName;
-          document.getElementById('display-name').innerText = displayName;
-          const navDisplayName = document.getElementById('nav-display-name');
-          if (navDisplayName) navDisplayName.innerText = displayName;
-
-          btn.innerHTML = 'Save Full Profile';
-          showToast('Profile updated successfully!', 'success');
-        } catch (err) {
-          btn.innerHTML = 'Save Full Profile';
-          showToast('Error updating profile.', 'error');
-        }
-      }
-    };
-
-    // --- RECRUITER VIEW MODAL ---
-    window.openRecruiterView = function() {
-      document.getElementById('rv-name').innerText = window.currentUser.name || document.getElementById('prof-display-name').value;
-      document.getElementById('rv-avatar').src = window.currentUser.avatarUrl || "https://ui-avatars.com/api/?name=User&background=0A192F&color=FFD700";
-      
-      const gender = document.getElementById('prof-gender').value || 'Not specified';
-      const age = document.getElementById('prof-age').value;
-      const exp = document.getElementById('prof-experience').value;
-      const langs = document.getElementById('prof-languages').value || 'English';
-      const bio = document.getElementById('prof-bio').value;
-
-      document.getElementById('rv-gender').innerHTML = `<i class="fa-solid fa-venus-mars"></i> ${gender}`;
-      
-      const ageSpan = document.getElementById('rv-age');
-      if (age) { ageSpan.style.display = 'inline-block'; ageSpan.innerHTML = `<i class="fa-regular fa-calendar"></i> ${age} yrs`; } 
-      else { ageSpan.style.display = 'none'; }
-
-      document.getElementById('rv-exp').innerHTML = `<i class="fa-solid fa-briefcase"></i> ${exp ? exp + ' Years Exp.' : 'Entry Level'}`;
-      document.getElementById('rv-langs').innerHTML = `<i class="fa-solid fa-language"></i> ${langs}`;
-      document.getElementById('rv-bio-text').innerText = bio || 'No biography provided.';
-      
-      const vidSec = document.getElementById('rv-video-section');
-      if(window.currentUser.videoUrl) {
-        vidSec.style.display = 'block';
-        document.getElementById('rv-video-player').src = window.currentUser.videoUrl;
-      } else {
-        vidSec.style.display = 'none';
-      }
-
-      document.getElementById('rv-msg-btn').style.display = 'none';
-
-      const qualList = document.getElementById('rv-qual-list');
-      qualList.innerHTML = '';
-      if(window.currentUser.quals && window.currentUser.quals.length > 0) {
-        window.currentUser.quals.forEach(q => {
-             const clickableAttr = q.url ? `onclick="window.open('${q.url}', '_blank')"` : '';
-             const linkClass = q.url ? `qual-doc-link` : ``;
-             const iconMarkup = q.url ? `<i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.85rem; color:var(--text-muted); margin-left:auto;"></i>` : ``;
-             
-             qualList.insertAdjacentHTML('beforeend', `<div class="${linkClass}" ${clickableAttr} style="padding:0.75rem; background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; display:flex; align-items:center; gap:1rem;"><i class="fa-solid fa-certificate" style="color:var(--primary-navy); font-size:1.5rem;"></i> <span style="font-weight:600; font-size:0.9rem;">${q.title}</span> ${iconMarkup} </div>`);
-        });
-      } else {
-        qualList.innerHTML = '<p class="elegant-text">No qualifications attached.</p>';
-      }
-
-      document.getElementById('recruiter-modal').classList.add('active');
-    };
-
-    // --- JOB BOARD ---
-    window.viewJobDetails = function(jobId, pushToHistory = true) {
-      const job = jobsData[jobId];
-      if(!job) return;
-      document.getElementById('job-modal-title').innerText = job.title;
-      document.getElementById('job-modal-meta').innerHTML = `<span><i class="fa-solid fa-coins"></i> ${job.pay}</span> <span><i class="fa-solid fa-location-dot"></i> ${job.loc}</span> <span class="badge badge-yellow">${job.type}</span>`;
-      document.getElementById('job-modal-desc').innerText = job.desc;
-
-      const applyBtn = document.getElementById('job-modal-apply');
-      applyBtn.onclick = () => { applyForJob(job.title); closeJobModal(); };
-
-      document.getElementById('job-detail-modal').classList.add('active');
-      if (pushToHistory) history.pushState({ view: 'job-details', jobId }, '', '#job-details');
-    };
-
-    window.closeJobModal = function() {
-      document.getElementById('job-detail-modal').classList.remove('active');
-      if(history.state && history.state.view === 'job-details') {
-          history.back();
-      }
-    };
-
-    window.applyForJob = async function(jobTitle) {
-      if (!window.currentUser.isVerified) { showToast("Verify your email address to apply for jobs.", "error"); return; }
-      showToast(`Application successfully sent for ${jobTitle}`, "success");
-      receiveMessage(
-        `Application: ${jobTitle}`, 
-        `Hi ${window.currentUser.name}, your application for <b>${jobTitle}</b> has been received by the recruitment team. We will review your attached profile shortly. Click here to chat with us.`
-      );
-    };
-
-    window.filterJobBoard = function() {
-      const searchTxt = document.getElementById('search-jobs').value.toLowerCase();
-      const locTxt = document.getElementById('search-location').value.toLowerCase();
-      const typeFilter = document.getElementById('filter-type').value;
-      
-      document.querySelectorAll('.job-card').forEach(card => {
-        const textMatch = card.querySelector('h3').innerText.toLowerCase().includes(searchTxt) || card.querySelector('.job-desc').innerText.toLowerCase().includes(searchTxt);
-        const locMatch = card.getAttribute('data-location').toLowerCase().includes(locTxt);
-        const typeMatch = (typeFilter === 'all' || card.getAttribute('data-type') === typeFilter);
-        card.style.display = (textMatch && locMatch && typeMatch) ? 'flex' : 'none';
-      });
-    };
-
-    // --- 3. INBOX MEDIA ATTACHMENTS VIA GOOGLE DRIVE ---
-    window.handleChatMediaUpload = async function(input) {
-      const file = input.files[0];
-      if (!file || !window.auth || !window.auth.currentUser) return;
-
-      const activeMsgId = window.activeChatMsgId;
-      let targetMsg = window.currentUser.messages.find(m => m.id === activeMsgId);
-      if (!targetMsg && window.currentUser.messages.length > 0) {
-        targetMsg = window.currentUser.messages[0];
-      }
-      if (!targetMsg) {
-        targetMsg = {
-          id: 'msg-' + Date.now(),
-          subject: 'Recruiter Chat',
-          body: 'Conversation with recruiter',
-          date: new Date().toISOString(),
-          read: true,
-          chatHistory: []
-        };
-        window.currentUser.messages.unshift(targetMsg);
-      }
-
-      if (!targetMsg.chatHistory) targetMsg.chatHistory = [];
-
-      const tempId = 'temp-msg-' + Date.now();
-      const isImg = file.type.startsWith('image/');
-      const hist = document.getElementById('chat-history');
-      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      const tempBubbleHtml = `
-        <div class="chat-bubble bubble-out" id="${tempId}">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <i class="fa-solid fa-spinner fa-spin"></i>
-            <span>Uploading ${isImg ? 'photo' : 'file'}... <strong id="prog-${tempId}">0%</strong></span>
-          </div>
-          <span class="msg-time-stamp">${timeStr}</span>
-        </div>
-      `;
-      hist.insertAdjacentHTML('beforeend', tempBubbleHtml);
-      hist.scrollTop = hist.scrollHeight;
-
-      try {
-        const blobOrFile = await window.compressOrGetBlob(file);
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-
-        const mediaUrl = await uploadToGoogleDrive(blobOrFile, `${Date.now()}_${safeName}`, "/chat_media", (percent) => {
-          const progEl = document.getElementById(`prog-${tempId}`);
-          if (progEl) progEl.innerText = `${percent}%`;
-        });
-
-        const chatMsgItem = {
-          sender: 'me',
-          text: isImg ? '' : file.name,
-          mediaUrl: mediaUrl,
-          fileName: file.name,
-          isImage: isImg,
-          time: timeStr,
-          type: 'media'
-        };
-
-        targetMsg.chatHistory.push(chatMsgItem);
-        saveProfileToFirestore();
-
-        const bubbleEl = document.getElementById(tempId);
-        let contentHtml = '';
-        if (isImg) {
-          contentHtml = `
-            <div style="margin-top:2px;">
-              <img src="${mediaUrl}" style="max-width:240px; max-height:240px; border-radius:10px; display:block; cursor:pointer; object-fit:cover;" onclick="window.open('${mediaUrl}', '_blank')" />
-            </div>
-          `;
-        } else {
-          contentHtml = `
-            <div style="display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; background:rgba(255,255,255,0.15); margin-top:2px;">
-              <i class="fa-solid fa-file-lines" style="font-size:1.2rem;"></i>
-              <a href="${mediaUrl}" target="_blank" style="color:white; font-weight:600; text-decoration:underline; font-size:0.85rem; word-break:break-all;">${file.name}</a>
-            </div>
-          `;
-        }
-
-        if (bubbleEl) {
-          bubbleEl.innerHTML = `${contentHtml} <span class="msg-time-stamp">${timeStr}</span>`;
-        }
-        hist.scrollTop = hist.scrollHeight;
-        showToast("Attachment sent!", "success");
-        input.value = '';
-      } catch (err) {
-        console.error(err);
-        showToast(err.message, "error");
-        const tempEl = document.getElementById(tempId);
-        if(tempEl) tempEl.remove();
-      }
-    };
-
-    window.receiveMessage = function(subject, body) {
-      const msg = { 
-        id: 'msg-' + Date.now(), 
-        subject, 
-        body, 
-        date: new Date().toISOString(), 
-        read: false,
-        chatHistory: [
-          { sender: 'them', text: `Hi ${window.currentUser.name || 'there'}, your application has been logged! Feel free to ask questions or share further documents here.`, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), type: 'text' }
-        ]
-      };
-      window.currentUser.messages.unshift(msg);
-      saveProfileToFirestore();
-      renderInbox();
-    };
-
-    function updateBadge() {
-      const badge = document.getElementById('msg-badge');
-      if (unreadMessages > 0) {
-        badge.innerText = unreadMessages;
-        badge.style.display = 'inline-block';
-      } else {
-        badge.style.display = 'none';
-      }
-    }
-
-    window.renderInbox = function() {
-      const container = document.getElementById('inbox-container');
-      const empty = document.getElementById('empty-inbox');
-      
-      if(!window.currentUser.messages || window.currentUser.messages.length === 0) {
-        empty.style.display = 'block';
-        document.querySelectorAll('.message-item').forEach(el => el.remove());
-        unreadMessages = 0; updateBadge(); return;
-      }
-      
-      empty.style.display = 'none';
-      document.querySelectorAll('.message-item').forEach(el => el.remove());
-      
-      let unreadCount = 0;
-      window.currentUser.messages.forEach(msg => {
-        if(!msg.read) unreadCount++;
-        const dateStr = new Date(msg.date).toLocaleString();
-        const html = `
-          <div class="message-item ${msg.read ? '' : 'unread'}" id="${msg.id}" onclick="openChat('${msg.subject}', true, '${msg.id}')">
-            <div class="msg-content">
-              <h4><i class="fa-solid fa-bell" style="color:var(--accent-yellow);"></i> ${msg.subject}</h4>
-              <p>${msg.body}</p>
-              <span class="msg-date">${dateStr}</span>
-            </div>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', html);
-      });
-      
-      unreadMessages = unreadCount;
-      updateBadge();
-    };
-
-    window.renderChatHistory = function(msg) {
-      const hist = document.getElementById('chat-history');
-      hist.innerHTML = '<div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-bottom:1rem;">Chat started</div>';
-      
-      if (!msg.chatHistory || msg.chatHistory.length === 0) {
-        msg.chatHistory = [
-          { sender: 'them', text: 'Hello! We received your profile details. Do you have a moment to answer a few quick questions?', time: 'Just now', type: 'text' }
+    <script>
+        window.activeRole = 'teacher';
+
+        const countriesList = [
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia",
+            "Austria", "Azerbaijan",
+            "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia",
+            "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+            "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia",
+            "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic",
+            "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+            "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
+            "Fiji", "Finland", "France",
+            "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau",
+            "Guyana",
+            "Haiti", "Honduras", "Hungary",
+            "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Ivory Coast",
+            "Jamaica", "Japan", "Jordan",
+            "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan",
+            "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+            "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius",
+            "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar",
+            "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea",
+            "North Macedonia", "Norway",
+            "Oman",
+            "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland",
+            "Portugal",
+            "Qatar",
+            "Romania", "Russia", "Rwanda",
+            "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+            "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia",
+            "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka",
+            "Sudan", "Suriname", "Sweden", "Switzerland", "Syria",
+            "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia",
+            "Turkey", "Turkmenistan", "Tuvalu",
+            "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
+            "Vanuatu", "Vatican City", "Venezuela", "Vietnam",
+            "Yemen",
+            "Zambia", "Zimbabwe"
         ];
-      }
 
-      msg.chatHistory.forEach(item => {
-        const bubbleClass = item.sender === 'me' ? 'bubble-out' : 'bubble-in';
-        let content = '';
-        if (item.type === 'media' || item.mediaUrl) {
-          if (item.isImage) {
-            content = `
-              <div style="margin-top:2px;">
-                <img src="${item.mediaUrl}" style="max-width:240px; max-height:240px; border-radius:10px; display:block; cursor:pointer; object-fit:cover;" onclick="window.open('${item.mediaUrl}', '_blank')" />
-              </div>
-            `;
-          } else {
-            const linkColor = item.sender === 'me' ? 'white' : 'var(--primary-navy)';
-            content = `
-              <div style="display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; background:rgba(0,0,0,0.05); margin-top:2px;">
-                <i class="fa-solid fa-file-lines" style="font-size:1.2rem;"></i>
-                <a href="${item.mediaUrl}" target="_blank" style="color:${linkColor}; font-weight:600; text-decoration:underline; font-size:0.85rem; word-break:break-all;">${item.fileName || 'Attachment'}</a>
-              </div>
-            `;
-          }
-        } else {
-          content = `<div>${item.text}</div>`;
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+            const countrySelect = document.getElementById('reg-country');
+            countriesList.forEach(country => {
+                const opt = document.createElement('option');
+                opt.value = country;
+                opt.textContent = country;
+                countrySelect.appendChild(opt);
+            });
+        });
 
-        hist.insertAdjacentHTML('beforeend', `
-          <div class="chat-bubble ${bubbleClass}">
-            ${content}
-            <span class="msg-time-stamp">${item.time || ''}</span>
-          </div>
-        `);
-      });
-
-      hist.scrollTop = hist.scrollHeight;
-    };
-
-    window.openChat = function(title, pushToHistory = true, msgId = null) {
-      let msg = null;
-      if(msgId) {
-        window.activeChatMsgId = msgId;
-        msg = window.currentUser.messages.find(m => m.id === msgId);
-        if(msg && !msg.read) { msg.read = true; saveProfileToFirestore(); renderInbox(); }
-      } else if(window.currentUser.messages.length > 0) {
-        msg = window.currentUser.messages[0];
-        window.activeChatMsgId = msg.id;
-      }
-      
-      document.getElementById('inbox-list-view').style.display = 'none';
-      const chatWin = document.getElementById('chat-window');
-      chatWin.style.display = 'flex';
-      document.getElementById('chat-title').innerText = title || (msg ? msg.subject : 'Recruiter Chat');
-
-      if (msg) {
-        renderChatHistory(msg);
-      }
-
-      if (pushToHistory) {
-        history.pushState({ view: 'chat', title, msgId }, '', '#chat');
-      }
-    };
-
-    window.closeChat = function(pushToHistory = true) {
-      document.getElementById('chat-window').style.display = 'none';
-      document.getElementById('inbox-list-view').style.display = 'block';
-      window.activeChatMsgId = null;
-      if (pushToHistory && history.state && history.state.view === 'chat') {
-        history.back();
-      }
-    };
-
-    window.sendChatMessage = function() {
-      const input = document.getElementById('chat-input-box');
-      const text = input.value.trim();
-      if (!text) return;
-
-      let targetMsg = window.currentUser.messages.find(m => m.id === window.activeChatMsgId);
-      if (!targetMsg && window.currentUser.messages.length > 0) {
-        targetMsg = window.currentUser.messages[0];
-      }
-      if (!targetMsg) {
-        targetMsg = {
-          id: 'msg-' + Date.now(),
-          subject: 'Recruiter Chat',
-          body: text,
-          date: new Date().toISOString(),
-          read: true,
-          chatHistory: []
+        window.showToast = function(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML =
+                `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info'}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(40px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
         };
-        window.currentUser.messages.unshift(targetMsg);
-      }
 
-      if (!targetMsg.chatHistory) targetMsg.chatHistory = [];
+        window.togglePassword = function(inputId, icon) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === "password" ? "text" : "password";
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        };
 
-      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      targetMsg.chatHistory.push({
-        sender: 'me',
-        text: text,
-        time: timeStr,
-        type: 'text'
-      });
+        window.switchAuthView = function(view) {
+            const isLogin = view === 'login';
+            document.getElementById('login-view').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('register-view').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('auth-subtitle').innerText = isLogin ?
+                'Sign in to access your recruitment portal' :
+                'Register a new account to get started';
+        };
 
-      input.value = '';
-      saveProfileToFirestore();
-      renderChatHistory(targetMsg);
-    };
+        window.selectRole = function(role) {
+            window.activeRole = role;
+            const roleTeacher = document.getElementById('role-teacher');
+            const roleRecruiter = document.getElementById('role-recruiter');
+            const teacherDash = document.getElementById('teacher-dashboard');
+            const recruiterDash = document.getElementById('recruiter-dashboard');
 
-    // --- LIVE SEMINAR & TRAINING WORKSHOPS LOGIC ---
-    window.autoRegisterWorkshop = function(title) {
-      showToast(`Successfully registered for: ${title}`, 'success');
-    };
+            roleTeacher.classList.toggle('active', role === 'teacher');
+            roleRecruiter.classList.toggle('active', role === 'recruiter');
 
-    // --- TEFL SUPPORT ENQUIRY LOGIC ---
-    window.autoSubmitTeflEnquiry = function() {
-      showToast(`Information request sent successfully!`, 'success');
-    };
-  </script>
+            // Toggle dashboard panels
+            teacherDash.style.display = role === 'teacher' ? 'block' : 'none';
+            recruiterDash.style.display = role === 'recruiter' ? 'block' : 'none';
+
+            const isRecruiter = role === 'recruiter';
+            document.getElementById('reg-name-label').innerText = isRecruiter ? 'Organization or Individual Name' :
+                'Full Name';
+            document.getElementById('reg-country-label').innerText = isRecruiter ? 'Country (HQ or Residence)' :
+                'Country of Residence';
+            document.getElementById('dob-group').style.display = isRecruiter ? 'none' : 'block';
+            document.getElementById('reg-dob').required = !isRecruiter;
+
+            // Update auth subtitle
+            document.getElementById('auth-subtitle').innerText = isRecruiter ?
+                'Sign in to access your employer portal' :
+                'Sign in to access your recruitment portal';
+        };
+
+        window.handleRegister = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-password').value;
+            const confirmPass = document.getElementById('reg-confirm-password').value;
+            const country = document.getElementById('reg-country').value;
+
+            if (pass !== confirmPass) {
+                showToast("Passwords do not match!", 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-register');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
+
+            try {
+                const userCredential = await window.fb.createUserWithEmailAndPassword(window.auth, email, pass);
+                await window.fb.sendEmailVerification(userCredential.user);
+                await window.fb.setDoc(window.fb.doc(window.db, "users", userCredential.user.uid), {
+                    uid: userCredential.user.uid,
+                    name: name,
+                    email: email,
+                    country: country || "",
+                    role: window.activeRole,
+                    createdAt: window.fb.serverTimestamp(),
+                    qualifications: []
+                });
+
+                const targetUrl = window.activeRole === 'recruiter' ?
+                    'https://teacherbeeconnect.blogspot.com/p/recruiter.html?m=1' :
+                    'https://teacherbeeconnect.blogspot.com/p/teacherprofile.html?m=1';
+                window.location.href = targetUrl;
+
+            } catch (error) {
+                btn.innerHTML = 'Register Account';
+                if (error.code === 'auth/email-already-in-use') {
+                    showToast("Email already exists. Please log in.", 'error');
+                    switchAuthView('login');
+                    document.getElementById('login-email').value = email;
+                } else {
+                    showToast(error.message, 'error');
+                }
+            }
+        };
+
+        window.handleLogin = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+            const btn = document.getElementById('btn-login');
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+            try {
+                await window.fb.signInWithEmailAndPassword(window.auth, email, pass);
+
+                const targetUrl = window.activeRole === 'recruiter' ?
+                    'https://teacherbeeconnect.blogspot.com/p/recruiter.html?m=1' :
+                    'https://teacherbeeconnect.blogspot.com/p/teacherprofile.html?m=1';
+                window.location.href = targetUrl;
+
+            } catch (error) {
+                btn.innerHTML = 'Sign In';
+                showToast("Incorrect email or password.", 'error');
+            }
+        };
+
+        window.handleForgotPassword = function() {
+            const email = document.getElementById('login-email').value;
+            if (!email) {
+                showToast("Please enter your email address first.", "error");
+                return;
+            }
+            window.fb.sendPasswordResetEmail(window.auth, email).then(() => {
+                showToast("Password reset link sent to your email!", "success");
+            });
+        };
+
+        window.handleNewPasswordSubmit = function(e) {
+            e.preventDefault();
+            const pass = document.getElementById('new-reset-pass').value;
+            const confirm = document.getElementById('confirm-reset-pass').value;
+            const btn = document.getElementById('btn-save-new-pass');
+
+            if (pass !== confirm) {
+                showToast("Passwords do not match", "error");
+                return;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            window.fb.confirmPasswordReset(window.auth, window.resetOobCode, pass).then(() => {
+                showToast("Password updated successfully! Redirecting...", "success");
+                setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+            }).catch(err => {
+                btn.innerHTML = 'Update Password';
+                showToast("Link expired or invalid.", "error");
+            });
+        };
+
+        window.handleGlobalSignOut = function() {
+            window.fb.signOut(window.auth).then(() => {
+                showToast("Signed out successfully.", "info");
+            }).catch((err) => {
+                showToast("Error signing out.", "error");
+            });
+        };
+
+        // ========== MOBILE MENU LOGIC ==========
+        (function() {
+            const menuOverlay = document.getElementById('smartMenuOverlay');
+            const openBtn = document.getElementById('smartMenuBtn');
+            const closeBtn = document.getElementById('smartCloseBtn');
+
+            openBtn.addEventListener('click', () => menuOverlay.classList.add('open'));
+            closeBtn.addEventListener('click', () => menuOverlay.classList.remove('open'));
+            menuOverlay.addEventListener('click', (e) => {
+                if (e.target === menuOverlay) menuOverlay.classList.remove('open');
+            });
+        })();
+    </script>
 </body>
-</html>
+                  </html>
