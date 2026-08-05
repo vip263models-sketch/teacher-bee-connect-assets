@@ -942,6 +942,8 @@
     let pendingPaymentData = null;
     let selectedBillingPeriod = 'monthly';
     let selectedBillingAmount = 8;
+    // NEW: store approved payment data for active plan
+    let approvedPaymentData = null;
 
     onAuthStateChanged(auth, async (user) => {
         if (!user) {
@@ -958,18 +960,16 @@
         if (!currentUser) return;
 
         try {
-            // Try to find a pending payment using the stored payment ID first (most reliable)
             const subDoc = await getDoc(doc(db, 'subscriptions', currentUser.uid));
-            if (subDoc.exists()) {
-                const subData = subDoc.data();
-                if (subData.status === 'pending_payment' && subData.pendingPaymentId) {
-                    const payment = await getPendingPaymentById(subData.pendingPaymentId);
-                    if (payment) {
-                        pendingPaymentId = subData.pendingPaymentId;
-                        pendingPaymentData = payment;
-                        showPendingDashboard();
-                        return;
-                    }
+            
+            // Check for pending payment first
+            if (subDoc.exists() && subDoc.data().status === 'pending_payment' && subDoc.data().pendingPaymentId) {
+                const payment = await getPendingPaymentById(subDoc.data().pendingPaymentId);
+                if (payment) {
+                    pendingPaymentId = subDoc.data().pendingPaymentId;
+                    pendingPaymentData = payment;
+                    showPendingDashboard();
+                    return;
                 }
             }
 
@@ -982,14 +982,24 @@
                 return;
             }
 
-            // Check for active/expired
+            // Check for active/expired subscriptions
             if (subDoc.exists()) {
                 const subData = subDoc.data();
                 const now = Date.now();
+                
                 if (subData.status === 'active' && subData.expiryDate?.toMillis() > now) {
-                    showCurrentPlan(subData);
+                    // Fetch the approved payment to show details
+                    if (subData.paymentId) {
+                        const paySnap = await getDoc(doc(db, 'payments', subData.paymentId));
+                        if (paySnap.exists() && paySnap.data().status === 'approved') {
+                            approvedPaymentData = paySnap.data();
+                            approvedPaymentData.id = paySnap.id;
+                        }
+                    }
+                    showApprovedPlan(subData, approvedPaymentData);
                     return;
                 } else if (subData.status === 'active' && subData.expiryDate?.toMillis() <= now) {
+                    // Auto-expire
                     await updateDoc(doc(db, 'subscriptions', currentUser.uid), { status: 'expired' });
                     showExpiredPlan(subData);
                     return;
@@ -1040,30 +1050,6 @@
         return null;
     }
 
-    // NEW: Directly load the existing pending invoice and show dashboard
-    async function redirectToExistingInvoice() {
-        // 1. Check subscription doc for pendingPaymentId
-        const subSnap = await getDoc(doc(db, 'subscriptions', currentUser.uid));
-        if (subSnap.exists() && subSnap.data().status === 'pending_payment' && subSnap.data().pendingPaymentId) {
-            const payment = await getPendingPaymentById(subSnap.data().pendingPaymentId);
-            if (payment) {
-                pendingPaymentId = subSnap.data().pendingPaymentId;
-                pendingPaymentData = payment;
-                return true;
-            }
-        }
-
-        // 2. Fallback to query
-        const paymentQuery = await fetchLatestPendingPayment();
-        if (paymentQuery) {
-            pendingPaymentId = paymentQuery.id;
-            pendingPaymentData = paymentQuery.data;
-            return true;
-        }
-
-        return false;
-    }
-
     // ---- View management ----
     function showView(viewId) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -1091,20 +1077,48 @@
         buildInvoiceHTML(paymentData, paymentId);
     }
 
-    function showCurrentPlan(subData) {
+    // NEW: Show approved plan with detailed invoice info
+    function showApprovedPlan(subData, paymentData) {
         showView('view-current-plan');
         const periodMap = { monthly:'Monthly', quarterly:'3 Months', biannually:'6 Months', annually:'12 Months' };
+        const start = subData.startDate?.toDate().toLocaleDateString('en-US');
+        const expiry = subData.expiryDate?.toDate().toLocaleDateString('en-US');
+        const invId = paymentData?.id ? paymentData.id.substring(0,8).toUpperCase() : 'N/A';
+        const amount = paymentData?.amount || subData.amount || 8;
+        const plan = periodMap[subData.billingPeriod] || subData.billingPeriod || 'Monthly';
+
+        let invoiceDetailsHtml = '';
+        if (paymentData) {
+            invoiceDetailsHtml = `
+                <div style="background:#fff; border-radius:var(--radius-sm); padding:0.8rem; margin-top:1rem; text-align:left;">
+                    <p><strong>Approved Invoice:</strong> #${invId}</p>
+                    <p><strong>Amount:</strong> $${amount} USD</p>
+                    <p><strong>Plan:</strong> ${plan}</p>
+                    <button class="btn btn-outline btn-sm" onclick="viewApprovedInvoice()"><i class="fa-solid fa-file-invoice"></i> View Invoice</button>
+                </div>`;
+        }
+
         document.getElementById('current-plan-details').innerHTML = `
             <div style="background:#F0FDF4;border:2px solid var(--success);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">
                 <span class="status-badge status-active">Active</span>
-                <p style="margin-top:0.5rem;"><strong>${periodMap[subData.billingPeriod] || subData.billingPeriod}</strong> · $${subData.amount || 8}</p>
+                <p style="margin-top:0.5rem;"><strong>${plan}</strong> · $${amount}</p>
                 <div style="display:flex;justify-content:space-around;margin:1rem 0;flex-wrap:wrap;">
-                    <div><small>Start</small><br><strong>${subData.startDate?.toDate().toLocaleDateString('en-US')}</strong></div>
-                    <div><small>Expiry</small><br><strong>${subData.expiryDate?.toDate().toLocaleDateString('en-US')}</strong></div>
+                    <div><small>Approved</small><br><strong>${start}</strong></div>
+                    <div><small>Expires</small><br><strong>${expiry}</strong></div>
                 </div>
+                ${invoiceDetailsHtml}
             </div>
         `;
     }
+
+    // NEW: Open the approved invoice in the existing invoice view
+    window.viewApprovedInvoice = function() {
+        if (approvedPaymentData) {
+            showInvoice(approvedPaymentData, approvedPaymentData.id);
+        } else {
+            showToast('Invoice details not available.', 'error');
+        }
+    };
 
     function showExpiredPlan(subData) {
         showView('view-expired');
@@ -1206,13 +1220,12 @@
 
     function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
-    // ---- Invoice generation with DIRECT redirect to existing invoice ----
+    // ---- Invoice generation ----
     window.generateInvoice = async function() {
-        // 1. Check if user already has a pending invoice – load it directly
         const alreadyPending = await redirectToExistingInvoice();
         if (alreadyPending) {
             showToast('You already have a pending invoice. Loading it now...', 'info');
-            showPendingDashboard();   // Direct switch, no re-init
+            showPendingDashboard();
             return;
         }
 
@@ -1272,6 +1285,25 @@
         }
     };
 
+    async function redirectToExistingInvoice() {
+        const subSnap = await getDoc(doc(db, 'subscriptions', currentUser.uid));
+        if (subSnap.exists() && subSnap.data().status === 'pending_payment' && subSnap.data().pendingPaymentId) {
+            const payment = await getPendingPaymentById(subSnap.data().pendingPaymentId);
+            if (payment) {
+                pendingPaymentId = subSnap.data().pendingPaymentId;
+                pendingPaymentData = payment;
+                return true;
+            }
+        }
+        const paymentQuery = await fetchLatestPendingPayment();
+        if (paymentQuery) {
+            pendingPaymentId = paymentQuery.id;
+            pendingPaymentData = paymentQuery.data;
+            return true;
+        }
+        return false;
+    }
+
     function buildInvoiceHTML(paymentData, paymentId) {
         const cust = paymentData.customer || {};
         const periodMap = { monthly:'Monthly', quarterly:'3 Months', biannually:'6 Months', annually:'12 Months' };
@@ -1327,6 +1359,7 @@
         if (!confirm('Cancel active subscription?')) return;
         try {
             await updateDoc(doc(db, 'subscriptions', currentUser.uid), { status: 'cancelled', cancelledAt: serverTimestamp() });
+            approvedPaymentData = null;
             showToast('Subscription cancelled.','info');
             showSubscribe();
         } catch(e) { showToast('Error.','error'); }
@@ -1343,7 +1376,5 @@
     }
 
     window.showToast = showToast;
-    console.log('✅ Subscription page ready – direct invoice loading active.');
+    console.log('✅ Subscription page ready – approved plan view added.');
 </script>
-</body>
-</html>
