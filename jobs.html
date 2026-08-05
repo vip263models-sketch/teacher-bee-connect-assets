@@ -3,178 +3,785 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TeacherBee - Jobs</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Job Vacancies | Teacher Portal</title>
   <style>
-    /* Global Styles (Matches Profile Page) */
-    :root { --primary-navy: #0A192F; --navy-light: #172A45; --accent-yellow: #FFD700; --yellow-hover: #E5C100; --bg-color: #F8F9FA; --surface-white: #FFFFFF; --text-main: #111827; --text-muted: #6B7280; --border-color: #E5E7EB; --error-red: #EF4444; --success-green: #10B981; --radius-lg: 16px; --radius-md: 8px; --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
-    h1, h2, h3, h4 { color: var(--primary-navy); font-weight: 700; margin-bottom: 0.5rem; } p { color: var(--text-muted); line-height: 1.5; }
-    #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-    .toast { padding: 1rem 1.25rem; border-radius: var(--radius-md); color: var(--surface-white); font-weight: 600; font-size: 0.9rem; box-shadow: var(--shadow-md); animation: slideIn 0.3s ease forwards; display: flex; align-items: center; gap: 10px; }
-    .toast.error { background-color: var(--error-red); } .toast.success { background-color: var(--success-green); } .toast.info { background-color: var(--primary-navy); color: var(--accent-yellow); }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    header { background-color: var(--primary-navy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
-    .brand-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--surface-white); font-weight: 700; font-size: 1.25rem; } .brand-logo i { color: var(--accent-yellow); }
-    .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
-    .btn-primary { background-color: var(--accent-yellow); color: var(--primary-navy); } .btn-primary:hover { background-color: var(--yellow-hover); }
-    .btn-outline { background: transparent; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); } .btn-danger { background-color: #FEE2E2; color: var(--error-red); padding: 0.5rem 1rem; } .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; } .btn-block { width: 100%; margin-top: 1rem; }
-    .app-container { display: flex; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem; gap: 2rem; align-items: flex-start; }
-    .sidebar { width: 250px; display: flex; flex-direction: column; gap: 0.5rem; position: sticky; top: 100px; height: fit-content; }
-    .sidebar-item { text-decoration: none; padding: 1rem; border-radius: var(--radius-md); color: var(--primary-navy); font-weight: 600; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; }
-    .sidebar-item:hover { background-color: var(--bg-color); } .sidebar-item.active { background-color: var(--primary-navy); color: var(--accent-yellow); }
-    .content-area { flex: 1; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem; min-width: 0; }
-    .card { background: var(--surface-white); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
-    .form-input, .form-select { width: 100%; padding: 0.85rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 1rem; outline: none; transition: 0.2s; background: var(--surface-white); color: var(--text-main); }
-    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .badge-yellow { background: var(--accent-yellow); color: var(--primary-navy); } .badge-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); }
-    .filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: var(--surface-white); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); }
-    .job-card { display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; } .job-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-    .job-meta { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; flex-wrap: wrap; }
-    .job-desc { font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
-    .modal-overlay.active { display: flex; } .modal-content { background: var(--surface-white); width: 100%; max-width: 600px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
-    .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
-    @media (max-width: 768px) { .app-container { padding: 1rem; padding-bottom: 85px; } .filter-bar { grid-template-columns: 1fr; } .sidebar { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: var(--primary-navy); display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 0 0.5rem; z-index: 999; top: auto; } .sidebar-item { flex: 1; flex-direction: column; padding: 0.5rem; font-size: 0.7rem; gap: 0.2rem; text-align: center; color: var(--surface-white); } .sidebar-item.active { background: transparent; color: var(--accent-yellow); } .hide-mobile { display: none !important; } }
+    /* 
+      International Job Agency Light Theme (Teacher View)
+      Clean, High-Trust, Mobile-Friendly Aesthetic
+    */
+    :root {
+      /* Colors */
+      --bg-main: #F8FAFC;         /* Slate 50 */
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;       /* Slate 900 */
+      --text-muted: #64748B;      /* Slate 500 */
+      
+      --primary: #2563EB;         /* Professional Blue */
+      --primary-hover: #1D4ED8;
+      --navy-accent: #093A4F;     
+      --apply-green: #10B981;
+      --apply-green-hover: #059669;
+      --success-dim: #D1FAE5;
+      
+      /* Borders & UI */
+      --border: #E2E8F0;          
+      --border-light: #F1F5F9;    
+      
+      --radius-xl: 16px;
+      --radius-lg: 12px;
+      --radius-md: 8px;
+      --radius-sm: 6px;
+      
+      /* Shadows & Transitions */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+      --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Base Reset */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-main);
+    }
+
+    #job-board-app {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text-main);
+      line-height: 1.5;
+      width: 100%;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 60px;
+    }
+
+    #job-board-app *,
+    #job-board-app *::before,
+    #job-board-app *::after {
+      box-sizing: border-box;
+    }
+
+    .hidden { display: none !important; }
+    
+    /* Container & Header */
+    .jb-container { 
+      width: 100%; 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 30px 20px; 
+    }
+
+    .jb-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .jb-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--navy-accent);
+      margin: 0 0 10px 0;
+      letter-spacing: -0.03em;
+    }
+
+    .jb-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* Filters (Optional enhancement for UX) */
+    .jb-filters {
+      display: flex; gap: 15px; margin-bottom: 30px;
+      max-width: 600px; margin-left: auto; margin-right: auto;
+    }
+    .jb-search {
+      flex: 1; padding: 14px 20px; border-radius: 99px;
+      border: 1px solid var(--border); background: var(--card-bg);
+      font-size: 1rem; color: var(--text-main); outline: none;
+      box-shadow: var(--shadow-sm); transition: var(--transition);
+    }
+    .jb-search:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+    /* Job Cards Grid */
+    .jb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      width: 100%;
+    }
+
+    /* Job Card Styling */
+    .jb-card {
+      background: var(--card-bg); 
+      border-radius: var(--radius-xl);
+      padding: 24px; 
+      box-shadow: var(--shadow-card); 
+      transition: var(--transition);
+      display: flex; flex-direction: column; 
+      height: 100%;
+      border: 1px solid var(--border-light);
+      position: relative;
+      overflow: hidden;
+    }
+    .jb-card:hover { 
+      box-shadow: var(--shadow-hover); 
+      transform: translateY(-4px); 
+      border-color: #CBD5E1;
+    }
+
+    /* Top Accent Line */
+    .jb-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 4px; background: var(--primary);
+    }
+    
+    .jb-card-header { 
+      display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start;
+    }
+    
+    .jb-logo {
+      width: 56px; height: 56px; border-radius: var(--radius-md);
+      object-fit: cover; background: var(--bg-main); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .jb-header-info { flex: 1; min-width: 0; }
+    
+    .jb-card-title { 
+      font-size: 1.15rem; font-weight: 700; margin: 0 0 4px 0; color: var(--text-main); 
+      line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .jb-card-employer { 
+      font-size: 0.95rem; color: var(--primary); font-weight: 600; margin: 0 0 8px 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Status Badge */
+    .jb-badge {
+      display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 4px 10px;
+      border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+      background: var(--success-dim); color: #047857;
+    }
+
+    /* Meta Pills */
+    .jb-pill-container {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+    }
+    .jb-pill {
+      background: var(--bg-main); color: #475569;
+      padding: 6px 12px; border-radius: 9999px;
+      font-size: 0.8rem; font-weight: 500;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .jb-pill svg { width: 12px; height: 12px; opacity: 0.7; }
+
+    .jb-card-desc {
+      font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;
+      margin-bottom: 24px; flex-grow: 1;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .jb-card-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.8rem; color: #94A3B8; margin-bottom: 20px;
+      padding-top: 16px; border-top: 1px solid var(--border-light);
+    }
+
+    /* Buttons */
+    .jb-actions { 
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto;
+    }
+    
+    .jb-btn {
+      font-family: inherit; font-weight: 600; font-size: 0.9rem;
+      border: none; border-radius: var(--radius-md);
+      padding: 12px 16px; cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    
+    .jb-btn-outline { 
+      background: transparent; border: 1px solid var(--border); color: var(--text-main); 
+    }
+    .jb-btn-outline:hover { background: var(--bg-main); border-color: #CBD5E1; }
+    
+    .jb-btn-apply {
+      background: var(--apply-green); color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    }
+    .jb-btn-apply:hover { background: var(--apply-green-hover); transform: translateY(-2px); }
+
+    /* New Recruiter Button Style */
+    .jb-btn-alt { 
+      background: var(--bg-main); color: var(--primary); grid-column: 1 / -1; margin-top: -4px; 
+    }
+    .jb-btn-alt:hover { background: #E0E7FF; }
+
+    /* Modal / Details Overlay */
+    .jb-modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+      z-index: 1000; display: flex; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; visibility: hidden; transition: var(--transition);
+    }
+    .jb-modal-overlay.active { opacity: 1; visibility: visible; }
+
+    .jb-modal-content {
+      background: var(--card-bg); width: 100%; max-width: 700px;
+      max-height: 90vh; border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-modal); overflow-y: auto;
+      position: relative; transform: translateY(20px); transition: var(--transition);
+      display: flex; flex-direction: column;
+    }
+    .jb-modal-overlay.active .jb-modal-content { transform: translateY(0); }
+
+    .jb-modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: rgba(0,0,0,0.1); border: none; width: 32px; height: 32px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 10; color: #333; transition: var(--transition);
+    }
+    .jb-modal-close:hover { background: rgba(0,0,0,0.2); }
+
+    .jb-modal-banner {
+      width: 100%; height: 200px; object-fit: cover; background: var(--navy-accent);
+    }
+
+    .jb-modal-body { padding: 32px; }
+    
+    .jb-modal-title { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin: 0 0 8px 0; line-height: 1.2; }
+    .jb-modal-employer { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 24px; }
+    
+    .jb-modal-section { margin-bottom: 28px; }
+    .jb-modal-section h4 { font-size: 1.1rem; color: var(--text-main); margin: 0 0 12px 0; font-weight: 700; border-bottom: 1px solid var(--border-light); padding-bottom: 8px; }
+    .jb-modal-section p { font-size: 1rem; color: var(--text-muted); line-height: 1.7; white-space: pre-wrap; margin: 0; }
+
+    .jb-modal-footer {
+      padding: 24px 32px; border-top: 1px solid var(--border); background: var(--bg-main);
+      position: sticky; bottom: 0; display: flex; justify-content: space-between; align-items: center;
+    }
+
+    /* Recruiter Profile Specific Styles */
+    .recruiter-header-banner { height: 120px; background: linear-gradient(135deg, var(--primary) 0%, var(--navy-accent) 100%); position: relative; flex-shrink: 0; }
+    .recruiter-profile-header { display: flex; align-items: flex-end; gap: 1.5rem; margin-top: -50px; padding: 0 32px; margin-bottom: 1.5rem; position: relative; z-index: 5; }
+    .recruiter-profile-header img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid var(--card-bg); box-shadow: 0 4px 10px rgba(0,0,0,0.1); background: var(--card-bg); }
+    .recruiter-profile-info h2 { font-size: 1.6rem; color: var(--text-main); margin-bottom: 0.2rem; margin-top: 0; }
+    .recruiter-profile-info p { color: var(--text-muted); margin: 0; font-weight: 500; }
+    
+    .dynamic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+    .dynamic-item { background: var(--bg-main); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; }
+    .dynamic-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .dynamic-value { font-size: 0.95rem; font-weight: 600; color: var(--text-main); word-break: break-word; }
+    
+    .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .tag-item { background: #E0E7FF; color: var(--primary); padding: 4px 12px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; }
+
+    /* Loader / Spinner */
+    .jb-loader {
+      display: inline-block; width: 20px; height: 20px;
+      border: 3px solid rgba(255,255,255,0.3); border-radius: 50%;
+      border-top-color: #fff; animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Empty State */
+    .jb-empty-state { 
+      text-align: center; padding: 80px 20px; color: var(--text-muted); 
+      background: var(--card-bg); border-radius: var(--radius-xl); border: 1px dashed #CBD5E1; 
+      grid-column: 1 / -1;
+    }
+    .jb-empty-state svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.3; }
+
+    /* Toasts */
+    .jb-toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .jb-toast {
+      padding: 16px 24px; border-radius: var(--radius-md); color: #FFF;
+      font-size: 0.95rem; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      animation: slideInDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+      max-width: 350px;
+    }
+    .jb-toast.success { background: var(--apply-green); }
+    .jb-toast.error { background: #EF4444; }
+
+    @keyframes slideInDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .fade-enter { animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
   </style>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    const firebaseConfig = { apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8", authDomain: "teacherbee-connect.firebaseapp.com", projectId: "teacherbee-connect", storageBucket: "teacherbee-connect.firebasestorage.app", messagingSenderId: "345613317767", appId: "1:345613317767:web:555713e479f9837e84aa22" };
-    const app = initializeApp(firebaseConfig);
-    window.auth = getAuth(app); window.db = getFirestore(app);
-    window.fb = { doc, getDoc, signOut, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp };
-
-    onAuthStateChanged(window.auth, async (user) => {
-      if (user) {
-        const docRef = doc(window.db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        let name = user.email.split('@')[0];
-        let avatar = "https://ui-avatars.com/api/?name=" + name + "&background=0A192F&color=FFD700";
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.role === 'recruiter') { window.location.href = 'recruiter.html'; return; }
-          name = data.name || name; if(data.avatarUrl) avatar = data.avatarUrl;
-          window.currentUser = { uid: user.uid, name, email: user.email, isVerified: user.emailVerified };
-        }
-        document.getElementById('nav-actions').innerHTML = `<div style="display:flex; align-items:center; gap:1rem;"><img src="${avatar}" class="hide-mobile" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--accent-yellow);"><span style="font-weight:600; color:white;" class="hide-mobile">${name}</span><button class="btn btn-danger btn-small" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button></div>`;
-        window.setupRealtimeJobs();
-      } else { window.location.href = 'index.html'; }
-    });
-  </script>
 </head>
-<body class="dashboard-active">
-  <div id="toast-container"></div>
-  <header>
-    <a href="profile.html" class="brand-logo"><i class="fa-solid fa-graduation-cap"></i> TeacherBee</a>
-    <div id="nav-actions"></div>
-  </header>
-  <div class="app-container">
-    <aside class="sidebar">
-      <a href="profile.html" class="sidebar-item"><i class="fa-regular fa-user"></i> <span>Profile</span></a>
-      <a href="jobs.html" class="sidebar-item active"><i class="fa-solid fa-briefcase"></i> <span>Jobs</span></a>
-      <a href="workshops.html" class="sidebar-item"><i class="fa-solid fa-chalkboard-user"></i> <span>Training</span></a>
-      <a href="tefl.html" class="sidebar-item"><i class="fa-solid fa-certificate"></i> <span>TEFL</span></a>
-      <a href="inbox.html" class="sidebar-item"><i class="fa-regular fa-envelope"></i> <span>Inbox</span></a>
-    </aside>
-    <main class="content-area">
-      <section class="view-panel active">
-        <h2 style="margin-bottom: 1rem;">Recent Job Opportunities</h2>
-        <div class="filter-bar">
-          <input type="text" id="search-jobs" class="form-input" placeholder="Search keyword..." oninput="filterJobBoard()">
-          <input type="text" id="search-location" class="form-input" placeholder="Filter by Country/Location..." oninput="filterJobBoard()">
-          <select id="filter-type" class="form-select" onchange="filterJobBoard()">
-            <option value="all">All Types</option>
-            <option value="Full Time">Full Time</option>
-            <option value="Part Time">Part Time</option>
-          </select>
+<body>
+
+  <div id="job-board-app">
+    <!-- Toast Container -->
+    <div id="toastContainer" class="jb-toast-container"></div>
+
+    <!-- Main Content -->
+    <div class="jb-container fade-enter">
+      <div class="jb-header">
+        <h1 class="jb-title">Teacher Job Vacancies</h1>
+        <p class="jb-subtitle">Find and apply for open positions at top institutions.</p>
+      </div>
+
+      <div class="jb-filters">
+        <input type="text" id="searchInput" class="jb-search" placeholder="Search by job title, school, or subject..." onkeyup="teacherApp.filterJobs()">
+      </div>
+      
+      <div id="jobsGrid" class="jb-grid">
+        <!-- Loading State -->
+        <div style="text-align: center; grid-column: 1/-1; padding: 40px; color: #64748B;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="jb-loader" style="border:none; animation: spin 2s linear infinite;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path></svg>
+          <p style="margin-top:16px;">Loading latest vacancies...</p>
         </div>
-        <div class="cards-grid" id="job-list-container">
-          <div style="text-align:center; padding: 2rem; color:var(--text-muted); grid-column: 1/-1;" id="jobs-loading">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom:1rem;"></i>
-            <p>Fetching active jobs from employers...</p>
+      </div>
+    </div>
+
+    <!-- Job Details Modal (RESTORED EXACTLY AS YOURS) -->
+    <div id="jobModal" class="jb-modal-overlay">
+      <div class="jb-modal-content">
+        <button class="jb-modal-close" onclick="teacherApp.closeModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        
+        <img id="modalBanner" class="jb-modal-banner" src="" alt="Job Banner" style="display:none;">
+        <div id="modalFallbackBanner" class="jb-modal-banner"></div>
+        
+        <div class="jb-modal-body">
+          <h2 id="modalTitle" class="jb-modal-title">Job Title</h2>
+          <div class="jb-modal-employer">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
+            <span id="modalEmployer">Employer Name</span>
+          </div>
+
+          <div class="jb-pill-container" style="margin-bottom: 24px;" id="modalPills">
+            <!-- Injected via JS -->
+          </div>
+
+          <div class="jb-modal-section">
+            <h4>Job Description</h4>
+            <p id="modalDesc">Full description here...</p>
+          </div>
+
+          <div class="jb-modal-section hidden" id="modalReqsSection">
+            <h4>Requirements</h4>
+            <p id="modalReqs">Requirements here...</p>
           </div>
         </div>
-      </section>
-    </main>
-  </div>
 
-  <div class="modal-overlay" id="job-detail-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeJobModal()">&times;</button>
-      <h2 id="job-modal-title" style="margin-bottom:0.5rem; color:var(--primary-navy);">Job Title</h2>
-      <div class="job-meta" id="job-modal-meta" style="margin-bottom: 1.5rem;"></div>
-      <h3 style="font-size: 1.1rem; color: var(--primary-navy); border-left: 4px solid var(--accent-yellow); padding-left: 0.75rem; margin-bottom: 1rem;">Job Description</h3>
-      <div id="job-modal-desc" style="white-space: pre-wrap; margin-bottom: 2rem; line-height:1.6; color:var(--text-main);"></div>
-      <button class="btn btn-primary btn-block" id="job-modal-apply">Apply Now</button>
+        <div class="jb-modal-footer">
+          <div style="font-size: 0.85rem; color: #64748B;">
+            <div id="modalDatePosted">Posted: </div>
+            <div id="modalDeadline" style="font-weight: 600; margin-top: 4px;">Deadline: </div>
+          </div>
+          <button id="modalApplyBtn" class="jb-btn jb-btn-apply" style="padding: 14px 28px; font-size: 1.05rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Apply Now
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- NEW: Recruiter Profile Modal (ADDED SEPARATELY) -->
+    <div id="recruiterModal" class="jb-modal-overlay">
+      <div class="jb-modal-content">
+        <div class="recruiter-header-banner">
+          <button class="jb-modal-close" style="color: #FFF;" onclick="teacherApp.closeModal('recruiterModal')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        
+        <div class="recruiter-profile-header">
+          <img id="rp-avatar" src="" alt="Recruiter Avatar">
+          <div class="recruiter-profile-info">
+            <h2 id="rp-name"></h2>
+            <p id="rp-role">Verified Recruiter</p>
+          </div>
+        </div>
+
+        <div class="jb-modal-body" style="padding-top: 0;">
+          <div class="jb-modal-section">
+            <h4>About the Recruiter</h4>
+            <p id="rp-bio" style="margin-bottom: 20px;">No bio provided.</p>
+          </div>
+          
+          <div class="jb-modal-section">
+            <h4>Professional Details</h4>
+            <!-- Dynamic Data Injected Here -->
+            <div id="rp-dynamic-details" class="dynamic-grid"></div>
+            <div id="rp-dynamic-tags"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <script>
-    let jobList = [];
-    window.handleLogout = function() { if (window.auth && window.fb) window.fb.signOut(window.auth); };
-    window.showToast = function(message, type = 'info') {
-      const container = document.getElementById('toast-container'); const toast = document.createElement('div');
-      toast.className = `toast ${type}`; toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info'}"></i> ${message}`;
-      container.appendChild(toast); setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+  <!-- FIREBASE SDK MODULE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    
+    // ADDED doc and getDoc for fetching the recruiter's profile, kept your originals
+    import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+      authDomain: "teacherbee-connect.firebaseapp.com",
+      projectId: "teacherbee-connect",
+      storageBucket: "teacherbee-connect.firebasestorage.app",
+      messagingSenderId: "345613317767",
+      appId: "1:345613317767:web:555713e479f9837e84aa22"
     };
 
-    window.setupRealtimeJobs = function() {
-      const jobsQuery = window.fb.query(window.fb.collection(window.db, "jobs"), window.fb.orderBy("createdAt", "desc"));
-      window.fb.onSnapshot(jobsQuery, (snapshot) => {
-        const container = document.getElementById('job-list-container'); document.getElementById('jobs-loading').style.display = 'none';
-        jobList = []; container.innerHTML = '';
-        if (snapshot.empty) { container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No live jobs at the moment.</p>'; return; }
-        snapshot.forEach((docSnap) => {
-          const job = { id: docSnap.id, ...docSnap.data() }; jobList.push(job);
-          const html = `
-            <div class="card job-card" data-title="${job.title.toLowerCase()}" data-location="${(job.location||'').toLowerCase()}" data-type="${job.type||'Full Time'}">
-              <div>
-                <div style="display:flex; justify-content:space-between;"><span class="badge badge-yellow">${job.type || 'Full Time'}</span><span class="badge badge-outline"><i class="fa-solid fa-location-dot"></i> ${job.location || 'Remote'}</span></div>
-                <h3 style="font-size: 1.1rem; margin-top:0.5rem;">${job.title}</h3>
-                <div class="job-meta"><span><i class="fa-solid fa-coins"></i> ${job.pay || 'Negotiable'}</span></div>
-                <div class="job-desc">${job.description || ''}</div>
+    const fbApp = initializeApp(firebaseConfig);
+    window.auth = getAuth(fbApp);
+    window.db = getFirestore(fbApp);
+    
+    // Attached doc and getDoc to the global fb object
+    window.fb = { collection, addDoc, serverTimestamp, query, where, getDocs, doc, getDoc };
+    
+    setPersistence(window.auth, browserLocalPersistence);
+
+    onAuthStateChanged(window.auth, (user) => {
+      if (!user) {
+        window.location.href = 'https://teacherbeeconnect.blogspot.com/p/index_01629774816.html';
+      } else {
+        window.currentUser = user;
+        teacherApp.fetchJobs();
+      }
+    });
+  </script>
+
+  <!-- APPLICATION LOGIC -->
+  <script>
+    // SVG Icons
+    const ICONS = {
+      location: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`,
+      type: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+      money: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`,
+      subject: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`,
+      fallbackLogo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>`
+    };
+
+    // EXCLUSION LIST for Recruiter Privacy
+    const RECRUITER_EXCLUDED_FIELDS = [
+      'uid', 'id', 'role', 'password', 'messages', 'privacysettings', 'privacysetting', 
+      'createdat', 'updatedat', 'avatarurl', 'name', 'bio', 'email', 'phone', 'contacts', 'contact'
+    ];
+
+    const teacherApp = {
+      allJobs: [],
+      currentJobDetails: null,
+
+      // RESTORED YOUR EXACT LOGIC
+      fetchJobs: async () => {
+        try {
+          const { collection, query, where, getDocs } = window.fb;
+          const q = query(collection(window.db, "jobs"), where("status", "==", "open"));
+          const snapshot = await getDocs(q);
+          
+          let jobs = [];
+          snapshot.forEach(doc => {
+            jobs.push({ id: doc.id, ...doc.data() });
+          });
+
+          jobs.sort((a, b) => {
+            const tA = a.createdAt ? a.createdAt.toMillis() : 0;
+            const tB = b.createdAt ? b.createdAt.toMillis() : 0;
+            return tB - tA;
+          });
+
+          teacherApp.allJobs = jobs;
+          teacherApp.renderJobs(jobs);
+        } catch (error) {
+          console.error("Error fetching jobs:", error);
+          teacherApp.showToast("Failed to load vacancies. Please refresh.", "error");
+        }
+      },
+
+      filterJobs: () => {
+        const term = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = teacherApp.allJobs.filter(job => {
+          return (job.title && job.title.toLowerCase().includes(term)) ||
+                 (job.employerName && job.employerName.toLowerCase().includes(term)) ||
+                 (job.subject && job.subject.toLowerCase().includes(term));
+        });
+        teacherApp.renderJobs(filtered);
+      },
+
+      renderJobs: (jobs) => {
+        const grid = document.getElementById('jobsGrid');
+        grid.innerHTML = "";
+
+        if (jobs.length === 0) {
+          grid.innerHTML = `
+            <div class="jb-empty-state fade-enter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <h3>No jobs found</h3>
+              <p>Check back later for new opportunities.</p>
+            </div>`;
+          return;
+        }
+
+        jobs.forEach(job => {
+          const datePosted = job.createdAt ? new Date(job.createdAt.toMillis()).toLocaleDateString() : 'Recently';
+          const deadlineText = job.deadline ? `Closes ${new Date(job.deadline).toLocaleDateString()}` : 'Open Until Filled';
+          
+          const logoHtml = job.bannerUrl 
+            ? `<img src="${job.bannerUrl}" class="jb-logo" alt="Logo">`
+            : `<div class="jb-logo">${ICONS.fallbackLogo}</div>`;
+
+          const card = document.createElement('div');
+          card.className = "jb-card fade-enter";
+          card.innerHTML = `
+            <div class="jb-card-header">
+              ${logoHtml}
+              <div class="jb-header-info">
+                <h3 class="jb-card-title" title="${teacherApp.escapeHTML(job.title)}">${teacherApp.escapeHTML(job.title)}</h3>
+                <p class="jb-card-employer" title="${teacherApp.escapeHTML(job.employerName)}">${teacherApp.escapeHTML(job.employerName)}</p>
+                <span class="jb-badge">Open</span>
               </div>
-              <button class="btn btn-outline" style="width: 100%; margin-top:1rem;" onclick="viewJobDetails('${job.id}')">View Details</button>
+            </div>
+
+            <div class="jb-pill-container">
+              <div class="jb-pill">${ICONS.location} <span>${teacherApp.escapeHTML(job.location)}</span></div>
+              <div class="jb-pill">${ICONS.type} <span>${job.type}</span></div>
+              ${job.subject ? `<div class="jb-pill">${ICONS.subject} <span>${teacherApp.escapeHTML(job.subject)}</span></div>` : ''}
+              ${job.pay ? `<div class="jb-pill">${ICONS.money} <span>${teacherApp.escapeHTML(job.pay)}</span></div>` : ''}
+            </div>
+
+            <div class="jb-card-desc">${teacherApp.escapeHTML(job.description)}</div>
+
+            <div class="jb-card-footer">
+              <span>Posted: ${datePosted}</span>
+              <span style="color: var(--text-main); font-weight: 500;">${deadlineText}</span>
+            </div>
+
+            <div class="jb-actions">
+              <button class="jb-btn jb-btn-outline" onclick="teacherApp.openModal('${job.id}')">View Details</button>
+              <button class="jb-btn jb-btn-apply" onclick="teacherApp.applyDirectly('${job.id}')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Apply
+              </button>
+              <!-- NEW BUTTON ADDED HERE -->
+              <button class="jb-btn jb-btn-alt" onclick="teacherApp.viewRecruiterProfile('${job.recruiterId}')">
+                <span style="font-size: 1.1em; margin-right: 4px;">👤</span> View Recruiter Profile
+              </button>
             </div>
           `;
-          container.insertAdjacentHTML('beforeend', html);
+          grid.appendChild(card);
         });
-      });
-    };
+      },
 
-    window.filterJobBoard = function() {
-      const searchTxt = document.getElementById('search-jobs').value.toLowerCase(), locTxt = document.getElementById('search-location').value.toLowerCase(), typeFilter = document.getElementById('filter-type').value;
-      document.querySelectorAll('.job-card').forEach(card => {
-        const textMatch = card.getAttribute('data-title').includes(searchTxt) || card.querySelector('.job-desc').innerText.toLowerCase().includes(searchTxt);
-        const locMatch = card.getAttribute('data-location').includes(locTxt); const typeMatch = (typeFilter === 'all' || card.getAttribute('data-type') === typeFilter);
-        card.style.display = (textMatch && locMatch && typeMatch) ? 'flex' : 'none';
-      });
-    };
+      // RESTORED YOUR EXACT LOGIC
+      openModal: (jobId) => {
+        const job = teacherApp.allJobs.find(j => j.id === jobId);
+        if (!job) return;
+        
+        teacherApp.currentJobDetails = job;
 
-    window.viewJobDetails = function(jobId) {
-      const job = jobList.find(j => j.id === jobId); if(!job) return;
-      document.getElementById('job-modal-title').innerText = job.title;
-      document.getElementById('job-modal-meta').innerHTML = `<span><i class="fa-solid fa-coins"></i> ${job.pay||'N/A'}</span> <span><i class="fa-solid fa-location-dot"></i> ${job.location||'Remote'}</span> <span class="badge badge-yellow">${job.type||'Full Time'}</span>`;
-      document.getElementById('job-modal-desc').innerHTML = job.description;
-      const applyBtn = document.getElementById('job-modal-apply'); applyBtn.onclick = () => { applyForJob(job); closeJobModal(); };
-      document.getElementById('job-detail-modal').classList.add('active');
-    };
+        document.getElementById('modalTitle').innerText = job.title;
+        document.getElementById('modalEmployer').innerText = job.employerName;
+        
+        // Setup Banner
+        const bannerEl = document.getElementById('modalBanner');
+        const fallbackEl = document.getElementById('modalFallbackBanner');
+        if (job.bannerUrl) {
+          bannerEl.src = job.bannerUrl;
+          bannerEl.style.display = 'block';
+          fallbackEl.style.display = 'none';
+        } else {
+          bannerEl.style.display = 'none';
+          fallbackEl.style.display = 'block';
+        }
 
-    window.closeJobModal = function() { document.getElementById('job-detail-modal').classList.remove('active'); };
+        // Setup Pills
+        let pillsHtml = `
+          <div class="jb-pill">${ICONS.location} <span>${teacherApp.escapeHTML(job.location)}</span></div>
+          <div class="jb-pill">${ICONS.type} <span>${job.type}</span></div>
+        `;
+        if (job.subject) pillsHtml += `<div class="jb-pill">${ICONS.subject} <span>${teacherApp.escapeHTML(job.subject)}</span></div>`;
+        if (job.pay) pillsHtml += `<div class="jb-pill">${ICONS.money} <span>${teacherApp.escapeHTML(job.pay)}</span></div>`;
+        document.getElementById('modalPills').innerHTML = pillsHtml;
 
-    window.applyForJob = async function(job) {
-      if (!window.currentUser.isVerified) { showToast("Verify your email address to apply for jobs.", "error"); return; }
-      try {
-        const threadData = { participants: [window.currentUser.uid, job.recruiterId], jobId: job.id, jobTitle: job.title, updatedAt: window.fb.serverTimestamp(), teacherName: window.currentUser.name };
-        const threadRef = await window.fb.addDoc(window.fb.collection(window.db, "threads"), threadData);
-        await window.fb.addDoc(window.fb.collection(window.db, `threads/${threadRef.id}/messages`), { senderId: window.currentUser.uid, text: `Application for ${job.title}. Hello, I would like to apply for this position. My profile is fully updated.`, timestamp: window.fb.serverTimestamp() });
-        showToast(`Application successfully sent for ${job.title}`, "success");
-      } catch(e) { console.error(e); showToast("Error sending application.", "error"); }
+        // Texts
+        document.getElementById('modalDesc').innerText = job.description;
+        
+        const reqSection = document.getElementById('modalReqsSection');
+        if (job.requirements) {
+          document.getElementById('modalReqs').innerText = job.requirements;
+          reqSection.classList.remove('hidden');
+        } else {
+          reqSection.classList.add('hidden');
+        }
+
+        // Footer meta
+        document.getElementById('modalDatePosted').innerText = `Posted: ${job.createdAt ? new Date(job.createdAt.toMillis()).toLocaleDateString() : 'Recently'}`;
+        document.getElementById('modalDeadline').innerText = `Deadline: ${job.deadline ? new Date(job.deadline).toLocaleDateString() : 'Open Until Filled'}`;
+
+        // Setup Apply Button inside modal
+        const applyBtn = document.getElementById('modalApplyBtn');
+        applyBtn.onclick = () => teacherApp.processApplication(job);
+
+        // Show Modal
+        document.getElementById('jobModal').classList.add('active');
+        document.body.style.overflow = 'hidden'; 
+      },
+
+      // Adapted slightly to close whichever modal is open, defaults to your original jobModal
+      closeModal: (modalId = 'jobModal') => {
+        document.getElementById(modalId).classList.remove('active');
+        document.body.style.overflow = '';
+      },
+
+      // RESTORED YOUR EXACT LOGIC
+      applyDirectly: (jobId) => {
+        const job = teacherApp.allJobs.find(j => j.id === jobId);
+        if (job) teacherApp.processApplication(job);
+      },
+
+      // RESTORED YOUR EXACT LOGIC
+      processApplication: async (job) => {
+        const btn = document.getElementById('modalApplyBtn');
+        const originalText = btn.innerHTML;
+        
+        try {
+          btn.innerHTML = `<span class="jb-loader"></span> Sending...`;
+          btn.style.pointerEvents = 'none';
+
+          const { collection, addDoc, serverTimestamp } = window.fb;
+          
+          const recruiterId = job.recruiterId || "unknown_recruiter";
+          const teacherId = window.currentUser.uid;
+          const teacherName = window.currentUser.displayName || "Applicant Teacher";
+          const jobTitle = job.title || "Untitled Job";
+          
+          const threadData = {
+            jobId: job.id || "",
+            jobTitle: jobTitle,
+            teacherName: teacherName,
+            participants: [teacherId, recruiterId], 
+            updatedAt: serverTimestamp(),
+            createdAt: serverTimestamp(),
+            type: "application" 
+          };
+
+          const threadRef = await addDoc(collection(window.db, "threads"), threadData);
+
+          const firstMessage = {
+            senderId: teacherId,
+            text: `Hello! I am officially applying for the ${jobTitle} position. My profile and resume are ready for your review.`,
+            timestamp: serverTimestamp()
+          };
+          
+          await addDoc(collection(window.db, `threads/${threadRef.id}/messages`), firstMessage);
+
+          teacherApp.showToast("Application sent successfully! Check your inbox for replies.", "success");
+          teacherApp.closeModal();
+
+        } catch (error) {
+          console.error("Application Error:", error);
+          teacherApp.showToast("Failed to send application. Please try again.", "error");
+        } finally {
+          btn.innerHTML = originalText;
+          btn.style.pointerEvents = 'auto';
+        }
+      },
+
+      // NEW: Dynamic Recruiter Profile Logic (Unchanged from previous addition)
+      viewRecruiterProfile: async (recruiterId) => {
+        if (!recruiterId) {
+          teacherApp.showToast("Recruiter details unavailable for this job.", "error");
+          return;
+        }
+
+        try {
+          teacherApp.showToast("Loading recruiter profile...", "info");
+          
+          const recruiterDocRef = window.fb.doc(window.db, "users", recruiterId);
+          const recruiterSnap = await window.fb.getDoc(recruiterDocRef);
+
+          if (!recruiterSnap.exists()) {
+            teacherApp.showToast("Recruiter profile not found.", "error");
+            return;
+          }
+
+          const r = recruiterSnap.data();
+
+          document.getElementById('rp-name').innerText = r.name || "Anonymous Recruiter";
+          document.getElementById('rp-avatar').src = r.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(r.name || 'Recruiter')}&background=0F172A&color=FFFFFF`;
+          document.getElementById('rp-bio').innerText = r.bio || "No biography provided.";
+          
+          const detailsContainer = document.getElementById('rp-dynamic-details');
+          const tagsContainer = document.getElementById('rp-dynamic-tags');
+          detailsContainer.innerHTML = '';
+          tagsContainer.innerHTML = '';
+
+          Object.keys(r).forEach(key => {
+            const cleanKey = key.toLowerCase().trim();
+            const value = r[key];
+
+            if (RECRUITER_EXCLUDED_FIELDS.includes(cleanKey) || value === null || value === undefined || value === '') return;
+            if (Array.isArray(value) && value.length === 0) return;
+
+            const formattedLabel = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+            const isUrl = (str) => typeof str === 'string' && (str.startsWith('http://') || str.startsWith('https://'));
+
+            if (Array.isArray(value)) {
+              let listHtml = `<div style="grid-column: 1/-1; margin-top: 10px;"><div class="dynamic-label">${formattedLabel}</div><div class="tag-container">`;
+              value.forEach(item => {
+                if (isUrl(item)) {
+                  listHtml += `<a href="${item}" target="_blank" class="jb-btn jb-btn-outline" style="padding: 4px 8px; font-size: 0.8rem;">View Link</a>`;
+                } else if (item) {
+                  listHtml += `<span class="tag-item">${item}</span>`;
+                }
+              });
+              listHtml += `</div></div>`;
+              tagsContainer.insertAdjacentHTML('beforeend', listHtml);
+            
+            } else if (typeof value === 'object' && value !== null) {
+              const docUrl = value.url || value.link || value.file;
+              if (docUrl) {
+                detailsContainer.insertAdjacentHTML('beforeend', `<div class="dynamic-item"><div class="dynamic-label">${formattedLabel}</div><a href="${docUrl}" target="_blank" style="color:var(--primary); font-size: 0.85rem; font-weight:600; text-decoration:none;">Open Document &rarr;</a></div>`);
+              }
+            
+            } else if (isUrl(value)) {
+              detailsContainer.insertAdjacentHTML('beforeend', `<div class="dynamic-item"><div class="dynamic-label">${formattedLabel}</div><a href="${value}" target="_blank" style="color:var(--primary); font-size: 0.85rem; font-weight:600; text-decoration:none;">Visit Link &rarr;</a></div>`);
+            
+            } else {
+              detailsContainer.insertAdjacentHTML('beforeend', `<div class="dynamic-item"><div class="dynamic-label">${formattedLabel}</div><div class="dynamic-value">${String(value)}</div></div>`);
+            }
+          });
+
+          document.getElementById('recruiterModal').classList.add('active');
+          document.body.style.overflow = 'hidden';
+
+        } catch (error) {
+          console.error(error);
+          teacherApp.showToast("Error retrieving recruiter details.", "error");
+        }
+      },
+
+      showToast: (msg, type = "info") => {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `jb-toast ${type}`;
+        toast.innerText = msg;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+      },
+      
+      escapeHTML: (str) => {
+        if (!str) return "";
+        const div = document.createElement('div');
+        div.innerText = str;
+        return div.innerHTML;
+      }
     };
   </script>
 </body>
