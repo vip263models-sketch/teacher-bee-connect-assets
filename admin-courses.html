@@ -387,7 +387,7 @@
             overflow: hidden;
         }
         .modal-dialog.wide {
-            max-width: 900px;
+            max-width: 1050px;
         }
         .modal-header-bar {
             height: 6px;
@@ -481,24 +481,99 @@
         .upload-zone {
             border: 2px dashed var(--border-strong);
             border-radius: var(--radius-xs);
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             text-align: center;
             background: var(--bg-input);
             cursor: pointer;
             transition: var(--transition);
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
         .upload-zone:hover {
             border-color: var(--primary);
             background: #F8FAFD;
         }
+        .upload-zone.has-banner {
+            padding: 0.75rem;
+            min-height: auto;
+            cursor: default;
+        }
         .upload-banner-preview {
             width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 6px;
-            margin-top: 0.7rem;
+            max-height: 320px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 0.5rem;
             display: none;
             border: 1px solid var(--border-light);
+            background: #fff;
+        }
+        .upload-zone.has-banner .upload-banner-preview {
+            display: block;
+            margin-top: 0;
+            max-height: 340px;
+        }
+        .upload-zone-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .upload-zone.has-banner .upload-zone-placeholder {
+            display: none;
+        }
+        .banner-remove-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--danger);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 3;
+            box-shadow: var(--shadow-sm);
+        }
+        .upload-zone.has-banner .banner-remove-btn {
+            display: flex;
+        }
+        .banner-remove-btn:hover {
+            background: #FEF2F2;
+            border-color: #FECACA;
+            box-shadow: var(--shadow-md);
+        }
+        .upload-progress-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.75);
+            border-radius: var(--radius-xs);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 4;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+        .upload-progress-overlay.active {
+            display: flex;
+        }
+        .upload-progress-overlay i {
+            font-size: 1.8rem;
+            color: var(--accent);
         }
         .upload-progress-text {
             display: none;
@@ -923,36 +998,106 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.92);
             z-index: 10001;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 2rem;
         }
         .image-modal.active {
             display: flex;
         }
+        .image-modal-img-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90vw;
+            max-height: 70vh;
+            min-width: 280px;
+            min-height: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
         .image-modal-img {
-            max-width: 92vw;
-            max-height: 78vh;
+            max-width: 90vw;
+            max-height: 70vh;
             border-radius: 8px;
             object-fit: contain;
+            display: block;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+        }
+        .image-modal-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 2.5rem;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .image-modal-spinner.hidden {
+            display: none;
         }
         .image-modal-actions {
-            margin-top: 1.25rem;
+            margin-top: 1.5rem;
             display: flex;
             gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .image-modal-close-bg {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 5;
+        }
+        .image-modal-close-bg:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         /* ── COURSE PREVIEW BANNER ── */
         .preview-course-banner {
             width: 100%;
-            max-height: 240px;
-            object-fit: cover;
-            border-radius: 10px;
+            max-height: 600px;
+            object-fit: contain;
+            border-radius: 12px;
             margin-bottom: 1.5rem;
             background: #E8ECF2;
             display: block;
+            box-shadow: var(--shadow-md);
+        }
+        .preview-course-banner-wrapper {
+            text-align: center;
+            background: #F5F6F9;
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+        .preview-course-banner-wrapper img {
+            max-width: 100%;
+            max-height: 580px;
+            object-fit: contain;
+            border-radius: 10px;
         }
 
         /* ── TOAST ── */
@@ -1012,16 +1157,22 @@
         </div>
     </div>
 
-    <!-- Image Preview Modal -->
-    <div id="imageModal" class="image-modal">
-        <img id="imageModalImg" class="image-modal-img" src="" alt="" />
+    <!-- Image Preview Modal (FIXED) -->
+    <div id="imageModal" class="image-modal" onclick="if(event.target===this)closeImageModal()">
+        <button class="image-modal-close-bg" onclick="closeImageModal()" title="Close"><i class="fa-solid fa-times"></i></button>
+        <div class="image-modal-img-wrapper">
+            <div class="image-modal-spinner" id="imageModalSpinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            <img id="imageModalImg" class="image-modal-img" src="" alt="" 
+                 onload="document.getElementById('imageModalSpinner').classList.add('hidden'); this.style.display='block';" 
+                 onerror="handleImageModalError()" style="display:none;" />
+        </div>
         <div class="image-modal-actions">
             <a id="imageModalDownload" class="btn btn-accent" href="#" download><i class="fa-solid fa-download"></i> Download</a>
             <button class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.4);" onclick="closeImageModal()">Close</button>
         </div>
     </div>
 
-    <!-- Course Preview Modal (no modules) -->
+    <!-- Course Preview Modal (with square banner) -->
     <div class="modal-overlay" id="course-preview-modal">
         <div class="modal-dialog wide">
             <div class="modal-header-bar"></div>
@@ -1127,13 +1278,20 @@
                         <div class="form-group"><label class="form-label">Start Date (optional)</label><input type="date" class="form-input" id="course-start-date" /></div>
                         <div class="form-group">
                             <label class="form-label">Course Banner Image</label>
-                            <div class="upload-zone" onclick="document.getElementById('banner-input').click()">
+                            <div class="upload-zone" id="banner-upload-zone" onclick="document.getElementById('banner-input').click()">
                                 <input type="file" id="banner-input" accept="image/*" style="display:none;" onchange="uploadBanner(this)" />
                                 <input type="hidden" id="banner-url" />
-                                <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.3rem;color:var(--text-muted);"></i>
-                                <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Click to select banner</p>
+                                <button type="button" class="banner-remove-btn" title="Remove banner" onclick="event.stopPropagation(); removeBanner();"><i class="fa-solid fa-trash-can"></i></button>
+                                <div class="upload-zone-placeholder">
+                                    <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.6rem;color:var(--text-muted);"></i>
+                                    <p style="font-size:0.85rem;color:var(--text-muted);">Click to select banner</p>
+                                    <p style="font-size:0.7rem;color:var(--text-muted);">Recommended: square image (1080×1080)</p>
+                                </div>
                                 <img id="banner-preview-img" class="upload-banner-preview" src="" alt="Banner Preview" />
-                                <div class="upload-progress-text" id="banner-progress"><i class="fa-solid fa-spinner fa-spin"></i> Uploading…</div>
+                                <div class="upload-progress-overlay" id="banner-progress-overlay">
+                                    <i class="fa-solid fa-spinner fa-spin"></i>
+                                    <span>Uploading banner…</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1271,21 +1429,34 @@
             });
         }
 
+        window.removeBanner = () => {
+            document.getElementById('banner-url').value = '';
+            const preview = document.getElementById('banner-preview-img');
+            preview.src = '';
+            preview.style.display = 'none';
+            const zone = document.getElementById('banner-upload-zone');
+            zone.classList.remove('has-banner');
+            showToast('Banner removed.', 'info');
+        };
+
         window.uploadBanner = async (input) => {
             const file = input.files[0];
             if (!file) return;
-            document.getElementById('banner-progress').style.display = 'block';
+            const overlay = document.getElementById('banner-progress-overlay');
+            const zone = document.getElementById('banner-upload-zone');
+            overlay.classList.add('active');
             try {
                 const uploaded = await uploadFileWithToast(file);
                 document.getElementById('banner-url').value = uploaded.url;
                 const preview = document.getElementById('banner-preview-img');
                 preview.src = uploaded.url;
                 preview.style.display = 'block';
+                zone.classList.add('has-banner');
                 showToast('Banner uploaded!', 'success');
             } catch (e) {
                 showToast('Upload error: ' + e.message, 'error');
             } finally {
-                document.getElementById('banner-progress').style.display = 'none';
+                overlay.classList.remove('active');
             }
             input.value = '';
         };
@@ -1293,7 +1464,8 @@
         window.uploadModuleFile = async (input) => {
             const files = input.files;
             if (!files.length) return;
-            document.getElementById('module-upload-progress').style.display = 'inline-block';
+            const progressEl = document.getElementById('module-upload-progress');
+            progressEl.style.display = 'inline-block';
             for (let file of files) {
                 try {
                     const uploaded = await uploadFileWithToast(file);
@@ -1303,7 +1475,7 @@
                     showToast('Upload failed: ' + e.message, 'error');
                 }
             }
-            document.getElementById('module-upload-progress').style.display = 'none';
+            progressEl.style.display = 'none';
             input.value = '';
         };
 
@@ -1333,7 +1505,11 @@
             const att = tempAttachments[index];
             if (!att) return;
             if (att.isImage && att.url) {
-                openImageModal(att.url, att.url);
+                let displayUrl = att.url;
+                if (att.driveId) {
+                    displayUrl = `https://drive.google.com/thumbnail?id=${att.driveId}&sz=w1200`;
+                }
+                openImageModal(att.url, displayUrl);
             } else if (att.driveId) {
                 openPreviewModal(`https://drive.google.com/file/d/${att.driveId}/preview`, att.name);
             } else if (att.url) {
@@ -1350,16 +1526,98 @@
             document.getElementById('previewIframe').src = '';
             document.getElementById('previewModal').classList.remove('active');
         };
+
+        // ---------- FIXED IMAGE MODAL FUNCTIONS ----------
         window.openImageModal = (downloadUrl, imageUrl) => {
-            document.getElementById('imageModalImg').src = imageUrl;
-            document.getElementById('imageModalDownload').href = downloadUrl;
+            const img = document.getElementById('imageModalImg');
+            const spinner = document.getElementById('imageModalSpinner');
+            const downloadLink = document.getElementById('imageModalDownload');
+
+            if (img._loadTimeout) clearTimeout(img._loadTimeout);
+            img._errorHandled = false;
+
+            img.style.display = 'none';
+            spinner.classList.remove('hidden');
+            img.src = '';
+            downloadLink.href = downloadUrl || imageUrl;
             document.getElementById('imageModal').classList.add('active');
+
+            img._loadTimeout = setTimeout(() => {
+                if (!img._errorHandled && img.style.display === 'none' && img.src) {
+                    handleImageModalError();
+                }
+            }, 12000);
+
+            img.src = imageUrl;
         };
+
+        window.handleImageModalError = () => {
+            const img = document.getElementById('imageModalImg');
+            if (img._errorHandled) return;
+            img._errorHandled = true;
+            if (img._loadTimeout) clearTimeout(img._loadTimeout);
+
+            const spinner = document.getElementById('imageModalSpinner');
+            spinner.classList.add('hidden');
+
+            const downloadLink = document.getElementById('imageModalDownload');
+            const fallbackUrl = downloadLink.href || img.src;
+            closeImageModal();
+            if (fallbackUrl && fallbackUrl !== '#') {
+                openPreviewModal(fallbackUrl, 'Image Preview');
+                showToast('Image preview loaded in document viewer.', 'info');
+            } else {
+                showToast('Could not preview this image.', 'error');
+            }
+        };
+
         window.closeImageModal = () => {
-            document.getElementById('imageModalImg').src = '';
+            const img = document.getElementById('imageModalImg');
+            if (img._loadTimeout) clearTimeout(img._loadTimeout);
+            img._errorHandled = true;
+            img.src = '';
+            img.style.display = 'none';
+            document.getElementById('imageModalSpinner').classList.remove('hidden');
             document.getElementById('imageModal').classList.remove('active');
         };
 
+        // ---------- FIXED COURSE PREVIEW (square banner) ----------
+        window.previewCourse = (courseId) => {
+            const course = allCourses.find(c => c.id === courseId);
+            if (!course) return;
+            const startDateStr = course.startDate ? new Date(course.startDate).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : 'Flexible';
+            const statusBadge = course.status === 'published' ? 'status-approved' : course.status === 'draft' ? 'status-pending' : 'status-rejected';
+            const statusText = course.status.charAt(0).toUpperCase() + course.status.slice(1);
+            
+            const bannerSection = course.thumbnailUrl ? `
+                <div style="text-align:center; margin-bottom:1.5rem;">
+                    <div style="width:100%; max-width:600px; aspect-ratio:1/1; margin:0 auto; background:#F5F6F9; border-radius:12px; 
+                                display:flex; align-items:center; justify-content:center; overflow:hidden; box-shadow: var(--shadow-md);">
+                        <img src="${course.thumbnailUrl}" alt="Course Banner" 
+                             style="max-width:100%; max-height:100%; object-fit:contain;" 
+                             onerror="this.parentElement.style.display='none';" />
+                    </div>
+                </div>` : '';
+
+            const html = `
+                ${bannerSection}
+                <div style="text-align:center;margin-bottom:1.5rem;">
+                    <h2 style="font-size:1.6rem;color:var(--primary);">${escapeHTML(course.title)}</h2>
+                    <p style="color:var(--text-muted);font-size:0.95rem;margin-top:0.3rem;">${escapeHTML(course.description || 'No description')}</p>
+                    <div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">
+                        <span class="status-pill" style="background:var(--bg-input);color:var(--text-primary);font-weight:600;font-size:0.85rem;"><i class="fa-solid fa-dollar-sign"></i> $${course.price}</span>
+                        <span class="status-pill" style="background:var(--bg-input);color:var(--text-primary);font-weight:600;font-size:0.85rem;"><i class="fa-solid fa-calendar"></i> ${startDateStr}</span>
+                        <span class="status-pill ${statusBadge}" style="font-size:0.85rem;">${statusText}</span>
+                    </div>
+                </div>
+                <hr style="border-color:var(--border-light);margin:1rem 0;" />
+                <p style="color:var(--text-muted); text-align:center; font-style:italic;">Full curriculum and enrollment details are available after purchase.</p>
+            `;
+            document.getElementById('course-preview-body').innerHTML = html;
+            document.getElementById('course-preview-modal').classList.add('active');
+        };
+
+        // ---- rest of the script remains identical ----
         async function loadCourses() {
             const q = query(collection(db, 'courses'), orderBy('createdAt', 'desc'));
             const snap = await getDocs(q);
@@ -1422,7 +1680,16 @@
             document.getElementById('course-start-date').value = course.startDate ? course.startDate.toDate().toISOString().split('T')[0] : '';
             document.getElementById('banner-url').value = course.thumbnailUrl || '';
             const preview = document.getElementById('banner-preview-img');
-            if (course.thumbnailUrl) { preview.src = course.thumbnailUrl; preview.style.display = 'block'; } else { preview.style.display = 'none'; }
+            const zone = document.getElementById('banner-upload-zone');
+            if (course.thumbnailUrl) {
+                preview.src = course.thumbnailUrl;
+                preview.style.display = 'block';
+                zone.classList.add('has-banner');
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                zone.classList.remove('has-banner');
+            }
             document.getElementById('course-modal').classList.add('active');
         };
 
@@ -1431,7 +1698,9 @@
             document.getElementById('course-id').value = '';
             document.getElementById('banner-url').value = '';
             document.getElementById('banner-preview-img').style.display = 'none';
-            document.getElementById('banner-progress').style.display = 'none';
+            document.getElementById('banner-preview-img').src = '';
+            document.getElementById('banner-upload-zone').classList.remove('has-banner');
+            document.getElementById('banner-progress-overlay').classList.remove('active');
         }
 
         window.saveCourse = async () => {
@@ -1468,30 +1737,6 @@
             await deleteDoc(doc(db, 'courses', courseId));
             loadCourses();
             showToast('Course deleted.', 'info');
-        };
-
-        window.previewCourse = (courseId) => {
-            const course = allCourses.find(c => c.id === courseId);
-            if (!course) return;
-            const startDateStr = course.startDate ? new Date(course.startDate).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : 'Flexible';
-            const statusBadge = course.status === 'published' ? 'status-approved' : course.status === 'draft' ? 'status-pending' : 'status-rejected';
-            const statusText = course.status.charAt(0).toUpperCase() + course.status.slice(1);
-            const html = `
-            ${course.thumbnailUrl ? `<img src="${course.thumbnailUrl}" class="preview-course-banner" alt="Course Banner" />` : ''}
-            <div style="text-align:center;margin-bottom:1.5rem;">
-              <h2 style="font-size:1.5rem;color:var(--primary);">${escapeHTML(course.title)}</h2>
-              <p style="color:var(--text-muted);font-size:0.95rem;margin-top:0.3rem;">${escapeHTML(course.description || 'No description')}</p>
-              <div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">
-                <span class="status-pill" style="background:var(--bg-input);color:var(--text-primary);font-weight:600;font-size:0.85rem;"><i class="fa-solid fa-dollar-sign"></i> $${course.price}</span>
-                <span class="status-pill" style="background:var(--bg-input);color:var(--text-primary);font-weight:600;font-size:0.85rem;"><i class="fa-solid fa-calendar"></i> ${startDateStr}</span>
-                <span class="status-pill ${statusBadge}" style="font-size:0.85rem;">${statusText}</span>
-              </div>
-            </div>
-            <hr style="border-color:var(--border-light);margin:1rem 0;" />
-            <p style="color:var(--text-muted); text-align:center; font-style:italic;">Full curriculum and enrollment details are available after purchase.</p>
-          `;
-            document.getElementById('course-preview-body').innerHTML = html;
-            document.getElementById('course-preview-modal').classList.add('active');
         };
 
         window.openBuilder = async (courseId) => {
