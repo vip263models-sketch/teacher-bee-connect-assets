@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Manage Teachers — TeacherBee Admin</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --primary-light: #EEF2FF;
+      --surface: #FFFFFF;
+      --surface-alt: #F8FAFC;
+      --bg-color: #F1F5F9;
+      --text-main: #0F172A;
+      --text-secondary: #334155;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --danger: #EF4444;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --radius-xs: 4px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
+      --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+
+    #toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast { padding: 14px 20px; border-radius: var(--radius-md); color: #fff; font-weight: 500; font-size: 0.875rem; box-shadow: var(--shadow-lg); animation: slideIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards; display: flex; align-items: center; gap: 10px; pointer-events: auto; }
+    .toast.error { background: #DC2626; } .toast.success { background: #059669; } .toast.info { background: #1E293B; }
+    @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    .btn { padding: 0.7rem 1.3rem; border-radius: var(--radius-sm); font-weight: 500; font-size: 0.875rem; cursor: pointer; border: 1px solid transparent; transition: all var(--transition-fast); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; outline: none; letter-spacing: -0.01em; white-space: nowrap; user-select: none; text-decoration: none; }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600; box-shadow: var(--shadow-xs); }
+    .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .btn-secondary { background: var(--surface); border-color: var(--border); color: var(--text-secondary); }
+    .btn-secondary:hover { background: var(--surface-alt); border-color: #CBD5E1; }
+    .btn-danger { background: #FEF2F2; color: var(--danger); border-color: #FECACA; }
+    .btn-danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .btn-warning { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+    .btn-warning:hover { background: var(--warning); color: #fff; border-color: var(--warning); }
+    .btn-small { padding: 0.45rem 0.85rem; font-size: 0.8rem; border-radius: var(--radius-xs); }
+    .btn-success { background: #D1FAE5; color: #065F46; border-color: #A7F3D0; }
+    .btn-success:hover { background: var(--success); color: #fff; border-color: var(--success); }
+
+    .login-container { width: 100%; max-width: 420px; background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.10); padding: 2.5rem 2rem; text-align: center; animation: fadeUp 0.5s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .login-logo { width: 56px; height: 56px; border-radius: var(--radius-sm); background: linear-gradient(135deg, #4F46E5, #6366F1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem; margin: 0 auto 1.5rem; }
+    .login-container h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .login-container p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.75rem; }
+    .form-group { margin-bottom: 1.1rem; text-align: left; }
+    .form-label { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 0.35rem; color: var(--text-secondary); }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 0.75rem 0.9rem; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; transition: all var(--transition-fast); background: var(--surface); color: var(--text-main); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.08); }
+    .form-textarea { resize: vertical; min-height: 90px; }
+    .error-message { color: var(--danger); font-size: 0.8rem; margin-top: 0.4rem; display: none; }
+
+    .app-container { display: none; width: 100%; max-width: 1200px; margin: 0 auto; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .top-bar h1 { font-size: 1.65rem; font-weight: 700; }
+    .search-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+    .search-bar input { flex: 1; min-width: 200px; }
+    .search-bar .btn { flex-shrink: 0; }
+    .teacher-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .teacher-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: var(--shadow-xs); transition: all var(--transition-fast); }
+    .teacher-card:hover { box-shadow: var(--shadow-md); border-color: #CBD5E1; }
+    .teacher-card.locked { border-left: 4px solid var(--danger); }
+    .teacher-info { display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 200px; }
+    .teacher-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: var(--border-light); }
+    .teacher-meta { display: flex; flex-direction: column; }
+    .teacher-name { font-weight: 600; font-size: 0.95rem; }
+    .teacher-email { font-size: 0.8rem; color: var(--text-muted); }
+    .teacher-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem; }
+    .teacher-tags span { background: var(--primary-light); color: var(--primary); padding: 0.2rem 0.5rem; border-radius: 999px; font-size: 0.7rem; font-weight: 500; }
+    .teacher-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .verified-badge { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 999px; margin-left: 0.5rem; font-weight: 600; }
+
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); backdrop-filter: blur(6px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1.5rem; }
+    .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
+    .modal-content { background: var(--surface); width: 100%; max-width: 750px; border-radius: var(--radius-lg); padding: 2rem; position: relative; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.12); animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes modalPop { from { opacity: 0; transform: scale(0.94) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .close-modal-btn { position: absolute; top: 1rem; right: 1rem; background: var(--surface-alt); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+    .close-modal-btn:hover { background: #FEF2F2; color: var(--danger); border-color: #FECACA; }
+    @keyframes fadeIn { from { opacity: 0; } }
+
+    .danger-zone { border: 1px dashed var(--danger); border-radius: var(--radius-md); padding: 1rem; margin-top: 1.5rem; }
+    .danger-zone h4 { color: var(--danger); margin-bottom: 0.5rem; font-size:0.95rem; }
+    .action-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    @media (max-width: 768px) {
+      body { align-items: flex-start; padding: 1rem; }
+      .login-container { margin-top: 2rem; padding: 2rem 1.5rem; }
+      .app-container { padding-bottom: 2rem; }
+      .top-bar { flex-direction: column; align-items: flex-start; }
+      .modal-content { padding: 1.25rem; }
+      .teacher-actions { flex-wrap: wrap; }
+      .search-bar .btn { flex: 1 1 auto; }
+    }
+  </style>
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-container">
+    <div class="login-logo"><i class="fa-solid fa-shield-halved"></i></div>
+    <h2>Admin Access</h2>
+    <p>Sign in to manage teachers</p>
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group"><label class="form-label">Email address</label><input type="email" id="login-email" class="form-input" placeholder="admin@teacherbee.com" required></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" id="login-password" class="form-input" placeholder="••••••••" required></div>
+      <div id="login-error" class="error-message">Invalid credentials or insufficient permissions.</div>
+      <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;" id="btn-login"><i class="fa-solid fa-lock"></i> Sign In</button>
+    </form>
+  </div>
+
+  <!-- Main App (hidden until login) -->
+  <div id="app-container" class="app-container">
+    <div class="top-bar">
+      <div>
+        <h1>Teachers Management</h1>
+        <p style="color: var(--text-muted); font-size:0.9rem; margin-top:0.25rem;" id="teacher-count">Loading...</p>
+      </div>
+      <button class="btn btn-secondary" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="teacher-search" class="form-input" placeholder="Search by name or email..." oninput="filterTeachers()">
+      <button class="btn btn-primary btn-small" onclick="filterTeachers()"><i class="fa-solid fa-search"></i> Search</button>
+      <button class="btn btn-secondary btn-small" onclick="loadTeachers()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+    </div>
+    <div id="teacher-list" class="teacher-list">
+      <div style="text-align:center; padding:2rem; color:var(--text-muted);">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem; color:var(--primary);"></i>
+        <p style="margin-top:0.75rem;">Loading teachers...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Teacher Modal -->
+  <div class="modal-overlay" id="edit-teacher-modal">
+    <div class="modal-content">
+      <button class="close-modal-btn" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom:1.5rem; font-weight:700;">Edit Teacher Profile</h3>
+      <form id="edit-teacher-form" onsubmit="saveTeacherEdit(event)">
+        <input type="hidden" id="edit-teacher-uid">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div class="form-group"><label class="form-label">Full Name</label><input type="text" id="edit-name" class="form-input" required></div>
+          <div class="form-group"><label class="form-label">Headline</label><input type="text" id="edit-headline" class="form-input"></div>
+          <div class="form-group"><label class="form-label">City</label><input type="text" id="edit-city" class="form-input"></div>
+          <div class="form-group"><label class="form-label">Country</label><input type="text" id="edit-country" class="form-input"></div>
+          <div class="form-group"><label class="form-label">Age</label><input type="number" id="edit-age" class="form-input" min="18" max="100"></div>
+          <div class="form-group"><label class="form-label">Gender</label><select id="edit-gender" class="form-select"><option value="Prefer not to say">Prefer not to say</option><option value="Female">Female</option><option value="Male">Male</option></select></div>
+          <div class="form-group"><label class="form-label">Experience (Years)</label><input type="number" id="edit-experience" class="form-input" min="0"></div>
+          <div class="form-group"><label class="form-label">Employment Status</label><select id="edit-employmentStatus" class="form-select"><option value="Actively Looking">Actively Looking</option><option value="Employed, but open to offers">Employed, but open to offers</option><option value="Not looking">Not looking</option></select></div>
+          <div class="form-group"><label class="form-label">Curriculum</label><input type="text" id="edit-curriculum" class="form-input"></div>
+          <div class="form-group" style="grid-column: span 2;"><label class="form-label">Bio</label><textarea id="edit-bio" class="form-textarea" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label">Subjects (comma separated)</label><input type="text" id="edit-subjects" class="form-input" placeholder="Math, Science, ESL"></div>
+          <div class="form-group"><label class="form-label">Grade Levels (comma separated)</label><input type="text" id="edit-gradeLevels" class="form-input" placeholder="High School, Primary"></div>
+          <div class="form-group"><label class="form-label">Languages (comma separated)</label><input type="text" id="edit-languages" class="form-input" placeholder="English, Spanish"></div>
+          <div class="form-group"><label class="form-label">Skills (comma separated)</label><input type="text" id="edit-skills" class="form-input" placeholder="Classroom Management, ESL"></div>
+          <div class="form-group"><label class="form-label">Privacy</label><select id="edit-privacySetting" class="form-select"><option value="Public">Public</option><option value="Employers Only">Employers Only</option><option value="Private">Private</option></select></div>
+        </div>
+        <div style="margin-top:1.5rem; display:flex; gap:0.75rem; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-teacher-edit"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+        </div>
+      </form>
+
+      <!-- Moderation Actions -->
+      <div class="danger-zone">
+        <h4><i class="fa-solid fa-gavel"></i> Moderation Actions</h4>
+        <div class="action-buttons">
+          <button class="btn btn-danger btn-small" onclick="deleteTeacherAvatar()"><i class="fa-solid fa-image"></i> Delete Profile Picture</button>
+          <button class="btn btn-danger btn-small" onclick="deleteTeacherResume()"><i class="fa-solid fa-file-pdf"></i> Delete Resume</button>
+          <button class="btn btn-danger btn-small" onclick="deleteTeacherVideo()"><i class="fa-solid fa-video"></i> Delete Intro Video</button>
+          <button class="btn btn-danger btn-small" onclick="deleteTeacherQualifications()"><i class="fa-solid fa-trash-can"></i> Delete All Qualifications</button>
+          <button class="btn btn-danger btn-small" onclick="deleteTeacherCertifications()"><i class="fa-solid fa-trash-can"></i> Delete All Certifications</button>
+          <button class="btn btn-warning btn-small" onclick="toggleLockProfile()" id="btn-toggle-lock"><i class="fa-solid fa-lock"></i> Lock Profile</button>
+          <button class="btn btn-success btn-small" onclick="sendPasswordReset()"><i class="fa-solid fa-key"></i> Send Password Reset Email</button>
+          <button class="btn btn-primary btn-small" onclick="toggleVerification()" id="btn-toggle-verify"><i class="fa-solid fa-check-double"></i> Verify Profile</button>
+        </div>
+        <p style="font-size:0.75rem; color: var(--text-muted); margin-top:0.5rem;">These actions are permanent. Use with caution.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+      authDomain: "teacherbee-connect.firebaseapp.com",
+      projectId: "teacherbee-connect",
+      storageBucket: "teacherbee-connect.firebasestorage.app",
+      messagingSenderId: "345613317767",
+      appId: "1:345613317767:web:555713e479f9837e84aa22"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loginScreen = document.getElementById('login-screen');
+    const appContainer = document.getElementById('app-container');
+    const loginError = document.getElementById('login-error');
+    const btnLogin = document.getElementById('btn-login');
+    let allTeachers = [];
+    let currentEditingUid = null;
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+      toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+    }
+
+    function showUI(mode) {
+      loginScreen.style.display = mode === 'login' ? 'block' : 'none';
+      appContainer.style.display = mode === 'app' ? 'block' : 'none';
+      document.body.style.alignItems = mode === 'login' ? 'center' : 'flex-start';
+      document.body.style.justifyContent = mode === 'login' ? 'center' : 'flex-start';
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const docSnap = await getDoc(doc(db, "admins", user.uid));
+          if (docSnap.exists() && docSnap.data().role === 'admin') {
+            showUI('app');
+            loadTeachers();
+          } else {
+            await signOut(auth);
+            showUI('login');
+            showToast('Access denied. Admin privileges required.', 'error');
+          }
+        } catch (e) {
+          await signOut(auth);
+          showUI('login');
+          showToast('Error verifying permissions.', 'error');
+        }
+      } else {
+        showUI('login');
+      }
+    });
+
+    window.handleLogin = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      loginError.style.display = 'none';
+      btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+      btnLogin.disabled = true;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        let message = 'Login failed. Check your credentials.';
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') message = 'Invalid email or password.';
+        else if (error.code === 'auth/too-many-requests') message = 'Too many attempts. Try again later.';
+        loginError.textContent = message;
+        loginError.style.display = 'block';
+        btnLogin.innerHTML = '<i class="fa-solid fa-lock"></i> Sign In';
+        btnLogin.disabled = false;
+      }
+    };
+
+    window.handleLogout = async function() {
+      await signOut(auth);
+      showUI('login');
+      showToast('Signed out successfully.', 'info');
+    };
+
+    async function loadTeachers() {
+      const container = document.getElementById('teacher-list');
+      container.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading teachers...</p></div>`;
+      try {
+        const snap = await getDocs(collection(db, "users"));
+        allTeachers = [];
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          if (data.role === 'recruiter' || data.role === 'admin') return;
+          allTeachers.push({ uid: docSnap.id, ...data });
+        });
+        document.getElementById('teacher-count').textContent = `${allTeachers.length} teachers found`;
+        renderTeacherList(allTeachers);
+      } catch(e) {
+        container.innerHTML = `<div style="text-align:center; color:var(--danger); padding:2rem;">Error loading teachers.</div>`;
+        console.error(e);
+      }
+    }
+
+    function renderTeacherList(teachers) {
+      const container = document.getElementById('teacher-list');
+      if (!teachers.length) {
+        container.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted);">No teachers found.</div>`;
+        return;
+      }
+      container.innerHTML = teachers.map(t => {
+        const avatar = t.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name || t.email)}&background=4F46E5&color=fff`;
+        const tags = [
+          t.city || t.country ? `${t.city || ''}${t.city && t.country ? ', ' : ''}${t.country || ''}` : '',
+          t.employmentStatus || '',
+          t.experience ? `${t.experience} yrs` : ''
+        ].filter(Boolean);
+        const isLocked = t.profileLocked === true;
+        const isVerified = t.profileVerified === true;
+        return `
+          <div class="teacher-card ${isLocked ? 'locked' : ''}">
+            <div class="teacher-info">
+              <img src="${avatar}" class="teacher-avatar" alt="">
+              <div class="teacher-meta">
+                <span class="teacher-name">${t.name || 'Unnamed'} ${isLocked ? '<i class="fa-solid fa-lock" style="color:var(--danger); font-size:0.8rem;"></i>' : ''} ${isVerified ? '<span class="verified-badge"><i class="fa-solid fa-check-circle"></i> Verified</span>' : ''}</span>
+                <span class="teacher-email">${t.email || ''}</span>
+                <div class="teacher-tags">${tags.map(tag => `<span>${tag}</span>`).join('')}</div>
+              </div>
+            </div>
+            <div class="teacher-actions">
+              <button class="btn ${isLocked ? 'btn-warning' : 'btn-secondary'} btn-small" onclick="toggleLockProfileDirect('${t.uid}', ${!isLocked})">
+                <i class="fa-solid ${isLocked ? 'fa-unlock' : 'fa-lock'}"></i> ${isLocked ? 'Unlock' : 'Lock'}
+              </button>
+              <button class="btn btn-primary btn-small" onclick="openEditTeacherModal('${t.uid}')"><i class="fa-solid fa-pen-to-square"></i> Manage</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.filterTeachers = function() {
+      const query = document.getElementById('teacher-search').value.toLowerCase();
+      const filtered = allTeachers.filter(t => 
+        (t.name || '').toLowerCase().includes(query) || 
+        (t.email || '').toLowerCase().includes(query)
+      );
+      renderTeacherList(filtered);
+    };
+
+    // ── Edit Modal Functions ──
+    window.openEditTeacherModal = function(uid) {
+      const teacher = allTeachers.find(t => t.uid === uid);
+      if (!teacher) return;
+      currentEditingUid = uid;
+      document.getElementById('edit-teacher-uid').value = uid;
+      document.getElementById('edit-name').value = teacher.name || '';
+      document.getElementById('edit-headline').value = teacher.headline || '';
+      document.getElementById('edit-city').value = teacher.city || '';
+      document.getElementById('edit-country').value = teacher.country || '';
+      document.getElementById('edit-age').value = teacher.age || '';
+      document.getElementById('edit-gender').value = teacher.gender || 'Prefer not to say';
+      document.getElementById('edit-experience').value = teacher.experience || '';
+      document.getElementById('edit-employmentStatus').value = teacher.employmentStatus || 'Actively Looking';
+      document.getElementById('edit-curriculum').value = teacher.curriculum || '';
+      document.getElementById('edit-bio').value = teacher.bio || '';
+      document.getElementById('edit-subjects').value = (teacher.subjects || []).join(', ');
+      document.getElementById('edit-gradeLevels').value = (teacher.gradeLevels || []).join(', ');
+      document.getElementById('edit-languages').value = (teacher.languages || []).join(', ');
+      document.getElementById('edit-skills').value = (teacher.skills || []).join(', ');
+      document.getElementById('edit-privacySetting').value = teacher.privacySetting || 'Public';
+      
+      const lockBtn = document.getElementById('btn-toggle-lock');
+      const isLocked = teacher.profileLocked === true;
+      lockBtn.innerHTML = isLocked ? '<i class="fa-solid fa-unlock"></i> Unlock Profile' : '<i class="fa-solid fa-lock"></i> Lock Profile';
+      lockBtn.className = isLocked ? 'btn btn-warning btn-small' : 'btn btn-danger btn-small';
+
+      const verifyBtn = document.getElementById('btn-toggle-verify');
+      const isVerified = teacher.profileVerified === true;
+      verifyBtn.innerHTML = isVerified ? '<i class="fa-solid fa-xmark"></i> Remove Verification' : '<i class="fa-solid fa-check-double"></i> Verify Profile';
+      verifyBtn.className = isVerified ? 'btn btn-secondary btn-small' : 'btn btn-success btn-small';
+      
+      document.getElementById('edit-teacher-modal').classList.add('active');
+    };
+
+    window.closeEditModal = function() {
+      document.getElementById('edit-teacher-modal').classList.remove('active');
+    };
+
+    window.saveTeacherEdit = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-teacher-edit');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+      btn.disabled = true;
+
+      const uid = document.getElementById('edit-teacher-uid').value;
+      const updateData = {
+        name: document.getElementById('edit-name').value,
+        headline: document.getElementById('edit-headline').value,
+        city: document.getElementById('edit-city').value,
+        country: document.getElementById('edit-country').value,
+        age: document.getElementById('edit-age').value,
+        gender: document.getElementById('edit-gender').value,
+        experience: document.getElementById('edit-experience').value,
+        employmentStatus: document.getElementById('edit-employmentStatus').value,
+        curriculum: document.getElementById('edit-curriculum').value,
+        bio: document.getElementById('edit-bio').value,
+        subjects: document.getElementById('edit-subjects').value.split(',').map(s => s.trim()).filter(Boolean),
+        gradeLevels: document.getElementById('edit-gradeLevels').value.split(',').map(s => s.trim()).filter(Boolean),
+        languages: document.getElementById('edit-languages').value.split(',').map(s => s.trim()).filter(Boolean),
+        skills: document.getElementById('edit-skills').value.split(',').map(s => s.trim()).filter(Boolean),
+        privacySetting: document.getElementById('edit-privacySetting').value,
+      };
+
+      try {
+        await updateDoc(doc(db, "users", uid), updateData);
+        const idx = allTeachers.findIndex(t => t.uid === uid);
+        if (idx !== -1) Object.assign(allTeachers[idx], updateData);
+        closeEditModal();
+        renderTeacherList(allTeachers);
+        showToast('Profile updated successfully!', 'success');
+      } catch(e) {
+        showToast('Error updating profile.', 'error');
+      } finally {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+      }
+    };
+
+    // ── Moderation Actions ──
+    async function deleteField(uid, field) {
+      try {
+        await updateDoc(doc(db, "users", uid), { [field]: '' });
+        const teacher = allTeachers.find(t => t.uid === uid);
+        if (teacher) teacher[field] = '';
+        showToast(`${field} deleted successfully.`, 'success');
+        renderTeacherList(allTeachers);
+      } catch(e) {
+        showToast('Error deleting item.', 'error');
+      }
+    }
+
+    window.deleteTeacherAvatar = function() {
+      if (confirm('Delete this teacher\'s profile picture?')) deleteField(currentEditingUid, 'avatarUrl');
+    };
+    window.deleteTeacherResume = function() {
+      if (confirm('Delete this teacher\'s resume?')) {
+        updateDoc(doc(db, "users", currentEditingUid), { resumeUrl: '', resumePreviewUrl: '', resumeIsImage: false, resumeDriveId: '' });
+        const teacher = allTeachers.find(t => t.uid === currentEditingUid);
+        if (teacher) { teacher.resumeUrl = ''; teacher.resumePreviewUrl = ''; teacher.resumeIsImage = false; teacher.resumeDriveId = ''; }
+        renderTeacherList(allTeachers);
+        showToast('Resume deleted.', 'success');
+      }
+    };
+    window.deleteTeacherVideo = function() {
+      if (confirm('Delete this teacher\'s intro video?')) deleteField(currentEditingUid, 'videoUrl');
+    };
+    window.deleteTeacherQualifications = function() {
+      if (confirm('Delete ALL qualifications for this teacher?')) {
+        updateDoc(doc(db, "users", currentEditingUid), { qualifications: [] });
+        const teacher = allTeachers.find(t => t.uid === currentEditingUid);
+        if (teacher) teacher.qualifications = [];
+        showToast('Qualifications cleared.', 'success');
+      }
+    };
+    window.deleteTeacherCertifications = function() {
+      if (confirm('Delete ALL certifications for this teacher?')) {
+        updateDoc(doc(db, "users", currentEditingUid), { certs: [] });
+        const teacher = allTeachers.find(t => t.uid === currentEditingUid);
+        if (teacher) teacher.certs = [];
+        showToast('Certifications cleared.', 'success');
+      }
+    };
+
+    window.toggleLockProfile = async function() {
+      const teacher = allTeachers.find(t => t.uid === currentEditingUid);
+      const newLocked = !(teacher?.profileLocked === true);
+      if (confirm(`Are you sure you want to ${newLocked ? 'LOCK' : 'UNLOCK'} this profile?`)) {
+        await updateDoc(doc(db, "users", currentEditingUid), { profileLocked: newLocked });
+        if (teacher) teacher.profileLocked = newLocked;
+        renderTeacherList(allTeachers);
+        const lockBtn = document.getElementById('btn-toggle-lock');
+        lockBtn.innerHTML = newLocked ? '<i class="fa-solid fa-unlock"></i> Unlock Profile' : '<i class="fa-solid fa-lock"></i> Lock Profile';
+        lockBtn.className = newLocked ? 'btn btn-warning btn-small' : 'btn btn-danger btn-small';
+        showToast(`Profile ${newLocked ? 'locked' : 'unlocked'}.`, 'success');
+      }
+    };
+
+    window.toggleLockProfileDirect = async function(uid, lock) {
+      if (confirm(`Are you sure you want to ${lock ? 'LOCK' : 'UNLOCK'} this profile?`)) {
+        await updateDoc(doc(db, "users", uid), { profileLocked: lock });
+        const teacher = allTeachers.find(t => t.uid === uid);
+        if (teacher) teacher.profileLocked = lock;
+        renderTeacherList(allTeachers);
+        showToast(`Profile ${lock ? 'locked' : 'unlocked'}.`, 'success');
+      }
+    };
+
+    // ── Password Reset (sends email) ──
+    window.sendPasswordReset = async function() {
+      const teacher = allTeachers.find(t => t.uid === currentEditingUid);
+      if (!teacher || !teacher.email) {
+        showToast('Teacher email not found.', 'error');
+        return;
+      }
+      try {
+        await sendPasswordResetEmail(auth, teacher.email);
+        showToast(`Password reset email sent to ${teacher.email}.`, 'success');
+      } catch (error) {
+        console.error(error);
+        showToast('Error sending password reset email. ' + error.message, 'error');
+      }
+    };
+
+    // ── Verification Toggle ──
+    window.toggleVerification = async function() {
+      const teacher = allTeachers.find(t => t.uid === currentEditingUid);
+      if (!teacher) return;
+      const newVerified = !(teacher.profileVerified === true);
+      if (confirm(`Mark this profile as ${newVerified ? 'VERIFIED' : 'UNVERIFIED'}?`)) {
+        await updateDoc(doc(db, "users", currentEditingUid), { profileVerified: newVerified });
+        teacher.profileVerified = newVerified;
+        renderTeacherList(allTeachers);
+        const verifyBtn = document.getElementById('btn-toggle-verify');
+        verifyBtn.innerHTML = newVerified ? '<i class="fa-solid fa-xmark"></i> Remove Verification' : '<i class="fa-solid fa-check-double"></i> Verify Profile';
+        verifyBtn.className = newVerified ? 'btn btn-secondary btn-small' : 'btn btn-success btn-small';
+        showToast(`Profile ${newVerified ? 'verified' : 'unverified'}.`, 'success');
+      }
+    };
+
+    window.loadTeachers = loadTeachers;
+    window.filterTeachers = filterTeachers;
+    window.openEditTeacherModal = openEditTeacherModal;
+    window.closeEditModal = closeEditModal;
+    window.saveTeacherEdit = saveTeacherEdit;
+    window.showToast = showToast;
+  </script>
+</body>
+</html>
