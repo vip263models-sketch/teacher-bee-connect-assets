@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ALL YOUR ORIGINAL CSS - UNCHANGED */
+        /* ALL YOUR ORIGINAL CSS – UNCHANGED */
         :root {
             --navy: #0F172A;
             --brand-blue: #0D4054;
@@ -918,11 +918,6 @@
     <div id="toast-container"></div>
 </div>
 
-<!-- ==============================================
-     UPDATED JAVASCRIPT - fixes duplicate invoices
-     and always shows pending invoice, no manual
-     Firestore steps needed.
-============================================== -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -963,35 +958,33 @@
         if (!currentUser) return;
 
         try {
-            // 1. Try query (may fail if index missing – that's okay)
-            const payment = await fetchLatestPendingPayment();
-            if (payment) {
-                pendingPaymentId = payment.id;
-                pendingPaymentData = payment.data;
-                console.log('✅ Found pending payment via query');
-                showPendingDashboard();
-                return;
-            }
-
-            // 2. Fallback: read subscription doc for pending_payment status
+            // Try to find a pending payment using the stored payment ID first (most reliable)
             const subDoc = await getDoc(doc(db, 'subscriptions', currentUser.uid));
             if (subDoc.exists()) {
                 const subData = subDoc.data();
-                console.log('📄 Subscription status:', subData.status);
-
-                // If status is pending_payment, try to load the payment by ID
                 if (subData.status === 'pending_payment' && subData.pendingPaymentId) {
-                    const paymentById = await getPendingPaymentById(subData.pendingPaymentId);
-                    if (paymentById) {
+                    const payment = await getPendingPaymentById(subData.pendingPaymentId);
+                    if (payment) {
                         pendingPaymentId = subData.pendingPaymentId;
-                        pendingPaymentData = paymentById;
-                        console.log('✅ Found pending payment via subscription doc');
+                        pendingPaymentData = payment;
                         showPendingDashboard();
                         return;
                     }
                 }
+            }
 
-                // Handle active / expired (your original logic)
+            // Fallback to query
+            const payment = await fetchLatestPendingPayment();
+            if (payment) {
+                pendingPaymentId = payment.id;
+                pendingPaymentData = payment.data;
+                showPendingDashboard();
+                return;
+            }
+
+            // Check for active/expired
+            if (subDoc.exists()) {
+                const subData = subDoc.data();
                 const now = Date.now();
                 if (subData.status === 'active' && subData.expiryDate?.toMillis() > now) {
                     showCurrentPlan(subData);
@@ -1006,7 +999,7 @@
                 }
             }
 
-            // 3. Nothing found – show subscribe
+            // Nothing found
             showSubscribe();
         } catch (e) {
             console.error('❌ initPage error:', e);
@@ -1030,8 +1023,7 @@
                 return { id: doc.id, data: doc.data() };
             }
         } catch (e) {
-            // Query may require a composite index – fallback will handle it
-            console.warn('⚠️ Query failed (likely missing index). Using subscription doc fallback.');
+            console.warn('⚠️ Query failed (likely missing index). Fallback will handle it.');
         }
         return null;
     }
@@ -1048,26 +1040,27 @@
         return null;
     }
 
-    // DUPLICATE PREVENTION: called before generating a new invoice
-    async function userHasPendingPayment() {
-        // Check subscription doc first (faster, no query)
+    // NEW: Directly load the existing pending invoice and show dashboard
+    async function redirectToExistingInvoice() {
+        // 1. Check subscription doc for pendingPaymentId
         const subSnap = await getDoc(doc(db, 'subscriptions', currentUser.uid));
-        if (subSnap.exists() && subSnap.data().status === 'pending_payment') {
+        if (subSnap.exists() && subSnap.data().status === 'pending_payment' && subSnap.data().pendingPaymentId) {
+            const payment = await getPendingPaymentById(subSnap.data().pendingPaymentId);
+            if (payment) {
+                pendingPaymentId = subSnap.data().pendingPaymentId;
+                pendingPaymentData = payment;
+                return true;
+            }
+        }
+
+        // 2. Fallback to query
+        const paymentQuery = await fetchLatestPendingPayment();
+        if (paymentQuery) {
+            pendingPaymentId = paymentQuery.id;
+            pendingPaymentData = paymentQuery.data;
             return true;
         }
-        // Fallback query
-        try {
-            const payRef = collection(db, 'payments');
-            const qSnap = await getDocs(query(
-                payRef,
-                where('userId', '==', currentUser.uid),
-                where('status', '==', 'pending'),
-                limit(1)
-            ));
-            return !qSnap.empty;
-        } catch (e) {
-            console.warn('Pending check query failed:', e);
-        }
+
         return false;
     }
 
@@ -1213,13 +1206,13 @@
 
     function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
-    // ---- Invoice generation WITH DUPLICATE CHECK ----
+    // ---- Invoice generation with DIRECT redirect to existing invoice ----
     window.generateInvoice = async function() {
-        // 1. Check if user already has a pending payment
-        const alreadyPending = await userHasPendingPayment();
+        // 1. Check if user already has a pending invoice – load it directly
+        const alreadyPending = await redirectToExistingInvoice();
         if (alreadyPending) {
-            showToast('You already have a pending invoice. Redirecting to it...', 'info');
-            await initPage();   // Re-run init to load the existing pending dashboard
+            showToast('You already have a pending invoice. Loading it now...', 'info');
+            showPendingDashboard();   // Direct switch, no re-init
             return;
         }
 
@@ -1350,7 +1343,7 @@
     }
 
     window.showToast = showToast;
-    console.log('✅ Subscription page ready – duplicate prevention & persistent invoice active.');
+    console.log('✅ Subscription page ready – direct invoice loading active.');
 </script>
 </body>
 </html>
