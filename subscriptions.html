@@ -942,8 +942,7 @@
     let pendingPaymentData = null;
     let selectedBillingPeriod = 'monthly';
     let selectedBillingAmount = 8;
-    // NEW: store approved payment data for active plan
-    let approvedPaymentData = null;
+    let approvedPaymentData = null;  // NEW: store approved payment
 
     onAuthStateChanged(auth, async (user) => {
         if (!user) {
@@ -961,8 +960,8 @@
 
         try {
             const subDoc = await getDoc(doc(db, 'subscriptions', currentUser.uid));
-            
-            // Check for pending payment first
+
+            // 1. Check for pending payment using the stored payment ID
             if (subDoc.exists() && subDoc.data().status === 'pending_payment' && subDoc.data().pendingPaymentId) {
                 const payment = await getPendingPaymentById(subDoc.data().pendingPaymentId);
                 if (payment) {
@@ -973,7 +972,7 @@
                 }
             }
 
-            // Fallback to query
+            // 2. Fallback query for pending payment
             const payment = await fetchLatestPendingPayment();
             if (payment) {
                 pendingPaymentId = payment.id;
@@ -982,13 +981,12 @@
                 return;
             }
 
-            // Check for active/expired subscriptions
+            // 3. Active/expired subscription
             if (subDoc.exists()) {
                 const subData = subDoc.data();
                 const now = Date.now();
-                
                 if (subData.status === 'active' && subData.expiryDate?.toMillis() > now) {
-                    // Fetch the approved payment to show details
+                    // Fetch the approved payment document to show its details
                     if (subData.paymentId) {
                         const paySnap = await getDoc(doc(db, 'payments', subData.paymentId));
                         if (paySnap.exists() && paySnap.data().status === 'approved') {
@@ -999,7 +997,6 @@
                     showApprovedPlan(subData, approvedPaymentData);
                     return;
                 } else if (subData.status === 'active' && subData.expiryDate?.toMillis() <= now) {
-                    // Auto-expire
                     await updateDoc(doc(db, 'subscriptions', currentUser.uid), { status: 'expired' });
                     showExpiredPlan(subData);
                     return;
@@ -1009,7 +1006,7 @@
                 }
             }
 
-            // Nothing found
+            // Nothing found → show subscribe page
             showSubscribe();
         } catch (e) {
             console.error('❌ initPage error:', e);
@@ -1018,6 +1015,7 @@
         }
     }
 
+    // ---------- Existing helper functions (unchanged) ----------
     async function fetchLatestPendingPayment() {
         try {
             const payRef = collection(db, 'payments');
@@ -1072,12 +1070,13 @@
         `;
     }
 
+    // ── UPDATED: showInvoice now uses the payment's real status ──
     function showInvoice(paymentData, paymentId) {
         showView('view-invoice');
-        buildInvoiceHTML(paymentData, paymentId);
+        buildInvoiceHTML(paymentData, paymentId, paymentData.status);
     }
 
-    // NEW: Show approved plan with detailed invoice info
+    // ── NEW: showApprovedPlan with richer content ──
     function showApprovedPlan(subData, paymentData) {
         showView('view-current-plan');
         const periodMap = { monthly:'Monthly', quarterly:'3 Months', biannually:'6 Months', annually:'12 Months' };
@@ -1087,9 +1086,9 @@
         const amount = paymentData?.amount || subData.amount || 8;
         const plan = periodMap[subData.billingPeriod] || subData.billingPeriod || 'Monthly';
 
-        let invoiceDetailsHtml = '';
+        let invoiceSection = '';
         if (paymentData) {
-            invoiceDetailsHtml = `
+            invoiceSection = `
                 <div style="background:#fff; border-radius:var(--radius-sm); padding:0.8rem; margin-top:1rem; text-align:left;">
                     <p><strong>Approved Invoice:</strong> #${invId}</p>
                     <p><strong>Amount:</strong> $${amount} USD</p>
@@ -1106,18 +1105,33 @@
                     <div><small>Approved</small><br><strong>${start}</strong></div>
                     <div><small>Expires</small><br><strong>${expiry}</strong></div>
                 </div>
-                ${invoiceDetailsHtml}
+                ${invoiceSection}
+                <!-- Upgrade / Extend section -->
+                <div style="background:#FFFDF5; border:1px solid #FDE68A; border-radius:var(--radius-sm); padding:1rem; margin-top:1.5rem;">
+                    <p style="margin-bottom:0.5rem; color:#92400E;"><i class="fa-solid fa-clock"></i> Need more recruiting time?</p>
+                    <p class="text-sm" style="color:#92400E;">Extend your subscription by purchasing additional months. A new invoice will be generated and must be approved by the admin. Your new expiry date will be calculated from your current expiry.</p>
+                    <button class="btn btn-primary btn-sm" style="margin-top:0.8rem;" onclick="extendSubscription()">
+                        <i class="fa-solid fa-plus"></i> Upgrade / Extend Plan
+                    </button>
+                </div>
             </div>
         `;
     }
 
-    // NEW: Open the approved invoice in the existing invoice view
+    // Opens the approved invoice with "Approved" status
     window.viewApprovedInvoice = function() {
         if (approvedPaymentData) {
             showInvoice(approvedPaymentData, approvedPaymentData.id);
         } else {
             showToast('Invoice details not available.', 'error');
         }
+    };
+
+    // Extend subscription: simply opens the checkout page
+    window.extendSubscription = function() {
+        showView('view-checkout');
+        resetCheckoutForm();
+        showToast('Choose your additional months and generate a new invoice.', 'info');
     };
 
     function showExpiredPlan(subData) {
@@ -1130,7 +1144,7 @@
         `;
     }
 
-    // ---- Checkout helpers (unchanged) ----
+    // ---- Checkout helpers (all original functions) ----
     function resetCheckoutForm() {
         document.getElementById('checkout-form').reset();
         document.getElementById('billing-period').value = 'monthly';
@@ -1220,7 +1234,7 @@
 
     function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
-    // ---- Invoice generation ----
+    // ---- Invoice generation (unchanged logic) ----
     window.generateInvoice = async function() {
         const alreadyPending = await redirectToExistingInvoice();
         if (alreadyPending) {
@@ -1304,11 +1318,15 @@
         return false;
     }
 
-    function buildInvoiceHTML(paymentData, paymentId) {
+    // ── buildInvoiceHTML now accepts a `statusOverride` parameter ──
+    function buildInvoiceHTML(paymentData, paymentId, statusOverride = null) {
         const cust = paymentData.customer || {};
         const periodMap = { monthly:'Monthly', quarterly:'3 Months', biannually:'6 Months', annually:'12 Months' };
         const created = paymentData.createdAt?.toDate ? paymentData.createdAt.toDate().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : new Date().toLocaleDateString();
         const invId = paymentId ? paymentId.substring(0,8).toUpperCase() : 'INV-XXXXXX';
+        const status = statusOverride || paymentData.status || 'pending';
+        const statusClass = `status-${status}`;
+        const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
         document.getElementById('invoice-content').innerHTML = `
             <div class="invoice-box" id="printable-invoice">
                 <div class="invoice-logo"><span class="blu">Teacher Bee</span><span class="org">Connect</span> 🐝</div>
@@ -1324,7 +1342,7 @@
                 <div style="background:#fff;padding:1rem;border-radius:var(--radius-sm);margin:1rem 0;">
                     <strong>Plan:</strong> ${periodMap[paymentData.billingPeriod]}<br>
                     <strong>Amount:</strong> <span style="font-size:1.3rem;font-weight:800;">$${paymentData.amount} USD</span><br>
-                    <strong>Status:</strong> <span class="status-badge status-pending">Pending</span>
+                    <strong>Status:</strong> <span class="status-badge ${statusClass}">${statusLabel}</span>
                 </div>
                 <div class="payment-instructions">
                     <p><i class="fa-solid fa-mobile-screen-button"></i> <strong>Ecocash:</strong> +263 77 123 4567 · TeacherBee Connect</p>
@@ -1355,15 +1373,44 @@
         } catch(e) { showToast('Error cancelling.','error'); }
     };
 
+    // ── NEW: cancelSubscription with custom confirmation dialog ──
     window.cancelSubscription = async function() {
-        if (!confirm('Cancel active subscription?')) return;
+        const confirmed = await showCustomConfirm(
+            'Cancel Subscription?',
+            'You will lose access to all premium features immediately. This action cannot be undone.',
+            'Yes, Cancel',
+            'Keep Subscription'
+        );
+        if (!confirmed) return;
+
         try {
             await updateDoc(doc(db, 'subscriptions', currentUser.uid), { status: 'cancelled', cancelledAt: serverTimestamp() });
             approvedPaymentData = null;
             showToast('Subscription cancelled.','info');
             showSubscribe();
-        } catch(e) { showToast('Error.','error'); }
+        } catch(e) { showToast('Error cancelling.','error'); }
     };
+
+    // Custom confirmation dialog (replaces browser confirm)
+    function showCustomConfirm(title, message, confirmText, cancelText) {
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center;';
+            overlay.innerHTML = `
+                <div style="background:white;border-radius:12px;padding:2rem;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2);">
+                    <h3 style="margin-bottom:0.5rem;">${title}</h3>
+                    <p style="color:#64748B;margin-bottom:1.5rem;">${message}</p>
+                    <div style="display:flex;gap:0.8rem;justify-content:center;">
+                        <button class="btn btn-danger" id="confirm-yes" style="flex:1;">${confirmText}</button>
+                        <button class="btn btn-outline" id="confirm-no" style="flex:1;">${cancelText}</button>
+                    </div>
+                </div>`;
+            document.body.appendChild(overlay);
+
+            document.getElementById('confirm-yes').onclick = () => { document.body.removeChild(overlay); resolve(true); };
+            document.getElementById('confirm-no').onclick = () => { document.body.removeChild(overlay); resolve(false); };
+        });
+    }
 
     window.startCheckout = function() { showView('view-checkout'); resetCheckoutForm(); };
 
@@ -1376,5 +1423,5 @@
     }
 
     window.showToast = showToast;
-    console.log('✅ Subscription page ready – approved plan view added.');
-</script>
+    console.log('✅ Subscription page ready – approved plan view with upgrade.');
+    </script>
