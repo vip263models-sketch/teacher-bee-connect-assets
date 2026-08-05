@@ -24,9 +24,9 @@
             --radius-lg: 14px;
             --radius-md: 10px;
             --radius-sm: 6px;
-            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
-            --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
-            --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+            --shadow-sm: 0 1px 3px rgba(15,23,42,0.06);
+            --shadow-md: 0 10px 30px rgba(15,23,42,0.08);
+            --shadow-lg: 0 20px 50px rgba(15,23,42,0.12);
             --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -622,8 +622,7 @@
                             <input type="tel" id="cust-phone" placeholder="Phone number" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Billing Period *</label>
+                    <div class="form-group"><label>Billing Period *</label>
                         <div class="billing-options" id="billing-period-options">
                             <div class="billing-option selected" data-period="monthly" data-amount="8" onclick="selectBillingPeriod(this)"><span class="price">$8</span><span class="period-label">Monthly</span></div>
                             <div class="billing-option" data-period="quarterly" data-amount="24" onclick="selectBillingPeriod(this)"><span class="price">$24</span><span class="period-label">3 Months</span></div>
@@ -926,47 +925,105 @@
     let selectedBillingAmount = 8;
 
     onAuthStateChanged(auth, async (user) => {
-        if (!user) window.location.href = 'login.html';
-        else { currentUser = user; await initPage(); }
+        if (!user) {
+            window.location.href = 'login.html';
+        } else {
+            currentUser = user;
+            console.log('✅ User authenticated:', currentUser.uid);
+            await initPage();
+        }
     });
 
     async function initPage() {
         if (!currentUser) return;
-        const subDoc = await getDoc(doc(db, 'subscriptions', currentUser.uid));
+
+        // 1. Check subscription doc
+        const subDocRef = doc(db, 'subscriptions', currentUser.uid);
+        let subDoc;
+        try {
+            subDoc = await getDoc(subDocRef);
+        } catch (e) {
+            console.error('Error reading subscription doc:', e);
+            showToast('Error reading subscription data. Check console.', 'error');
+            return;
+        }
+
+        console.log('📄 Subscription doc exists:', subDoc.exists());
         if (subDoc.exists()) {
             const subData = subDoc.data();
+            console.log('📊 Subscription status:', subData.status);
             const now = Date.now();
+
             if (subData.status === 'active' && subData.expiryDate?.toMillis() > now) {
+                console.log('→ Showing active plan');
                 showCurrentPlan(subData);
                 return;
             } else if (subData.status === 'active' && subData.expiryDate?.toMillis() <= now) {
-                await updateDoc(doc(db, 'subscriptions', currentUser.uid), { status: 'expired' });
+                console.log('→ Active but expired, updating to expired');
+                await updateDoc(subDocRef, { status: 'expired' });
                 showExpiredPlan(subData);
                 return;
             } else if (subData.status === 'expired') {
+                console.log('→ Showing expired plan');
                 showExpiredPlan(subData);
                 return;
             } else if (subData.status === 'pending_payment') {
-                const payRef = collection(db, 'payments');
-                const qSnap = await getDocs(query(payRef, where('userId', '==', currentUser.uid), where('status', '==', 'pending'), orderBy('createdAt', 'desc'), limit(1)));
-                if (!qSnap.empty) {
-                    pendingPaymentId = qSnap.docs[0].id;
-                    pendingPaymentData = qSnap.docs[0].data();
+                console.log('→ Subscription is pending payment, looking for pending invoice...');
+                const payment = await fetchLatestPendingPayment();
+                if (payment) {
+                    pendingPaymentId = payment.id;
+                    pendingPaymentData = payment.data;
+                    console.log('→ Showing pending dashboard');
                     showPendingDashboard();
+                    return;
+                } else {
+                    console.warn('⚠️ No pending payment found despite pending_payment status. Resetting to subscribe.');
+                    // Optionally clean up the subscription doc
+                    await setDoc(subDocRef, { status: 'cancelled', cancelledAt: serverTimestamp() }, { merge: true });
+                    showSubscribe();
                     return;
                 }
             }
         }
 
-        const payRef = collection(db, 'payments');
-        const qSnap = await getDocs(query(payRef, where('userId', '==', currentUser.uid), where('status', '==', 'pending'), orderBy('createdAt', 'desc'), limit(1)));
-        if (!qSnap.empty) {
-            pendingPaymentId = qSnap.docs[0].id;
-            pendingPaymentData = qSnap.docs[0].data();
+        // 2. No subscription doc or status not handled above — search for any pending payment directly
+        const payment = await fetchLatestPendingPayment();
+        if (payment) {
+            pendingPaymentId = payment.id;
+            pendingPaymentData = payment.data;
+            console.log('→ Found pending payment without subscription doc, showing dashboard');
+            // Also create/update subscription doc to reflect state
+            await setDoc(subDocRef, {
+                status: 'pending_payment',
+                pendingPaymentId: payment.id,
+                billingPeriod: payment.data.billingPeriod || 'monthly',
+                amount: payment.data.amount || 8,
+                updatedAt: serverTimestamp(),
+                customer: payment.data.customer || {}
+            }, { merge: true });
             showPendingDashboard();
             return;
         }
+
+        // 3. Nothing found → show subscribe
+        console.log('→ No active or pending state, showing subscribe');
         showSubscribe();
+    }
+
+    async function fetchLatestPendingPayment() {
+        try {
+            const payRef = collection(db, 'payments');
+            const qSnap = await getDocs(query(payRef, where('userId', '==', currentUser.uid), where('status', '==', 'pending'), orderBy('createdAt', 'desc'), limit(1)));
+            console.log('🔍 Pending payments found:', qSnap.size);
+            if (!qSnap.empty) {
+                const doc = qSnap.docs[0];
+                return { id: doc.id, data: doc.data() };
+            }
+            return null;
+        } catch (e) {
+            console.error('Error fetching pending payments:', e);
+            return null;
+        }
     }
 
     function showView(viewId) {
