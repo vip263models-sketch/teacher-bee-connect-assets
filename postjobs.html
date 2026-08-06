@@ -4,129 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Post Jobs — International Recruitment</title>
-
-    <!-- Smart Header Fonts and Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
-
-    <style>
-        /* ---------- Smart Header & Drawer Styles ---------- */
-        .smart-header {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            background: rgba(255,255,255,0.88);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            z-index: 99990;
-            box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(13,64,84,0.05);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .smart-header-inner {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; height: 60px; max-width: 1200px; margin: 0 auto;
-        }
-        .smart-logo {
-            font-family: 'Montserrat', sans-serif; font-size: 1.4rem; font-weight: 800;
-            display: flex; align-items: center; text-decoration: none;
-            letter-spacing: -0.3px; gap: 4px; white-space: nowrap;
-            overflow: hidden; text-overflow: ellipsis;
-        }
-        .smart-logo-blue { color: #0D4054; }
-        .smart-logo-orange { color: #F5A623; }
-        .smart-logo-emoji {
-            font-size: 1.3rem; margin-left: 5px;
-            animation: beeWiggle 3s ease-in-out infinite; flex-shrink: 0;
-        }
-        @keyframes beeWiggle {
-            0%,100% { transform: rotate(0deg) translateY(0); }
-            15% { transform: rotate(-5deg) translateY(-2px); }
-            30% { transform: rotate(5deg) translateY(-1px); }
-            45% { transform: rotate(-3deg) translateY(0); }
-            60% { transform: rotate(0deg) translateY(0); }
-        }
-
-        .smart-hamburger {
-            background: transparent; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            width: 40px; height: 40px; border-radius: 50%;
-            transition: all 0.2s ease; color: #0D4054;
-            position: relative; flex-shrink: 0;
-        }
-        .smart-hamburger:hover { background: rgba(13,64,84,0.06); }
-        .smart-hamburger:active svg { transform: scale(0.9); }
-        .smart-hamburger-dot {
-            position: absolute; top: 8px; right: 8px;
-            width: 8px; height: 8px; background: #E53E3E;
-            border-radius: 50%; border: 2px solid #fff;
-            animation: pulseDot 2s ease-in-out infinite;
-        }
-        @keyframes pulseDot {
-            0%,100% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.6); opacity: 0.4; }
-        }
-
-        /* Menu Overlay & Drawer */
-        .smart-menu-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(10,10,20,0.6);
-            z-index: 99999;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            opacity: 0; visibility: hidden;
-            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-        }
-        .smart-menu-overlay.open {
-            opacity: 1; visibility: visible;
-        }
-        .smart-menu-drawer {
-            position: absolute; top: 0; right: -100%;
-            width: 85%; max-width: 360px; height: 100%;
-            background: #fff; display: flex; flex-direction: column;
-            transition: right 0.4s cubic-bezier(0.25,1,0.5,1);
-            box-shadow: -10px 0 40px rgba(0,0,0,0.25);
-            border-radius: 24px 0 0 24px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .smart-menu-overlay.open .smart-menu-drawer { right: 0; }
-        .smart-menu-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 24px; border-bottom: 1px solid #f0f0f0;
-        }
-        .smart-menu-links {
-            display: flex; flex-direction: column; padding: 12px 0;
-            overflow-y: auto; flex: 1;
-        }
-        .smart-menu-links a {
-            padding: 16px 24px; color: #0D4054; text-decoration: none;
-            font-size: 1.05rem; font-weight: 600; border-bottom: 1px solid #f9f9f9;
-            transition: all 0.2s ease; display: flex; align-items: center; gap: 12px;
-        }
-        .smart-menu-links a:hover {
-            color: #F5A623; background: rgba(245,166,35,0.04); padding-left: 30px;
-        }
-        .smart-menu-links a i {
-            width: 20px; text-align: center; font-size: 0.95rem;
-            color: #718691; transition: color 0.2s ease;
-        }
-        .smart-menu-links a:hover i { color: #F5A623; }
-        .smart-menu-close {
-            background: none; border: none; cursor: pointer;
-            width: 40px; height: 40px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s ease; color: #0D4054;
-        }
-        .smart-menu-close:hover { background: rgba(0,0,0,0.05); }
-
-        /* Push page content down to avoid overlap */
-        body { margin-top: 60px; }
-        @media (min-width: 768px) {
-            .smart-header-inner { height: 68px; }
-            body { margin-top: 68px; }
-        }
-    </style>
-
-    <!-- Page‑specific styles (unchanged) -->
     <style>
         :root {
             --navy: #0F1F3D;
@@ -157,14 +34,14 @@
             --radius-sm: 6px;
             --radius-full: 9999px;
 
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 30px rgba(0,0,0,0.08);
-            --shadow-xl: 0 20px 50px rgba(0,0,0,0.10);
-            --shadow-navy: 0 6px 20px rgba(15,31,61,0.25);
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.10);
+            --shadow-navy: 0 6px 20px rgba(15, 31, 61, 0.25);
 
-            --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
-            --transition-slow: 0.35s cubic-bezier(0.4,0,0.2,1);
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         *,
@@ -180,7 +57,7 @@
             width: 100%;
             -webkit-font-smoothing: antialiased;
             background: var(--grey-bg);
-            min-height: calc(100vh - 60px); /* adjust for fixed header */
+            min-height: 100vh;
             margin: 0;
             padding: 0;
         }
@@ -551,7 +428,7 @@
         .jm-panel textarea:focus {
             outline: none;
             border-color: var(--mustard);
-            box-shadow: 0 0 0 3px rgba(212,160,23,0.08);
+            box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.08);
             background: var(--white);
         }
         .jm-panel textarea {
@@ -676,7 +553,7 @@
             justify-content: center;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 14px rgba(212,160,23,0.30);
+            box-shadow: 0 4px 14px rgba(212, 160, 23, 0.30);
             border: none;
             cursor: pointer;
             text-transform: none;
@@ -686,7 +563,7 @@
         .jm-btn-apply:hover {
             background: var(--mustard-hover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(212,160,23,0.38);
+            box-shadow: 0 8px 22px rgba(212, 160, 23, 0.38);
         }
 
         .jm-toast-container {
@@ -706,7 +583,7 @@
             font-size: 0.9rem;
             font-weight: 600;
             box-shadow: var(--shadow-xl);
-            animation: jm-slideIn 0.3s cubic-bezier(0.4,0,0.2,1) forwards;
+            animation: jm-slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
         .jm-toast.success {
             background: var(--navy-light);
@@ -770,459 +647,483 @@
 </head>
 <body>
 
-<!-- Smart Header (no Dashboard button) -->
-<header class="smart-header" id="smartHeader">
-  <div class="smart-header-inner">
-    <a href="index.html" class="smart-logo">
-      <span class="smart-logo-blue">Teacher Bee</span>
-      <span class="smart-logo-orange">Connect</span>
-      <span class="smart-logo-emoji">🐝</span>
-    </a>
-    <button class="smart-hamburger" id="smartMenuBtn" aria-label="Menu">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
-      </svg>
-      <span class="smart-hamburger-dot"></span>
-    </button>
-  </div>
-</header>
+    <div id="job-manager-app">
+        <div id="toastContainer" class="jm-toast-container"></div>
 
-<!-- Menu Overlay & Drawer -->
-<div class="smart-menu-overlay" id="smartMenuOverlay">
-  <div class="smart-menu-drawer">
-    <div class="smart-menu-header">
-      <span class="smart-logo" style="font-size:1.2rem;">
-        <span class="smart-logo-blue">Teacher Bee</span><span class="smart-logo-orange">Connect</span><span class="smart-logo-emoji" style="font-size:1.1rem;">🐝</span>
-      </span>
-      <button class="smart-menu-close" id="smartCloseBtn">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-    <div class="smart-menu-links">
-      <a href="about.html"><i class="fa-solid fa-circle-info"></i> About Us</a>
-      <a href="services.html"><i class="fa-solid fa-briefcase"></i> Our Services</a>
-      <a href="contact.html"><i class="fa-solid fa-envelope"></i> Contact Us</a>
-      <a href="index.html"><i class="fa-solid fa-user"></i> My Account</a>
-    </div>
-  </div>
-</div>
-
-<!-- Toggle script -->
-<script>
-  (function() {
-    const overlay = document.getElementById('smartMenuOverlay');
-    const menuBtn = document.getElementById('smartMenuBtn');
-    const closeBtn = document.getElementById('smartCloseBtn');
-    menuBtn.addEventListener('click', () => overlay.classList.add('open'));
-    closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
-  })();
-</script>
-
-<!-- Original app content (unchanged) -->
-<div id="job-manager-app">
-    <div id="toastContainer" class="jm-toast-container"></div>
-
-    <div id="dashboardView" class="jm-container jm-fade-enter">
-        <div class="jm-header">
-            <span style="font-weight:700;font-size:1.1rem;color:#FFFFFF;letter-spacing:-0.01em;">📋 Job Board</span>
-            <button class="jm-btn jm-btn-primary" onclick="app.showEditor()">+ Post Job</button>
-        </div>
-        <div id="jobsGrid" class="jm-jobs-grid"></div>
-        <div id="emptyState" class="jm-empty-state hidden">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-            <h3>No jobs posted yet</h3>
-            <p>Click "+ Post Job" to create your first listing.</p>
-        </div>
-    </div>
-
-    <div id="editorView" class="jm-container hidden">
-        <div class="jm-header">
-            <h1 class="jm-title" id="editorTitle">Create New Job</h1>
-            <button class="jm-btn jm-btn-outline" style="color:#FFFFFF;border-color:rgba(255,255,255,0.4);" onclick="app.showDashboard()">Cancel &amp; Return</button>
-        </div>
-        <div class="jm-editor-layout">
-            <div class="jm-panel">
-                <form id="jobForm" onsubmit="event.preventDefault(); app.saveJob();">
-                    <input type="hidden" id="jobId" value="">
-                    <input type="hidden" id="jobStatus" value="open">
-                    <div class="jm-form-group">
-                        <label>Job Banner Image (Optional)</label>
-                        <div class="jm-upload-zone">
-                            <input type="file" id="bannerInput" accept="image/*" style="display:none;" onchange="app.uploadBanner(this)" />
-                            <input type="hidden" id="bannerUrl" value="">
-                            <button type="button" class="jm-btn jm-btn-outline" onclick="document.getElementById('bannerInput').click()">Select Image</button>
-                            <img id="bannerPreviewThumb" src="" alt="Banner Thumbnail">
-                        </div>
-                    </div>
-                    <div class="jm-form-group"><label>Job Title*</label><input type="text" id="title" required placeholder="e.g. Senior Frontend Developer"></div>
-                    <div class="jm-input-row">
-                        <div><label>Employer / Company*</label><input type="text" id="employerName" required placeholder="Company Name"></div>
-                        <div><label>Subject Area</label><input type="text" id="subject" placeholder="e.g. Engineering, Mathematics"></div>
-                    </div>
-                    <div class="jm-input-row">
-                        <div><label>Location*</label><input type="text" id="location" required placeholder="City, Remote, etc."></div>
-                        <div><label>Employment Type*</label><select id="type" required><option value="Full-time">Full-time</option><option value="Part-time">Part-time</option><option value="Contract">Contract</option><option value="Freelance">Freelance</option></select></div>
-                    </div>
-                    <div class="jm-input-row">
-                        <div><label>Salary/Pay</label><input type="text" id="pay" placeholder="e.g. $80k - $100k"></div>
-                        <div><label>Vacancies</label><input type="number" id="vacancies" min="1" value="1"></div>
-                    </div>
-                    <div class="jm-form-group"><label>Application Deadline</label><input type="date" id="deadline"></div>
-                    <div class="jm-form-group"><label>Job Description*</label><textarea id="description" required placeholder="Describe the role..."></textarea></div>
-                    <div class="jm-form-group"><label>Requirements</label><textarea id="requirements" placeholder="List key requirements..."></textarea></div>
-                    <button type="submit" id="saveBtn" class="jm-btn jm-btn-primary" style="width:100%; padding:16px; font-size:1rem; margin-top:8px;">Publish Job Post</button>
-                </form>
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="jm-container jm-fade-enter">
+            <div class="jm-header">
+                <span style="font-weight:700;font-size:1.1rem;color:#FFFFFF;letter-spacing:-0.01em;">📋 Job Board</span>
+                <button class="jm-btn jm-btn-primary" onclick="app.showEditor()">+ Post Job</button>
             </div>
-            <div class="jm-preview-panel">
-                <div class="jm-preview-panel-header">Applicant View Preview</div>
-                <div class="jm-applicant-card">
-                    <div id="prevTopBar" class="jm-applicant-top-bar"></div>
-                    <img id="prevBanner" class="jm-preview-banner" src="" alt="Job Banner">
-                    <div class="jm-applicant-body">
-                        <h2 class="jm-preview-title" id="prevTitle">Untitled Position</h2>
-                        <div class="jm-preview-employer">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
-                            <span id="prevEmployer">Confidential Employer</span>
+
+            <div id="jobsGrid" class="jm-jobs-grid"></div>
+
+            <div id="emptyState" class="jm-empty-state hidden">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <h3>No jobs posted yet</h3>
+                <p>Click "+ Post Job" to create your first listing.</p>
+            </div>
+        </div>
+
+        <!-- Editor View -->
+        <div id="editorView" class="jm-container hidden">
+            <div class="jm-header">
+                <h1 class="jm-title" id="editorTitle">Create New Job</h1>
+                <button class="jm-btn jm-btn-outline" style="color:#FFFFFF;border-color:rgba(255,255,255,0.4);" onclick="app.showDashboard()">Cancel &amp; Return</button>
+            </div>
+
+            <div class="jm-editor-layout">
+                <div class="jm-panel">
+                    <form id="jobForm" onsubmit="event.preventDefault(); app.saveJob();">
+                        <input type="hidden" id="jobId" value="">
+                        <input type="hidden" id="jobStatus" value="open">
+
+                        <div class="jm-form-group">
+                            <label>Job Banner Image (Optional)</label>
+                            <div class="jm-upload-zone">
+                                <input type="file" id="bannerInput" accept="image/*" style="display:none;" onchange="app.uploadBanner(this)" />
+                                <input type="hidden" id="bannerUrl" value="">
+                                <button type="button" class="jm-btn jm-btn-outline" onclick="document.getElementById('bannerInput').click()">Select Image</button>
+                                <img id="bannerPreviewThumb" src="" alt="Banner Thumbnail">
+                            </div>
                         </div>
-                        <div class="jm-pill-container">
-                            <div class="jm-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span id="prevLocation">Location Not Specified</span></div>
-                            <div class="jm-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span id="prevType">Full-time</span></div>
-                            <div class="jm-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span id="prevDeadline">Open Until Filled</span></div>
-                            <div class="jm-pill hidden" id="prevPayPill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><span id="prevPay"></span></div>
-                            <div class="jm-pill hidden" id="prevVacanciesPill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span id="prevVacancies"></span></div>
+
+                        <div class="jm-form-group">
+                            <label>Job Title*</label>
+                            <input type="text" id="title" required placeholder="e.g. Senior Frontend Developer">
                         </div>
-                        <div class="jm-preview-desc" id="prevDesc">The job description you provide will appear here...</div>
-                        <div class="jm-preview-desc hidden" id="prevReqsContainer"><strong>Requirements:</strong><br/><span id="prevReqs"></span></div>
-                        <button class="jm-btn-apply" type="button" onclick="app.showToast('This is a preview button', 'info')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            Apply Now
-                        </button>
+
+                        <div class="jm-input-row">
+                            <div><label>Employer / Company*</label><input type="text" id="employerName" required placeholder="Company Name"></div>
+                            <div><label>Subject Area</label><input type="text" id="subject" placeholder="e.g. Engineering, Mathematics"></div>
+                        </div>
+
+                        <div class="jm-input-row">
+                            <div><label>Location*</label><input type="text" id="location" required placeholder="City, Remote, etc."></div>
+                            <div><label>Employment Type*</label>
+                                <select id="type" required>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Freelance">Freelance</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="jm-input-row">
+                            <div><label>Salary/Pay</label><input type="text" id="pay" placeholder="e.g. $80k - $100k"></div>
+                            <div><label>Vacancies</label><input type="number" id="vacancies" min="1" value="1"></div>
+                        </div>
+
+                        <div class="jm-form-group">
+                            <label>Application Deadline</label>
+                            <input type="date" id="deadline">
+                        </div>
+
+                        <div class="jm-form-group">
+                            <label>Job Description*</label>
+                            <textarea id="description" required placeholder="Describe the role..."></textarea>
+                        </div>
+
+                        <div class="jm-form-group">
+                            <label>Requirements</label>
+                            <textarea id="requirements" placeholder="List key requirements..."></textarea>
+                        </div>
+
+                        <button type="submit" id="saveBtn" class="jm-btn jm-btn-primary" style="width: 100%; padding: 16px; font-size: 1rem; margin-top: 8px;">Publish Job Post</button>
+                    </form>
+                </div>
+
+                <div class="jm-preview-panel">
+                    <div class="jm-preview-panel-header">Applicant View Preview</div>
+                    <div class="jm-applicant-card">
+                        <div id="prevTopBar" class="jm-applicant-top-bar"></div>
+                        <img id="prevBanner" class="jm-preview-banner" src="" alt="Job Banner">
+                        <div class="jm-applicant-body">
+                            <h2 class="jm-preview-title" id="prevTitle">Untitled Position</h2>
+                            <div class="jm-preview-employer">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
+                                <span id="prevEmployer">Confidential Employer</span>
+                            </div>
+                            <div class="jm-pill-container">
+                                <div class="jm-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span id="prevLocation">Location Not Specified</span></div>
+                                <div class="jm-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span id="prevType">Full-time</span></div>
+                                <div class="jm-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span id="prevDeadline">Open Until Filled</span></div>
+                                <div class="jm-pill hidden" id="prevPayPill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><span id="prevPay"></span></div>
+                                <div class="jm-pill hidden" id="prevVacanciesPill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span id="prevVacancies"></span></div>
+                            </div>
+                            <div class="jm-preview-desc" id="prevDesc">The job description you provide will appear here...</div>
+                            <div class="jm-preview-desc hidden" id="prevReqsContainer"><strong>Requirements:</strong><br/><span id="prevReqs"></span></div>
+                            <button class="jm-btn-apply" type="button" onclick="app.showToast('This is a preview button', 'info')">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                Apply Now
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, query, where, onSnapshot, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, query, where, onSnapshot, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
-        authDomain: "teacherbee-connect.firebaseapp.com",
-        projectId: "teacherbee-connect",
-        storageBucket: "teacherbee-connect.firebasestorage.app",
-        messagingSenderId: "345613317767",
-        appId: "1:345613317767:web:555713e479f9837e84aa22"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+            authDomain: "teacherbee-connect.firebaseapp.com",
+            projectId: "teacherbee-connect",
+            storageBucket: "teacherbee-connect.firebasestorage.app",
+            messagingSenderId: "345613317767",
+            appId: "1:345613317767:web:555713e479f9837e84aa22"
+        };
 
-    const fbApp = initializeApp(firebaseConfig);
-    window.auth = getAuth(fbApp);
-    window.db = getFirestore(fbApp);
-    window.fb = { doc, getDoc, collection, addDoc, serverTimestamp, query, where, onSnapshot, updateDoc, deleteDoc };
-    setPersistence(window.auth, browserLocalPersistence);
+        const fbApp = initializeApp(firebaseConfig);
+        window.auth = getAuth(fbApp);
+        window.db = getFirestore(fbApp);
+        window.fb = { doc, getDoc, collection, addDoc, serverTimestamp, query, where, onSnapshot, updateDoc, deleteDoc };
+        setPersistence(window.auth, browserLocalPersistence);
 
-    onAuthStateChanged(window.auth, (user) => {
-        if (!user) {
-            window.location.href = 'index.html';   // FIXED redirect
-        } else {
-            window.currentUser = user;
-            app.initDashboard();
-        }
-    });
-</script>
-
-<script>
-    const GAS_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
-    const ICONS = {
-        location: `<svg class="jm-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`,
-        type: `<svg class="jm-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
-        pay: `<svg class="jm-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>`,
-        calendar: `<svg class="jm-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`
-    };
-
-    const app = {
-        unsubscribeSnapshot: null,
-        jobs: [],
-
-        showDashboard: () => {
-            document.getElementById('editorView').classList.add('hidden');
-            document.getElementById('dashboardView').classList.remove('hidden');
-            app.resetForm();
-        },
-
-        showEditor: async (isEdit = false) => {
-            const subscribed = await app.checkSubscriptionStatus(window.currentUser.uid);
-            if (!subscribed) {
-                app.showToast('You need an active subscription to post jobs. Redirecting...', 'error');
-                setTimeout(() => { window.location.href = 'subscriptions.html'; }, 1500);
-                return;
-            }
-            document.getElementById('dashboardView').classList.add('hidden');
-            document.getElementById('editorView').classList.remove('hidden');
-            document.getElementById('editorTitle').innerText = isEdit ? "Edit Job Listing" : "Create New Job";
-            document.getElementById('saveBtn').innerText = isEdit ? "Update Job Listing" : "Publish Job Post";
-            if (!isEdit) {
-                app.resetForm();
-                app.updatePreview();
-            }
-        },
-
-        checkSubscriptionStatus: async (uid) => {
-            try {
-                const { doc, getDoc } = window.fb;
-                const subDoc = await getDoc(doc(window.db, 'subscriptions', uid));
-                if (subDoc.exists()) {
-                    const data = subDoc.data();
-                    if (data.status === 'active' && data.expiryDate && data.expiryDate.toMillis() > Date.now()) {
-                        return true;
-                    }
-                }
-                return false;
-            } catch (e) { console.error('Subscription check failed', e); return false; }
-        },
-
-        initDashboard: () => {
-            const { collection, query, where, onSnapshot } = window.fb;
-            const jobsRef = collection(window.db, "jobs");
-            const q = query(jobsRef, where("recruiterId", "==", window.currentUser.uid));
-            app.unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
-                app.jobs = [];
-                snapshot.forEach((doc) => { app.jobs.push({ id: doc.id, ...doc.data() }); });
-                app.jobs.sort((a,b) => {
-                    const tA = a.createdAt ? a.createdAt.toMillis() : 0;
-                    const tB = b.createdAt ? b.createdAt.toMillis() : 0;
-                    return tB - tA;
-                });
-                app.renderJobsGrid();
-            }, (error) => { app.showToast("Error loading jobs", "error"); });
-        },
-
-        renderJobsGrid: () => {
-            const grid = document.getElementById('jobsGrid');
-            const emptyState = document.getElementById('emptyState');
-            grid.innerHTML = "";
-            if (app.jobs.length === 0) {
-                emptyState.classList.remove('hidden');
+        onAuthStateChanged(window.auth, (user) => {
+            if (!user) {
+                window.location.href = 'https://teacherbeeconnect.blogspot.com/p/index_01629774816.html';
             } else {
-                emptyState.classList.add('hidden');
-                app.jobs.forEach(job => {
-                    const statusClass = job.status === 'open' ? 'open' : 'closed';
-                    const deadlineTxt = job.deadline ? new Date(job.deadline).toLocaleDateString() : 'Open';
-                    const card = document.createElement('div');
-                    card.className = "jm-card jm-fade-enter";
-                    if (job.bannerUrl) {
-                        const img = document.createElement('img');
-                        img.className = "jm-card-banner";
-                        img.src = job.bannerUrl;
-                        card.appendChild(img);
-                    }
-                    const body = document.createElement('div');
-                    body.className = "jm-card-body";
-                    body.innerHTML = `
-                        <div class="jm-card-header">
-                            <div>
-                                <div class="jm-card-title">${app.escapeHTML(job.title)}</div>
-                                <div class="jm-card-employer">${app.escapeHTML(job.employerName)}</div>
-                            </div>
-                            <span class="jm-badge ${statusClass}">${job.status}</span>
-                        </div>
-                        <div class="jm-card-divider"></div>
-                        <div class="jm-card-details">
-                            <div class="jm-detail-item">${ICONS.location} <span>${app.escapeHTML(job.location)}</span></div>
-                            <div class="jm-detail-item">${ICONS.type} <span>${job.type}</span></div>
-                            <div class="jm-detail-item">${ICONS.pay} <span>${job.pay || 'N/A'}</span></div>
-                            <div class="jm-detail-item">${ICONS.calendar} <span>${deadlineTxt}</span></div>
-                        </div>
-                        <div class="jm-card-actions">
-                            <button class="jm-btn jm-btn-outline" onclick="app.editJob('${job.id}')">EDIT</button>
-                            <button class="jm-btn jm-btn-outline" onclick="app.toggleStatus('${job.id}', '${job.status}')">${job.status === 'open' ? 'CLOSE' : 'REOPEN'}</button>
-                            <button class="jm-btn jm-btn-outline" onclick="app.duplicateJob('${job.id}')">COPY</button>
-                            <button class="jm-btn jm-btn-outline-danger" onclick="app.deleteJob('${job.id}')">DELETE</button>
-                        </div>
-                    `;
-                    card.appendChild(body);
-                    grid.appendChild(card);
-                });
+                window.currentUser = user;
+                app.initDashboard();
             }
-        },
+        });
+    </script>
 
-        saveJob: async () => {
-            const subscribed = await app.checkSubscriptionStatus(window.currentUser.uid);
-            if (!subscribed) {
-                app.showToast('Your subscription is no longer active. Please subscribe to post jobs.', 'error');
-                setTimeout(() => { window.location.href = 'subscriptions.html'; }, 1500);
-                return;
-            }
-            const form = document.getElementById('jobForm');
-            if (!form.checkValidity()) { form.reportValidity(); return; }
-            const { doc, collection, addDoc, updateDoc, serverTimestamp } = window.fb;
-            const jobId = document.getElementById('jobId').value;
-            const btn = document.getElementById('saveBtn');
-            const originalText = btn.innerText;
-            const jobData = {
-                title: document.getElementById('title').value,
-                employerName: document.getElementById('employerName').value,
-                subject: document.getElementById('subject').value,
-                location: document.getElementById('location').value,
-                type: document.getElementById('type').value,
-                pay: document.getElementById('pay').value,
-                vacancies: parseInt(document.getElementById('vacancies').value) || 1,
-                deadline: document.getElementById('deadline').value,
-                description: document.getElementById('description').value,
-                requirements: document.getElementById('requirements').value,
-                bannerUrl: document.getElementById('bannerUrl').value,
-                status: document.getElementById('jobStatus').value || 'open',
-                updatedAt: serverTimestamp()
-            };
-            try {
-                btn.innerText = "SAVING..."; btn.disabled = true;
-                if (jobId) {
-                    await updateDoc(doc(window.db, "jobs", jobId), jobData);
-                    app.showToast("Job updated successfully", "success");
-                } else {
-                    jobData.recruiterId = window.currentUser.uid;
-                    jobData.applicantsCount = 0;
-                    jobData.createdAt = serverTimestamp();
-                    await addDoc(collection(window.db, "jobs"), jobData);
-                    app.showToast("Job posted successfully", "success");
+    <script>
+        const GAS_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+
+        const ICONS = {
+            location: `<svg class="jm-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`,
+            type: `<svg class="jm-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
+            pay: `<svg class="jm-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>`,
+            calendar: `<svg class="jm-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`
+        };
+
+        const app = {
+            unsubscribeSnapshot: null,
+            jobs: [],
+
+            showDashboard: () => {
+                document.getElementById('editorView').classList.add('hidden');
+                document.getElementById('dashboardView').classList.remove('hidden');
+                app.resetForm();
+            },
+
+            showEditor: async (isEdit = false) => {
+                // Check subscription before allowing editor access
+                const subscribed = await app.checkSubscriptionStatus(window.currentUser.uid);
+                if (!subscribed) {
+                    app.showToast('You need an active subscription to post jobs. Redirecting...', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'subscriptions.html';
+                    }, 1500);
+                    return;
                 }
-                app.showDashboard();
-            } catch (error) {
-                app.showToast("Error saving job", "error");
-            } finally {
-                btn.innerText = originalText; btn.disabled = false;
-            }
-        },
 
-        deleteJob: async (id) => {
-            if (!confirm("Delete this job posting permanently?")) return;
-            try { await window.fb.deleteDoc(window.fb.doc(window.db, "jobs", id)); app.showToast("Job deleted", "success"); } catch (err) { app.showToast("Failed to delete job", "error"); }
-        },
-        toggleStatus: async (id, currentStatus) => {
-            try { const newStatus = currentStatus === 'open' ? 'closed' : 'open'; await window.fb.updateDoc(window.fb.doc(window.db, "jobs", id), { status: newStatus, updatedAt: window.fb.serverTimestamp() }); app.showToast(`Status changed to ${newStatus}`, "success"); } catch (err) { app.showToast("Update failed", "error"); }
-        },
-        duplicateJob: async (id) => {
-            try {
+                document.getElementById('dashboardView').classList.add('hidden');
+                document.getElementById('editorView').classList.remove('hidden');
+                document.getElementById('editorTitle').innerText = isEdit ? "Edit Job Listing" : "Create New Job";
+                document.getElementById('saveBtn').innerText = isEdit ? "Update Job Listing" : "Publish Job Post";
+                if (!isEdit) {
+                    app.resetForm();
+                    app.updatePreview();
+                }
+            },
+
+            checkSubscriptionStatus: async (uid) => {
+                try {
+                    const { doc, getDoc } = window.fb;
+                    const subDoc = await getDoc(doc(window.db, 'subscriptions', uid));
+                    if (subDoc.exists()) {
+                        const data = subDoc.data();
+                        if (data.status === 'active' && data.expiryDate && data.expiryDate.toMillis() > Date.now()) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } catch (e) {
+                    console.error('Subscription check failed', e);
+                    return false;
+                }
+            },
+
+            initDashboard: () => {
+                const { collection, query, where, onSnapshot } = window.fb;
+                const jobsRef = collection(window.db, "jobs");
+                const q = query(jobsRef, where("recruiterId", "==", window.currentUser.uid));
+
+                app.unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
+                    app.jobs = [];
+                    snapshot.forEach((doc) => {
+                        app.jobs.push({ id: doc.id, ...doc.data() });
+                    });
+                    app.jobs.sort((a, b) => {
+                        const tA = a.createdAt ? a.createdAt.toMillis() : 0;
+                        const tB = b.createdAt ? b.createdAt.toMillis() : 0;
+                        return tB - tA;
+                    });
+                    app.renderJobsGrid();
+                }, (error) => {
+                    app.showToast("Error loading jobs", "error");
+                });
+            },
+
+            renderJobsGrid: () => {
+                const grid = document.getElementById('jobsGrid');
+                const emptyState = document.getElementById('emptyState');
+                grid.innerHTML = "";
+
+                if (app.jobs.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+
+                    app.jobs.forEach(job => {
+                        const statusClass = job.status === 'open' ? 'open' : 'closed';
+                        const deadlineTxt = job.deadline ? new Date(job.deadline).toLocaleDateString() : 'Open';
+
+                        const card = document.createElement('div');
+                        card.className = "jm-card jm-fade-enter";
+
+                        if (job.bannerUrl) {
+                            const img = document.createElement('img');
+                            img.className = "jm-card-banner";
+                            img.src = job.bannerUrl;
+                            img.alt = "Job Banner";
+                            card.appendChild(img);
+                        }
+
+                        const body = document.createElement('div');
+                        body.className = "jm-card-body";
+                        body.innerHTML = `
+                            <div class="jm-card-header">
+                                <div>
+                                    <div class="jm-card-title">${app.escapeHTML(job.title)}</div>
+                                    <div class="jm-card-employer">${app.escapeHTML(job.employerName)}</div>
+                                </div>
+                                <span class="jm-badge ${statusClass}">${job.status}</span>
+                            </div>
+                            <div class="jm-card-divider"></div>
+                            <div class="jm-card-details">
+                                <div class="jm-detail-item">${ICONS.location} <span>${app.escapeHTML(job.location)}</span></div>
+                                <div class="jm-detail-item">${ICONS.type} <span>${job.type}</span></div>
+                                <div class="jm-detail-item">${ICONS.pay} <span>${job.pay || 'N/A'}</span></div>
+                                <div class="jm-detail-item">${ICONS.calendar} <span>${deadlineTxt}</span></div>
+                            </div>
+                            <div class="jm-card-actions">
+                                <button class="jm-btn jm-btn-outline" onclick="app.editJob('${job.id}')">EDIT</button>
+                                <button class="jm-btn jm-btn-outline" onclick="app.toggleStatus('${job.id}', '${job.status}')">${job.status === 'open' ? 'CLOSE' : 'REOPEN'}</button>
+                                <button class="jm-btn jm-btn-outline" onclick="app.duplicateJob('${job.id}')">COPY</button>
+                                <button class="jm-btn jm-btn-outline-danger" onclick="app.deleteJob('${job.id}')">DELETE</button>
+                            </div>
+                        `;
+                        card.appendChild(body);
+                        grid.appendChild(card);
+                    });
+                }
+            },
+
+            saveJob: async () => {
+                // Double-check subscription before saving
+                const subscribed = await app.checkSubscriptionStatus(window.currentUser.uid);
+                if (!subscribed) {
+                    app.showToast('Your subscription is no longer active. Please subscribe to post jobs.', 'error');
+                    setTimeout(() => { window.location.href = 'subscriptions.html'; }, 1500);
+                    return;
+                }
+
+                const form = document.getElementById('jobForm');
+                if (!form.checkValidity()) { form.reportValidity(); return; }
+
+                const { doc, collection, addDoc, updateDoc, serverTimestamp } = window.fb;
+                const jobId = document.getElementById('jobId').value;
+                const btn = document.getElementById('saveBtn');
+                const originalText = btn.innerText;
+
+                const jobData = {
+                    title: document.getElementById('title').value,
+                    employerName: document.getElementById('employerName').value,
+                    subject: document.getElementById('subject').value,
+                    location: document.getElementById('location').value,
+                    type: document.getElementById('type').value,
+                    pay: document.getElementById('pay').value,
+                    vacancies: parseInt(document.getElementById('vacancies').value) || 1,
+                    deadline: document.getElementById('deadline').value,
+                    description: document.getElementById('description').value,
+                    requirements: document.getElementById('requirements').value,
+                    bannerUrl: document.getElementById('bannerUrl').value,
+                    status: document.getElementById('jobStatus').value || 'open',
+                    updatedAt: serverTimestamp()
+                };
+
+                try {
+                    btn.innerText = "SAVING...";
+                    btn.disabled = true;
+                    if (jobId) {
+                        await updateDoc(doc(window.db, "jobs", jobId), jobData);
+                        app.showToast("Job updated successfully", "success");
+                    } else {
+                        jobData.recruiterId = window.currentUser.uid;
+                        jobData.applicantsCount = 0;
+                        jobData.createdAt = serverTimestamp();
+                        await addDoc(collection(window.db, "jobs"), jobData);
+                        app.showToast("Job posted successfully", "success");
+                    }
+                    app.showDashboard();
+                } catch (error) {
+                    app.showToast("Error saving job", "error");
+                } finally {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+            },
+
+            deleteJob: async (id) => {
+                if (!confirm("Delete this job posting permanently?")) return;
+                try {
+                    await window.fb.deleteDoc(window.fb.doc(window.db, "jobs", id));
+                    app.showToast("Job deleted", "success");
+                } catch (err) { app.showToast("Failed to delete job", "error"); }
+            },
+
+            toggleStatus: async (id, currentStatus) => {
+                try {
+                    const newStatus = currentStatus === 'open' ? 'closed' : 'open';
+                    await window.fb.updateDoc(window.fb.doc(window.db, "jobs", id), { status: newStatus, updatedAt: window.fb.serverTimestamp() });
+                    app.showToast(`Status changed to ${newStatus}`, "success");
+                } catch (err) { app.showToast("Update failed", "error"); }
+            },
+
+            duplicateJob: async (id) => {
+                try {
+                    const job = app.jobs.find(j => j.id === id);
+                    if (!job) return;
+                    const copyData = { ...job };
+                    delete copyData.id;
+                    copyData.title = `${copyData.title} (Copy)`;
+                    copyData.createdAt = window.fb.serverTimestamp();
+                    copyData.updatedAt = window.fb.serverTimestamp();
+                    copyData.status = 'open';
+                    copyData.applicantsCount = 0;
+                    await window.fb.addDoc(window.fb.collection(window.db, "jobs"), copyData);
+                    app.showToast("Job copied", "success");
+                } catch (err) { app.showToast("Failed to duplicate", "error"); }
+            },
+
+            editJob: async (id) => {
+                // Editing also requires subscription
+                const subscribed = await app.checkSubscriptionStatus(window.currentUser.uid);
+                if (!subscribed) {
+                    app.showToast('You need an active subscription to edit jobs. Redirecting...', 'error');
+                    setTimeout(() => { window.location.href = 'subscriptions.html'; }, 1500);
+                    return;
+                }
+
                 const job = app.jobs.find(j => j.id === id);
                 if (!job) return;
-                const copyData = { ...job }; delete copyData.id;
-                copyData.title = `${copyData.title} (Copy)`;
-                copyData.createdAt = window.fb.serverTimestamp();
-                copyData.updatedAt = window.fb.serverTimestamp();
-                copyData.status = 'open';
-                copyData.applicantsCount = 0;
-                await window.fb.addDoc(window.fb.collection(window.db, "jobs"), copyData);
-                app.showToast("Job copied", "success");
-            } catch (err) { app.showToast("Failed to duplicate", "error"); }
-        },
+                document.getElementById('jobId').value = job.id;
+                document.getElementById('jobStatus').value = job.status;
+                document.getElementById('bannerUrl').value = job.bannerUrl || "";
+                document.getElementById('title').value = job.title || "";
+                document.getElementById('employerName').value = job.employerName || "";
+                document.getElementById('subject').value = job.subject || "";
+                document.getElementById('location').value = job.location || "";
+                document.getElementById('type').value = job.type || "Full-time";
+                document.getElementById('pay').value = job.pay || "";
+                document.getElementById('vacancies').value = job.vacancies || 1;
+                document.getElementById('deadline').value = job.deadline || "";
+                document.getElementById('description').value = job.description || "";
+                document.getElementById('requirements').value = job.requirements || "";
 
-        editJob: async (id) => {
-            const subscribed = await app.checkSubscriptionStatus(window.currentUser.uid);
-            if (!subscribed) {
-                app.showToast('You need an active subscription to edit jobs. Redirecting...', 'error');
-                setTimeout(() => { window.location.href = 'subscriptions.html'; }, 1500);
-                return;
+                const thumb = document.getElementById('bannerPreviewThumb');
+                if (job.bannerUrl) { thumb.src = job.bannerUrl; thumb.style.display = 'block'; } else { thumb.style.display = 'none'; }
+                app.updatePreview();
+                app.showEditor(true);
+            },
+
+            uploadBanner: (inputElement) => {
+                const file = inputElement.files[0];
+                if (!file) return;
+                app.showToast("Uploading image...", "info");
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const payload = { action: 'uploadProfile', fileName: file.name, mimeType: file.type || "application/octet-stream", file: e.target.result };
+                    try {
+                        const res = await fetch(GAS_UPLOAD_URL, { method: "POST", body: JSON.stringify(payload) });
+                        const data = await res.json();
+                        if (data.status === "success" && data.profilePic?.url) {
+                            document.getElementById('bannerUrl').value = data.profilePic.url;
+                            const thumb = document.getElementById('bannerPreviewThumb');
+                            thumb.src = data.profilePic.url;
+                            thumb.style.display = 'block';
+                            app.updatePreview();
+                            app.showToast("Upload complete", "success");
+                        } else { app.showToast("Upload failed", "error"); }
+                    } catch (err) { app.showToast("Network error", "error"); }
+                    inputElement.value = "";
+                };
+                reader.readAsDataURL(file);
+            },
+
+            updatePreview: () => {
+                const v = (id) => document.getElementById(id).value;
+                const bannerUrl = v('bannerUrl');
+                document.getElementById('prevTitle').innerText = v('title') || "Untitled Position";
+                document.getElementById('prevEmployer').innerText = v('employerName') || "Confidential Employer";
+                document.getElementById('prevLocation').innerText = v('location') || "Location Not Specified";
+                document.getElementById('prevType').innerText = v('type') || "Full-time";
+                document.getElementById('prevDeadline').innerText = v('deadline') || "Open Until Filled";
+                document.getElementById('prevDesc').innerText = v('description') || "The job description you provide will appear here...";
+
+                const payPill = document.getElementById('prevPayPill');
+                if (v('pay')) { document.getElementById('prevPay').innerText = v('pay'); payPill.classList.remove('hidden'); } else { payPill.classList.add('hidden'); }
+
+                const vacPill = document.getElementById('prevVacanciesPill');
+                if (v('vacancies') && parseInt(v('vacancies')) > 1) { document.getElementById('prevVacancies').innerText = `${v('vacancies')} Vacancies`; vacPill.classList.remove('hidden'); } else { vacPill.classList.add('hidden'); }
+
+                const reqContainer = document.getElementById('prevReqsContainer');
+                if (v('requirements')) { document.getElementById('prevReqs').innerText = v('requirements'); reqContainer.classList.remove('hidden'); } else { reqContainer.classList.add('hidden'); }
+
+                const bannerImg = document.getElementById('prevBanner');
+                const topBar = document.getElementById('prevTopBar');
+                if (bannerUrl) { bannerImg.src = bannerUrl; bannerImg.style.display = "block"; topBar.style.display = "none"; } else { bannerImg.style.display = "none"; topBar.style.display = "block"; }
+            },
+
+            resetForm: () => {
+                document.getElementById('jobForm').reset();
+                document.getElementById('jobId').value = "";
+                document.getElementById('bannerUrl').value = "";
+                document.getElementById('jobStatus').value = "open";
+                document.getElementById('bannerPreviewThumb').style.display = "none";
+            },
+
+            showToast: (msg, type = "info") => {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `jm-toast ${type}`;
+                toast.innerText = msg;
+                container.appendChild(toast);
+                setTimeout(() => toast.remove(), 4000);
+            },
+
+            escapeHTML: (str) => {
+                if (!str) return "";
+                const div = document.createElement('div');
+                div.innerText = str;
+                return div.innerHTML;
             }
-            const job = app.jobs.find(j => j.id === id);
-            if (!job) return;
-            document.getElementById('jobId').value = job.id;
-            document.getElementById('jobStatus').value = job.status;
-            document.getElementById('bannerUrl').value = job.bannerUrl || "";
-            document.getElementById('title').value = job.title || "";
-            document.getElementById('employerName').value = job.employerName || "";
-            document.getElementById('subject').value = job.subject || "";
-            document.getElementById('location').value = job.location || "";
-            document.getElementById('type').value = job.type || "Full-time";
-            document.getElementById('pay').value = job.pay || "";
-            document.getElementById('vacancies').value = job.vacancies || 1;
-            document.getElementById('deadline').value = job.deadline || "";
-            document.getElementById('description').value = job.description || "";
-            document.getElementById('requirements').value = job.requirements || "";
-            const thumb = document.getElementById('bannerPreviewThumb');
-            if (job.bannerUrl) { thumb.src = job.bannerUrl; thumb.style.display = 'block'; } else { thumb.style.display = 'none'; }
-            app.updatePreview();
-            app.showEditor(true);
-        },
+        };
 
-        uploadBanner: (inputElement) => {
-            const file = inputElement.files[0]; if (!file) return;
-            app.showToast("Uploading image...", "info");
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const payload = { action: 'uploadProfile', fileName: file.name, mimeType: file.type || "application/octet-stream", file: e.target.result };
-                try {
-                    const res = await fetch(GAS_UPLOAD_URL, { method: "POST", body: JSON.stringify(payload) });
-                    const data = await res.json();
-                    if (data.status === "success" && data.profilePic?.url) {
-                        document.getElementById('bannerUrl').value = data.profilePic.url;
-                        const thumb = document.getElementById('bannerPreviewThumb');
-                        thumb.src = data.profilePic.url; thumb.style.display = 'block';
-                        app.updatePreview();
-                        app.showToast("Upload complete", "success");
-                    } else { app.showToast("Upload failed", "error"); }
-                } catch (err) { app.showToast("Network error", "error"); }
-                inputElement.value = "";
-            };
-            reader.readAsDataURL(file);
-        },
-
-        updatePreview: () => {
-            const v = (id) => document.getElementById(id).value;
-            const bannerUrl = v('bannerUrl');
-            document.getElementById('prevTitle').innerText = v('title') || "Untitled Position";
-            document.getElementById('prevEmployer').innerText = v('employerName') || "Confidential Employer";
-            document.getElementById('prevLocation').innerText = v('location') || "Location Not Specified";
-            document.getElementById('prevType').innerText = v('type') || "Full-time";
-            document.getElementById('prevDeadline').innerText = v('deadline') || "Open Until Filled";
-            document.getElementById('prevDesc').innerText = v('description') || "The job description you provide will appear here...";
-            const payPill = document.getElementById('prevPayPill');
-            if (v('pay')) { document.getElementById('prevPay').innerText = v('pay'); payPill.classList.remove('hidden'); } else { payPill.classList.add('hidden'); }
-            const vacPill = document.getElementById('prevVacanciesPill');
-            if (v('vacancies') && parseInt(v('vacancies')) > 1) { document.getElementById('prevVacancies').innerText = `${v('vacancies')} Vacancies`; vacPill.classList.remove('hidden'); } else { vacPill.classList.add('hidden'); }
-            const reqContainer = document.getElementById('prevReqsContainer');
-            if (v('requirements')) { document.getElementById('prevReqs').innerText = v('requirements'); reqContainer.classList.remove('hidden'); } else { reqContainer.classList.add('hidden'); }
-            const bannerImg = document.getElementById('prevBanner');
-            const topBar = document.getElementById('prevTopBar');
-            if (bannerUrl) { bannerImg.src = bannerUrl; bannerImg.style.display = "block"; topBar.style.display = "none"; } else { bannerImg.style.display = "none"; topBar.style.display = "block"; }
-        },
-
-        resetForm: () => {
-            document.getElementById('jobForm').reset();
-            document.getElementById('jobId').value = "";
-            document.getElementById('bannerUrl').value = "";
-            document.getElementById('jobStatus').value = "open";
-            document.getElementById('bannerPreviewThumb').style.display = "none";
-        },
-
-        showToast: (msg, type = "info") => {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `jm-toast ${type}`;
-            toast.innerText = msg;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-        },
-
-        escapeHTML: (str) => {
-            if (!str) return "";
-            const div = document.createElement('div');
-            div.innerText = str;
-            return div.innerHTML;
-        }
-    };
-
-    document.querySelectorAll('#jobForm input, #jobForm select, #jobForm textarea').forEach(el => {
-        el.addEventListener('input', app.updatePreview);
-    });
-</script>
+        document.querySelectorAll('#jobForm input, #jobForm select, #jobForm textarea').forEach(el => {
+            el.addEventListener('input', app.updatePreview);
+        });
+    </script>
 </body>
 </html>
