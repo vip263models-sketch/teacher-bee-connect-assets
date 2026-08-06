@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <title>Submit a Query · TeacherBee (Recruiter)</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --bg-page: #F4F5F7;
+            --bg-surface: #FFFFFF;
+            --bg-input: #F8F9FB;
+            --bg-hover: #F5F6F8;
+            --primary: #1A1E2B;
+            --primary-light: #2D3344;
+            --accent: #4F6EF7;
+            --accent-hover: #3B56E0;
+            --accent-soft: #EEF1FE;
+            --text-primary: #1A1E2B;
+            --text-secondary: #5A5F6E;
+            --text-muted: #8D93A3;
+            --text-placeholder: #B0B6C2;
+            --border-light: #E8EBF0;
+            --border-strong: #D6DAE2;
+            --shadow-xs: 0 1px 2px rgba(26, 30, 43, 0.03);
+            --shadow-sm: 0 1px 3px rgba(26, 30, 43, 0.05);
+            --shadow-md: 0 4px 16px rgba(26, 30, 43, 0.06);
+            --shadow-lg: 0 8px 32px rgba(26, 30, 43, 0.08);
+            --shadow-xl: 0 16px 48px rgba(26, 30, 43, 0.12);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --radius-full: 9999px;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: var(--font);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.01em;
+            line-height: 1.5;
+        }
+
+        /* ── NAVIGATION BAR ── */
+        .nav-bar {
+            background: #fff;
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-xs);
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--primary);
+        }
+        .nav-brand-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--primary);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            letter-spacing: -0.5px;
+        }
+        .nav-brand-text {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .nav-brand-text span {
+            color: var(--accent);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-link {
+            padding: 7px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            background: transparent;
+            font-family: var(--font);
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+        }
+        .nav-link:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        .nav-link.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .nav-link.inbox-btn {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .nav-link.inbox-btn:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        /* ── PAGE LAYOUT ── */
+        .page-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 28px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            text-align: center;
+            padding: 8px 0 4px;
+        }
+        .page-header .icon-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 1.4rem;
+            color: var(--accent);
+        }
+        .page-header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            margin-bottom: 4px;
+        }
+        .page-header p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* ── CONTACT CARDS ── */
+        .contact-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+        .contact-card {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-xs);
+        }
+        .contact-card:hover {
+            box-shadow: var(--shadow-sm);
+            border-color: var(--border-strong);
+            transform: translateY(-1px);
+        }
+        .contact-card .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .contact-card .card-icon.phone {
+            background: #ECFDF5;
+            color: #059669;
+        }
+        .contact-card .card-icon.email {
+            background: #EEF1FE;
+            color: #4F6EF7;
+        }
+        .contact-card .card-icon.location {
+            background: #FFF7ED;
+            color: #EA580C;
+        }
+        .contact-card .card-icon.clock {
+            background: #FDF2F8;
+            color: #BE185D;
+        }
+        .contact-card .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .contact-card .card-label {
+            font-size: 0.66rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+        .contact-card .card-value {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            word-break: break-word;
+            letter-spacing: -0.01em;
+        }
+        .contact-card .card-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .contact-card a.card-value {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .contact-card a.card-value:hover {
+            text-decoration: underline;
+        }
+
+        /* ── MAIN CONTENT GRID ── */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── QUERY FORM CARD ── */
+        .form-card {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            box-shadow: var(--shadow-xs);
+        }
+        .form-card h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-card h2 i {
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+        .form-card .form-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-group label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .form-group label .required {
+            color: var(--error);
+            margin-left: 2px;
+        }
+        .form-group select,
+        .form-group textarea,
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 10px 13px;
+            border: 1.5px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            font-size: 0.84rem;
+            font-family: var(--font);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+            letter-spacing: -0.01em;
+            resize: vertical;
+        }
+        .form-group select:focus,
+        .form-group textarea:focus,
+        .form-group input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.06);
+            background: #fff;
+        }
+        .form-group textarea {
+            min-height: 130px;
+            line-height: 1.6;
+        }
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%238D93A3'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+            cursor: pointer;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-input);
+            position: relative;
+        }
+        .file-upload-area:hover {
+            border-color: var(--accent);
+            background: #FAFBFF;
+        }
+        .file-upload-area i {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: block;
+        }
+        .file-upload-area .upload-text {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .file-upload-area .upload-hint {
+            font-size: 0.66rem;
+            color: var(--text-placeholder);
+        }
+        .file-upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-preview-bar {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #F0F4FF;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .file-preview-bar.show {
+            display: flex;
+        }
+        .file-preview-bar .remove-file-btn {
+            margin-left: auto;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: var(--transition);
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+        .file-preview-bar .remove-file-btn:hover {
+            color: var(--error);
+            background: #FEE8E8;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px 20px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font);
+            letter-spacing: -0.01em;
+            margin-top: 6px;
+        }
+        .btn-submit:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 4px 16px rgba(79, 110, 247, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        .btn-submit:disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* ── INFO SIDEBAR ── */
+        .info-card {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            box-shadow: var(--shadow-xs);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .info-card h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .info-card h3 i {
+            color: var(--warning);
+            font-size: 0.85rem;
+        }
+        .info-card .info-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .info-card .info-item .info-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+        .info-card .info-item p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            letter-spacing: -0.01em;
+        }
+        .info-card .info-item p strong {
+            color: var(--text-primary);
+        }
+        .divider-light {
+            border: none;
+            border-top: 1px solid var(--border-light);
+            margin: 2px 0;
+        }
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 13px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-family: var(--font);
+            letter-spacing: -0.01em;
+            text-align: left;
+            text-decoration: none;
+        }
+        .quick-action-btn:hover {
+            background: #fff;
+            border-color: var(--border-strong);
+            color: var(--text-primary);
+        }
+        .quick-action-btn i {
+            width: 18px;
+            text-align: center;
+            color: var(--accent);
+            font-size: 0.75rem;
+        }
+
+        /* ── SUCCESS OVERLAY ── */
+        .success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 30, 43, 0.55);
+            backdrop-filter: blur(3px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .success-overlay.active {
+            display: flex;
+            animation: fadeIn 0.25s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .success-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: var(--shadow-xl);
+        }
+        .success-card .check-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #ECFDF5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.6rem;
+            color: var(--success);
+        }
+        .success-card h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+        .success-card p {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+        .success-card .btn-go-inbox {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 22px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+            letter-spacing: -0.01em;
+            text-decoration: none;
+        }
+        .success-card .btn-go-inbox:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 4px 16px rgba(79, 110, 247, 0.3);
+            transform: translateY(-1px);
+        }
+        .success-card .countdown-text {
+            font-size: 0.7rem;
+            color: var(--text-placeholder);
+            margin-top: 10px;
+        }
+
+        /* ── TOAST ── */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            width: 100%;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 12px 18px;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 500;
+            font-size: 0.8rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+            animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: auto;
+            letter-spacing: -0.01em;
+        }
+        .toast.success {
+            background: #10B981;
+        }
+        .toast.error {
+            background: #EF4444;
+        }
+        .toast.info {
+            background: #4F6EF7;
+        }
+        .toast i {
+            font-size: 0.95rem;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .page-wrapper {
+                padding: 16px 12px 40px;
+                gap: 18px;
+            }
+            .contact-cards-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .contact-card {
+                padding: 14px 15px;
+                gap: 10px;
+            }
+            .contact-card .card-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 0.7rem;
+            }
+            .contact-card .card-label {
+                font-size: 0.6rem;
+            }
+            .contact-card .card-value {
+                font-size: 0.76rem;
+            }
+            .form-card {
+                padding: 16px 18px;
+            }
+            .form-card h2 {
+                font-size: 0.92rem;
+            }
+            .btn-submit {
+                padding: 10px 16px;
+                font-size: 0.78rem;
+            }
+            .nav-bar {
+                padding: 0 12px;
+                height: 50px;
+            }
+            .nav-brand-text {
+                font-size: 0.85rem;
+            }
+            .nav-brand-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 0.65rem;
+                border-radius: 7px;
+            }
+            .nav-link {
+                font-size: 0.68rem;
+                padding: 5px 10px;
+            }
+            .page-header h1 {
+                font-size: 1.15rem;
+            }
+            .page-header p {
+                font-size: 0.78rem;
+            }
+            .success-card {
+                padding: 24px 18px;
+            }
+            .success-card .check-circle {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            .success-card h2 {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .contact-cards-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            .contact-card {
+                padding: 12px 14px;
+            }
+            .form-card {
+                padding: 12px 14px;
+            }
+            .form-group label {
+                font-size: 0.68rem;
+            }
+            .form-group select,
+            .form-group textarea {
+                font-size: 0.76rem;
+                padding: 8px 10px;
+            }
+            .btn-submit {
+                font-size: 0.73rem;
+                padding: 9px 14px;
+            }
+            .nav-link {
+                font-size: 0.6rem;
+                padding: 4px 8px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <!-- ── NAVIGATION ── -->
+    <nav class="nav-bar">
+        <a href="#" class="nav-brand">
+            <div class="nav-brand-icon">TB</div>
+            <span class="nav-brand-text">Teacher<span>Bee</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="#" class="nav-link active">Submit Query</a>
+            <a href="recruiterinbox.html" class="nav-link inbox-btn">
+                <i class="fa-solid fa-inbox"></i> My Inbox
+            </a>
+        </div>
+    </nav>
+
+    <!-- ── SUCCESS OVERLAY ── -->
+    <div class="success-overlay" id="success-overlay">
+        <div class="success-card">
+            <div class="check-circle">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h2>Query Submitted!</h2>
+            <p>Your query has been sent to our support team. You can track the conversation in your recruiter inbox.</p>
+            <a href="recruiterinbox.html" class="btn-go-inbox">
+                <i class="fa-solid fa-inbox"></i> Go to My Inbox
+            </a>
+            <div class="countdown-text" id="countdown-text">Redirecting in 3 seconds…</div>
+        </div>
+    </div>
+
+    <!-- ── PAGE CONTENT ── -->
+    <div class="page-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="icon-circle">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+            <h1>Submit a Query</h1>
+            <p>Need help? Fill out the form below and our support team will get back to you as soon as possible.</p>
+        </div>
+
+        <!-- Contact Cards -->
+        <div class="contact-cards-grid">
+            <div class="contact-card">
+                <div class="card-icon phone">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <div class="card-info">
+                    <div class="card-label">Phone</div>
+                    <div class="card-value">+61 2 1234 5678</div>
+                    <div class="card-sub">Mon-Fri, 9AM-5PM AEST</div>
+                </div>
+            </div>
+            <div class="contact-card">
+                <div class="card-icon email">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div class="card-info">
+                    <div class="card-label">Email</div>
+                    <a href="mailto:support@teacherbee.com.au" class="card-value">support@teacherbee.com.au</a>
+                    <div class="card-sub">We reply within 24 hours</div>
+                </div>
+            </div>
+            <div class="contact-card">
+                <div class="card-icon location">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div class="card-info">
+                    <div class="card-label">Office</div>
+                    <div class="card-value">123 Education Lane</div>
+                    <div class="card-sub">Sydney NSW 2000, Australia</div>
+                </div>
+            </div>
+            <div class="contact-card">
+                <div class="card-icon clock">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="card-info">
+                    <div class="card-label">Working Hours</div>
+                    <div class="card-value">Mon – Fri</div>
+                    <div class="card-sub">9:00 AM – 5:00 PM AEST</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content: Form + Info Sidebar -->
+        <div class="content-grid">
+            <!-- Query Form -->
+            <div class="form-card" id="query-form-card">
+                <h2><i class="fa-solid fa-pen-to-square"></i> Your Query</h2>
+                <p class="form-subtitle">All fields marked with <span style="color:var(--error);">*</span> are required.</p>
+
+                <form id="query-form" onsubmit="handleSubmitQuery(event)">
+                    <div class="form-group">
+                        <label for="query-subject">Subject <span class="required">*</span></label>
+                        <select id="query-subject" required>
+                            <option value="" disabled selected>Select a topic…</option>
+                            <option value="Invoice / Payment Issue">Invoice / Payment Issue</option>
+                            <option value="Certificate / Proof Request">Certificate / Proof Request</option>
+                            <option value="Account Support">Account Support</option>
+                            <option value="Technical Issue">Technical Issue</option>
+                            <option value="Job Posting Help">Job Posting Help</option>
+                            <option value="General Inquiry">General Inquiry</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="query-message">Message <span class="required">*</span></label>
+                        <textarea id="query-message" placeholder="Describe your issue or question in detail…" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Attachment (optional)</label>
+                        <div class="file-upload-area" id="file-upload-area">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span class="upload-text">Click to upload a file</span>
+                            <span class="upload-hint">Screenshot, PDF, or document (max 10MB)</span>
+                            <input type="file" id="query-file-input" onchange="handleFileSelect(this)" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" />
+                        </div>
+                        <div class="file-preview-bar" id="file-preview-bar">
+                            <i class="fa-solid fa-paperclip"></i>
+                            <span id="file-preview-name">filename.pdf</span>
+                            <button type="button" class="remove-file-btn" onclick="clearQueryFile()" title="Remove file">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="btn-submit-query">
+                        <i class="fa-solid fa-paper-plane"></i> Submit Query
+                    </button>
+                </form>
+            </div>
+
+            <!-- Info Sidebar -->
+            <div class="info-card">
+                <h3><i class="fa-solid fa-circle-info"></i> What Happens Next?</h3>
+                <div class="info-item">
+                    <div class="info-dot"></div>
+                    <p><strong>We review your query</strong> — Our support team reads every submission carefully.</p>
+                </div>
+                <div class="info-item">
+                    <div class="info-dot"></div>
+                    <p><strong>You get a response</strong> — We'll reply directly in your <strong>Recruiter Inbox</strong> within 1 business day.</p>
+                </div>
+                <div class="info-item">
+                    <div class="info-dot"></div>
+                    <p><strong>Track the conversation</strong> — All replies are saved in your inbox so you can follow up anytime.</p>
+                </div>
+                <hr class="divider-light" />
+                <div class="quick-actions">
+                    <a href="recruiterinbox.html" class="quick-action-btn">
+                        <i class="fa-solid fa-inbox"></i> Open My Inbox
+                    </a>
+                    <a href="mailto:support@teacherbee.com.au" class="quick-action-btn">
+                        <i class="fa-solid fa-envelope"></i> Email Us Directly
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            collection,
+            query,
+            where,
+            addDoc,
+            updateDoc,
+            serverTimestamp,
+            getDocs,
+            limit
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // ── FIREBASE CONFIG ──
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+            authDomain: "teacherbee-connect.firebaseapp.com",
+            projectId: "teacherbee-connect",
+            messagingSenderId: "345613317767",
+            appId: "1:345613317767:web:555713e479f9837e84aa22"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const WEB_APP_URL =
+            "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+
+        // ── STATE ──
+        let currentUser = null;
+        let adminUserId = null;
+        let queryAttachmentData = null;
+        let isSubmitting = false;
+
+        // ── TOAST ──
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'error' ? 'circle-exclamation' : type === 'info' ? 'circle-notch fa-spin' : 'check-circle';
+            toast.innerHTML = `<i class="fa-solid fa-${icon}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4500);
+            return toast;
+        }
+
+        // ── AUTH CHECK ──
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (!userDoc.exists()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const data = userDoc.data();
+            currentUser = { uid: user.uid, ...data };
+
+            // Admins shouldn't use this page
+            if (data.role === 'admin' || data.role?.toLowerCase().includes('admin')) {
+                showToast('Admins should use the Admin Inbox instead.', 'info');
+                setTimeout(() => window.location.href = 'admin-inbox.html', 2000);
+                return;
+            }
+
+            console.log('✅ Recruiter authenticated:', currentUser.name || currentUser.email);
+            await findAdminUser();
+
+            if (currentUser.name) {
+                document.getElementById('query-message').placeholder =
+                    `Describe your issue or question in detail…\n\n— ${currentUser.name}`;
+            }
+        });
+
+        // ── FIND ADMIN USER ──
+        async function findAdminUser() {
+            try {
+                // 1. Check the admins collection
+                const adminsSnap = await getDocs(collection(db, 'admins'));
+                if (!adminsSnap.empty) {
+                    adminUserId = adminsSnap.docs[0].id;
+                    console.log('✅ Admin found via /admins:', adminUserId);
+                    return;
+                }
+
+                // 2. Check users collection for role='admin'
+                const adminQuery = query(
+                    collection(db, 'users'),
+                    where('role', '==', 'admin'),
+                    limit(1)
+                );
+                const snap = await getDocs(adminQuery);
+                if (!snap.empty) {
+                    adminUserId = snap.docs[0].id;
+                    console.log('✅ Admin found via /users role:', adminUserId);
+                    return;
+                }
+
+                // 3. Loose fallback scan
+                const allUsersSnap = await getDocs(collection(db, 'users'));
+                allUsersSnap.forEach(d => {
+                    const d2 = d.data();
+                    if (d2.role && d2.role.toLowerCase().includes('admin') && !adminUserId) {
+                        adminUserId = d.id;
+                    }
+                });
+                if (adminUserId) {
+                    console.log('✅ Admin found (case-insensitive):', adminUserId);
+                } else {
+                    console.warn('⚠️ No admin user found.');
+                }
+            } catch (e) {
+                console.error('Error finding admin:', e);
+            }
+        }
+
+        // ── FILE HANDLING (with spinner and completion) ──
+        window.handleFileSelect = function(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (file.size > 10 * 1024 * 1024) {
+                showToast('File is too large. Maximum size is 10MB.', 'error');
+                input.value = '';
+                return;
+            }
+
+            const previewBar = document.getElementById('file-preview-bar');
+            const previewName = document.getElementById('file-preview-name');
+            const previewIcon = previewBar.querySelector('i');
+
+            previewBar.classList.add('show');
+            previewName.textContent = `Uploading ${file.name}…`;
+            if (previewIcon) {
+                previewIcon.className = 'fa-solid fa-spinner fa-spin';
+                previewIcon.style.color = 'var(--accent)';
+            }
+
+            uploadAndPreviewFile(file, previewBar, previewName, previewIcon);
+        };
+
+        async function uploadAndPreviewFile(file, previewBar, previewName, previewIcon) {
+            try {
+                const uploaded = await uploadFileToDrive(file);
+                previewName.textContent = file.name;
+                if (previewIcon) {
+                    previewIcon.className = 'fa-solid fa-circle-check';
+                    previewIcon.style.color = 'var(--success)';
+                }
+                queryAttachmentData = uploaded;
+                showToast('Attachment ready to send', 'success');
+            } catch (err) {
+                previewName.textContent = `Failed: ${file.name}`;
+                if (previewIcon) {
+                    previewIcon.className = 'fa-solid fa-circle-exclamation';
+                    previewIcon.style.color = 'var(--error)';
+                }
+                showToast('Upload failed. Please try again.', 'error');
+                clearQueryFile();
+            }
+        }
+
+        window.clearQueryFile = function() {
+            queryAttachmentData = null;
+            document.getElementById('query-file-input').value = '';
+            const previewBar = document.getElementById('file-preview-bar');
+            previewBar.classList.remove('show');
+            const previewIcon = previewBar.querySelector('i');
+            if (previewIcon) {
+                previewIcon.className = 'fa-solid fa-paperclip';
+                previewIcon.style.color = '';
+            }
+            document.getElementById('file-preview-name').textContent = '';
+        };
+
+        function uploadFileToDrive(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const payload = {
+                        action: 'uploadCertificate',
+                        fileName: file.name,
+                        mimeType: file.type || 'application/octet-stream',
+                        file: e.target.result
+                    };
+                    try {
+                        const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
+                        const data = await res.json();
+                        if (data.status === 'success' && data.certificates?.length > 0) {
+                            const lastCert = data.certificates[data.certificates.length - 1];
+                            resolve({
+                                fileName: file.name,
+                                downloadUrl: lastCert.fileUrl || lastCert.url,
+                                imagePreviewUrl: lastCert.isImage ? (lastCert.url || lastCert.fileUrl) : null,
+                                driveId: lastCert.id || '',
+                                previewUrl: lastCert.id ? `https://drive.google.com/file/d/${lastCert.id}/preview` : '',
+                                mediaType: file.type || 'application/octet-stream'
+                            });
+                        } else {
+                            reject(new Error(data.message || 'Upload failed — no file returned'));
+                        }
+                    } catch (err) {
+                        reject(new Error('Network error during file upload'));
+                    }
+                };
+                reader.onerror = () => reject(new Error('Failed to read file'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ── SUBMIT QUERY ──
+        window.handleSubmitQuery = async function(event) {
+            event.preventDefault();
+
+            if (isSubmitting) return;
+            if (!currentUser) {
+                showToast('Please log in to submit a query.', 'error');
+                return;
+            }
+            if (!adminUserId) {
+                showToast(
+                    'Support system is temporarily unavailable. Please try again later or email us directly.',
+                    'error');
+                return;
+            }
+
+            const subject = document.getElementById('query-subject').value.trim();
+            const message = document.getElementById('query-message').value.trim();
+            const attach = queryAttachmentData;
+
+            if (!subject || !message) {
+                showToast('Please fill in both the subject and message.', 'error');
+                return;
+            }
+
+            isSubmitting = true;
+            const submitBtn = document.getElementById('btn-submit-query');
+            const originalBtnHTML = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML =
+                '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Submitting…';
+
+            try {
+                let fullMessageText = `📋 **Query: ${subject}**\n\n${message}`;
+                if (attach) {
+                    fullMessageText += `\n\n📎 Attachment: ${attach.fileName}`;
+                }
+
+                // Check for existing thread between recruiter and admin
+                let existingThreadId = null;
+                const threadsSnap = await getDocs(
+                    query(
+                        collection(db, 'threads'),
+                        where('participants', 'array-contains', currentUser.uid)
+                    )
+                );
+                threadsSnap.forEach(docSnap => {
+                    const t = docSnap.data();
+                    if (t.participants.includes(adminUserId) && !existingThreadId) {
+                        existingThreadId = docSnap.id;
+                    }
+                });
+
+                let threadId;
+                if (existingThreadId) {
+                    threadId = existingThreadId;
+                    console.log('📬 Using existing thread:', threadId);
+                } else {
+                    const threadData = {
+                        participants: [currentUser.uid, adminUserId],
+                        jobTitle: `Query: ${subject}`,
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp(),
+                        lastMessageText: fullMessageText.substring(0, 80)
+                    };
+                    const docRef = await addDoc(collection(db, 'threads'), threadData);
+                    threadId = docRef.id;
+                    console.log('📬 New thread created:', threadId);
+                }
+
+                const msgData = {
+                    senderId: currentUser.uid,
+                    text: fullMessageText,
+                    timestamp: serverTimestamp(),
+                    isSystem: false,
+                    downloadUrl: attach?.downloadUrl || null,
+                    imagePreviewUrl: attach?.imagePreviewUrl || null,
+                    driveId: attach?.driveId || null,
+                    previewUrl: attach?.previewUrl || null,
+                    fileName: attach?.fileName || null,
+                    mediaType: attach?.mediaType || null
+                };
+                await addDoc(collection(db, `threads/${threadId}/messages`), msgData);
+
+                const previewText = `Query: ${subject} - ${message.substring(0, 50)}${message.length > 50 ? '…' : ''}`;
+                await updateDoc(doc(db, 'threads', threadId), {
+                    updatedAt: serverTimestamp(),
+                    lastMessageText: previewText.substring(0, 80),
+                    jobTitle: `Query: ${subject}`
+                });
+
+                console.log('✅ Query submitted successfully!');
+
+                document.getElementById('query-form').reset();
+                clearQueryFile();
+
+                showSuccessOverlay();
+
+            } catch (err) {
+                console.error('❌ Error submitting query:', err);
+                showToast('Failed to submit query. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHTML;
+                isSubmitting = false;
+            }
+        };
+
+        // ── SUCCESS OVERLAY ──
+        function showSuccessOverlay() {
+            const overlay = document.getElementById('success-overlay');
+            const countdownEl = document.getElementById('countdown-text');
+            overlay.classList.add('active');
+
+            let countdown = 3;
+            countdownEl.textContent = `Redirecting in ${countdown} seconds…`;
+
+            const interval = setInterval(() => {
+                countdown--;
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    window.location.href = 'recruiterinbox.html';
+                } else {
+                    countdownEl.textContent = `Redirecting in ${countdown} seconds…`;
+                }
+            }, 1000);
+
+            document.querySelector('.btn-go-inbox').addEventListener('click', () => {
+                clearInterval(interval);
+                window.location.href = 'recruiterinbox.html';
+            });
+        }
+
+        // ── Spinner animation ──
+        const styleSpinner = document.createElement('style');
+        styleSpinner.textContent = `
+            @keyframes spin { to { transform: rotate(360deg); } }
+        `;
+        document.head.appendChild(styleSpinner);
+
+        console.log('✅ Recruiter Query Page ready.');
+    </script>
+</body>
+  </html>
