@@ -1130,6 +1130,27 @@
         let currentStep = 1;
         let pendingPaymentId = null;
 
+        // ── BANNER URL CONVERTER ──
+        function getDisplayableImageUrl(url) {
+            if (!url) return null;
+            // Already a direct image (data URI, common image extensions, known image hosts)
+            if (
+                url.startsWith('data:') ||
+                url.match(/\.(jpg|jpeg|png|gif|webp|svg)($|\?)/i) ||
+                url.includes('googleusercontent.com') ||
+                url.includes('firebasestorage.googleapis.com')
+            ) {
+                return url;
+            }
+            // Google Drive URL patterns
+            const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+            if (driveMatch) {
+                return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1200`;
+            }
+            // Return original URL as fallback (might still work)
+            return url;
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if (!user) { window.location.href = 'login.html'; return; }
             const userDoc = await getDoc(doc(db, 'users', user.uid));
@@ -1193,8 +1214,10 @@
                         `<button class="btn btn-primary" onclick="startCheckout('${course.id}')"><i class="fa-solid fa-credit-card"></i> Enroll Now — $${course.price}</button>`;
                 }
 
-                const bannerHTML = course.thumbnailUrl ?
-                    `<img src="${course.thumbnailUrl}" class="course-banner" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="course-banner-placeholder" style="display:none;"><i class="fa-solid fa-image"></i></div>` :
+                // Force banner display with converted URL
+                const displayUrl = getDisplayableImageUrl(course.thumbnailUrl);
+                const bannerHTML = displayUrl ?
+                    `<img src="${displayUrl}" class="course-banner" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="course-banner-placeholder" style="display:none;"><i class="fa-solid fa-image"></i></div>` :
                     `<div class="course-banner-placeholder"><i class="fa-solid fa-image"></i></div>`;
 
                 const catBadge = course.category === 'tefl' ? 'cat-tefl' : 'cat-workshop';
@@ -1520,7 +1543,7 @@
         // ── EXPOSE TO GLOBAL SCOPE ──
         window.closeCheckout = closeCheckout;
         window.showToast = showToast;
-        console.log('✅ Courses page ready — unified billing system active.');
+        console.log('✅ Courses page ready – banners forced to display.');
     </script>
 </body>
-</html>
+                                    </html>
