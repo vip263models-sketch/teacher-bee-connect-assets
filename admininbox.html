@@ -1576,7 +1576,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import {
             getFirestore,
             doc,
@@ -1638,8 +1638,7 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icon = type === 'error' ? 'circle-exclamation' : type === 'info' ? 'circle-notch fa-spin' :
-                'check-circle';
+            const icon = type === 'error' ? 'circle-exclamation' : type === 'info' ? 'circle-notch fa-spin' : 'check-circle';
             toast.innerHTML = `<i class="fa-solid fa-${icon}"></i> ${message}`;
             container.appendChild(toast);
             setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
@@ -1718,21 +1717,45 @@
             document.getElementById('imageModalImg').src = '';
         };
 
-        // ── AUTH ──
+        // ── AUTH ── (UPDATED: checks /admins collection first)
         onAuthStateChanged(auth, async (user) => {
-            if (!user) { window.location.href = 'login.html'; return; }
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            if (!userDoc.exists()) { window.location.href = 'login.html'; return; }
-            const data = userDoc.data();
-            if (data.role !== 'admin' && !data.role?.toLowerCase().includes('admin')) {
-                showToast('Access denied. Admin only.', 'error');
-                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+            if (!user) {
+                window.location.href = 'admin.html';  // redirect to admin login page
                 return;
             }
-            currentUser = { uid: user.uid, ...data };
-            console.log('✅ Admin logged in:', currentUser.name || currentUser.email);
-            await loadAllUsers();
-            setupRealtimeInbox();
+
+            // 1. Try the dedicated admins collection (same as your login page)
+            const adminDocRef = doc(db, "admins", user.uid);
+            const adminSnap = await getDoc(adminDocRef);
+
+            if (adminSnap.exists()) {
+                currentUser = { uid: user.uid, email: user.email, name: user.displayName || 'Admin' };
+                console.log('✅ Admin verified via /admins');
+                await loadAllUsers();
+                setupRealtimeInbox();
+                return;
+            }
+
+            // 2. Fallback: check users collection for role = 'admin'
+            const userDocRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userDocRef);
+
+            if (userSnap.exists()) {
+                const data = userSnap.data();
+                if (data.role === 'admin' || (data.role && data.role.toLowerCase().includes('admin'))) {
+                    currentUser = { uid: user.uid, ...data };
+                    console.log('✅ Admin verified via /users role field');
+                    await loadAllUsers();
+                    setupRealtimeInbox();
+                    return;
+                }
+            }
+
+            // 3. Neither → kick out
+            console.warn('❌ Access denied: user is not admin');
+            showToast('Access denied. Admin only.', 'error');
+            await signOut(auth);
+            setTimeout(() => window.location.href = 'admin.html', 1500);
         });
 
         async function loadAllUsers() {
@@ -1741,7 +1764,8 @@
                 allUsers = [];
                 snap.forEach(d => {
                     const data = d.data();
-                    if (data.role === 'admin' || data.role?.toLowerCase().includes('admin')) return;
+                    // Exclude the current admin from the user list
+                    if (d.id === currentUser.uid) return;
                     allUsers.push({ id: d.id, ...data });
                 });
                 allUsers.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
@@ -1762,10 +1786,8 @@
                     allThreads.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 allThreads.sort((a, b) => {
-                    const aTime = a.updatedAt ? (a.updatedAt.toDate ? a.updatedAt.toDate().getTime() : new Date(
-                        a.updatedAt).getTime()) : 0;
-                    const bTime = b.updatedAt ? (b.updatedAt.toDate ? b.updatedAt.toDate().getTime() : new Date(
-                        b.updatedAt).getTime()) : 0;
+                    const aTime = a.updatedAt ? (a.updatedAt.toDate ? a.updatedAt.toDate().getTime() : new Date(a.updatedAt).getTime()) : 0;
+                    const bTime = b.updatedAt ? (b.updatedAt.toDate ? b.updatedAt.toDate().getTime() : new Date(b.updatedAt).getTime()) : 0;
                     return bTime - aTime;
                 });
                 const allUids = new Set();
@@ -1783,8 +1805,7 @@
                 case 'unread':
                     filtered = filtered.filter(t => {
                         const lastRead = lastReadTimestamps[t.id] || 0;
-                        const updated = t.updatedAt ? (t.updatedAt.toDate ? t.updatedAt.toDate().getTime() :
-                            new Date(t.updatedAt).getTime()) : 0;
+                        const updated = t.updatedAt ? (t.updatedAt.toDate ? t.updatedAt.toDate().getTime() : new Date(t.updatedAt).getTime()) : 0;
                         return updated > lastRead;
                     });
                     break;
@@ -1792,8 +1813,7 @@
                     filtered = filtered.filter(t => {
                         const text = (t.lastMessageText || '').toLowerCase();
                         const title = (t.jobTitle || '').toLowerCase();
-                        return text.includes('proof') || text.includes('invoice') || title.includes('invoice') ||
-                            text.includes('payment');
+                        return text.includes('proof') || text.includes('invoice') || title.includes('invoice') || text.includes('payment');
                     });
                     break;
                 case 'teachers':
@@ -1831,15 +1851,13 @@
             const total = allThreads.length;
             const unread = allThreads.filter(t => {
                 const lastRead = lastReadTimestamps[t.id] || 0;
-                const updated = t.updatedAt ? (t.updatedAt.toDate ? t.updatedAt.toDate().getTime() : new Date(t
-                    .updatedAt).getTime()) : 0;
+                const updated = t.updatedAt ? (t.updatedAt.toDate ? t.updatedAt.toDate().getTime() : new Date(t.updatedAt).getTime()) : 0;
                 return updated > lastRead;
             }).length;
             const proof = allThreads.filter(t => {
                 const text = (t.lastMessageText || '').toLowerCase();
                 const title = (t.jobTitle || '').toLowerCase();
-                return text.includes('proof') || text.includes('invoice') || title.includes('invoice') || text
-                    .includes('payment');
+                return text.includes('proof') || text.includes('invoice') || title.includes('invoice') || text.includes('payment');
             }).length;
             const teachers = allThreads.filter(t => {
                 const other = t.participants.find(uid => uid !== currentUser.uid);
@@ -1864,8 +1882,7 @@
             const badge = document.getElementById('global-unread-badge');
             const unread = allThreads.filter(t => {
                 const lastRead = lastReadTimestamps[t.id] || 0;
-                const updated = t.updatedAt ? (t.updatedAt.toDate ? t.updatedAt.toDate().getTime() : new Date(t
-                    .updatedAt).getTime()) : 0;
+                const updated = t.updatedAt ? (t.updatedAt.toDate ? t.updatedAt.toDate().getTime() : new Date(t.updatedAt).getTime()) : 0;
                 return updated > lastRead;
             }).length;
             if (unread > 0) {
@@ -1880,8 +1897,7 @@
             const container = document.getElementById('inbox-container');
             const empty = document.getElementById('empty-inbox');
             container.innerHTML = '';
-            if (!threads || threads.length === 0) { empty.style.display = 'flex';
-                return; }
+            if (!threads || threads.length === 0) { empty.style.display = 'flex'; return; }
             empty.style.display = 'none';
             const otherUids = new Set();
             threads.forEach(t => {
@@ -1891,8 +1907,7 @@
             await Promise.all(Array.from(otherUids).map(uid => getUserData(uid)));
             threads.forEach((thread) => {
                 const otherUid = thread.participants.find(uid => uid !== currentUser.uid);
-                const otherUser = otherUid ? (userCache[otherUid] || { name: 'Unknown', avatarUrl: null,
-                    role: 'user' }) : { name: 'Unknown', avatarUrl: null, role: 'user' };
+                const otherUser = otherUid ? (userCache[otherUid] || { name: 'Unknown', avatarUrl: null, role: 'user' }) : { name: 'Unknown', avatarUrl: null, role: 'user' };
                 const otherName = otherUser.name || 'Unknown User';
                 const otherAvatar = otherUser.avatarUrl || null;
                 const jobTitle = thread.jobTitle || 'Conversation';
@@ -1902,8 +1917,7 @@
                 const initials = otherName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
                 const lastReadAt = lastReadTimestamps[thread.id] || 0;
                 let threadTime = 0;
-                if (updatedAt) threadTime = updatedAt.toDate ? updatedAt.toDate().getTime() : new Date(updatedAt)
-                    .getTime();
+                if (updatedAt) threadTime = updatedAt.toDate ? updatedAt.toDate().getTime() : new Date(updatedAt).getTime();
                 const isUnread = threadTime > lastReadAt;
                 const isActive = activeChatId === thread.id;
                 const avatarHTML = otherAvatar ?
@@ -1978,8 +1992,7 @@
                 const userData = await getUserData(otherUid);
                 activeChatOtherData = userData;
                 otherAvatar = userData.avatarUrl || null;
-                document.getElementById('chat-subtitle').textContent =
-                    `${jobTitle || 'Conversation'} · ${userData.role || 'user'}`;
+                document.getElementById('chat-subtitle').textContent = `${jobTitle || 'Conversation'} · ${userData.role || 'user'}`;
             } else {
                 document.getElementById('chat-subtitle').textContent = jobTitle || 'Active conversation';
             }
@@ -1993,16 +2006,12 @@
                 const img = document.createElement('img');
                 img.src = otherAvatar;
                 img.alt = otherName;
-                img.onerror = function() { this.style.display = 'none';
-                    avatarInitialsSpan.style.display = 'inline';
-                    avatarInitialsSpan.textContent = initials; };
+                img.onerror = function() { this.style.display = 'none'; avatarInitialsSpan.style.display = 'inline'; avatarInitialsSpan.textContent = initials; };
                 avatarContainer.appendChild(img);
-            } else { avatarInitialsSpan.style.display = 'inline';
-                avatarInitialsSpan.textContent = initials; }
+            } else { avatarInitialsSpan.style.display = 'inline'; avatarInitialsSpan.textContent = initials; }
             document.querySelectorAll('.thread-item').forEach(el => el.classList.remove('active'));
             const activeEl = document.querySelector(`.thread-item[data-thread-id="${threadId}"]`);
-            if (activeEl) { activeEl.classList.add('active');
-                activeEl.classList.remove('unread'); }
+            if (activeEl) { activeEl.classList.add('active'); activeEl.classList.remove('unread'); }
             updateGlobalUnreadBadge();
             if (window.innerWidth <= 860) {
                 document.getElementById('left-panel').classList.add('hidden-on-mobile');
@@ -2016,13 +2025,10 @@
                 let lastDateStr = '';
                 snapshot.forEach((docSnap) => {
                     const msg = docSnap.data();
-                    const msgDate = msg.timestamp ? (msg.timestamp.toDate ? msg.timestamp.toDate() :
-                        new Date(msg.timestamp)) : null;
-                    const dateStr = msgDate ? msgDate.toLocaleDateString('en-US', { weekday: 'short',
-                        month: 'short', day: 'numeric' }) : '';
+                    const msgDate = msg.timestamp ? (msg.timestamp.toDate ? msg.timestamp.toDate() : new Date(msg.timestamp)) : null;
+                    const dateStr = msgDate ? msgDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : '';
                     if (dateStr && dateStr !== lastDateStr) {
-                        hist.insertAdjacentHTML('beforeend',
-                            `<div class="chat-date-divider">${dateStr}</div>`);
+                        hist.insertAdjacentHTML('beforeend', `<div class="chat-date-divider">${dateStr}</div>`);
                         lastDateStr = dateStr;
                     }
                     const timeStr = formatMessageTime(msg.timestamp);
@@ -2040,28 +2046,22 @@
                         const isImage = !!msg.imagePreviewUrl;
                         const imageUrl = msg.imagePreviewUrl || '';
                         const downloadUrl = msg.downloadUrl;
-                        const previewUrl = msg.previewUrl || (msg.driveId ?
-                            `https://drive.google.com/file/d/${msg.driveId}/preview` : '');
+                        const previewUrl = msg.previewUrl || (msg.driveId ? `https://drive.google.com/file/d/${msg.driveId}/preview` : '');
                         if (!isSystem) {
                             content += `<div style="margin-top:6px;">`;
                             if (isImage && imageUrl) {
-                                content +=
-                                    `<img src="${imageUrl}" class="chat-img-preview" onclick="openImageModal('${downloadUrl}', '${imageUrl}')" alt="${fileName}" title="Tap to view full size" onerror="this.style.display='none';" />`;
+                                content += `<img src="${imageUrl}" class="chat-img-preview" onclick="openImageModal('${downloadUrl}', '${imageUrl}')" alt="${fileName}" title="Tap to view full size" onerror="this.style.display='none';" />`;
                             }
-                            content +=
-                                `<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+                            content += `<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
                                     <a href="${downloadUrl}" class="bubble-attachment" download="${fileName}"><i class="fa-solid fa-cloud-arrow-down"></i> ${fileName}</a>`;
                             if (!isImage && previewUrl) {
-                                content +=
-                                    `<button class="bubble-attachment" onclick="openPreviewModal('${previewUrl}', '${fileName.replace(/'/g, "\\'")}')" title="Preview" style="cursor:pointer;background:#E8ECF2;border-color:#D6DAE2;color:var(--text-primary);"><i class="fa-solid fa-eye"></i> Preview</button>`;
+                                content += `<button class="bubble-attachment" onclick="openPreviewModal('${previewUrl}', '${fileName.replace(/'/g, "\\'")}')" title="Preview" style="cursor:pointer;background:#E8ECF2;border-color:#D6DAE2;color:var(--text-primary);"><i class="fa-solid fa-eye"></i> Preview</button>`;
                             }
                             content += `</div></div>`;
                         }
                     }
-                    if (timeStr && !isSystem) content +=
-                        `<div class="bubble-time">${timeStr}</div>`;
-                    hist.insertAdjacentHTML('beforeend',
-                        `<div class="chat-bubble ${cls}">${content}</div>`);
+                    if (timeStr && !isSystem) content += `<div class="bubble-time">${timeStr}</div>`;
+                    hist.insertAdjacentHTML('beforeend', `<div class="chat-bubble ${cls}">${content}</div>`);
                 });
                 hist.scrollTop = hist.scrollHeight;
             });
@@ -2096,8 +2096,7 @@
             const toast = showToast(`Uploading ${file.name}…`, 'info');
             const reader = new FileReader();
             reader.onload = async (e) => {
-                const payload = { action: 'uploadCertificate', fileName: file.name, mimeType: file.type ||
-                        'application/octet-stream', file: e.target.result };
+                const payload = { action: 'uploadCertificate', fileName: file.name, mimeType: file.type || 'application/octet-stream', file: e.target.result };
                 try {
                     const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
                     const data = await res.json();
@@ -2105,11 +2104,9 @@
                     if (data.status === 'success' && data.certificates?.length > 0) {
                         const lastCert = data.certificates[data.certificates.length - 1];
                         const downloadUrl = lastCert.fileUrl || lastCert.url;
-                        const imagePreviewUrl = lastCert.isImage ? (lastCert.url || lastCert.fileUrl) :
-                            null;
+                        const imagePreviewUrl = lastCert.isImage ? (lastCert.url || lastCert.fileUrl) : null;
                         const driveId = lastCert.id || '';
-                        const previewUrl = driveId ?
-                            `https://drive.google.com/file/d/${driveId}/preview` : '';
+                        const previewUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : '';
                         chatAttachmentData = {
                             fileName: file.name,
                             downloadUrl,
@@ -2120,16 +2117,11 @@
                         };
                         document.getElementById('attachment-name').textContent = file.name;
                         showToast('Attachment ready to send', 'success');
-                    } else { clearAttachment();
-                        showToast(`Upload error: ${data.message || 'No file returned'}`, 'error'); }
-                } catch (err) { toast.remove();
-                    clearAttachment();
-                    showToast('Network error during upload', 'error'); }
+                    } else { clearAttachment(); showToast(`Upload error: ${data.message || 'No file returned'}`, 'error'); }
+                } catch (err) { toast.remove(); clearAttachment(); showToast('Network error during upload', 'error'); }
                 input.value = '';
             };
-            reader.onerror = () => { clearAttachment();
-                showToast('Failed to read file', 'error');
-                input.value = ''; };
+            reader.onerror = () => { clearAttachment(); showToast('Failed to read file', 'error'); input.value = ''; };
             reader.readAsDataURL(file);
         };
 
@@ -2181,13 +2173,11 @@
         function renderUserList(users) {
             const container = document.getElementById('user-list-container');
             if (!users || users.length === 0) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:40px;color:var(--text-muted);"><i class="fa-regular fa-user"></i> No users found</div>`;
+                container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted);"><i class="fa-regular fa-user"></i> No users found</div>`;
                 return;
             }
             container.innerHTML = users.map(u => {
-                const initials = (u.name || 'U').split(' ').map(n => n[0]).join('').substring(0, 2)
-                    .toUpperCase();
+                const initials = (u.name || 'U').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                 const avatarUrl = u.avatarUrl || null;
                 const roleLabel = u.role || 'user';
                 const avatarHTML = avatarUrl ?
@@ -2246,10 +2236,8 @@
                     isSystem: false
                 });
                 showToast(`Chat started with ${userName}`, 'success');
-                setTimeout(() => { setupRealtimeInbox();
-                    openChat(threadId, userName, 'Conversation', userId); }, 500);
-            } catch (e) { console.error('Error creating thread:', e);
-                showToast('Failed to start chat', 'error'); }
+                setTimeout(() => { setupRealtimeInbox(); openChat(threadId, userName, 'Conversation', userId); }, 500);
+            } catch (e) { console.error('Error creating thread:', e); showToast('Failed to start chat', 'error'); }
         };
 
         window.openBroadcast = function() {
@@ -2267,14 +2255,12 @@
             const targetValue = target ? target.value : 'all';
             let targetUsers = [];
             if (targetValue === 'all') targetUsers = allUsers;
-            else if (targetValue === 'teachers') targetUsers = allUsers.filter(u => u.role === 'teacher' || u.role ===
-                'user');
+            else if (targetValue === 'teachers') targetUsers = allUsers.filter(u => u.role === 'teacher' || u.role === 'user');
             else if (targetValue === 'recruiters') targetUsers = allUsers.filter(u => u.role === 'recruiter');
             if (targetUsers.length === 0) { showToast('No users found for this target group.', 'error'); return; }
             const btn = document.querySelector('.btn-send-broadcast');
             btn.disabled = true;
-            btn.innerHTML =
-                '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:6px;"></span> Sending…';
+            btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:6px;"></span> Sending…';
             try {
                 let successCount = 0;
                 let failCount = 0;
@@ -2308,16 +2294,12 @@
                             lastMessageText: `📢 System: ${message.substring(0, 50)}${message.length > 50 ? '…' : ''}`
                         });
                         successCount++;
-                    } catch (e) { console.error('Broadcast failed for user:', user.id, e);
-                        failCount++; }
+                    } catch (e) { console.error('Broadcast failed for user:', user.id, e); failCount++; }
                 }
-                showToast(
-                    `✅ Broadcast sent to ${successCount} users${failCount > 0 ? ` (${failCount} failed)` : ''}`,
-                    'success');
+                showToast(`✅ Broadcast sent to ${successCount} users${failCount > 0 ? ` (${failCount} failed)` : ''}`, 'success');
                 closeBroadcast();
                 setupRealtimeInbox();
-            } catch (e) { console.error('Broadcast error:', e);
-                showToast('Error sending broadcast: ' + (e.message || 'Unknown error'), 'error'); } finally {
+            } catch (e) { console.error('Broadcast error:', e); showToast('Error sending broadcast: ' + (e.message || 'Unknown error'), 'error'); } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Broadcast';
             }
@@ -2326,11 +2308,9 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 if (document.getElementById('user-list-modal').classList.contains('active')) closeUserList();
-                else if (document.getElementById('broadcast-modal').classList.contains('active'))
-                closeBroadcast();
+                else if (document.getElementById('broadcast-modal').classList.contains('active')) closeBroadcast();
                 else if (document.getElementById('imageModal').style.display === 'flex') closeImageModal();
-                else if (document.getElementById('previewModal').style.display === 'flex')
-                closePreviewModal();
+                else if (document.getElementById('previewModal').style.display === 'flex') closePreviewModal();
                 else if (activeChatId && window.innerWidth <= 860) closeChat();
             }
         });
@@ -2338,25 +2318,22 @@
         function handleResize() {
             const leftPanel = document.getElementById('left-panel');
             const rightPanel = document.getElementById('right-panel');
-            if (window.innerWidth > 860) { leftPanel.classList.remove('hidden-on-mobile');
-                rightPanel.classList.remove('hidden-on-mobile'); } else {
-                if (activeChatId) { leftPanel.classList.add('hidden-on-mobile');
-                    rightPanel.classList.remove('hidden-on-mobile'); } else { leftPanel.classList.remove(
-                        'hidden-on-mobile');
-                    if (rightPanel.classList.contains('empty')) rightPanel.classList.remove(
-                        'hidden-on-mobile');
-                    else rightPanel.classList.add('hidden-on-mobile'); }
+            if (window.innerWidth > 860) { leftPanel.classList.remove('hidden-on-mobile'); rightPanel.classList.remove('hidden-on-mobile'); } else {
+                if (activeChatId) { leftPanel.classList.add('hidden-on-mobile'); rightPanel.classList.remove('hidden-on-mobile'); } else {
+                    leftPanel.classList.remove('hidden-on-mobile');
+                    if (rightPanel.classList.contains('empty')) rightPanel.classList.remove('hidden-on-mobile');
+                    else rightPanel.classList.add('hidden-on-mobile');
+                }
             }
         }
         window.addEventListener('resize', handleResize);
         handleResize();
 
         const styleSpinner = document.createElement('style');
-        styleSpinner.textContent =
-            `@keyframes spin { to { transform: rotate(360deg); } }`;
+        styleSpinner.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
         document.head.appendChild(styleSpinner);
 
-        console.log('✅ Admin inbox ready — Clean corporate layout active.');
+        console.log('✅ Admin inbox ready — connected to /admins collection.');
     </script>
 </body>
 </html>
