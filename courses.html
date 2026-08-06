@@ -4,8 +4,193 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Courses · TeacherBee Connect</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- Header fonts and icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet" />
+    <!-- Page fonts (already included) -->
+    <style>
+        /* ---------- Smart Header & Drawer Styles ---------- */
+        .smart-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            z-index: 99990;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(13,64,84,0.05);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .smart-header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .smart-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            letter-spacing: -0.3px;
+            gap: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .smart-logo-blue { color: #0D4054; }
+        .smart-logo-orange { color: #F5A623; }
+        .smart-logo-emoji {
+            font-size: 1.3rem;
+            margin-left: 5px;
+            animation: beeWiggle 3s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes beeWiggle {
+            0%,100% { transform: rotate(0deg) translateY(0); }
+            15% { transform: rotate(-5deg) translateY(-2px); }
+            30% { transform: rotate(5deg) translateY(-1px); }
+            45% { transform: rotate(-3deg) translateY(0); }
+            60% { transform: rotate(0deg) translateY(0); }
+        }
+
+        .smart-hamburger {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            color: #0D4054;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .smart-hamburger:hover { background: rgba(13,64,84,0.06); }
+        .smart-hamburger:active svg { transform: scale(0.9); }
+        .smart-hamburger-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #E53E3E;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%,100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.6); opacity: 0.4; }
+        }
+
+        /* Menu Overlay & Drawer */
+        .smart-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10,10,20,0.6);
+            z-index: 99999;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .smart-menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .smart-menu-drawer {
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 360px;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.4s cubic-bezier(0.25,1,0.5,1);
+            box-shadow: -10px 0 40px rgba(0,0,0,0.25);
+            border-radius: 24px 0 0 24px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .smart-menu-overlay.open .smart-menu-drawer { right: 0; }
+        .smart-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .smart-menu-links {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .smart-menu-links a {
+            padding: 16px 24px;
+            color: #0D4054;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-bottom: 1px solid #f9f9f9;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .smart-menu-links a:hover {
+            color: #F5A623;
+            background: rgba(245,166,35,0.04);
+            padding-left: 30px;
+        }
+        .smart-menu-links a i {
+            width: 20px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #718691;
+            transition: color 0.2s ease;
+        }
+        .smart-menu-links a:hover i { color: #F5A623; }
+        .smart-menu-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            color: #0D4054;
+        }
+        .smart-menu-close:hover { background: rgba(0,0,0,0.05); }
+
+        /* Push page content down */
+        body { margin-top: 60px; }
+        @media (min-width: 768px) {
+            .smart-header-inner { height: 68px; }
+            body { margin-top: 68px; }
+        }
+    </style>
+
+    <!-- Page‑specific styles (unchanged) -->
     <style>
         :root {
             --navy: #0F172A;
@@ -53,80 +238,7 @@
             }
         }
 
-        /* ── Navbar ── */
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
-        .logo {
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--navy);
-            letter-spacing: -0.4px;
-            white-space: nowrap;
-        }
-        .logo .blue {
-            color: #0D4054;
-        }
-        .logo .orange {
-            color: var(--accent-mustard);
-        }
-        .logo .bee {
-            font-size: 1.3rem;
-            margin-left: 3px;
-            animation: wiggle 3s infinite ease-in-out;
-            display: inline-block;
-        }
-        @keyframes wiggle {
-            0%,
-            100% {
-                transform: rotate(0deg) translateY(0);
-            }
-            15% {
-                transform: rotate(-5deg) translateY(-2px);
-            }
-            30% {
-                transform: rotate(5deg) translateY(-1px);
-            }
-            45% {
-                transform: rotate(-3deg) translateY(0);
-            }
-            60% {
-                transform: rotate(0deg) translateY(0);
-            }
-        }
-        .nav-actions {
-            display: flex;
-            gap: 0.6rem;
-            align-items: center;
-        }
-        .btn-nav {
-            padding: 0.55rem 1rem;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 0.82rem;
-            cursor: pointer;
-            border: none;
-            transition: all var(--transition);
-            font-family: inherit;
-            background: transparent;
-            border: 1.5px solid var(--border);
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            white-space: nowrap;
-        }
-        .btn-nav:hover {
-            background: #F8FAFC;
-            border-color: #CBD5E1;
-        }
+        /* Navbar (old navbar removed) */
 
         /* ── Hero ── */
         .hero {
@@ -837,1196 +949,1215 @@
     </style>
 </head>
 <body>
-    <div class="app">
-        <!-- Navbar -->
-        <nav class="navbar">
-            <div class="logo"><span class="blue">Teacher Bee</span><span class="orange">Connect</span><span class="bee">🐝</span></div>
-            <div class="nav-actions">
-                <button class="btn-nav" onclick="window.location.href='dashboard.html'"><i class="fa-solid fa-arrow-left"></i> Dashboard</button>
-            </div>
-        </nav>
 
-        <!-- Hero -->
-        <div class="hero">
-            <h1>📚 Professional Development Courses</h1>
-            <p>Explore our available workshops and TEFL certification programs. Enroll today and take the next step in your teaching career.</p>
-        </div>
+<!-- Smart Header (no extra buttons, only logo & hamburger) -->
+<header class="smart-header" id="smartHeader">
+  <div class="smart-header-inner">
+    <a href="index.html" class="smart-logo">
+      <span class="smart-logo-blue">Teacher Bee</span>
+      <span class="smart-logo-orange">Connect</span>
+      <span class="smart-logo-emoji">🐝</span>
+    </a>
+    <button class="smart-hamburger" id="smartMenuBtn" aria-label="Menu">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <span class="smart-hamburger-dot"></span>
+    </button>
+  </div>
+</header>
 
-        <!-- Course Grid -->
-        <div class="courses-grid" id="courses-grid">
-            <div class="loading-overlay"><span class="spinner"></span> Loading courses...</div>
-        </div>
+<!-- Menu Overlay & Drawer -->
+<div class="smart-menu-overlay" id="smartMenuOverlay">
+  <div class="smart-menu-drawer">
+    <div class="smart-menu-header">
+      <span class="smart-logo" style="font-size:1.2rem;">
+        <span class="smart-logo-blue">Teacher Bee</span><span class="smart-logo-orange">Connect</span><span class="smart-logo-emoji" style="font-size:1.1rem;">🐝</span>
+      </span>
+      <button class="smart-menu-close" id="smartCloseBtn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="smart-menu-links">
+      <a href="about.html"><i class="fa-solid fa-circle-info"></i> About Us</a>
+      <a href="services.html"><i class="fa-solid fa-briefcase"></i> Our Services</a>
+      <a href="contact.html"><i class="fa-solid fa-envelope"></i> Contact Us</a>
+      <a href="index.html"><i class="fa-solid fa-user"></i> My Account</a>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to toggle the header menu -->
+<script>
+  (function() {
+    const overlay = document.getElementById('smartMenuOverlay');
+    const menuBtn = document.getElementById('smartMenuBtn');
+    const closeBtn = document.getElementById('smartCloseBtn');
+
+    menuBtn.addEventListener('click', () => overlay.classList.add('open'));
+    closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+  })();
+</script>
+
+<!-- Main App (old navbar removed) -->
+<div class="app">
+    <!-- Hero -->
+    <div class="hero">
+        <h1>📚 Professional Development Courses</h1>
+        <p>Explore our available workshops and TEFL certification programs. Enroll today and take the next step in your teaching career.</p>
     </div>
 
-    <!-- ── CHECKOUT MODAL ── -->
-    <div class="modal-overlay" id="checkout-modal">
-        <div class="modal-card">
-            <button class="modal-close" onclick="closeCheckout()"><i class="fa-solid fa-times"></i></button>
-            <div class="steps" id="steps-indicator">
-                <div class="step active" data-step="1">Your Details</div>
-                <div class="step" data-step="2">Billing & Agreement</div>
-                <div class="step" data-step="3">Confirm & Pay</div>
-            </div>
-            <form id="checkout-form" onsubmit="return false;">
-                <!-- Step 1 -->
-                <div class="step-content" id="step-1">
-                    <h3>Your Details</h3>
-                    <div class="form-group"><label>Full Name *</label><input type="text" id="cust-name" placeholder="e.g. John Moyo" required></div>
-                    <div class="form-group"><label>Email Address *</label><input type="email" id="cust-email" placeholder="you@example.com" required></div>
-                    <div class="form-group"><label>Phone Number *</label>
-                        <div class="phone-group">
-                            <select id="phone-code">
-                                <option value="+263">🇿🇼 +263</option>
-                                <option value="+27">🇿🇦 +27</option>
-                                <option value="+1">🇺🇸 +1</option>
-                                <option value="+44">🇬🇧 +44</option>
-                                <option value="+254">🇰🇪 +254</option>
-                                <option value="+256">🇺🇬 +256</option>
-                                <option value="+260">🇿🇲 +260</option>
-                                <option value="+265">🇲🇼 +265</option>
-                                <option value="+267">🇧🇼 +267</option>
-                                <option value="+264">🇳🇦 +264</option>
-                                <option value="+255">🇹🇿 +255</option>
-                                <option value="+250">🇷🇼 +250</option>
-                                <option value="+251">🇪🇹 +251</option>
-                                <option value="+20">🇪🇬 +20</option>
-                                <option value="+234">🇳🇬 +234</option>
-                                <option value="+233">🇬🇭 +233</option>
-                                <option value="+258">🇲🇿 +258</option>
-                                <option value="+244">🇦🇴 +244</option>
-                                <option value="+237">🇨🇲 +237</option>
-                                <option value="+225">🇨🇮 +225</option>
-                                <option value="+221">🇸🇳 +221</option>
-                                <option value="+223">🇲🇱 +223</option>
-                                <option value="+226">🇧🇫 +226</option>
-                                <option value="+229">🇧🇯 +229</option>
-                                <option value="+227">🇳🇪 +227</option>
-                                <option value="+228">🇹🇬 +228</option>
-                                <option value="+231">🇱🇷 +231</option>
-                                <option value="+232">🇸🇱 +232</option>
-                                <option value="+235">🇹🇩 +235</option>
-                                <option value="+236">🇨🇫 +236</option>
-                                <option value="+238">🇨🇻 +238</option>
-                                <option value="+239">🇸🇹 +239</option>
-                                <option value="+240">🇬🇶 +240</option>
-                                <option value="+241">🇬🇦 +241</option>
-                                <option value="+242">🇨🇬 +242</option>
-                                <option value="+243">🇨🇩 +243</option>
-                                <option value="+245">🇬🇼 +245</option>
-                                <option value="+248">🇸🇨 +248</option>
-                                <option value="+253">🇩🇯 +253</option>
-                                <option value="+257">🇧🇮 +257</option>
-                                <option value="+261">🇲🇬 +261</option>
-                                <option value="+266">🇱🇸 +266</option>
-                                <option value="+268">🇸🇿 +268</option>
-                                <option value="+269">🇰🇲 +269</option>
-                                <option value="+291">🇪🇷 +291</option>
-                                <option value="+252">🇸🇴 +252</option>
-                                <option value="+249">🇸🇩 +249</option>
-                                <option value="+211">🇸🇸 +211</option>
-                                <option value="+212">🇲🇦 +212</option>
-                                <option value="+213">🇩🇿 +213</option>
-                                <option value="+216">🇹🇳 +216</option>
-                                <option value="+218">🇱🇾 +218</option>
-                                <option value="+220">🇬🇲 +220</option>
-                                <option value="+222">🇲🇷 +222</option>
-                                <option value="+224">🇬🇳 +224</option>
-                                <option value="+230">🇲🇺 +230</option>
-                                <option value="+262">🇷🇪 +262</option>
-                                <option value="+290">🇸🇭 +290</option>
-                                <option value="+30">🇬🇷 +30</option>
-                                <option value="+31">🇳🇱 +31</option>
-                                <option value="+32">🇧🇪 +32</option>
-                                <option value="+33">🇫🇷 +33</option>
-                                <option value="+34">🇪🇸 +34</option>
-                                <option value="+350">🇬🇮 +350</option>
-                                <option value="+351">🇵🇹 +351</option>
-                                <option value="+352">🇱🇺 +352</option>
-                                <option value="+353">🇮🇪 +353</option>
-                                <option value="+354">🇮🇸 +354</option>
-                                <option value="+355">🇦🇱 +355</option>
-                                <option value="+356">🇲🇹 +356</option>
-                                <option value="+357">🇨🇾 +357</option>
-                                <option value="+358">🇫🇮 +358</option>
-                                <option value="+359">🇧🇬 +359</option>
-                                <option value="+36">🇭🇺 +36</option>
-                                <option value="+370">🇱🇹 +370</option>
-                                <option value="+371">🇱🇻 +371</option>
-                                <option value="+372">🇪🇪 +372</option>
-                                <option value="+373">🇲🇩 +373</option>
-                                <option value="+374">🇦🇲 +374</option>
-                                <option value="+375">🇧🇾 +375</option>
-                                <option value="+376">🇦🇩 +376</option>
-                                <option value="+377">🇲🇨 +377</option>
-                                <option value="+378">🇸🇲 +378</option>
-                                <option value="+380">🇺🇦 +380</option>
-                                <option value="+381">🇷🇸 +381</option>
-                                <option value="+382">🇲🇪 +382</option>
-                                <option value="+383">🇽🇰 +383</option>
-                                <option value="+385">🇭🇷 +385</option>
-                                <option value="+386">🇸🇮 +386</option>
-                                <option value="+387">🇧🇦 +387</option>
-                                <option value="+389">🇲🇰 +389</option>
-                                <option value="+39">🇮🇹 +39</option>
-                                <option value="+40">🇷🇴 +40</option>
-                                <option value="+41">🇨🇭 +41</option>
-                                <option value="+420">🇨🇿 +420</option>
-                                <option value="+421">🇸🇰 +421</option>
-                                <option value="+423">🇱🇮 +423</option>
-                                <option value="+43">🇦🇹 +43</option>
-                                <option value="+45">🇩🇰 +45</option>
-                                <option value="+46">🇸🇪 +46</option>
-                                <option value="+47">🇳🇴 +47</option>
-                                <option value="+48">🇵🇱 +48</option>
-                                <option value="+49">🇩🇪 +49</option>
-                                <option value="+500">🇫🇰 +500</option>
-                                <option value="+501">🇧🇿 +501</option>
-                                <option value="+502">🇬🇹 +502</option>
-                                <option value="+503">🇸🇻 +503</option>
-                                <option value="+504">🇭🇳 +504</option>
-                                <option value="+505">🇳🇮 +505</option>
-                                <option value="+506">🇨🇷 +506</option>
-                                <option value="+507">🇵🇦 +507</option>
-                                <option value="+509">🇭🇹 +509</option>
-                                <option value="+51">🇵🇪 +51</option>
-                                <option value="+52">🇲🇽 +52</option>
-                                <option value="+53">🇨🇺 +53</option>
-                                <option value="+54">🇦🇷 +54</option>
-                                <option value="+55">🇧🇷 +55</option>
-                                <option value="+56">🇨🇱 +56</option>
-                                <option value="+57">🇨🇴 +57</option>
-                                <option value="+58">🇻🇪 +58</option>
-                                <option value="+591">🇧🇴 +591</option>
-                                <option value="+592">🇬🇾 +592</option>
-                                <option value="+593">🇪🇨 +593</option>
-                                <option value="+595">🇵🇾 +595</option>
-                                <option value="+597">🇸🇷 +597</option>
-                                <option value="+598">🇺🇾 +598</option>
-                                <option value="+60">🇲🇾 +60</option>
-                                <option value="+61">🇦🇺 +61</option>
-                                <option value="+62">🇮🇩 +62</option>
-                                <option value="+63">🇵🇭 +63</option>
-                                <option value="+64">🇳🇿 +64</option>
-                                <option value="+65">🇸🇬 +65</option>
-                                <option value="+66">🇹🇭 +66</option>
-                                <option value="+673">🇧🇳 +673</option>
-                                <option value="+675">🇵🇬 +675</option>
-                                <option value="+676">🇹🇴 +676</option>
-                                <option value="+677">🇸🇧 +677</option>
-                                <option value="+678">🇻🇺 +678</option>
-                                <option value="+679">🇫🇯 +679</option>
-                                <option value="+685">🇼🇸 +685</option>
-                                <option value="+686">🇰🇮 +686</option>
-                                <option value="+687">🇳🇨 +687</option>
-                                <option value="+689">🇵🇫 +689</option>
-                                <option value="+691">🇫🇲 +691</option>
-                                <option value="+692">🇲🇭 +692</option>
-                                <option value="+7">🇷🇺 +7</option>
-                                <option value="+81">🇯🇵 +81</option>
-                                <option value="+82">🇰🇷 +82</option>
-                                <option value="+84">🇻🇳 +84</option>
-                                <option value="+850">🇰🇵 +850</option>
-                                <option value="+852">🇭🇰 +852</option>
-                                <option value="+853">🇲🇴 +853</option>
-                                <option value="+855">🇰🇭 +855</option>
-                                <option value="+856">🇱🇦 +856</option>
-                                <option value="+86">🇨🇳 +86</option>
-                                <option value="+880">🇧🇩 +880</option>
-                                <option value="+886">🇹🇼 +886</option>
-                                <option value="+90">🇹🇷 +90</option>
-                                <option value="+91">🇮🇳 +91</option>
-                                <option value="+92">🇵🇰 +92</option>
-                                <option value="+93">🇦🇫 +93</option>
-                                <option value="+94">🇱🇰 +94</option>
-                                <option value="+95">🇲🇲 +95</option>
-                                <option value="+960">🇲🇻 +960</option>
-                                <option value="+961">🇱🇧 +961</option>
-                                <option value="+962">🇯🇴 +962</option>
-                                <option value="+963">🇸🇾 +963</option>
-                                <option value="+964">🇮🇶 +964</option>
-                                <option value="+965">🇰🇼 +965</option>
-                                <option value="+966">🇸🇦 +966</option>
-                                <option value="+967">🇾🇪 +967</option>
-                                <option value="+968">🇴🇲 +968</option>
-                                <option value="+970">🇵🇸 +970</option>
-                                <option value="+971">🇦🇪 +971</option>
-                                <option value="+972">🇮🇱 +972</option>
-                                <option value="+973">🇧🇭 +973</option>
-                                <option value="+974">🇶🇦 +974</option>
-                                <option value="+975">🇧🇹 +975</option>
-                                <option value="+976">🇲🇳 +976</option>
-                                <option value="+977">🇳🇵 +977</option>
-                                <option value="+98">🇮🇷 +98</option>
-                                <option value="+992">🇹🇯 +992</option>
-                                <option value="+993">🇹🇲 +993</option>
-                                <option value="+994">🇦🇿 +994</option>
-                                <option value="+995">🇬🇪 +995</option>
-                                <option value="+996">🇰🇬 +996</option>
-                                <option value="+998">🇺🇿 +998</option>
-                            </select>
-                            <input type="tel" id="cust-phone" placeholder="Phone number" required>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary" style="width:100%;" onclick="nextStep(2)">Continue <i class="fa-solid fa-arrow-right"></i></button>
-                </div>
+    <!-- Course Grid -->
+    <div class="courses-grid" id="courses-grid">
+        <div class="loading-overlay"><span class="spinner"></span> Loading courses...</div>
+    </div>
+</div>
 
-                <!-- Step 2 -->
-                <div class="step-content hidden" id="step-2">
-                    <h3>Billing Address</h3>
-                    <div class="form-group"><label>Street Address *</label><input type="text" id="cust-street" placeholder="e.g. 45 Samora Machel Ave" required></div>
-                    <div class="form-row">
-                        <div class="form-group"><label>City / Location *</label><input type="text" id="cust-city" placeholder="e.g. Harare" required></div>
-                        <div class="form-group"><label>Province / State</label><input type="text" id="cust-province" placeholder="e.g. Mashonaland"></div>
-                    </div>
-                    <div class="form-group"><label>Country *</label>
-                        <select id="cust-country" required>
-                            <option value="">— Select Country —</option>
-                            <optgroup label="Africa">
-                                <option value="Zimbabwe">Zimbabwe</option>
-                                <option value="South Africa">South Africa</option>
-                                <option value="Kenya">Kenya</option>
-                                <option value="Uganda">Uganda</option>
-                                <option value="Zambia">Zambia</option>
-                                <option value="Malawi">Malawi</option>
-                                <option value="Botswana">Botswana</option>
-                                <option value="Namibia">Namibia</option>
-                                <option value="Tanzania">Tanzania</option>
-                                <option value="Rwanda">Rwanda</option>
-                                <option value="Burundi">Burundi</option>
-                                <option value="Ethiopia">Ethiopia</option>
-                                <option value="Egypt">Egypt</option>
-                                <option value="Nigeria">Nigeria</option>
-                                <option value="Ghana">Ghana</option>
-                                <option value="Ivory Coast">Ivory Coast</option>
-                                <option value="Senegal">Senegal</option>
-                                <option value="Mali">Mali</option>
-                                <option value="Cameroon">Cameroon</option>
-                                <option value="Angola">Angola</option>
-                                <option value="Mozambique">Mozambique</option>
-                                <option value="Madagascar">Madagascar</option>
-                                <option value="Mauritius">Mauritius</option>
-                                <option value="Algeria">Algeria</option>
-                                <option value="Morocco">Morocco</option>
-                                <option value="Tunisia">Tunisia</option>
-                            </optgroup>
-                            <optgroup label="Europe">
-                                <option value="United Kingdom">United Kingdom</option>
-                                <option value="France">France</option>
-                                <option value="Germany">Germany</option>
-                                <option value="Italy">Italy</option>
-                                <option value="Spain">Spain</option>
-                                <option value="Portugal">Portugal</option>
-                                <option value="Netherlands">Netherlands</option>
-                                <option value="Belgium">Belgium</option>
-                                <option value="Switzerland">Switzerland</option>
-                                <option value="Sweden">Sweden</option>
-                                <option value="Norway">Norway</option>
-                                <option value="Denmark">Denmark</option>
-                                <option value="Ireland">Ireland</option>
-                                <option value="Poland">Poland</option>
-                                <option value="Greece">Greece</option>
-                                <option value="Ukraine">Ukraine</option>
-                            </optgroup>
-                            <optgroup label="Asia">
-                                <option value="China">China</option>
-                                <option value="India">India</option>
-                                <option value="Japan">Japan</option>
-                                <option value="South Korea">South Korea</option>
-                                <option value="Singapore">Singapore</option>
-                                <option value="Malaysia">Malaysia</option>
-                                <option value="Indonesia">Indonesia</option>
-                                <option value="Thailand">Thailand</option>
-                                <option value="Vietnam">Vietnam</option>
-                                <option value="Philippines">Philippines</option>
-                                <option value="Pakistan">Pakistan</option>
-                                <option value="Bangladesh">Bangladesh</option>
-                            </optgroup>
-                            <optgroup label="Middle East">
-                                <option value="United Arab Emirates">United Arab Emirates</option>
-                                <option value="Saudi Arabia">Saudi Arabia</option>
-                                <option value="Qatar">Qatar</option>
-                                <option value="Kuwait">Kuwait</option>
-                                <option value="Bahrain">Bahrain</option>
-                                <option value="Oman">Oman</option>
-                                <option value="Jordan">Jordan</option>
-                                <option value="Turkey">Turkey</option>
-                            </optgroup>
-                            <optgroup label="Americas">
-                                <option value="United States">United States</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Mexico">Mexico</option>
-                                <option value="Brazil">Brazil</option>
-                                <option value="Argentina">Argentina</option>
-                                <option value="Chile">Chile</option>
-                                <option value="Colombia">Colombia</option>
-                                <option value="Peru">Peru</option>
-                            </optgroup>
-                            <optgroup label="Oceania">
-                                <option value="Australia">Australia</option>
-                                <option value="New Zealand">New Zealand</option>
-                                <option value="Fiji">Fiji</option>
-                            </optgroup>
+<!-- ── CHECKOUT MODAL ── -->
+<div class="modal-overlay" id="checkout-modal">
+    <div class="modal-card">
+        <button class="modal-close" onclick="closeCheckout()"><i class="fa-solid fa-times"></i></button>
+        <div class="steps" id="steps-indicator">
+            <div class="step active" data-step="1">Your Details</div>
+            <div class="step" data-step="2">Billing & Agreement</div>
+            <div class="step" data-step="3">Confirm & Pay</div>
+        </div>
+        <form id="checkout-form" onsubmit="return false;">
+            <!-- Step 1 -->
+            <div class="step-content" id="step-1">
+                <h3>Your Details</h3>
+                <div class="form-group"><label>Full Name *</label><input type="text" id="cust-name" placeholder="e.g. John Moyo" required></div>
+                <div class="form-group"><label>Email Address *</label><input type="email" id="cust-email" placeholder="you@example.com" required></div>
+                <div class="form-group"><label>Phone Number *</label>
+                    <div class="phone-group">
+                        <select id="phone-code">
+                            <option value="+263">🇿🇼 +263</option>
+                            <option value="+27">🇿🇦 +27</option>
+                            <option value="+1">🇺🇸 +1</option>
+                            <option value="+44">🇬🇧 +44</option>
+                            <option value="+254">🇰🇪 +254</option>
+                            <option value="+256">🇺🇬 +256</option>
+                            <option value="+260">🇿🇲 +260</option>
+                            <option value="+265">🇲🇼 +265</option>
+                            <option value="+267">🇧🇼 +267</option>
+                            <option value="+264">🇳🇦 +264</option>
+                            <option value="+255">🇹🇿 +255</option>
+                            <option value="+250">🇷🇼 +250</option>
+                            <option value="+251">🇪🇹 +251</option>
+                            <option value="+20">🇪🇬 +20</option>
+                            <option value="+234">🇳🇬 +234</option>
+                            <option value="+233">🇬🇭 +233</option>
+                            <option value="+258">🇲🇿 +258</option>
+                            <option value="+244">🇦🇴 +244</option>
+                            <option value="+237">🇨🇲 +237</option>
+                            <option value="+225">🇨🇮 +225</option>
+                            <option value="+221">🇸🇳 +221</option>
+                            <option value="+223">🇲🇱 +223</option>
+                            <option value="+226">🇧🇫 +226</option>
+                            <option value="+229">🇧🇯 +229</option>
+                            <option value="+227">🇳🇪 +227</option>
+                            <option value="+228">🇹🇬 +228</option>
+                            <option value="+231">🇱🇷 +231</option>
+                            <option value="+232">🇸🇱 +232</option>
+                            <option value="+235">🇹🇩 +235</option>
+                            <option value="+236">🇨🇫 +236</option>
+                            <option value="+238">🇨🇻 +238</option>
+                            <option value="+239">🇸🇹 +239</option>
+                            <option value="+240">🇬🇶 +240</option>
+                            <option value="+241">🇬🇦 +241</option>
+                            <option value="+242">🇨🇬 +242</option>
+                            <option value="+243">🇨🇩 +243</option>
+                            <option value="+245">🇬🇼 +245</option>
+                            <option value="+248">🇸🇨 +248</option>
+                            <option value="+253">🇩🇯 +253</option>
+                            <option value="+257">🇧🇮 +257</option>
+                            <option value="+261">🇲🇬 +261</option>
+                            <option value="+266">🇱🇸 +266</option>
+                            <option value="+268">🇸🇿 +268</option>
+                            <option value="+269">🇰🇲 +269</option>
+                            <option value="+291">🇪🇷 +291</option>
+                            <option value="+252">🇸🇴 +252</option>
+                            <option value="+249">🇸🇩 +249</option>
+                            <option value="+211">🇸🇸 +211</option>
+                            <option value="+212">🇲🇦 +212</option>
+                            <option value="+213">🇩🇿 +213</option>
+                            <option value="+216">🇹🇳 +216</option>
+                            <option value="+218">🇱🇾 +218</option>
+                            <option value="+220">🇬🇲 +220</option>
+                            <option value="+222">🇲🇷 +222</option>
+                            <option value="+224">🇬🇳 +224</option>
+                            <option value="+230">🇲🇺 +230</option>
+                            <option value="+262">🇷🇪 +262</option>
+                            <option value="+290">🇸🇭 +290</option>
+                            <option value="+30">🇬🇷 +30</option>
+                            <option value="+31">🇳🇱 +31</option>
+                            <option value="+32">🇧🇪 +32</option>
+                            <option value="+33">🇫🇷 +33</option>
+                            <option value="+34">🇪🇸 +34</option>
+                            <option value="+350">🇬🇮 +350</option>
+                            <option value="+351">🇵🇹 +351</option>
+                            <option value="+352">🇱🇺 +352</option>
+                            <option value="+353">🇮🇪 +353</option>
+                            <option value="+354">🇮🇸 +354</option>
+                            <option value="+355">🇦🇱 +355</option>
+                            <option value="+356">🇲🇹 +356</option>
+                            <option value="+357">🇨🇾 +357</option>
+                            <option value="+358">🇫🇮 +358</option>
+                            <option value="+359">🇧🇬 +359</option>
+                            <option value="+36">🇭🇺 +36</option>
+                            <option value="+370">🇱🇹 +370</option>
+                            <option value="+371">🇱🇻 +371</option>
+                            <option value="+372">🇪🇪 +372</option>
+                            <option value="+373">🇲🇩 +373</option>
+                            <option value="+374">🇦🇲 +374</option>
+                            <option value="+375">🇧🇾 +375</option>
+                            <option value="+376">🇦🇩 +376</option>
+                            <option value="+377">🇲🇨 +377</option>
+                            <option value="+378">🇸🇲 +378</option>
+                            <option value="+380">🇺🇦 +380</option>
+                            <option value="+381">🇷🇸 +381</option>
+                            <option value="+382">🇲🇪 +382</option>
+                            <option value="+383">🇽🇰 +383</option>
+                            <option value="+385">🇭🇷 +385</option>
+                            <option value="+386">🇸🇮 +386</option>
+                            <option value="+387">🇧🇦 +387</option>
+                            <option value="+389">🇲🇰 +389</option>
+                            <option value="+39">🇮🇹 +39</option>
+                            <option value="+40">🇷🇴 +40</option>
+                            <option value="+41">🇨🇭 +41</option>
+                            <option value="+420">🇨🇿 +420</option>
+                            <option value="+421">🇸🇰 +421</option>
+                            <option value="+423">🇱🇮 +423</option>
+                            <option value="+43">🇦🇹 +43</option>
+                            <option value="+45">🇩🇰 +45</option>
+                            <option value="+46">🇸🇪 +46</option>
+                            <option value="+47">🇳🇴 +47</option>
+                            <option value="+48">🇵🇱 +48</option>
+                            <option value="+49">🇩🇪 +49</option>
+                            <option value="+500">🇫🇰 +500</option>
+                            <option value="+501">🇧🇿 +501</option>
+                            <option value="+502">🇬🇹 +502</option>
+                            <option value="+503">🇸🇻 +503</option>
+                            <option value="+504">🇭🇳 +504</option>
+                            <option value="+505">🇳🇮 +505</option>
+                            <option value="+506">🇨🇷 +506</option>
+                            <option value="+507">🇵🇦 +507</option>
+                            <option value="+509">🇭🇹 +509</option>
+                            <option value="+51">🇵🇪 +51</option>
+                            <option value="+52">🇲🇽 +52</option>
+                            <option value="+53">🇨🇺 +53</option>
+                            <option value="+54">🇦🇷 +54</option>
+                            <option value="+55">🇧🇷 +55</option>
+                            <option value="+56">🇨🇱 +56</option>
+                            <option value="+57">🇨🇴 +57</option>
+                            <option value="+58">🇻🇪 +58</option>
+                            <option value="+591">🇧🇴 +591</option>
+                            <option value="+592">🇬🇾 +592</option>
+                            <option value="+593">🇪🇨 +593</option>
+                            <option value="+595">🇵🇾 +595</option>
+                            <option value="+597">🇸🇷 +597</option>
+                            <option value="+598">🇺🇾 +598</option>
+                            <option value="+60">🇲🇾 +60</option>
+                            <option value="+61">🇦🇺 +61</option>
+                            <option value="+62">🇮🇩 +62</option>
+                            <option value="+63">🇵🇭 +63</option>
+                            <option value="+64">🇳🇿 +64</option>
+                            <option value="+65">🇸🇬 +65</option>
+                            <option value="+66">🇹🇭 +66</option>
+                            <option value="+673">🇧🇳 +673</option>
+                            <option value="+675">🇵🇬 +675</option>
+                            <option value="+676">🇹🇴 +676</option>
+                            <option value="+677">🇸🇧 +677</option>
+                            <option value="+678">🇻🇺 +678</option>
+                            <option value="+679">🇫🇯 +679</option>
+                            <option value="+685">🇼🇸 +685</option>
+                            <option value="+686">🇰🇮 +686</option>
+                            <option value="+687">🇳🇨 +687</option>
+                            <option value="+689">🇵🇫 +689</option>
+                            <option value="+691">🇫🇲 +691</option>
+                            <option value="+692">🇲🇭 +692</option>
+                            <option value="+7">🇷🇺 +7</option>
+                            <option value="+81">🇯🇵 +81</option>
+                            <option value="+82">🇰🇷 +82</option>
+                            <option value="+84">🇻🇳 +84</option>
+                            <option value="+850">🇰🇵 +850</option>
+                            <option value="+852">🇭🇰 +852</option>
+                            <option value="+853">🇲🇴 +853</option>
+                            <option value="+855">🇰🇭 +855</option>
+                            <option value="+856">🇱🇦 +856</option>
+                            <option value="+86">🇨🇳 +86</option>
+                            <option value="+880">🇧🇩 +880</option>
+                            <option value="+886">🇹🇼 +886</option>
+                            <option value="+90">🇹🇷 +90</option>
+                            <option value="+91">🇮🇳 +91</option>
+                            <option value="+92">🇵🇰 +92</option>
+                            <option value="+93">🇦🇫 +93</option>
+                            <option value="+94">🇱🇰 +94</option>
+                            <option value="+95">🇲🇲 +95</option>
+                            <option value="+960">🇲🇻 +960</option>
+                            <option value="+961">🇱🇧 +961</option>
+                            <option value="+962">🇯🇴 +962</option>
+                            <option value="+963">🇸🇾 +963</option>
+                            <option value="+964">🇮🇶 +964</option>
+                            <option value="+965">🇰🇼 +965</option>
+                            <option value="+966">🇸🇦 +966</option>
+                            <option value="+967">🇾🇪 +967</option>
+                            <option value="+968">🇴🇲 +968</option>
+                            <option value="+970">🇵🇸 +970</option>
+                            <option value="+971">🇦🇪 +971</option>
+                            <option value="+972">🇮🇱 +972</option>
+                            <option value="+973">🇧🇭 +973</option>
+                            <option value="+974">🇶🇦 +974</option>
+                            <option value="+975">🇧🇹 +975</option>
+                            <option value="+976">🇲🇳 +976</option>
+                            <option value="+977">🇳🇵 +977</option>
+                            <option value="+98">🇮🇷 +98</option>
+                            <option value="+992">🇹🇯 +992</option>
+                            <option value="+993">🇹🇲 +993</option>
+                            <option value="+994">🇦🇿 +994</option>
+                            <option value="+995">🇬🇪 +995</option>
+                            <option value="+996">🇰🇬 +996</option>
+                            <option value="+998">🇺🇿 +998</option>
                         </select>
+                        <input type="tel" id="cust-phone" placeholder="Phone number" required>
                     </div>
-                    <div class="agreement" onclick="document.getElementById('agreement').click()">
-                        <input type="checkbox" id="agreement" required onclick="event.stopPropagation()">
-                        <label for="agreement">I agree that all payments are manual via Ecocash / Bank Transfer. I will submit proof of payment for admin verification.</label>
-                    </div>
-                    <button type="button" class="btn btn-outline" style="width:100%;margin-bottom:0.5rem;" onclick="prevStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-                    <button type="button" class="btn btn-primary" style="width:100%;" onclick="nextStep(3)">Review Summary <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
+                <button type="button" class="btn btn-primary" style="width:100%;" onclick="nextStep(2)">Continue <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
 
-                <!-- Step 3 -->
-                <div class="step-content hidden" id="step-3">
-                    <h3>📋 Payment Summary</h3>
-                    <div class="summary-box" id="summary-details"></div>
-                    <div class="secure-badge"><i class="fa-solid fa-lock"></i> Secure Checkout · Your data is encrypted</div>
-                    <button type="button" class="btn btn-outline" style="width:100%;margin-bottom:0.5rem;" onclick="prevStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-                    <button type="button" class="btn btn-primary" style="width:100%;" id="btn-generate-invoice" onclick="generateInvoice()"><i class="fa-solid fa-file-invoice"></i> Generate Invoice & Pay</button>
+            <!-- Step 2 -->
+            <div class="step-content hidden" id="step-2">
+                <h3>Billing Address</h3>
+                <div class="form-group"><label>Street Address *</label><input type="text" id="cust-street" placeholder="e.g. 45 Samora Machel Ave" required></div>
+                <div class="form-row">
+                    <div class="form-group"><label>City / Location *</label><input type="text" id="cust-city" placeholder="e.g. Harare" required></div>
+                    <div class="form-group"><label>Province / State</label><input type="text" id="cust-province" placeholder="e.g. Mashonaland"></div>
                 </div>
+                <div class="form-group"><label>Country *</label>
+                    <select id="cust-country" required>
+                        <option value="">— Select Country —</option>
+                        <optgroup label="Africa">
+                            <option value="Zimbabwe">Zimbabwe</option>
+                            <option value="South Africa">South Africa</option>
+                            <option value="Kenya">Kenya</option>
+                            <option value="Uganda">Uganda</option>
+                            <option value="Zambia">Zambia</option>
+                            <option value="Malawi">Malawi</option>
+                            <option value="Botswana">Botswana</option>
+                            <option value="Namibia">Namibia</option>
+                            <option value="Tanzania">Tanzania</option>
+                            <option value="Rwanda">Rwanda</option>
+                            <option value="Burundi">Burundi</option>
+                            <option value="Ethiopia">Ethiopia</option>
+                            <option value="Egypt">Egypt</option>
+                            <option value="Nigeria">Nigeria</option>
+                            <option value="Ghana">Ghana</option>
+                            <option value="Ivory Coast">Ivory Coast</option>
+                            <option value="Senegal">Senegal</option>
+                            <option value="Mali">Mali</option>
+                            <option value="Cameroon">Cameroon</option>
+                            <option value="Angola">Angola</option>
+                            <option value="Mozambique">Mozambique</option>
+                            <option value="Madagascar">Madagascar</option>
+                            <option value="Mauritius">Mauritius</option>
+                            <option value="Algeria">Algeria</option>
+                            <option value="Morocco">Morocco</option>
+                            <option value="Tunisia">Tunisia</option>
+                        </optgroup>
+                        <optgroup label="Europe">
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="France">France</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Italy">Italy</option>
+                            <option value="Spain">Spain</option>
+                            <option value="Portugal">Portugal</option>
+                            <option value="Netherlands">Netherlands</option>
+                            <option value="Belgium">Belgium</option>
+                            <option value="Switzerland">Switzerland</option>
+                            <option value="Sweden">Sweden</option>
+                            <option value="Norway">Norway</option>
+                            <option value="Denmark">Denmark</option>
+                            <option value="Ireland">Ireland</option>
+                            <option value="Poland">Poland</option>
+                            <option value="Greece">Greece</option>
+                            <option value="Ukraine">Ukraine</option>
+                        </optgroup>
+                        <optgroup label="Asia">
+                            <option value="China">China</option>
+                            <option value="India">India</option>
+                            <option value="Japan">Japan</option>
+                            <option value="South Korea">South Korea</option>
+                            <option value="Singapore">Singapore</option>
+                            <option value="Malaysia">Malaysia</option>
+                            <option value="Indonesia">Indonesia</option>
+                            <option value="Thailand">Thailand</option>
+                            <option value="Vietnam">Vietnam</option>
+                            <option value="Philippines">Philippines</option>
+                            <option value="Pakistan">Pakistan</option>
+                            <option value="Bangladesh">Bangladesh</option>
+                        </optgroup>
+                        <optgroup label="Middle East">
+                            <option value="United Arab Emirates">United Arab Emirates</option>
+                            <option value="Saudi Arabia">Saudi Arabia</option>
+                            <option value="Qatar">Qatar</option>
+                            <option value="Kuwait">Kuwait</option>
+                            <option value="Bahrain">Bahrain</option>
+                            <option value="Oman">Oman</option>
+                            <option value="Jordan">Jordan</option>
+                            <option value="Turkey">Turkey</option>
+                        </optgroup>
+                        <optgroup label="Americas">
+                            <option value="United States">United States</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Mexico">Mexico</option>
+                            <option value="Brazil">Brazil</option>
+                            <option value="Argentina">Argentina</option>
+                            <option value="Chile">Chile</option>
+                            <option value="Colombia">Colombia</option>
+                            <option value="Peru">Peru</option>
+                        </optgroup>
+                        <optgroup label="Oceania">
+                            <option value="Australia">Australia</option>
+                            <option value="New Zealand">New Zealand</option>
+                            <option value="Fiji">Fiji</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="agreement" onclick="document.getElementById('agreement').click()">
+                    <input type="checkbox" id="agreement" required onclick="event.stopPropagation()">
+                    <label for="agreement">I agree that all payments are manual via Ecocash / Bank Transfer. I will submit proof of payment for admin verification.</label>
+                </div>
+                <button type="button" class="btn btn-outline" style="width:100%;margin-bottom:0.5rem;" onclick="prevStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                <button type="button" class="btn btn-primary" style="width:100%;" onclick="nextStep(3)">Review Summary <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
 
-                <!-- Invoice View (replaces steps after generation) -->
-                <div class="step-content hidden" id="step-invoice">
-                    <div id="invoice-content"></div>
-                    <!-- Proof of Payment Section -->
-                    <div id="proof-section" style="margin-top:1.2rem; border-top:1px solid var(--border); padding-top:1.2rem;">
-                        <div id="proof-status-area" style="display:none; margin-bottom:0.8rem;">
-                            <span class="proof-status-badge info" id="proof-status-badge"><i class="fa-solid fa-clock"></i> <span id="proof-status-text">Checking status…</span></span>
-                        </div>
-                        <div id="proof-upload-area" class="proof-upload-area" onclick="document.getElementById('proof-file-input').click()">
-                            <i class="fa-regular fa-file-image"></i>
-                            <p><strong>Tap to upload proof of payment</strong></p>
-                            <p style="font-size:0.75rem; color:var(--text-muted);">Screenshot or PDF of your bank transfer / Ecocash payment</p>
-                            <div id="proof-file-info" style="display:none; margin-top:0.5rem;">
-                                <span class="file-name" id="proof-file-name"></span>
-                                <div id="proof-image-preview-container"></div>
-                            </div>
-                        </div>
-                        <input type="file" id="proof-file-input" accept="image/*,application/pdf,image/png,image/jpeg,image/webp" style="display:none;" onchange="handleProofFileSelect(this)" />
-                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem;">
-                            <button class="btn btn-proof" id="btn-submit-proof" onclick="submitProof()" disabled style="flex:1;">
-                                <i class="fa-solid fa-paper-plane"></i> Submit Proof to Admin
-                            </button>
-                            <button class="btn btn-outline" style="flex:1;" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Invoice</button>
-                        </div>
-                        <button class="btn btn-outline" style="width:100%;margin-top:0.5rem;" onclick="closeCheckout()"><i class="fa-solid fa-check"></i> Done — Back to Courses</button>
+            <!-- Step 3 -->
+            <div class="step-content hidden" id="step-3">
+                <h3>📋 Payment Summary</h3>
+                <div class="summary-box" id="summary-details"></div>
+                <div class="secure-badge"><i class="fa-solid fa-lock"></i> Secure Checkout · Your data is encrypted</div>
+                <button type="button" class="btn btn-outline" style="width:100%;margin-bottom:0.5rem;" onclick="prevStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                <button type="button" class="btn btn-primary" style="width:100%;" id="btn-generate-invoice" onclick="generateInvoice()"><i class="fa-solid fa-file-invoice"></i> Generate Invoice & Pay</button>
+            </div>
+
+            <!-- Invoice View (replaces steps after generation) -->
+            <div class="step-content hidden" id="step-invoice">
+                <div id="invoice-content"></div>
+                <!-- Proof of Payment Section -->
+                <div id="proof-section" style="margin-top:1.2rem; border-top:1px solid var(--border); padding-top:1.2rem;">
+                    <div id="proof-status-area" style="display:none; margin-bottom:0.8rem;">
+                        <span class="proof-status-badge info" id="proof-status-badge"><i class="fa-solid fa-clock"></i> <span id="proof-status-text">Checking status…</span></span>
                     </div>
+                    <div id="proof-upload-area" class="proof-upload-area" onclick="document.getElementById('proof-file-input').click()">
+                        <i class="fa-regular fa-file-image"></i>
+                        <p><strong>Tap to upload proof of payment</strong></p>
+                        <p style="font-size:0.75rem; color:var(--text-muted);">Screenshot or PDF of your bank transfer / Ecocash payment</p>
+                        <div id="proof-file-info" style="display:none; margin-top:0.5rem;">
+                            <span class="file-name" id="proof-file-name"></span>
+                            <div id="proof-image-preview-container"></div>
+                        </div>
+                    </div>
+                    <input type="file" id="proof-file-input" accept="image/*,application/pdf,image/png,image/jpeg,image/webp" style="display:none;" onchange="handleProofFileSelect(this)" />
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem;">
+                        <button class="btn btn-proof" id="btn-submit-proof" onclick="submitProof()" disabled style="flex:1;">
+                            <i class="fa-solid fa-paper-plane"></i> Submit Proof to Admin
+                        </button>
+                        <button class="btn btn-outline" style="flex:1;" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Invoice</button>
+                    </div>
+                    <button class="btn btn-outline" style="width:100%;margin-top:0.5rem;" onclick="closeCheckout()"><i class="fa-solid fa-check"></i> Done — Back to Courses</button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
+</div>
 
-    <div id="toast-container"></div>
+<div id="toast-container"></div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import {
-            getFirestore,
-            doc,
-            getDoc,
-            setDoc,
-            updateDoc,
-            deleteDoc,
-            collection,
-            addDoc,
-            query,
-            where,
-            getDocs,
-            serverTimestamp,
-            orderBy,
-            onSnapshot
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc,
+        updateDoc,
+        deleteDoc,
+        collection,
+        addDoc,
+        query,
+        where,
+        getDocs,
+        serverTimestamp,
+        orderBy,
+        onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
-            authDomain: "teacherbee-connect.firebaseapp.com",
-            projectId: "teacherbee-connect",
-            storageBucket: "teacherbee-connect.firebasestorage.app",
-            messagingSenderId: "345613317767",
-            appId: "1:345613317767:web:555713e479f9837e84aa22"
-        };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    const firebaseConfig = {
+        apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+        authDomain: "teacherbee-connect.firebaseapp.com",
+        projectId: "teacherbee-connect",
+        storageBucket: "teacherbee-connect.firebasestorage.app",
+        messagingSenderId: "345613317767",
+        appId: "1:345613317767:web:555713e479f9837e84aa22"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        const WEB_APP_URL =
-            "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+    const WEB_APP_URL =
+        "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
 
-        let currentUser = null;
-        let allCourses = [];
-        let userEnrollments = {};
-        let selectedCourse = null;
-        let currentStep = 1;
-        let pendingPaymentId = null;
-        let pendingPaymentData = null;
-        let proofFileData = null;
-        let proofThreadId = null;
-        let adminUser = null;
+    let currentUser = null;
+    let allCourses = [];
+    let userEnrollments = {};
+    let selectedCourse = null;
+    let currentStep = 1;
+    let pendingPaymentId = null;
+    let pendingPaymentData = null;
+    let proofFileData = null;
+    let proofThreadId = null;
+    let adminUser = null;
 
-        // ── BANNER URL CONVERTER ──
-        function getDisplayableImageUrl(url) {
-            if (!url) return null;
-            if (
-                url.startsWith('data:') ||
-                url.match(/\.(jpg|jpeg|png|gif|webp|svg)($|\?)/i) ||
-                url.includes('googleusercontent.com') ||
-                url.includes('firebasestorage.googleapis.com')
-            ) {
-                return url;
-            }
-            const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-            if (driveMatch) {
-                return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1200`;
-            }
+    // ── BANNER URL CONVERTER ──
+    function getDisplayableImageUrl(url) {
+        if (!url) return null;
+        if (
+            url.startsWith('data:') ||
+            url.match(/\.(jpg|jpeg|png|gif|webp|svg)($|\?)/i) ||
+            url.includes('googleusercontent.com') ||
+            url.includes('firebasestorage.googleapis.com')
+        ) {
             return url;
         }
+        const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (driveMatch) {
+            return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1200`;
+        }
+        return url;
+    }
 
-        // ── AUTH ──
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) { window.location.href = 'login.html'; return; }
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            if (!userDoc.exists() || userDoc.data().role !== 'teacher') {
-                window.location.href = 'login.html';
+    // ── AUTH ──
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) { window.location.href = 'index.html'; return; }
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists() || userDoc.data().role !== 'teacher') {
+            window.location.href = 'index.html';
+            return;
+        }
+        currentUser = user;
+        await loadCourses();
+        await findAdminUser();
+    });
+
+    // ── FIND ADMIN USER ──
+    async function findAdminUser() {
+        try {
+            const q = query(collection(db, 'users'), where('role', '==', 'admin'));
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+                adminUser = { id: snap.docs[0].id, ...snap.docs[0].data() };
                 return;
             }
-            currentUser = user;
-            await loadCourses();
-            await findAdminUser();
-        });
-
-        // ── FIND ADMIN USER ──
-        async function findAdminUser() {
-            try {
-                // First try to find a user with role 'admin'
-                const q = query(collection(db, 'users'), where('role', '==', 'admin'));
-                const snap = await getDocs(q);
-                if (!snap.empty) {
-                    adminUser = { id: snap.docs[0].id, ...snap.docs[0].data() };
-                    console.log('✅ Admin found:', adminUser.email || adminUser.id);
-                    return;
-                }
-                // Fallback: look for admin@teacherbee.com
-                const q2 = query(collection(db, 'users'), where('email', '==', 'admin@teacherbee.com'));
-                const snap2 = await getDocs(q2);
-                if (!snap2.empty) {
-                    adminUser = { id: snap2.docs[0].id, ...snap2.docs[0].data() };
-                    console.log('✅ Admin found via email:', adminUser.email);
-                    return;
-                }
-                // If no admin, try to find any user with 'admin' in role string
-                const allUsers = await getDocs(collection(db, 'users'));
-                for (const d of allUsers.docs) {
-                    const data = d.data();
-                    if (data.role && data.role.toLowerCase().includes('admin')) {
-                        adminUser = { id: d.id, ...data };
-                        console.log('✅ Admin found via role string:', adminUser.email || adminUser.id);
-                        return;
-                    }
-                }
-                console.warn('⚠️ No admin user found. Proof submissions will fail.');
-            } catch (e) {
-                console.error('Error finding admin:', e);
-            }
-        }
-
-        // ── LOAD COURSES ──
-        async function loadCourses() {
-            try {
-                const coursesQuery = query(collection(db, 'courses'), where('status', '==', 'published'));
-                const snap = await getDocs(coursesQuery);
-                allCourses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-                const enrollmentQuery = query(collection(db, 'course_enrollments'), where('userId', '==',
-                    currentUser.uid));
-                const enrollSnap = await getDocs(enrollmentQuery);
-                userEnrollments = {};
-                enrollSnap.forEach(d => {
-                    const data = d.data();
-                    userEnrollments[data.courseId] = { id: d.id, ...data };
-                });
-
-                renderCourses();
-            } catch (e) {
-                console.error(e);
-                document.getElementById('courses-grid').innerHTML =
-                    '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><h3>Error loading courses</h3><p>Please refresh the page.</p></div>';
-            }
-        }
-
-        // ── RENDER COURSES ──
-        function renderCourses() {
-            const grid = document.getElementById('courses-grid');
-            if (allCourses.length === 0) {
-                grid.innerHTML =
-                    '<div class="empty-state"><i class="fa-solid fa-folder-open"></i><h3>No courses available</h3><p>Check back later for new workshops and TEFL courses.</p></div>';
+            const q2 = query(collection(db, 'users'), where('email', '==', 'admin@teacherbee.com'));
+            const snap2 = await getDocs(q2);
+            if (!snap2.empty) {
+                adminUser = { id: snap2.docs[0].id, ...snap2.docs[0].data() };
                 return;
             }
-
-            grid.innerHTML = allCourses.map(course => {
-                const enrollment = userEnrollments[course.id];
-                const status = enrollment ? enrollment.status : null;
-                let actionHTML = '';
-                let statusBadge = '';
-
-                if (status === 'active') {
-                    statusBadge = '<span class="status-pill status-active">Enrolled</span>';
-                    actionHTML =
-                        `<a href="classroom.html?courseId=${course.id}" class="btn btn-success"><i class="fa-solid fa-door-open"></i> Enter Classroom</a>`;
-                } else if (status === 'pending_payment' || status === 'proof_submitted') {
-                    const label = status === 'proof_submitted' ? 'Proof Submitted' : 'Payment Pending';
-                    const badgeClass = status === 'proof_submitted' ? 'status-proof-submitted' : 'status-pending';
-                    statusBadge = `<span class="status-pill ${badgeClass}">${label}</span>`;
-                    actionHTML = `
-                        <button class="btn btn-outline btn-sm" onclick="viewInvoiceFromEnrollment('${enrollment.paymentId}')"><i class="fa-solid fa-file-invoice"></i> View Invoice</button>
-                        <button class="btn btn-danger btn-sm" onclick="cancelEnrollment('${enrollment.id}')"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                    `;
-                } else {
-                    actionHTML =
-                        `<button class="btn btn-primary" onclick="startCheckout('${course.id}')"><i class="fa-solid fa-credit-card"></i> Enroll Now — $${course.price}</button>`;
-                }
-
-                const displayUrl = getDisplayableImageUrl(course.thumbnailUrl);
-                const bannerHTML = displayUrl ?
-                    `<img src="${displayUrl}" class="course-banner" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="course-banner-placeholder" style="display:none;"><i class="fa-solid fa-image"></i></div>` :
-                    `<div class="course-banner-placeholder"><i class="fa-solid fa-image"></i></div>`;
-
-                const catBadge = course.category === 'tefl' ? 'cat-tefl' : 'cat-workshop';
-                const catIcon = course.category === 'tefl' ? 'fa-graduation-cap' : 'fa-chalkboard-user';
-                const catLabel = course.category === 'tefl' ? 'TEFL' : 'Workshop';
-
-                return `
-                    <div class="course-card">
-                        ${bannerHTML}
-                        <div class="card-body">
-                            <span class="category-badge ${catBadge}"><i class="fa-solid ${catIcon}"></i> ${catLabel}</span>
-                            <h3>${escapeHTML(course.title)}</h3>
-                            <div class="price">$${course.price}<small> USD · One-time</small></div>
-                            <p class="desc">${escapeHTML(course.description || 'No description provided.')}</p>
-                            ${statusBadge ? `<div style="margin-bottom:0.5rem;">${statusBadge}</div>` : ''}
-                            <div class="actions">${actionHTML}</div>
-                        </div>
-                    </div>`;
-            }).join('');
-        }
-
-        // ── CHECKOUT FLOW ──
-        window.startCheckout = (courseId) => {
-            selectedCourse = allCourses.find(c => c.id === courseId);
-            if (!selectedCourse) return;
-            resetCheckoutForm();
-            document.getElementById('checkout-modal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.closeCheckout = () => {
-            document.getElementById('checkout-modal').classList.remove('active');
-            document.body.style.overflow = '';
-            // Reset proof state
-            proofFileData = null;
-            proofThreadId = null;
-            pendingPaymentId = null;
-            pendingPaymentData = null;
-            document.getElementById('proof-file-input').value = '';
-            document.getElementById('proof-file-info').style.display = 'none';
-            document.getElementById('proof-image-preview-container').innerHTML = '';
-            document.getElementById('btn-submit-proof').disabled = true;
-            document.getElementById('proof-status-area').style.display = 'none';
-            loadCourses();
-        };
-
-        function resetCheckoutForm() {
-            document.getElementById('checkout-form').reset();
-            document.getElementById('agreement').checked = false;
-            currentStep = 1;
-            document.getElementById('step-1').classList.remove('hidden');
-            document.getElementById('step-2').classList.add('hidden');
-            document.getElementById('step-3').classList.add('hidden');
-            document.getElementById('step-invoice').classList.add('hidden');
-            document.getElementById('steps-indicator').style.display = 'flex';
-            document.getElementById('btn-generate-invoice').style.display = '';
-            document.getElementById('proof-section').style.display = 'block';
-            document.getElementById('proof-status-area').style.display = 'none';
-            updateSteps();
-            proofFileData = null;
-            proofThreadId = null;
-            document.getElementById('proof-file-input').value = '';
-            document.getElementById('proof-file-info').style.display = 'none';
-            document.getElementById('proof-image-preview-container').innerHTML = '';
-            document.getElementById('btn-submit-proof').disabled = true;
-        }
-
-        window.nextStep = (step) => {
-            if (step === 2) {
-                if (!document.getElementById('cust-name').value.trim() || !document.getElementById('cust-email')
-                    .value.trim() || !document.getElementById('cust-phone').value.trim()) {
-                    showToast('Please fill all required fields.', 'error');
+            const allUsers = await getDocs(collection(db, 'users'));
+            for (const d of allUsers.docs) {
+                const data = d.data();
+                if (data.role && data.role.toLowerCase().includes('admin')) {
+                    adminUser = { id: d.id, ...data };
                     return;
                 }
             }
-            if (step === 3) {
-                if (!document.getElementById('cust-street').value.trim() || !document.getElementById('cust-city')
-                    .value.trim() || !document.getElementById('cust-country').value) {
-                    showToast('Please complete all address fields.', 'error');
-                    return;
-                }
-                if (!document.getElementById('agreement').checked) {
-                    showToast('You must agree to the payment terms.', 'error');
-                    return;
-                }
-                updateSummary();
-            }
-            document.getElementById(`step-${currentStep}`).classList.add('hidden');
-            document.getElementById(`step-${step}`).classList.remove('hidden');
-            currentStep = step;
-            updateSteps();
-            document.querySelector('.modal-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        };
+        } catch (e) {
+            console.error('Error finding admin:', e);
+        }
+    }
 
-        window.prevStep = (step) => {
-            document.getElementById(`step-${currentStep}`).classList.add('hidden');
-            document.getElementById(`step-${step}`).classList.remove('hidden');
-            currentStep = step;
-            updateSteps();
-            document.querySelector('.modal-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        };
+    // ── LOAD COURSES ──
+    async function loadCourses() {
+        try {
+            const coursesQuery = query(collection(db, 'courses'), where('status', '==', 'published'));
+            const snap = await getDocs(coursesQuery);
+            allCourses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        function updateSteps() {
-            document.querySelectorAll('#steps-indicator .step').forEach(el => {
-                el.classList.remove('active', 'done');
-                const n = parseInt(el.dataset.step);
-                if (n === currentStep) el.classList.add('active');
-                else if (n < currentStep) el.classList.add('done');
+            const enrollmentQuery = query(collection(db, 'course_enrollments'), where('userId', '==',
+                currentUser.uid));
+            const enrollSnap = await getDocs(enrollmentQuery);
+            userEnrollments = {};
+            enrollSnap.forEach(d => {
+                const data = d.data();
+                userEnrollments[data.courseId] = { id: d.id, ...data };
             });
+
+            renderCourses();
+        } catch (e) {
+            console.error(e);
+            document.getElementById('courses-grid').innerHTML =
+                '<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><h3>Error loading courses</h3><p>Please refresh the page.</p></div>';
+        }
+    }
+
+    // ── RENDER COURSES ──
+    function renderCourses() {
+        const grid = document.getElementById('courses-grid');
+        if (allCourses.length === 0) {
+            grid.innerHTML =
+                '<div class="empty-state"><i class="fa-solid fa-folder-open"></i><h3>No courses available</h3><p>Check back later for new workshops and TEFL courses.</p></div>';
+            return;
         }
 
-        function updateSummary() {
-            const name = document.getElementById('cust-name').value.trim();
-            const email = document.getElementById('cust-email').value.trim();
-            const phoneCode = document.getElementById('phone-code').value;
-            const phone = document.getElementById('cust-phone').value.trim();
-            const street = document.getElementById('cust-street').value.trim();
-            const city = document.getElementById('cust-city').value.trim();
-            const province = document.getElementById('cust-province').value.trim() || 'N/A';
-            const country = document.getElementById('cust-country').value;
-            document.getElementById('summary-details').innerHTML = `
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1rem;">
-                    <div><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Name</span><br><strong>${escapeHTML(name)}</strong></div>
-                    <div><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Email</span><br><strong>${escapeHTML(email)}</strong></div>
-                    <div><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Phone</span><br><strong>${escapeHTML(phoneCode)} ${escapeHTML(phone)}</strong></div>
-                    <div><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Country</span><br><strong>${escapeHTML(country)}</strong></div>
-                    <div style="grid-column:1/-1;"><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Address</span><br><strong>${escapeHTML(street)}, ${escapeHTML(city)}, ${escapeHTML(province)}</strong></div>
-                </div>
-                <div style="margin-top:1rem;padding-top:0.8rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-                    <span>Course: <strong>${escapeHTML(selectedCourse.title)}</strong></span>
-                    <span style="font-size:1.3rem;font-weight:800;">$${selectedCourse.price} USD</span>
-                </div>
-            `;
+        grid.innerHTML = allCourses.map(course => {
+            const enrollment = userEnrollments[course.id];
+            const status = enrollment ? enrollment.status : null;
+            let actionHTML = '';
+            let statusBadge = '';
+
+            if (status === 'active') {
+                statusBadge = '<span class="status-pill status-active">Enrolled</span>';
+                actionHTML =
+                    `<a href="classroom.html?courseId=${course.id}" class="btn btn-success"><i class="fa-solid fa-door-open"></i> Enter Classroom</a>`;
+            } else if (status === 'pending_payment' || status === 'proof_submitted') {
+                const label = status === 'proof_submitted' ? 'Proof Submitted' : 'Payment Pending';
+                const badgeClass = status === 'proof_submitted' ? 'status-proof-submitted' : 'status-pending';
+                statusBadge = `<span class="status-pill ${badgeClass}">${label}</span>`;
+                actionHTML = `
+                    <button class="btn btn-outline btn-sm" onclick="viewInvoiceFromEnrollment('${enrollment.paymentId}')"><i class="fa-solid fa-file-invoice"></i> View Invoice</button>
+                    <button class="btn btn-danger btn-sm" onclick="cancelEnrollment('${enrollment.id}')"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                `;
+            } else {
+                actionHTML =
+                    `<button class="btn btn-primary" onclick="startCheckout('${course.id}')"><i class="fa-solid fa-credit-card"></i> Enroll Now — $${course.price}</button>`;
+            }
+
+            const displayUrl = getDisplayableImageUrl(course.thumbnailUrl);
+            const bannerHTML = displayUrl ?
+                `<img src="${displayUrl}" class="course-banner" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="course-banner-placeholder" style="display:none;"><i class="fa-solid fa-image"></i></div>` :
+                `<div class="course-banner-placeholder"><i class="fa-solid fa-image"></i></div>`;
+
+            const catBadge = course.category === 'tefl' ? 'cat-tefl' : 'cat-workshop';
+            const catIcon = course.category === 'tefl' ? 'fa-graduation-cap' : 'fa-chalkboard-user';
+            const catLabel = course.category === 'tefl' ? 'TEFL' : 'Workshop';
+
+            return `
+                <div class="course-card">
+                    ${bannerHTML}
+                    <div class="card-body">
+                        <span class="category-badge ${catBadge}"><i class="fa-solid ${catIcon}"></i> ${catLabel}</span>
+                        <h3>${escapeHTML(course.title)}</h3>
+                        <div class="price">$${course.price}<small> USD · One-time</small></div>
+                        <p class="desc">${escapeHTML(course.description || 'No description provided.')}</p>
+                        ${statusBadge ? `<div style="margin-bottom:0.5rem;">${statusBadge}</div>` : ''}
+                        <div class="actions">${actionHTML}</div>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    // ── CHECKOUT FLOW ──
+    window.startCheckout = (courseId) => {
+        selectedCourse = allCourses.find(c => c.id === courseId);
+        if (!selectedCourse) return;
+        resetCheckoutForm();
+        document.getElementById('checkout-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.closeCheckout = () => {
+        document.getElementById('checkout-modal').classList.remove('active');
+        document.body.style.overflow = '';
+        proofFileData = null;
+        proofThreadId = null;
+        pendingPaymentId = null;
+        pendingPaymentData = null;
+        document.getElementById('proof-file-input').value = '';
+        document.getElementById('proof-file-info').style.display = 'none';
+        document.getElementById('proof-image-preview-container').innerHTML = '';
+        document.getElementById('btn-submit-proof').disabled = true;
+        document.getElementById('proof-status-area').style.display = 'none';
+        loadCourses();
+    };
+
+    function resetCheckoutForm() {
+        document.getElementById('checkout-form').reset();
+        document.getElementById('agreement').checked = false;
+        currentStep = 1;
+        document.getElementById('step-1').classList.remove('hidden');
+        document.getElementById('step-2').classList.add('hidden');
+        document.getElementById('step-3').classList.add('hidden');
+        document.getElementById('step-invoice').classList.add('hidden');
+        document.getElementById('steps-indicator').style.display = 'flex';
+        document.getElementById('btn-generate-invoice').style.display = '';
+        document.getElementById('proof-section').style.display = 'block';
+        document.getElementById('proof-status-area').style.display = 'none';
+        updateSteps();
+        proofFileData = null;
+        proofThreadId = null;
+        document.getElementById('proof-file-input').value = '';
+        document.getElementById('proof-file-info').style.display = 'none';
+        document.getElementById('proof-image-preview-container').innerHTML = '';
+        document.getElementById('btn-submit-proof').disabled = true;
+    }
+
+    window.nextStep = (step) => {
+        if (step === 2) {
+            if (!document.getElementById('cust-name').value.trim() || !document.getElementById('cust-email')
+                .value.trim() || !document.getElementById('cust-phone').value.trim()) {
+                showToast('Please fill all required fields.', 'error');
+                return;
+            }
         }
+        if (step === 3) {
+            if (!document.getElementById('cust-street').value.trim() || !document.getElementById('cust-city')
+                .value.trim() || !document.getElementById('cust-country').value) {
+                showToast('Please complete all address fields.', 'error');
+                return;
+            }
+            if (!document.getElementById('agreement').checked) {
+                showToast('You must agree to the payment terms.', 'error');
+                return;
+            }
+            updateSummary();
+        }
+        document.getElementById(`step-${currentStep}`).classList.add('hidden');
+        document.getElementById(`step-${step}`).classList.remove('hidden');
+        currentStep = step;
+        updateSteps();
+        document.querySelector('.modal-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
-        // ── INVOICE GENERATION ──
-        window.generateInvoice = async function() {
-            const btn = document.getElementById('btn-generate-invoice');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Generating...';
+    window.prevStep = (step) => {
+        document.getElementById(`step-${currentStep}`).classList.add('hidden');
+        document.getElementById(`step-${step}`).classList.remove('hidden');
+        currentStep = step;
+        updateSteps();
+        document.querySelector('.modal-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
-            const name = document.getElementById('cust-name').value.trim();
-            const email = document.getElementById('cust-email').value.trim();
-            const phoneCode = document.getElementById('phone-code').value;
-            const phone = document.getElementById('cust-phone').value.trim();
-            const street = document.getElementById('cust-street').value.trim();
-            const city = document.getElementById('cust-city').value.trim();
-            const province = document.getElementById('cust-province').value.trim() || '';
-            const country = document.getElementById('cust-country').value;
-            const amount = selectedCourse.price;
+    function updateSteps() {
+        document.querySelectorAll('#steps-indicator .step').forEach(el => {
+            el.classList.remove('active', 'done');
+            const n = parseInt(el.dataset.step);
+            if (n === currentStep) el.classList.add('active');
+            else if (n < currentStep) el.classList.add('done');
+        });
+    }
 
-            let ip = 'unknown';
-            try { const r = await fetch('https://api.ipify.org?format=json');
-                ip = (await r.json()).ip; } catch (e) {}
+    function updateSummary() {
+        const name = document.getElementById('cust-name').value.trim();
+        const email = document.getElementById('cust-email').value.trim();
+        const phoneCode = document.getElementById('phone-code').value;
+        const phone = document.getElementById('cust-phone').value.trim();
+        const street = document.getElementById('cust-street').value.trim();
+        const city = document.getElementById('cust-city').value.trim();
+        const province = document.getElementById('cust-province').value.trim() || 'N/A';
+        const country = document.getElementById('cust-country').value;
+        document.getElementById('summary-details').innerHTML = `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1rem;">
+                <div><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Name</span><br><strong>${escapeHTML(name)}</strong></div>
+                <div><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Email</span><br><strong>${escapeHTML(email)}</strong></div>
+                <div><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Phone</span><br><strong>${escapeHTML(phoneCode)} ${escapeHTML(phone)}</strong></div>
+                <div><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Country</span><br><strong>${escapeHTML(country)}</strong></div>
+                <div style="grid-column:1/-1;"><span style="color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;">Address</span><br><strong>${escapeHTML(street)}, ${escapeHTML(city)}, ${escapeHTML(province)}</strong></div>
+            </div>
+            <div style="margin-top:1rem;padding-top:0.8rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                <span>Course: <strong>${escapeHTML(selectedCourse.title)}</strong></span>
+                <span style="font-size:1.3rem;font-weight:800;">$${selectedCourse.price} USD</span>
+            </div>
+        `;
+    }
 
-            const paymentData = {
+    // ── INVOICE GENERATION ──
+    window.generateInvoice = async function() {
+        const btn = document.getElementById('btn-generate-invoice');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Generating...';
+
+        const name = document.getElementById('cust-name').value.trim();
+        const email = document.getElementById('cust-email').value.trim();
+        const phoneCode = document.getElementById('phone-code').value;
+        const phone = document.getElementById('cust-phone').value.trim();
+        const street = document.getElementById('cust-street').value.trim();
+        const city = document.getElementById('cust-city').value.trim();
+        const province = document.getElementById('cust-province').value.trim() || '';
+        const country = document.getElementById('cust-country').value;
+        const amount = selectedCourse.price;
+
+        let ip = 'unknown';
+        try { const r = await fetch('https://api.ipify.org?format=json');
+            ip = (await r.json()).ip; } catch (e) {}
+
+        const paymentData = {
+            userId: currentUser.uid,
+            userEmail: currentUser.email || email,
+            type: 'course',
+            itemId: selectedCourse.id,
+            itemTitle: selectedCourse.title,
+            amount: amount,
+            currency: 'USD',
+            status: 'pending',
+            customer: { name, email, phone: phoneCode + ' ' + phone, street, city, province, country },
+            ipAddress: ip,
+            createdAt: serverTimestamp(),
+            verifiedAt: null,
+            verifiedBy: null,
+            instructions: {
+                ecocashNumber: '+263 77 123 4567',
+                ecocashName: 'TeacherBee Connect',
+                bankAccount: '1234567890',
+                bankName: 'Bank XYZ',
+                branchCode: '000'
+            }
+        };
+
+        try {
+            const payRef = await addDoc(collection(db, 'payments'), paymentData);
+            const paymentId = payRef.id;
+            pendingPaymentId = paymentId;
+            pendingPaymentData = { ...paymentData, id: paymentId };
+
+            await setDoc(doc(db, 'course_enrollments', paymentId), {
                 userId: currentUser.uid,
-                userEmail: currentUser.email || email,
-                type: 'course',
-                itemId: selectedCourse.id,
-                itemTitle: selectedCourse.title,
-                amount: amount,
-                currency: 'USD',
-                status: 'pending',
-                customer: { name, email, phone: phoneCode + ' ' + phone, street, city, province, country },
-                ipAddress: ip,
+                courseId: selectedCourse.id,
+                paymentId: paymentId,
+                status: 'pending_payment',
+                enrolledAt: serverTimestamp(),
+                progress: 0,
+                completedModules: [],
+                quizResults: {}
+            });
+
+            if (adminUser) {
+                proofThreadId = await createPaymentThread(currentUser.uid, adminUser.id, paymentId, selectedCourse
+                    .title);
+            } else {
+                console.warn('⚠️ No admin user, thread not created');
+            }
+
+            showInvoiceView(paymentData, paymentId);
+            showToast('✅ Invoice generated! Please submit proof of payment.', 'success');
+
+            await loadCourses();
+
+        } catch (e) {
+            console.error(e);
+            showToast('Error: ' + (e.message || 'Invoice failed'), 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Generate Invoice & Pay';
+        }
+    };
+
+    // ── CREATE PAYMENT THREAD ──
+    async function createPaymentThread(teacherId, adminId, invoiceId, courseTitle) {
+        try {
+            const q = query(
+                collection(db, 'threads'),
+                where('participants', 'array-contains', teacherId),
+                where('invoiceId', '==', invoiceId)
+            );
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+                const existing = snap.docs[0];
+                return existing.id;
+            }
+
+            const threadData = {
+                participants: [teacherId, adminId],
+                jobTitle: `Invoice #${invoiceId.substring(0, 8).toUpperCase()}`,
+                invoiceId: invoiceId,
+                courseTitle: courseTitle,
                 createdAt: serverTimestamp(),
-                verifiedAt: null,
-                verifiedBy: null,
-                instructions: {
-                    ecocashNumber: '+263 77 123 4567',
-                    ecocashName: 'TeacherBee Connect',
-                    bankAccount: '1234567890',
-                    bankName: 'Bank XYZ',
-                    branchCode: '000'
-                }
+                updatedAt: serverTimestamp(),
+                lastMessageText: `📄 Invoice generated for ${courseTitle}`
+            };
+            const docRef = await addDoc(collection(db, 'threads'), threadData);
+            return docRef.id;
+        } catch (e) {
+            console.error('Error creating thread:', e);
+            return null;
+        }
+    }
+
+    // ── SEND PROOF MESSAGE TO ADMIN ──
+    async function sendProofMessage(threadId, text, attachmentData) {
+        try {
+            const msgData = {
+                senderId: currentUser.uid,
+                text: text || '📎 Proof of payment submitted for review.',
+                downloadUrl: attachmentData.downloadUrl || null,
+                imagePreviewUrl: attachmentData.imagePreviewUrl || null,
+                driveId: attachmentData.driveId || null,
+                previewUrl: attachmentData.previewUrl || null,
+                fileName: attachmentData.fileName || 'proof-of-payment',
+                mediaType: attachmentData.mediaType || 'application/octet-stream',
+                timestamp: serverTimestamp()
+            };
+            await addDoc(collection(db, `threads/${threadId}/messages`), msgData);
+
+            await updateDoc(doc(db, 'threads', threadId), {
+                updatedAt: serverTimestamp(),
+                lastMessageText: `📎 Proof of payment submitted`
+            });
+
+            return true;
+        } catch (e) {
+            console.error('Error sending proof message:', e);
+            throw e;
+        }
+    }
+
+    // ── UPDATE PAYMENT STATUS ──
+    async function updatePaymentStatus(paymentId, status) {
+        try {
+            await updateDoc(doc(db, 'payments', paymentId), {
+                status: status,
+                proofSubmittedAt: serverTimestamp()
+            });
+            const q = query(collection(db, 'course_enrollments'), where('paymentId', '==', paymentId));
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+                await updateDoc(doc(db, 'course_enrollments', snap.docs[0].id), {
+                    status: status
+                });
+            }
+        } catch (e) {
+            console.error('Error updating payment status:', e);
+        }
+    }
+
+    // ── SHOW INVOICE VIEW ──
+    function showInvoiceView(paymentData, paymentId) {
+        document.getElementById('step-1').classList.add('hidden');
+        document.getElementById('step-2').classList.add('hidden');
+        document.getElementById('step-3').classList.add('hidden');
+        document.getElementById('step-invoice').classList.remove('hidden');
+        document.getElementById('steps-indicator').style.display = 'none';
+        document.getElementById('btn-generate-invoice').style.display = 'none';
+
+        const cust = paymentData.customer || {};
+        const invId = paymentId.substring(0, 8).toUpperCase();
+        const created = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+        const proofStatus = paymentData.status === 'proof_submitted' ? 'submitted' : 'pending';
+
+        document.getElementById('invoice-content').innerHTML = `
+            <div class="invoice-box" id="printable-invoice">
+                <div class="invoice-logo"><span class="blu">Teacher Bee</span><span class="org">Connect</span> 🐝</div>
+                <h3>Invoice #${invId}</h3>
+                <p style="font-size:0.82rem;color:var(--text-muted);">Date: ${created}</p>
+                <div class="invoice-details">
+                    <div><span>Customer</span> ${escapeHTML(cust.name)}</div>
+                    <div><span>Email</span> ${escapeHTML(cust.email)}</div>
+                    <div><span>Phone</span> ${escapeHTML(cust.phone)}</div>
+                    <div><span>Country</span> ${escapeHTML(cust.country)}</div>
+                    <div style="grid-column:1/-1;"><span>Address</span> ${escapeHTML(cust.street)}, ${escapeHTML(cust.city)}, ${escapeHTML(cust.province)}</div>
+                </div>
+                <div style="background:#fff;padding:1rem;border-radius:var(--radius-sm);margin:1rem 0;">
+                    <strong>Course:</strong> ${escapeHTML(selectedCourse?.title || paymentData.itemTitle || 'Course')}<br>
+                    <strong>Amount:</strong> <span style="font-size:1.3rem;font-weight:800;">$${paymentData.amount} USD</span><br>
+                    <strong>Status:</strong> <span class="status-pill ${proofStatus === 'submitted' ? 'status-proof-submitted' : 'status-pending'}">${proofStatus === 'submitted' ? 'Proof Submitted' : 'Pending Admin Verification'}</span>
+                </div>
+                <div class="payment-instructions">
+                    <p><strong>📌 Payment Instructions:</strong></p>
+                    <p><i class="fa-solid fa-mobile-screen-button"></i> <strong>Ecocash:</strong> +263 77 123 4567 · TeacherBee Connect</p>
+                    <p><i class="fa-solid fa-building-columns"></i> <strong>Bank:</strong> #1234567890 · Bank XYZ · Branch 000</p>
+                    <p style="font-size:0.78rem;margin-top:0.5rem;">After payment, submit proof using the button below. Your enrollment will be activated once admin verifies.</p>
+                </div>
+            </div>
+        `;
+
+        const proofSection = document.getElementById('proof-section');
+        proofSection.style.display = 'block';
+
+        const statusArea = document.getElementById('proof-status-area');
+        const statusBadge = document.getElementById('proof-status-badge');
+        const statusText = document.getElementById('proof-status-text');
+
+        if (proofStatus === 'submitted') {
+            statusArea.style.display = 'block';
+            statusBadge.className = 'proof-status-badge success';
+            statusBadge.innerHTML = '<i class="fa-solid fa-check-circle"></i> <span id="proof-status-text">Proof submitted — awaiting admin verification</span>';
+            document.getElementById('proof-upload-area').style.display = 'none';
+            document.getElementById('btn-submit-proof').disabled = true;
+        } else {
+            statusArea.style.display = 'none';
+            document.getElementById('proof-upload-area').style.display = 'block';
+            document.getElementById('btn-submit-proof').disabled = true;
+            document.getElementById('proof-file-input').value = '';
+            document.getElementById('proof-file-info').style.display = 'none';
+            document.getElementById('proof-image-preview-container').innerHTML = '';
+            proofFileData = null;
+        }
+
+        document.querySelector('.modal-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ── PROOF FILE HANDLING ──
+    window.handleProofFileSelect = function(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const validTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/pdf'];
+        if (!validTypes.includes(file.type)) {
+            showToast('Please upload an image (PNG, JPG, WEBP) or PDF file.', 'error');
+            input.value = '';
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('File too large. Maximum 5MB allowed.', 'error');
+            input.value = '';
+            return;
+        }
+
+        const fileInfo = document.getElementById('proof-file-info');
+        const fileNameEl = document.getElementById('proof-file-name');
+        const previewContainer = document.getElementById('proof-image-preview-container');
+
+        fileNameEl.textContent = `📎 ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
+        fileInfo.style.display = 'block';
+        previewContainer.innerHTML = '';
+
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'proof-preview-img';
+                img.alt = 'Proof preview';
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewContainer.innerHTML = `<div style="padding:0.5rem;background:#F1F5F9;border-radius:6px;display:inline-flex;align-items:center;gap:0.5rem;margin-top:0.3rem;">
+                <i class="fa-regular fa-file-pdf" style="font-size:1.8rem;color:#DC2626;"></i>
+                <span style="font-weight:500;">PDF Document</span>
+            </div>`;
+        }
+
+        proofFileData = { file, fileName: file.name, fileType: file.type };
+        document.getElementById('btn-submit-proof').disabled = false;
+        showToast('Proof file selected. Tap "Submit Proof" to send.', 'info');
+    };
+
+    // ── SUBMIT PROOF ──
+    window.submitProof = async function() {
+        if (!proofFileData) {
+            showToast('Please select a proof file first.', 'error');
+            return;
+        }
+        if (!pendingPaymentId) {
+            showToast('No invoice found. Please generate an invoice first.', 'error');
+            return;
+        }
+        if (!adminUser) {
+            showToast('Admin user not found. Please contact support.', 'error');
+            return;
+        }
+        if (!proofThreadId) {
+            showToast('No conversation thread found. Please contact support.', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('btn-submit-proof');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Uploading...';
+
+        try {
+            const reader = new FileReader();
+            const fileData = await new Promise((resolve, reject) => {
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(proofFileData.file);
+            });
+
+            const payload = {
+                action: 'uploadCertificate',
+                fileName: proofFileData.fileName,
+                mimeType: proofFileData.fileType || 'application/octet-stream',
+                file: fileData
             };
 
-            try {
-                const payRef = await addDoc(collection(db, 'payments'), paymentData);
-                const paymentId = payRef.id;
-                pendingPaymentId = paymentId;
-                pendingPaymentData = { ...paymentData, id: paymentId };
-
-                await setDoc(doc(db, 'course_enrollments', paymentId), {
-                    userId: currentUser.uid,
-                    courseId: selectedCourse.id,
-                    paymentId: paymentId,
-                    status: 'pending_payment',
-                    enrolledAt: serverTimestamp(),
-                    progress: 0,
-                    completedModules: [],
-                    quizResults: {}
-                });
-
-                // Create a thread with admin for this invoice
-                if (adminUser) {
-                    proofThreadId = await createPaymentThread(currentUser.uid, adminUser.id, paymentId, selectedCourse
-                        .title);
-                } else {
-                    console.warn('⚠️ No admin user, thread not created');
-                }
-
-                showInvoiceView(paymentData, paymentId);
-                showToast('✅ Invoice generated! Please submit proof of payment.', 'success');
-
-                // Update enrollment status in UI
-                await loadCourses();
-
-            } catch (e) {
-                console.error(e);
-                showToast('Error: ' + (e.message || 'Invoice failed'), 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Generate Invoice & Pay';
-            }
-        };
-
-        // ── CREATE PAYMENT THREAD ──
-        async function createPaymentThread(teacherId, adminId, invoiceId, courseTitle) {
-            try {
-                // Check if thread already exists for this invoice
-                const q = query(
-                    collection(db, 'threads'),
-                    where('participants', 'array-contains', teacherId),
-                    where('invoiceId', '==', invoiceId)
-                );
-                const snap = await getDocs(q);
-                if (!snap.empty) {
-                    const existing = snap.docs[0];
-                    console.log('📬 Existing thread found:', existing.id);
-                    return existing.id;
-                }
-
-                const threadData = {
-                    participants: [teacherId, adminId],
-                    jobTitle: `Invoice #${invoiceId.substring(0, 8).toUpperCase()}`,
-                    invoiceId: invoiceId,
-                    courseTitle: courseTitle,
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp(),
-                    lastMessageText: `📄 Invoice generated for ${courseTitle}`
-                };
-                const docRef = await addDoc(collection(db, 'threads'), threadData);
-                console.log('📬 Thread created:', docRef.id);
-                return docRef.id;
-            } catch (e) {
-                console.error('Error creating thread:', e);
-                return null;
-            }
-        }
-
-        // ── SEND PROOF MESSAGE TO ADMIN ──
-        async function sendProofMessage(threadId, text, attachmentData) {
-            try {
-                const msgData = {
-                    senderId: currentUser.uid,
-                    text: text || '📎 Proof of payment submitted for review.',
-                    downloadUrl: attachmentData.downloadUrl || null,
-                    imagePreviewUrl: attachmentData.imagePreviewUrl || null,
-                    driveId: attachmentData.driveId || null,
-                    previewUrl: attachmentData.previewUrl || null,
-                    fileName: attachmentData.fileName || 'proof-of-payment',
-                    mediaType: attachmentData.mediaType || 'application/octet-stream',
-                    timestamp: serverTimestamp()
-                };
-                await addDoc(collection(db, `threads/${threadId}/messages`), msgData);
-
-                // Update thread with last message preview
-                await updateDoc(doc(db, 'threads', threadId), {
-                    updatedAt: serverTimestamp(),
-                    lastMessageText: `📎 Proof of payment submitted`
-                });
-
-                console.log('✅ Proof message sent to thread:', threadId);
-                return true;
-            } catch (e) {
-                console.error('Error sending proof message:', e);
-                throw e;
-            }
-        }
-
-        // ── UPDATE PAYMENT STATUS ──
-        async function updatePaymentStatus(paymentId, status) {
-            try {
-                await updateDoc(doc(db, 'payments', paymentId), {
-                    status: status,
-                    proofSubmittedAt: serverTimestamp()
-                });
-                // Also update enrollment
-                const q = query(collection(db, 'course_enrollments'), where('paymentId', '==', paymentId));
-                const snap = await getDocs(q);
-                if (!snap.empty) {
-                    await updateDoc(doc(db, 'course_enrollments', snap.docs[0].id), {
-                        status: status
-                    });
-                }
-                console.log('✅ Payment status updated to:', status);
-            } catch (e) {
-                console.error('Error updating payment status:', e);
-            }
-        }
-
-        // ── SHOW INVOICE VIEW ──
-        function showInvoiceView(paymentData, paymentId) {
-            document.getElementById('step-1').classList.add('hidden');
-            document.getElementById('step-2').classList.add('hidden');
-            document.getElementById('step-3').classList.add('hidden');
-            document.getElementById('step-invoice').classList.remove('hidden');
-            document.getElementById('steps-indicator').style.display = 'none';
-            document.getElementById('btn-generate-invoice').style.display = 'none';
-
-            const cust = paymentData.customer || {};
-            const invId = paymentId.substring(0, 8).toUpperCase();
-            const created = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-
-            // Check if proof was already submitted
-            const proofStatus = paymentData.status === 'proof_submitted' ? 'submitted' : 'pending';
-
-            document.getElementById('invoice-content').innerHTML = `
-                <div class="invoice-box" id="printable-invoice">
-                    <div class="invoice-logo"><span class="blu">Teacher Bee</span><span class="org">Connect</span> 🐝</div>
-                    <h3>Invoice #${invId}</h3>
-                    <p style="font-size:0.82rem;color:var(--text-muted);">Date: ${created}</p>
-                    <div class="invoice-details">
-                        <div><span>Customer</span> ${escapeHTML(cust.name)}</div>
-                        <div><span>Email</span> ${escapeHTML(cust.email)}</div>
-                        <div><span>Phone</span> ${escapeHTML(cust.phone)}</div>
-                        <div><span>Country</span> ${escapeHTML(cust.country)}</div>
-                        <div style="grid-column:1/-1;"><span>Address</span> ${escapeHTML(cust.street)}, ${escapeHTML(cust.city)}, ${escapeHTML(cust.province)}</div>
-                    </div>
-                    <div style="background:#fff;padding:1rem;border-radius:var(--radius-sm);margin:1rem 0;">
-                        <strong>Course:</strong> ${escapeHTML(selectedCourse?.title || paymentData.itemTitle || 'Course')}<br>
-                        <strong>Amount:</strong> <span style="font-size:1.3rem;font-weight:800;">$${paymentData.amount} USD</span><br>
-                        <strong>Status:</strong> <span class="status-pill ${proofStatus === 'submitted' ? 'status-proof-submitted' : 'status-pending'}">${proofStatus === 'submitted' ? 'Proof Submitted' : 'Pending Admin Verification'}</span>
-                    </div>
-                    <div class="payment-instructions">
-                        <p><strong>📌 Payment Instructions:</strong></p>
-                        <p><i class="fa-solid fa-mobile-screen-button"></i> <strong>Ecocash:</strong> +263 77 123 4567 · TeacherBee Connect</p>
-                        <p><i class="fa-solid fa-building-columns"></i> <strong>Bank:</strong> #1234567890 · Bank XYZ · Branch 000</p>
-                        <p style="font-size:0.78rem;margin-top:0.5rem;">After payment, submit proof using the button below. Your enrollment will be activated once admin verifies.</p>
-                    </div>
-                </div>
-            `;
-
-            // Update proof section
-            const proofSection = document.getElementById('proof-section');
-            proofSection.style.display = 'block';
-
-            const statusArea = document.getElementById('proof-status-area');
-            const statusBadge = document.getElementById('proof-status-badge');
-            const statusText = document.getElementById('proof-status-text');
-
-            if (proofStatus === 'submitted') {
-                statusArea.style.display = 'block';
-                statusBadge.className = 'proof-status-badge success';
-                statusBadge.innerHTML = '<i class="fa-solid fa-check-circle"></i> <span id="proof-status-text">Proof submitted — awaiting admin verification</span>';
-                document.getElementById('proof-upload-area').style.display = 'none';
-                document.getElementById('btn-submit-proof').disabled = true;
-            } else {
-                statusArea.style.display = 'none';
-                document.getElementById('proof-upload-area').style.display = 'block';
-                document.getElementById('btn-submit-proof').disabled = true;
-                // Reset file input
-                document.getElementById('proof-file-input').value = '';
-                document.getElementById('proof-file-info').style.display = 'none';
-                document.getElementById('proof-image-preview-container').innerHTML = '';
-                proofFileData = null;
-            }
-
-            document.querySelector('.modal-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        // ── PROOF FILE HANDLING ──
-        window.handleProofFileSelect = function(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            // Validate file type
-            const validTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/pdf'];
-            if (!validTypes.includes(file.type)) {
-                showToast('Please upload an image (PNG, JPG, WEBP) or PDF file.', 'error');
-                input.value = '';
-                return;
-            }
-
-            // Validate size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('File too large. Maximum 5MB allowed.', 'error');
-                input.value = '';
-                return;
-            }
-
-            const fileInfo = document.getElementById('proof-file-info');
-            const fileNameEl = document.getElementById('proof-file-name');
-            const previewContainer = document.getElementById('proof-image-preview-container');
-
-            fileNameEl.textContent = `📎 ${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
-            fileInfo.style.display = 'block';
-            previewContainer.innerHTML = '';
-
-            // Show image preview if it's an image
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'proof-preview-img';
-                    img.alt = 'Proof preview';
-                    previewContainer.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                // PDF icon
-                previewContainer.innerHTML = `<div style="padding:0.5rem;background:#F1F5F9;border-radius:6px;display:inline-flex;align-items:center;gap:0.5rem;margin-top:0.3rem;">
-                    <i class="fa-regular fa-file-pdf" style="font-size:1.8rem;color:#DC2626;"></i>
-                    <span style="font-weight:500;">PDF Document</span>
-                </div>`;
-            }
-
-            // Store file data for upload
-            proofFileData = { file, fileName: file.name, fileType: file.type };
-            document.getElementById('btn-submit-proof').disabled = false;
-            showToast('Proof file selected. Tap "Submit Proof" to send.', 'info');
-        };
-
-        // ── SUBMIT PROOF ──
-        window.submitProof = async function() {
-            if (!proofFileData) {
-                showToast('Please select a proof file first.', 'error');
-                return;
-            }
-            if (!pendingPaymentId) {
-                showToast('No invoice found. Please generate an invoice first.', 'error');
-                return;
-            }
-            if (!adminUser) {
-                showToast('Admin user not found. Please contact support.', 'error');
-                return;
-            }
-            if (!proofThreadId) {
-                showToast('No conversation thread found. Please contact support.', 'error');
-                return;
-            }
-
-            const btn = document.getElementById('btn-submit-proof');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Uploading...';
-
-            try {
-                // Upload file to Google Apps Script
-                const reader = new FileReader();
-                const fileData = await new Promise((resolve, reject) => {
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(proofFileData.file);
-                });
-
-                const payload = {
-                    action: 'uploadCertificate',
-                    fileName: proofFileData.fileName,
-                    mimeType: proofFileData.fileType || 'application/octet-stream',
-                    file: fileData
-                };
-
-                const uploadRes = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                const uploadData = await uploadRes.json();
-
-                if (uploadData.status !== 'success' || !uploadData.certificates?.length) {
-                    throw new Error(uploadData.message || 'Upload failed');
-                }
-
-                const lastCert = uploadData.certificates[uploadData.certificates.length - 1];
-                const downloadUrl = lastCert.fileUrl || lastCert.url;
-                const imagePreviewUrl = lastCert.isImage ? (lastCert.url || lastCert.fileUrl) : null;
-                const driveId = lastCert.id || '';
-                const previewUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : '';
-
-                const attachmentData = {
-                    fileName: proofFileData.fileName,
-                    downloadUrl: downloadUrl,
-                    imagePreviewUrl: imagePreviewUrl,
-                    driveId: driveId,
-                    previewUrl: previewUrl,
-                    mediaType: proofFileData.fileType || 'application/octet-stream'
-                };
-
-                // Send message to admin thread
-                const invoiceRef = pendingPaymentId.substring(0, 8).toUpperCase();
-                const messageText =
-                    `📎 Proof of payment submitted for Invoice #${invoiceRef} — ${selectedCourse?.title || 'Course'}`;
-                await sendProofMessage(proofThreadId, messageText, attachmentData);
-
-                // Update payment status
-                await updatePaymentStatus(pendingPaymentId, 'proof_submitted');
-
-                // Update UI
-                document.getElementById('proof-status-area').style.display = 'block';
-                const badge = document.getElementById('proof-status-badge');
-                badge.className = 'proof-status-badge success';
-                badge.innerHTML = '<i class="fa-solid fa-check-circle"></i> <span id="proof-status-text">✅ Proof submitted — awaiting admin verification</span>';
-                document.getElementById('proof-upload-area').style.display = 'none';
-                document.getElementById('btn-submit-proof').disabled = true;
-
-                // Update invoice status in view
-                const statusEl = document.querySelector('#invoice-content .status-pill');
-                if (statusEl) {
-                    statusEl.className = 'status-pill status-proof-submitted';
-                    statusEl.textContent = 'Proof Submitted';
-                }
-
-                showToast('✅ Proof submitted successfully! Admin will review it shortly.', 'success');
-
-                // Reload courses to update enrollment status
-                await loadCourses();
-
-            } catch (e) {
-                console.error('Submit proof error:', e);
-                showToast('Error submitting proof: ' + (e.message || 'Unknown error'), 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Proof to Admin';
-            }
-        };
-
-        // ── VIEW INVOICE FROM ENROLLMENT ──
-        window.viewInvoiceFromEnrollment = async (paymentId) => {
-            try {
-                const paymentSnap = await getDoc(doc(db, 'payments', paymentId));
-                if (!paymentSnap.exists()) { showToast('Invoice not found', 'error'); return; }
-                const p = paymentSnap.data();
-                selectedCourse = allCourses.find(c => c.id === p.itemId) || { title: p.itemTitle ||
-                        'Unknown', price: p.amount };
-                pendingPaymentId = paymentId;
-                pendingPaymentData = { ...p, id: paymentId };
-
-                // Find or create thread
-                if (adminUser) {
-                    const threadId = await createPaymentThread(currentUser.uid, adminUser.id, paymentId, selectedCourse
-                        .title);
-                    if (threadId) proofThreadId = threadId;
-                }
-
-                resetCheckoutForm();
-                showInvoiceView(p, paymentId);
-                document.getElementById('checkout-modal').classList.add('active');
-                document.body.style.overflow = 'hidden';
-            } catch (e) {
-                console.error(e);
-                showToast('Error loading invoice.', 'error');
-            }
-        };
-
-        // ── CANCEL ENROLLMENT ──
-        window.cancelEnrollment = async (enrollmentId) => {
-            const confirmed = await showCustomConfirm(
-                'Cancel Enrollment?',
-                'This will also cancel the associated invoice. This action cannot be undone.',
-                'Yes, Cancel',
-                'Keep Enrollment'
-            );
-            if (!confirmed) return;
-
-            try {
-                const enrollmentDoc = await getDoc(doc(db, 'course_enrollments', enrollmentId));
-                if (enrollmentDoc.exists()) {
-                    const paymentId = enrollmentDoc.data().paymentId;
-                    if (paymentId) {
-                        await updateDoc(doc(db, 'payments', paymentId), { status: 'cancelled',
-                            cancelledAt: serverTimestamp() });
-                    }
-                    await deleteDoc(doc(db, 'course_enrollments', enrollmentId));
-                }
-                showToast('Enrollment cancelled.', 'info');
-                loadCourses();
-            } catch (e) {
-                showToast('Error cancelling enrollment.', 'error');
-            }
-        };
-
-        // ── CUSTOM CONFIRM DIALOG ──
-        function showCustomConfirm(title, message, confirmText, cancelText) {
-            return new Promise((resolve) => {
-                const overlay = document.createElement('div');
-                overlay.style =
-                    'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center;';
-                overlay.innerHTML = `
-                    <div style="background:white;border-radius:14px;padding:2rem;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2);">
-                        <h3 style="margin-bottom:0.5rem;">${title}</h3>
-                        <p style="color:#64748B;margin-bottom:1.5rem;">${message}</p>
-                        <div style="display:flex;gap:0.8rem;justify-content:center;">
-                            <button class="btn btn-danger btn-sm" id="confirm-yes" style="flex:1;">${confirmText}</button>
-                            <button class="btn btn-outline btn-sm" id="confirm-no" style="flex:1;">${cancelText}</button>
-                        </div>
-                    </div>`;
-                document.body.appendChild(overlay);
-                document.getElementById('confirm-yes').onclick = () => { document.body.removeChild(
-                    overlay);
-                    resolve(true); };
-                document.getElementById('confirm-no').onclick = () => { document.body.removeChild(
-                    overlay);
-                    resolve(false); };
+            const uploadRes = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
             });
-        }
+            const uploadData = await uploadRes.json();
 
-        // ── TOAST ──
-        function showToast(msg, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.style.background = { error: '#DC2626', success: '#10B981', info: '#1E293B' } [type] || '#1E293B';
-            toast.textContent = msg;
-            container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0';
-                toast.style.transition = '0.3s';
-                setTimeout(() => toast.remove(), 300); }, 4500);
-        }
+            if (uploadData.status !== 'success' || !uploadData.certificates?.length) {
+                throw new Error(uploadData.message || 'Upload failed');
+            }
 
-        function escapeHTML(str) {
-            const div = document.createElement('div');
-            div.textContent = str || '';
-            return div.innerHTML;
-        }
+            const lastCert = uploadData.certificates[uploadData.certificates.length - 1];
+            const downloadUrl = lastCert.fileUrl || lastCert.url;
+            const imagePreviewUrl = lastCert.isImage ? (lastCert.url || lastCert.fileUrl) : null;
+            const driveId = lastCert.id || '';
+            const previewUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : '';
 
-        // ── CLOSE MODAL ON OVERLAY CLICK ──
-        document.getElementById('checkout-modal').addEventListener('click', function(e) {
-            if (e.target === this) closeCheckout();
+            const attachmentData = {
+                fileName: proofFileData.fileName,
+                downloadUrl: downloadUrl,
+                imagePreviewUrl: imagePreviewUrl,
+                driveId: driveId,
+                previewUrl: previewUrl,
+                mediaType: proofFileData.fileType || 'application/octet-stream'
+            };
+
+            const invoiceRef = pendingPaymentId.substring(0, 8).toUpperCase();
+            const messageText =
+                `📎 Proof of payment submitted for Invoice #${invoiceRef} — ${selectedCourse?.title || 'Course'}`;
+            await sendProofMessage(proofThreadId, messageText, attachmentData);
+
+            await updatePaymentStatus(pendingPaymentId, 'proof_submitted');
+
+            document.getElementById('proof-status-area').style.display = 'block';
+            const badge = document.getElementById('proof-status-badge');
+            badge.className = 'proof-status-badge success';
+            badge.innerHTML = '<i class="fa-solid fa-check-circle"></i> <span id="proof-status-text">✅ Proof submitted — awaiting admin verification</span>';
+            document.getElementById('proof-upload-area').style.display = 'none';
+            document.getElementById('btn-submit-proof').disabled = true;
+
+            const statusEl = document.querySelector('#invoice-content .status-pill');
+            if (statusEl) {
+                statusEl.className = 'status-pill status-proof-submitted';
+                statusEl.textContent = 'Proof Submitted';
+            }
+
+            showToast('✅ Proof submitted successfully! Admin will review it shortly.', 'success');
+
+            await loadCourses();
+
+        } catch (e) {
+            console.error('Submit proof error:', e);
+            showToast('Error submitting proof: ' + (e.message || 'Unknown error'), 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Proof to Admin';
+        }
+    };
+
+    // ── VIEW INVOICE FROM ENROLLMENT ──
+    window.viewInvoiceFromEnrollment = async (paymentId) => {
+        try {
+            const paymentSnap = await getDoc(doc(db, 'payments', paymentId));
+            if (!paymentSnap.exists()) { showToast('Invoice not found', 'error'); return; }
+            const p = paymentSnap.data();
+            selectedCourse = allCourses.find(c => c.id === p.itemId) || { title: p.itemTitle ||
+                    'Unknown', price: p.amount };
+            pendingPaymentId = paymentId;
+            pendingPaymentData = { ...p, id: paymentId };
+
+            if (adminUser) {
+                const threadId = await createPaymentThread(currentUser.uid, adminUser.id, paymentId, selectedCourse
+                    .title);
+                if (threadId) proofThreadId = threadId;
+            }
+
+            resetCheckoutForm();
+            showInvoiceView(p, paymentId);
+            document.getElementById('checkout-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        } catch (e) {
+            console.error(e);
+            showToast('Error loading invoice.', 'error');
+        }
+    };
+
+    // ── CANCEL ENROLLMENT ──
+    window.cancelEnrollment = async (enrollmentId) => {
+        const confirmed = await showCustomConfirm(
+            'Cancel Enrollment?',
+            'This will also cancel the associated invoice. This action cannot be undone.',
+            'Yes, Cancel',
+            'Keep Enrollment'
+        );
+        if (!confirmed) return;
+
+        try {
+            const enrollmentDoc = await getDoc(doc(db, 'course_enrollments', enrollmentId));
+            if (enrollmentDoc.exists()) {
+                const paymentId = enrollmentDoc.data().paymentId;
+                if (paymentId) {
+                    await updateDoc(doc(db, 'payments', paymentId), { status: 'cancelled',
+                        cancelledAt: serverTimestamp() });
+                }
+                await deleteDoc(doc(db, 'course_enrollments', enrollmentId));
+            }
+            showToast('Enrollment cancelled.', 'info');
+            loadCourses();
+        } catch (e) {
+            showToast('Error cancelling enrollment.', 'error');
+        }
+    };
+
+    // ── CUSTOM CONFIRM DIALOG ──
+    function showCustomConfirm(title, message, confirmText, cancelText) {
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.style =
+                'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center;';
+            overlay.innerHTML = `
+                <div style="background:white;border-radius:14px;padding:2rem;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2);">
+                    <h3 style="margin-bottom:0.5rem;">${title}</h3>
+                    <p style="color:#64748B;margin-bottom:1.5rem;">${message}</p>
+                    <div style="display:flex;gap:0.8rem;justify-content:center;">
+                        <button class="btn btn-danger btn-sm" id="confirm-yes" style="flex:1;">${confirmText}</button>
+                        <button class="btn btn-outline btn-sm" id="confirm-no" style="flex:1;">${cancelText}</button>
+                    </div>
+                </div>`;
+            document.body.appendChild(overlay);
+            document.getElementById('confirm-yes').onclick = () => { document.body.removeChild(
+                overlay);
+                resolve(true); };
+            document.getElementById('confirm-no').onclick = () => { document.body.removeChild(
+                overlay);
+                resolve(false); };
         });
+    }
 
-        // ── EXPOSE TO GLOBAL SCOPE ──
-        window.closeCheckout = closeCheckout;
-        window.showToast = showToast;
+    // ── TOAST ──
+    function showToast(msg, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.background = { error: '#DC2626', success: '#10B981', info: '#1E293B' } [type] || '#1E293B';
+        toast.textContent = msg;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0';
+            toast.style.transition = '0.3s';
+            setTimeout(() => toast.remove(), 300); }, 4500);
+    }
 
-        console.log('✅ Courses page ready — Proof of payment integration active.');
-    </script>
+    function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
+    // ── CLOSE MODAL ON OVERLAY CLICK ──
+    document.getElementById('checkout-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeCheckout();
+    });
+
+    // ── EXPOSE TO GLOBAL SCOPE ──
+    window.closeCheckout = closeCheckout;
+    window.showToast = showToast;
+
+    console.log('✅ Courses page ready — Proof of payment integration active.');
+</script>
 </body>
 </html>
