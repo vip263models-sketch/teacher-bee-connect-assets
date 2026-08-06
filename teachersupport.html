@@ -983,14 +983,13 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ── GOOGLE APPS SCRIPT URL (for file uploads) ──
         const WEB_APP_URL =
             "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
 
         // ── STATE ──
         let currentUser = null;
         let adminUserId = null;
-        let queryAttachmentData = null;
+        let queryAttachmentData = null;  // will be the uploaded attachment object (or null)
         let isSubmitting = false;
 
         // ── TOAST ──
@@ -998,8 +997,7 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icon = type === 'error' ? 'circle-exclamation' : type === 'info' ? 'circle-notch fa-spin' :
-                'check-circle';
+            const icon = type === 'error' ? 'circle-exclamation' : type === 'info' ? 'circle-notch fa-spin' : 'check-circle';
             toast.innerHTML = `<i class="fa-solid fa-${icon}"></i> ${message}`;
             container.appendChild(toast);
             setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4500);
@@ -1020,7 +1018,7 @@
             const data = userDoc.data();
             currentUser = { uid: user.uid, ...data };
 
-            // If admin, they shouldn't use this page
+            // Admins shouldn't use this page
             if (data.role === 'admin' || data.role?.toLowerCase().includes('admin')) {
                 showToast('Admins should use the Admin Inbox instead.', 'info');
                 setTimeout(() => window.location.href = 'admin-inbox.html', 2000);
@@ -1028,21 +1026,18 @@
             }
 
             console.log('✅ Teacher authenticated:', currentUser.name || currentUser.email);
-
-            // Find the admin user (now checks /admins collection too)
             await findAdminUser();
 
-            // Pre-fill user info if available
             if (currentUser.name) {
                 document.getElementById('query-message').placeholder =
                     `Describe your issue or question in detail…\n\n— ${currentUser.name}`;
             }
         });
 
-        // ── FIND ADMIN USER ── (UPDATED)
+        // ── FIND ADMIN USER (checks /admins, then /users) ──
         async function findAdminUser() {
             try {
-                // 1. Try the admins collection (same logic as admin login)
+                // 1. Check the admins collection
                 const adminsSnap = await getDocs(collection(db, 'admins'));
                 if (!adminsSnap.empty) {
                     adminUserId = adminsSnap.docs[0].id;
@@ -1050,7 +1045,7 @@
                     return;
                 }
 
-                // 2. Fallback: search users collection for role='admin'
+                // 2. Check users collection for role='admin'
                 const adminQuery = query(
                     collection(db, 'users'),
                     where('role', '==', 'admin'),
@@ -1063,7 +1058,7 @@
                     return;
                 }
 
-                // 3. Last try: scan all users for role containing 'admin' (case-insensitive)
+                // 3. Loose fallback scan
                 const allUsersSnap = await getDocs(collection(db, 'users'));
                 allUsersSnap.forEach(d => {
                     const d2 = d.data();
@@ -1074,19 +1069,18 @@
                 if (adminUserId) {
                     console.log('✅ Admin found (case-insensitive):', adminUserId);
                 } else {
-                    console.warn('⚠️ No admin user found in database.');
+                    console.warn('⚠️ No admin user found.');
                 }
             } catch (e) {
                 console.error('Error finding admin:', e);
             }
         }
 
-        // ── FILE HANDLING ──
+        // ── FILE HANDLING (with spinner and completion) ──
         window.handleFileSelect = function(input) {
             const file = input.files[0];
             if (!file) return;
 
-            // Check file size (10MB limit)
             if (file.size > 10 * 1024 * 1024) {
                 showToast('File is too large. Maximum size is 10MB.', 'error');
                 input.value = '';
@@ -1095,23 +1089,57 @@
 
             const previewBar = document.getElementById('file-preview-bar');
             const previewName = document.getElementById('file-preview-name');
-            previewBar.classList.add('show');
-            previewName.textContent = file.name;
+            const previewIcon = previewBar.querySelector('i');
 
-            // Store file for later upload
-            queryAttachmentData = file;
-            console.log('📎 File selected:', file.name, `(${(file.size / 1024).toFixed(1)} KB)`);
+            // Show preview bar with spinner
+            previewBar.classList.add('show');
+            previewName.textContent = `Uploading ${file.name}…`;
+            if (previewIcon) {
+                previewIcon.className = 'fa-solid fa-spinner fa-spin';
+                previewIcon.style.color = 'var(--accent)';
+            }
+
+            // Start upload immediately
+            uploadAndPreviewFile(file, previewBar, previewName, previewIcon);
         };
+
+        async function uploadAndPreviewFile(file, previewBar, previewName, previewIcon) {
+            try {
+                const uploaded = await uploadFileToDrive(file);
+                // Success
+                previewName.textContent = file.name;
+                if (previewIcon) {
+                    previewIcon.className = 'fa-solid fa-circle-check';
+                    previewIcon.style.color = 'var(--success)';
+                }
+                queryAttachmentData = uploaded;   // store the uploaded object
+                showToast('Attachment ready to send', 'success');
+            } catch (err) {
+                // Failure
+                previewName.textContent = `Failed: ${file.name}`;
+                if (previewIcon) {
+                    previewIcon.className = 'fa-solid fa-circle-exclamation';
+                    previewIcon.style.color = 'var(--error)';
+                }
+                showToast('Upload failed. Please try again.', 'error');
+                clearQueryFile();
+            }
+        }
 
         window.clearQueryFile = function() {
             queryAttachmentData = null;
             document.getElementById('query-file-input').value = '';
-            document.getElementById('file-preview-bar').classList.remove('show');
+            const previewBar = document.getElementById('file-preview-bar');
+            previewBar.classList.remove('show');
+            const previewIcon = previewBar.querySelector('i');
+            if (previewIcon) {
+                previewIcon.className = 'fa-solid fa-paperclip';
+                previewIcon.style.color = '';
+            }
             document.getElementById('file-preview-name').textContent = '';
         };
 
-        // ── UPLOAD FILE TO GOOGLE DRIVE ──
-        async function uploadFileToDrive(file) {
+        function uploadFileToDrive(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = async (e) => {
@@ -1122,25 +1150,16 @@
                         file: e.target.result
                     };
                     try {
-                        const res = await fetch(WEB_APP_URL, {
-                            method: 'POST',
-                            body: JSON.stringify(payload)
-                        });
+                        const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
                         const data = await res.json();
                         if (data.status === 'success' && data.certificates?.length > 0) {
                             const lastCert = data.certificates[data.certificates.length - 1];
-                            const downloadUrl = lastCert.fileUrl || lastCert.url;
-                            const imagePreviewUrl = lastCert.isImage ? (lastCert.url || lastCert.fileUrl) :
-                                null;
-                            const driveId = lastCert.id || '';
-                            const previewUrl = driveId ?
-                                `https://drive.google.com/file/d/${driveId}/preview` : '';
                             resolve({
                                 fileName: file.name,
-                                downloadUrl,
-                                imagePreviewUrl,
-                                driveId,
-                                previewUrl,
+                                downloadUrl: lastCert.fileUrl || lastCert.url,
+                                imagePreviewUrl: lastCert.isImage ? (lastCert.url || lastCert.fileUrl) : null,
+                                driveId: lastCert.id || '',
+                                previewUrl: lastCert.id ? `https://drive.google.com/file/d/${lastCert.id}/preview` : '',
                                 mediaType: file.type || 'application/octet-stream'
                             });
                         } else {
@@ -1173,7 +1192,7 @@
 
             const subject = document.getElementById('query-subject').value.trim();
             const message = document.getElementById('query-message').value.trim();
-            const file = queryAttachmentData;
+            const attach = queryAttachmentData;   // may be an uploaded object or null
 
             if (!subject || !message) {
                 showToast('Please fill in both the subject and message.', 'error');
@@ -1187,31 +1206,14 @@
             submitBtn.innerHTML =
                 '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Submitting…';
 
-            let uploadedAttachment = null;
-            const uploadToast = file ? showToast(`Uploading ${file.name}…`, 'info') : null;
-
             try {
-                // Upload file if attached
-                if (file) {
-                    try {
-                        uploadedAttachment = await uploadFileToDrive(file);
-                        if (uploadToast) uploadToast.remove();
-                        console.log('✅ File uploaded:', uploadedAttachment.downloadUrl);
-                    } catch (uploadErr) {
-                        if (uploadToast) uploadToast.remove();
-                        console.error('File upload failed:', uploadErr);
-                        showToast('File upload failed. Sending query without attachment.', 'info');
-                        uploadedAttachment = null;
-                    }
-                }
-
-                // Build the message text
+                // Build message text
                 let fullMessageText = `📋 **Query: ${subject}**\n\n${message}`;
-                if (uploadedAttachment) {
-                    fullMessageText += `\n\n📎 Attachment: ${uploadedAttachment.fileName}`;
+                if (attach) {
+                    fullMessageText += `\n\n📎 Attachment: ${attach.fileName}`;
                 }
 
-                // Check if a thread already exists between teacher and admin
+                // Check for an existing thread between teacher and admin
                 let existingThreadId = null;
                 const threadsSnap = await getDocs(
                     query(
@@ -1227,13 +1229,10 @@
                 });
 
                 let threadId;
-
                 if (existingThreadId) {
-                    // Use existing thread
                     threadId = existingThreadId;
                     console.log('📬 Using existing thread:', threadId);
                 } else {
-                    // Create new thread
                     const threadData = {
                         participants: [currentUser.uid, adminUserId],
                         jobTitle: `Query: ${subject}`,
@@ -1246,32 +1245,30 @@
                     console.log('📬 New thread created:', threadId);
                 }
 
-                // Build message data
+                // Add the message
                 const msgData = {
                     senderId: currentUser.uid,
                     text: fullMessageText,
                     timestamp: serverTimestamp(),
                     isSystem: false,
-                    downloadUrl: uploadedAttachment?.downloadUrl || null,
-                    imagePreviewUrl: uploadedAttachment?.imagePreviewUrl || null,
-                    driveId: uploadedAttachment?.driveId || null,
-                    previewUrl: uploadedAttachment?.previewUrl || null,
-                    fileName: uploadedAttachment?.fileName || null,
-                    mediaType: uploadedAttachment?.mediaType || null
+                    downloadUrl: attach?.downloadUrl || null,
+                    imagePreviewUrl: attach?.imagePreviewUrl || null,
+                    driveId: attach?.driveId || null,
+                    previewUrl: attach?.previewUrl || null,
+                    fileName: attach?.fileName || null,
+                    mediaType: attach?.mediaType || null
                 };
-
-                // Add message to thread
                 await addDoc(collection(db, `threads/${threadId}/messages`), msgData);
 
-                // Update thread metadata
-                const previewText = `Query: ${subject} — ${message.substring(0, 50)}${message.length > 50 ? '…' : ''}`;
+                // Update thread metadata (use a hyphen instead of em dash)
+                const previewText = `Query: ${subject} - ${message.substring(0, 50)}${message.length > 50 ? '…' : ''}`;
                 await updateDoc(doc(db, 'threads', threadId), {
                     updatedAt: serverTimestamp(),
                     lastMessageText: previewText.substring(0, 80),
                     jobTitle: `Query: ${subject}`
                 });
 
-                console.log('✅ Query submitted successfully! Thread:', threadId);
+                console.log('✅ Query submitted successfully!');
 
                 // Clear form
                 document.getElementById('query-form').reset();
@@ -1308,21 +1305,20 @@
                 }
             }, 1000);
 
-            // Also allow manual click on the button
             document.querySelector('.btn-go-inbox').addEventListener('click', () => {
                 clearInterval(interval);
                 window.location.href = 'inbox.html';
             });
         }
 
-        // ── SPINNER STYLE ──
+        // ── Spinner animation ──
         const styleSpinner = document.createElement('style');
         styleSpinner.textContent = `
             @keyframes spin { to { transform: rotate(360deg); } }
         `;
         document.head.appendChild(styleSpinner);
 
-        console.log('✅ Teacher Query Page ready — Submits directly to admin inbox.');
+        console.log('✅ Teacher Query Page ready.');
     </script>
 </body>
 </html>
