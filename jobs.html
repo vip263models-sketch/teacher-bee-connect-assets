@@ -113,15 +113,15 @@
     }
     .smart-menu-close:hover { background: rgba(0,0,0,0.05); }
 
-    /* Push page content down to avoid overlap */
-    body { margin-top: 60px; }
+    /* Push page content down to avoid overlap – adjusted for headline visibility */
+    body { margin-top: 80px; } /* was 60px */
     @media (min-width: 768px) {
       .smart-header-inner { height: 68px; }
-      body { margin-top: 68px; }
+      body { margin-top: 88px; } /* was 68px */
     }
   </style>
 
-  <!-- Page‑specific styles (unchanged) -->
+  <!-- Page‑specific styles (unchanged except small addition) -->
   <style>
     :root {
       --bg-main: #F8FAFC;
@@ -153,6 +153,7 @@
       color: var(--text-main); line-height: 1.5; width: 100%;
       box-sizing: border-box; -webkit-font-smoothing: antialiased;
       padding-bottom: 60px;
+      padding-top: 10px; /* extra clearance so headline never touches header */
     }
 
     #job-board-app *, #job-board-app *::before, #job-board-app *::after {
@@ -296,7 +297,7 @@
   })();
 </script>
 
-<!-- Job Board App (unchanged) -->
+<!-- Job Board App -->
 <div id="job-board-app">
   <div id="toastContainer" class="jb-toast-container"></div>
 
