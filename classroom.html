@@ -97,25 +97,6 @@
             50% { transform: scale(1.6); opacity: 0.4; }
         }
 
-        /* Dashboard back button inside header */
-        .smart-back-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            color: #0D4054;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-decoration: none;
-            padding: 0.4rem 0.9rem;
-            border-radius: 8px;
-            transition: background 0.2s ease, color 0.2s ease;
-            white-space: nowrap;
-        }
-        .smart-back-btn:hover {
-            background: rgba(13,64,84,0.06);
-            color: #0D4054;
-        }
-
         /* Menu Overlay & Drawer */
         .smart-menu-overlay {
             position: fixed;
@@ -247,26 +228,6 @@
             line-height: 1.5;
         }
         .app { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
-
-        /* Nav (old navbar removed) */
-        .logo { font-weight: 800; font-size: 1.4rem; color: var(--navy); letter-spacing: -0.3px; white-space: nowrap; }
-        .logo .blue { color: #0D4054; }
-        .logo .orange { color: var(--accent-mustard); }
-        .logo .bee { font-size: 1.2rem; margin-left: 3px; animation: wiggle 3s infinite ease-in-out; display: inline-block; }
-        @keyframes wiggle {
-            0%,100%{transform:rotate(0deg) translateY(0);}
-            15%{transform:rotate(-5deg) translateY(-2px);}
-            30%{transform:rotate(5deg) translateY(-1px);}
-            45%{transform:rotate(-3deg) translateY(0);}
-            60%{transform:rotate(0deg) translateY(0);}
-        }
-        .btn-nav {
-            padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.82rem;
-            cursor: pointer; background: transparent; border: 1.5px solid var(--border); color: var(--text);
-            display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;
-            transition: var(--transition);
-        }
-        .btn-nav:hover { background: #F8FAFC; border-color: #CBD5E1; }
 
         /* Course header */
         .course-header {
@@ -450,7 +411,7 @@
 </head>
 <body>
 
-<!-- Smart Header (with Dashboard button added) -->
+<!-- Smart Header (no extra buttons, just logo & hamburger) -->
 <header class="smart-header" id="smartHeader">
   <div class="smart-header-inner">
     <a href="index.html" class="smart-logo">
@@ -458,17 +419,14 @@
       <span class="smart-logo-orange">Connect</span>
       <span class="smart-logo-emoji">🐝</span>
     </a>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <a href="dashboard.html" class="smart-back-btn"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
-      <button class="smart-hamburger" id="smartMenuBtn" aria-label="Menu">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-        <span class="smart-hamburger-dot"></span>
-      </button>
-    </div>
+    <button class="smart-hamburger" id="smartMenuBtn" aria-label="Menu">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <span class="smart-hamburger-dot"></span>
+    </button>
   </div>
 </header>
 
@@ -510,7 +468,7 @@
   })();
 </script>
 
-<!-- Main App (old navbar removed) -->
+<!-- Main App -->
 <div class="app" id="mainApp">
     <div id="loading">Loading classroom...</div>
     <div id="classroomContent" style="display:none;">
