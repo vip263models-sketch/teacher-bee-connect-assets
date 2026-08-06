@@ -2,366 +2,559 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Classroom · TeacherBee Connect</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --primary: #4F46E5; --primary-hover: #4338CA; --primary-light: #EEF2FF;
-            --surface: #FFFFFF; --surface-alt: #F8FAFC; --bg-color: #F1F5F9;
-            --text-main: #0F172A; --text-secondary: #334155; --text-muted: #64748B;
-            --border: #E2E8F0; --danger: #EF4444; --success: #10B981; --warning: #F59E0B;
-            --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+            --navy: #0F172A;
+            --brand-blue: #0D4054;
+            --accent-mustard: #F5A623;
+            --accent-mustard-hover: #D4920E;
+            --bg: #F3F6F9;
+            --surface: #FFFFFF;
+            --text: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --danger: #DC2626;
+            --success: #10B981;
+            --info: #3B82F6;
+            --radius-xl: 20px;
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-sm: 0 1px 3px rgba(15,23,42,0.06);
+            --shadow-md: 0 10px 30px rgba(15,23,42,0.08);
+            --shadow-lg: 0 20px 50px rgba(15,23,42,0.12);
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-        .header { background: var(--primary); color: #fff; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-        .header h1 { font-size: 1.3rem; font-weight: 700; }
-        .back-btn { color: #fff; text-decoration: none; font-size: 1.2rem; }
-        .container { max-width: 1200px; margin: 2rem auto; width: 100%; padding: 0 1.5rem; display: flex; gap: 2rem; flex: 1; }
-        .sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 1rem; height: fit-content; position: sticky; top: 1rem; }
-        .sidebar h3 { font-weight: 700; margin-bottom: 1rem; }
-        .module-item { padding: 0.75rem; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; transition: 0.1s; }
-        .module-item:hover { background: var(--surface-alt); }
-        .module-item.active { background: var(--primary-light); font-weight: 600; color: var(--primary); }
-        .module-item.completed { color: var(--success); }
-        .module-item.completed i { color: var(--success); }
-        .main-content { flex: 1; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); padding: 2rem; }
-        .module-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; }
-        .attachments { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
-        .attachment-link { display: inline-flex; align-items: center; gap: 0.3rem; background: var(--surface-alt); padding: 0.5rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.85rem; color: var(--primary); text-decoration: none; border: 1px solid var(--border); }
-        .quiz-box { background: var(--surface-alt); border-radius: var(--radius-md); padding: 1.5rem; margin: 1.5rem 0; }
-        .quiz-box h4 { margin-bottom: 1rem; }
-        .quiz-question { margin-bottom: 1.5rem; }
-        .quiz-option { display: block; padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin: 0.4rem 0; cursor: pointer; transition: 0.1s; }
-        .quiz-option:hover { background: var(--primary-light); }
-        .quiz-option.selected { background: var(--primary-light); border-color: var(--primary); }
-        .btn { padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); font-weight: 500; font-size: 0.85rem; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: 0.15s; }
-        .btn-primary { background: var(--primary); color: #fff; }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-success { background: var(--success); color: #fff; }
-        .certificate-card { background: #FFFDF5; border: 2px solid var(--warning); border-radius: var(--radius-lg); padding: 2rem; text-align: center; max-width: 600px; margin: 0 auto; }
-        .certificate-card h2 { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
-        .certificate-card p { font-size: 1rem; margin: 0.5rem 0; }
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-        .toast { padding: 12px 20px; border-radius: var(--radius-sm); color: #fff; font-weight: 500; font-size: 0.85rem; animation: slideIn 0.3s; }
-        .toast.success { background: var(--success); }
-        .toast.error { background: var(--danger); }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
+        }
+        .app { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
 
-        @media (max-width: 768px) {
-            .container { flex-direction: column; }
-            .sidebar { width: 100%; position: static; }
+        /* Nav */
+        .navbar {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+            flex-wrap: wrap; gap: 0.8rem;
         }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--navy); letter-spacing: -0.3px; white-space: nowrap; }
+        .logo .blue { color: #0D4054; }
+        .logo .orange { color: var(--accent-mustard); }
+        .logo .bee { font-size: 1.2rem; margin-left: 3px; animation: wiggle 3s infinite ease-in-out; display: inline-block; }
+        @keyframes wiggle {
+            0%,100%{transform:rotate(0deg) translateY(0);}
+            15%{transform:rotate(-5deg) translateY(-2px);}
+            30%{transform:rotate(5deg) translateY(-1px);}
+            45%{transform:rotate(-3deg) translateY(0);}
+            60%{transform:rotate(0deg) translateY(0);}
+        }
+        .btn-nav {
+            padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.82rem;
+            cursor: pointer; background: transparent; border: 1.5px solid var(--border); color: var(--text);
+            display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;
+            transition: var(--transition);
+        }
+        .btn-nav:hover { background: #F8FAFC; border-color: #CBD5E1; }
+
+        /* Course header */
+        .course-header {
+            background: var(--surface); border-radius: var(--radius-xl); padding: 1.8rem 2rem;
+            margin-bottom: 2rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+            display: flex; flex-direction: column; gap: 0.8rem;
+        }
+        .course-title { font-size: 1.8rem; font-weight: 800; color: var(--navy); }
+        .progress-container { margin-top: 0.5rem; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+        .progress-bar { height: 8px; background: #E4E8EF; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-mustard); width: 0%; transition: width 0.5s; border-radius: 10px; }
+
+        /* Modules */
+        .modules-list { display: flex; flex-direction: column; gap: 1rem; }
+        .module-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+            padding: 1.2rem 1.5rem; transition: var(--transition); box-shadow: var(--shadow-sm);
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+        }
+        .module-card.locked { opacity: 0.5; pointer-events: none; filter: grayscale(0.8); }
+        .module-card.completed { border-left: 4px solid var(--success); }
+        .module-info h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .module-info p { font-size: 0.8rem; color: var(--text-muted); }
+        .module-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-md); font-weight: 600; font-size: 0.85rem; cursor: pointer;
+            border: none; transition: var(--transition); font-family: inherit; text-decoration: none;
+        }
+        .btn-primary { background: var(--accent-mustard); color: #1A1A1A; box-shadow: var(--shadow-sm); }
+        .btn-primary:hover { background: var(--accent-mustard-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+        .btn-outline:hover { background: #F8FAFC; border-color: #CBD5E1; }
+        .btn-success { background: var(--success); color: #fff; }
+        .btn-success:hover { background: #059669; }
+        .status-badge { background: #D1FAE5; color: #065F46; padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+
+        /* Reader modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6);
+            backdrop-filter: blur(4px); z-index: 1000; display: none; justify-content: center;
+            align-items: flex-start; padding: 2rem 1rem; overflow-y: auto;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: var(--surface); border-radius: var(--radius-xl); max-width: 800px; width: 100%;
+            padding: 2rem; position: relative; box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+            animation: fadeSlide 0.3s ease;
+        }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-close {
+            position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.3rem;
+            cursor: pointer; color: var(--text-muted);
+        }
+        .modal-close:hover { color: var(--text); }
+        .reader-content { font-size: 0.95rem; line-height: 1.7; color: var(--text); margin: 1.5rem 0; }
+        .reader-content img { max-width: 100%; border-radius: 10px; margin: 1rem 0; }
+        .attachments-section { margin: 1.5rem 0; }
+        .attachment-item {
+            display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0.9rem;
+            background: #F8FAFC; border: 1px solid var(--border); border-radius: var(--radius-sm);
+            margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .attachment-item .att-info { display: flex; align-items: center; gap: 0.5rem; }
+        .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.78rem; border-radius: var(--radius-sm); }
+
+        /* Quiz */
+        .quiz-section { margin-top: 2rem; padding: 1.5rem; background: #FAFBFC; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+        .quiz-question { margin-bottom: 1.5rem; }
+        .quiz-question p { font-weight: 600; margin-bottom: 0.5rem; }
+        .quiz-option { display: block; padding: 0.6rem 0.9rem; border: 1.5px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 0.4rem; cursor: pointer; transition: var(--transition); }
+        .quiz-option:hover { border-color: var(--accent-mustard); }
+        .quiz-option input { margin-right: 0.5rem; }
+
+        /* Certificate */
+        #certificateSection { margin-top: 2rem; }
+        .cert-name-input {
+            background: var(--surface); padding: 2rem; border-radius: var(--radius-xl);
+            border: 1px solid var(--border); text-align: center; max-width: 500px; margin: 0 auto;
+        }
+        .cert-name-input input { width: 100%; padding: 0.8rem; margin-bottom: 0.8rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; }
+        .certificate-preview {
+            max-width: 800px; margin: 2rem auto; background: #fff; border: 12px solid #F5A623;
+            padding: 3rem 2.5rem; text-align: center; font-family: 'Inter', sans-serif;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 4px; position: relative;
+        }
+        .cert-logo { font-size: 2rem; font-weight: 800; color: #0F172A; margin-bottom: 1.5rem; }
+        .cert-logo .bee { color: #F5A623; }
+        .cert-heading { font-size: 2.2rem; font-weight: 800; color: #0F172A; margin-bottom: 0.5rem; }
+        .cert-subtitle { color: #64748B; margin-bottom: 2rem; }
+        .cert-name { font-size: 2.5rem; font-weight: 800; color: #0D4054; margin: 1rem 0; text-transform: uppercase; }
+        .cert-course { font-size: 1.4rem; font-weight: 700; color: #F5A623; margin: 1.5rem 0; }
+        .cert-details { display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; font-size: 0.85rem; color: #475569; }
+        .cert-footer { margin-top: 3rem; font-size: 0.85rem; color: #64748B; }
+        .print-btn { margin-top: 1rem; }
+        @media print {
+            body { background: #fff; }
+            .app, .navbar, .course-header, .modules-list, .cert-name-input, .modal-overlay { display: none !important; }
+            #certificateSection { display: block !important; margin: 0; }
+            .certificate-preview { box-shadow: none; border: 12px solid #F5A623 !important; margin: 0; width: 100%; }
+        }
+
+        /* Toast */
+        #toast-container {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999;
+            display: flex; flex-direction: column; gap: 8px; max-width: 92%; pointer-events: none;
+        }
+        .toast {
+            padding: 0.75rem 1.3rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; color: #fff;
+            animation: slideDown 0.35s ease; text-align: center; pointer-events: auto; box-shadow: var(--shadow-lg);
+        }
+        @keyframes slideDown { from { transform: translateY(-24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="courses.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
-        <h1 id="course-title-header">Classroom</h1>
+<div class="app" id="mainApp">
+    <nav class="navbar">
+        <div class="logo"><span class="blue">Teacher Bee</span><span class="orange">Connect</span><span class="bee">🐝</span></div>
+        <button class="btn-nav" onclick="window.location.href='dashboard.html'"><i class="fa-solid fa-arrow-left"></i> Dashboard</button>
+    </nav>
+
+    <div id="loading">Loading classroom...</div>
+    <div id="classroomContent" style="display:none;">
+        <div class="course-header" id="courseHeader"></div>
+        <div class="modules-list" id="modulesContainer"></div>
+        <div id="certificateSection"></div>
     </div>
+</div>
 
-    <div class="container">
-        <aside class="sidebar" id="module-sidebar">
-            <h3>Modules</h3>
-            <div id="module-list"></div>
-        </aside>
-
-        <main class="main-content" id="main-content">
-            <div id="loading-view" style="text-align:center; padding:3rem;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; color:var(--primary);"></i>
-                <p>Loading...</p>
-            </div>
-            <div id="pending-view" style="display:none; text-align:center; padding:3rem;">
-                <h2>⌛ Payment Pending</h2>
-                <p>Your enrollment is pending admin verification. Once approved, you can access the class.</p>
-                <a href="courses.html" class="btn btn-primary" style="margin-top:1rem;">Back to Courses</a>
-            </div>
-            <div id="content-view" style="display:none;">
-                <div class="module-title" id="module-title"></div>
-                <div id="module-content"></div>
-                <div id="module-attachments" class="attachments"></div>
-                <div id="quiz-section" class="quiz-box" style="display:none;">
-                    <h4>Quiz</h4>
-                    <div id="quiz-questions"></div>
-                    <button class="btn btn-primary" id="submit-quiz-btn" onclick="submitQuiz()">Submit Quiz</button>
-                    <p id="quiz-result" style="margin-top:0.5rem; font-weight:600;"></p>
-                </div>
-                <div style="margin-top:1.5rem; display:flex; gap:0.5rem;">
-                    <button class="btn btn-primary" id="prev-module-btn" onclick="navigateModule(-1)" disabled><i class="fa-solid fa-arrow-left"></i> Previous</button>
-                    <button class="btn btn-primary" id="next-module-btn" onclick="navigateModule(1)">Next <i class="fa-solid fa-arrow-right"></i></button>
-                </div>
-                <div id="certificate-section" style="display:none; margin-top:2rem;">
-                    <div class="certificate-card" id="certificate-card">
-                        <h2>Certificate of Completion</h2>
-                        <p>This certifies that</p>
-                        <h3 id="cert-name">Teacher Name</h3>
-                        <p>has successfully completed the course</p>
-                        <h3 id="cert-course">Course Title</h3>
-                        <p>Issued on <span id="cert-date"></span></p>
-                        <p style="margin-top:1rem; font-weight:600;">Certificate #<span id="cert-number"></span></p>
-                        <button class="btn btn-primary" onclick="window.print()" style="margin-top:1rem;">Print / Download</button>
-                    </div>
-                </div>
-            </div>
-        </main>
+<!-- Module reader modal -->
+<div class="modal-overlay" id="readerModal">
+    <div class="modal-card">
+        <button class="modal-close" onclick="closeReader()"><i class="fa-solid fa-times"></i></button>
+        <h2 id="readerModuleTitle"></h2>
+        <div id="readerBody" class="reader-content"></div>
+        <div id="attachmentsArea" class="attachments-section"></div>
+        <div id="quizArea" class="quiz-section"></div>
     </div>
+</div>
 
-    <div class="toast-container" id="toast-container"></div>
+<!-- Image preview modal (same as admin) -->
+<div id="imageModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:10001;flex-direction:column;align-items:center;justify-content:center;" onclick="if(event.target===this)closeImageModal()">
+    <button style="position:absolute;top:20px;right:30px;background:none;border:none;color:#fff;font-size:2rem;cursor:pointer;" onclick="closeImageModal()">&times;</button>
+    <div style="position:relative;">
+        <div id="imgSpinner" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:2rem;"><i class="fa-solid fa-spinner fa-spin"></i></div>
+        <img id="imageModalImg" src="" alt="" style="max-width:90vw;max-height:80vh;display:none;" onload="document.getElementById('imgSpinner').style.display='none';this.style.display='block';" onerror="this.style.display='none';document.getElementById('imgSpinner').innerHTML='⚠️ Could not load image';" />
+    </div>
+    <div style="margin-top:1rem;display:flex;gap:1rem;">
+        <a id="imgDownload" class="btn btn-primary btn-sm" href="#" download><i class="fa-solid fa-download"></i> Download</a>
+        <button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,0.5);" onclick="closeImageModal()">Close</button>
+    </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<!-- Document preview modal -->
+<div id="previewModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10001;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:#0F172A;color:#fff;">
+        <h3 id="previewModalTitle">Document Preview</h3>
+        <button style="background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer;" onclick="closePreviewModal()">&times;</button>
+    </div>
+    <iframe id="previewIframe" src="" style="flex:1;border:none;width:100%;" allowfullscreen></iframe>
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
-            authDomain: "teacherbee-connect.firebaseapp.com",
-            projectId: "teacherbee-connect",
-            storageBucket: "teacherbee-connect.firebasestorage.app",
-            messagingSenderId: "345613317767",
-            appId: "1:345613317767:web:555713e479f9837e84aa22"
-        };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+<div id="toast-container"></div>
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const courseId = urlParams.get('courseId');
-        if (!courseId) { window.location.href = 'courses.html'; }
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, setDoc, serverTimestamp, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        let currentUser = null;
-        let enrollment = null;
-        let modules = [];
-        let currentModuleIndex = 0;
-        let selectedAnswers = {};
+    const firebaseConfig = {
+        apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
+        authDomain: "teacherbee-connect.firebaseapp.com",
+        projectId: "teacherbee-connect",
+        storageBucket: "teacherbee-connect.firebasestorage.app",
+        messagingSenderId: "345613317767",
+        appId: "1:345613317767:web:555713e479f9837e84aa22"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) { window.location.href = 'login.html'; return; }
-            currentUser = user;
-            await loadEnrollment();
-        });
+    let currentUser = null;
+    let enrollmentData = null;
+    let courseData = null;
+    let modules = [];
+    let completedModules = {};
+    let quizResults = {};
 
-        async function loadEnrollment() {
-            if (!courseId || !currentUser) return;
-            const enrQuery = query(collection(db, 'course_enrollments'), where('userId', '==', currentUser.uid), where('courseId', '==', courseId));
-            const snap = await getDocs(enrQuery);
-            if (snap.empty) {
-                showToast('Enrollment not found. Please enroll first.', 'error');
-                setTimeout(() => window.location.href = 'courses.html', 2000);
+    function getDisplayableImageUrl(url, driveId) {
+        if (!url && !driveId) return null;
+        if (driveId) return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
+        if (url && (url.startsWith('data:') || url.match(/\.(jpg|jpeg|png|gif|webp|svg)($|\?)/i) || url.includes('googleusercontent.com') || url.includes('firebasestorage.googleapis.com'))) return url;
+        const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (driveMatch) return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1200`;
+        return url;
+    }
+
+    function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
+
+    function showToast(msg, type='info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.background = { error:'#DC2626', success:'#10B981', info:'#1E293B' }[type] || '#1E293B';
+        toast.textContent = msg;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity='0'; toast.style.transition='0.3s'; setTimeout(()=>toast.remove(),300); }, 4000);
+    }
+
+    // ── Enrollment & course loading ──
+    async function initClassroom() {
+        if (!currentUser) return;
+        try {
+            const enrollQuery = query(collection(db, 'course_enrollments'), where('userId', '==', currentUser.uid), where('status', '==', 'active'));
+            const enrollSnap = await getDocs(enrollQuery);
+            if (enrollSnap.empty) {
+                document.getElementById('loading').innerHTML = '<p>No active enrollment found. Please enroll in a course first.</p>';
                 return;
             }
-            enrollment = { id: snap.docs[0].id, ...snap.docs[0].data() };
-            // Real-time listener for enrollment changes
-            onSnapshot(doc(db, 'course_enrollments', enrollment.id), (docSnap) => {
-                if (docSnap.exists()) {
-                    enrollment = { id: docSnap.id, ...docSnap.data() };
-                    handleEnrollmentStatus();
-                }
-            });
-        }
+            const enrollDoc = enrollSnap.docs[0];
+            enrollmentData = { id: enrollDoc.id, ...enrollDoc.data() };
+            completedModules = enrollmentData.completedModules || {};
+            quizResults = enrollmentData.quizResults || {};
 
-        function handleEnrollmentStatus() {
-            document.getElementById('loading-view').style.display = 'none';
-            if (enrollment.status === 'pending_payment') {
-                document.getElementById('pending-view').style.display = 'block';
-                document.getElementById('content-view').style.display = 'none';
-            } else if (enrollment.status === 'active' || enrollment.status === 'completed') {
-                document.getElementById('pending-view').style.display = 'none';
-                document.getElementById('content-view').style.display = 'block';
-                loadCourseData();
-            } else {
-                // cancelled or rejected
-                showToast('Enrollment is not active.', 'error');
-                setTimeout(() => window.location.href = 'courses.html', 2000);
-            }
-        }
+            const courseSnap = await getDoc(doc(db, 'courses', enrollmentData.courseId));
+            if (!courseSnap.exists()) { showToast('Course not found.','error'); return; }
+            courseData = { id: courseSnap.id, ...courseSnap.data() };
 
-        async function loadCourseData() {
-            const courseDoc = await getDoc(doc(db, 'courses', courseId));
-            if (!courseDoc.exists()) { showToast('Course not found.', 'error'); return; }
-            const course = courseDoc.data();
-            document.getElementById('course-title-header').textContent = course.title;
-            const modSnap = await getDocs(collection(db, `courses/${courseId}/modules`));
-            modules = [];
-            modSnap.forEach(d => modules.push({ id: d.id, ...d.data() }));
-            modules.sort((a, b) => (a.order || 0) - (b.order || 0));
-            renderModuleList();
-            if (modules.length > 0) {
-                currentModuleIndex = 0;
-                showModule(0);
-            }
-        }
+            // Load modules
+            const modQuery = query(collection(db, `courses/${courseData.id}/modules`), orderBy('order', 'asc'));
+            const modSnap = await getDocs(modQuery);
+            modules = modSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        function renderModuleList() {
-            const container = document.getElementById('module-list');
-            container.innerHTML = modules.map((m, i) => {
-                const completed = enrollment.completedModules && enrollment.completedModules.includes(m.id);
-                return `<div class="module-item ${i === currentModuleIndex ? 'active' : ''} ${completed ? 'completed' : ''}" onclick="showModule(${i})">
-                    <i class="fa-solid ${completed ? 'fa-check-circle' : 'fa-circle'}"></i>
-                    <span>${escapeHTML(m.title)}</span>
+            renderClassroom();
+        } catch (e) {
+            console.error(e);
+            document.getElementById('loading').innerText = 'Error loading classroom.';
+        }
+    }
+
+    function renderClassroom() {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('classroomContent').style.display = 'block';
+
+        const header = document.getElementById('courseHeader');
+        const doneCount = Object.values(completedModules).filter(v=>v===true).length;
+        const total = modules.length;
+        const percent = total ? Math.round((doneCount/total)*100) : 0;
+        header.innerHTML = `
+            <div class="course-title">${escapeHTML(courseData.title)}</div>
+            <p style="color:var(--text-muted);">${escapeHTML(courseData.description || '')}</p>
+            <div class="progress-container">
+                <div class="progress-label"><span>Progress</span><span>${doneCount}/${total} modules</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${percent}%"></div></div>
+            </div>`;
+
+        const container = document.getElementById('modulesContainer');
+        let prevCompleted = true;
+        container.innerHTML = modules.map((mod, index) => {
+            const isCompleted = completedModules[mod.id] === true;
+            const isLocked = !prevCompleted && !isCompleted;
+            if (!isCompleted) prevCompleted = false;
+            const statusIcon = isCompleted ? '<span class="status-badge"><i class="fa-solid fa-check"></i> Completed</span>' : '';
+            const actions = isLocked
+                ? '<span style="color:var(--text-muted);"><i class="fa-solid fa-lock"></i> Locked</span>'
+                : `<button class="btn btn-primary btn-sm" onclick="openModule('${mod.id}')"><i class="fa-solid fa-book-open"></i> Read & Quiz</button>`;
+            return `
+            <div class="module-card ${isLocked?'locked':''} ${isCompleted?'completed':''}">
+                <div class="module-info">
+                    <h3>Module ${index+1}: ${escapeHTML(mod.title)}</h3>
+                    <p>${mod.quiz?.length || 0} questions · ${mod.attachments?.length || 0} files</p>
+                </div>
+                <div class="module-actions">${statusIcon} ${actions}</div>
+            </div>`;
+        }).join('');
+
+        // Check if all modules completed and certificate not yet generated
+        if (doneCount === total && total > 0 && !enrollmentData.certificate) {
+            showCertificateInput();
+        } else if (enrollmentData.certificate) {
+            showCertificate(enrollmentData.certificate);
+        }
+    }
+
+    // ── Module reader ──
+    window.openModule = function(moduleId) {
+        const mod = modules.find(m=>m.id===moduleId);
+        if (!mod) return;
+        document.getElementById('readerModuleTitle').innerText = mod.title;
+        document.getElementById('readerBody').innerHTML = mod.content || '<p>No content.</p>';
+        // Attachments
+        const attArea = document.getElementById('attachmentsArea');
+        attArea.innerHTML = '';
+        if (mod.attachments && mod.attachments.length) {
+            attArea.innerHTML = '<h4 style="margin-bottom:0.5rem;">📎 Attachments</h4>' + mod.attachments.map((att, i) => {
+                const displayUrl = getDisplayableImageUrl(att.url, att.driveId);
+                const isImage = att.type === 'image' || att.isImage || (att.url && att.url.match(/\.(jpg|jpeg|png|gif|webp)($|\?)/i));
+                return `
+                <div class="attachment-item">
+                    <div class="att-info">
+                        <i class="fa-solid ${isImage?'fa-image':'fa-file'}"></i>
+                        <span>${escapeHTML(att.name)}</span>
+                        ${att.instructions ? `<small style="color:var(--text-muted);">- ${escapeHTML(att.instructions)}</small>` : ''}
+                    </div>
+                    <div>
+                        <button class="btn btn-outline btn-sm" onclick="previewAttachment('${encodeURIComponent(att.url || '')}', '${att.driveId || ''}', ${isImage})"><i class="fa-solid fa-eye"></i> View</button>
+                    </div>
                 </div>`;
             }).join('');
         }
+        // Quiz
+        const quizArea = document.getElementById('quizArea');
+        quizArea.innerHTML = '';
+        if (mod.quiz && mod.quiz.length) {
+            quizArea.innerHTML = `
+                <h4><i class="fa-solid fa-circle-question"></i> Module Quiz</h4>
+                <div id="quizQuestions"></div>
+                <button class="btn btn-primary" style="margin-top:1rem;" onclick="submitQuiz('${moduleId}')">Submit Answers</button>
+                <div id="quizFeedback" style="margin-top:1rem;"></div>`;
+            renderQuizQuestions(mod.quiz, moduleId);
+        } else {
+            // If no quiz, allow marking as complete directly
+            quizArea.innerHTML = `<p>No quiz for this module.</p>
+                <button class="btn btn-success" onclick="markModuleComplete('${moduleId}')"><i class="fa-solid fa-check"></i> Mark as Complete</button>`;
+        }
+        document.getElementById('readerModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
 
-        window.showModule = (index) => {
-            currentModuleIndex = index;
-            renderModuleList();
-            const mod = modules[index];
-            document.getElementById('module-title').textContent = mod.title;
-            document.getElementById('module-content').innerHTML = mod.content || '<p>No content</p>';
-            // Attachments
-            const attContainer = document.getElementById('module-attachments');
-            attContainer.innerHTML = '';
-            if (mod.attachments && mod.attachments.length > 0) {
-                mod.attachments.forEach(att => {
-                    attContainer.innerHTML += `<a href="${att.url}" target="_blank" class="attachment-link"><i class="fa-solid fa-paperclip"></i> ${escapeHTML(att.name)}</a>`;
-                });
-            }
-            // Quiz
-            const quizSection = document.getElementById('quiz-section');
-            const quizQuestions = document.getElementById('quiz-questions');
-            const quizResult = document.getElementById('quiz-result');
-            quizResult.textContent = '';
-            if (mod.quiz && mod.quiz.length > 0 && !(enrollment.completedModules && enrollment.completedModules.includes(mod.id))) {
-                quizSection.style.display = 'block';
-                quizQuestions.innerHTML = mod.quiz.map((q, qi) => {
-                    return `<div class="quiz-question">
-                        <p><strong>${qi+1}. ${escapeHTML(q.question)}</strong></p>
-                        ${q.options.map((opt, oi) => `
-                            <div class="quiz-option" onclick="selectAnswer(${qi}, ${oi})" id="opt-${qi}-${oi}">
-                                ${String.fromCharCode(65+oi)}) ${escapeHTML(opt)}
-                            </div>
-                        `).join('')}
-                    </div>`;
-                }).join('');
-                selectedAnswers = {};
-            } else {
-                quizSection.style.display = 'none';
-            }
-            // Navigation buttons
-            document.getElementById('prev-module-btn').disabled = index === 0;
-            document.getElementById('next-module-btn').disabled = index === modules.length - 1;
-            // Check if course completed
-            checkCompletion();
-        };
+    function renderQuizQuestions(quiz, moduleId) {
+        const container = document.getElementById('quizQuestions');
+        container.innerHTML = quiz.map((q, qi) => {
+            const optionsHtml = q.options.map((opt, oi) => `
+                <label class="quiz-option">
+                    <input type="radio" name="q${qi}" value="${oi}"> ${escapeHTML(opt)}
+                </label>`).join('');
+            return `<div class="quiz-question"><p>${qi+1}. ${escapeHTML(q.question)}</p>${optionsHtml}</div>`;
+        }).join('');
+    }
 
-        window.selectAnswer = (questionIndex, optionIndex) => {
-            // Deselect previous
-            document.querySelectorAll(`[id^="opt-${questionIndex}"]`).forEach(el => el.classList.remove('selected'));
-            document.getElementById(`opt-${questionIndex}-${optionIndex}`).classList.add('selected');
-            selectedAnswers[questionIndex] = optionIndex;
-        };
+    window.submitQuiz = async function(moduleId) {
+        const mod = modules.find(m=>m.id===moduleId);
+        if (!mod || !mod.quiz) return;
+        const quiz = mod.quiz;
+        let score = 0;
+        quiz.forEach((q, qi) => {
+            const selected = document.querySelector(`input[name="q${qi}"]:checked`);
+            if (selected && parseInt(selected.value) === q.correctIndex) score++;
+        });
+        const total = quiz.length;
+        const percentage = Math.round((score/total)*100);
+        const passed = percentage >= 60;
+        const feedback = document.getElementById('quizFeedback');
+        feedback.innerHTML = passed
+            ? `<div style="color:var(--success);"><i class="fa-solid fa-circle-check"></i> You passed! (${score}/${total} — ${percentage}%)</div>`
+            : `<div style="color:var(--danger);"><i class="fa-solid fa-circle-xmark"></i> You need at least 60%. Try again. (${score}/${total} — ${percentage}%)</div>`;
 
-        window.submitQuiz = async () => {
-            const mod = modules[currentModuleIndex];
-            if (!mod.quiz || mod.quiz.length === 0) return;
-            let correctCount = 0;
-            mod.quiz.forEach((q, qi) => {
-                if (selectedAnswers[qi] === q.correctIndex) correctCount++;
+        if (passed) {
+            await markModuleComplete(moduleId, score, total);
+        }
+    };
+
+    window.markModuleComplete = async function(moduleId, score=null, total=null) {
+        if (!enrollmentData) return;
+        completedModules[moduleId] = true;
+        if (score !== null && total !== null) {
+            quizResults[moduleId] = { score, total, date: new Date().toISOString() };
+        }
+        try {
+            await updateDoc(doc(db, 'course_enrollments', enrollmentData.id), {
+                completedModules: completedModules,
+                quizResults: quizResults,
+                progress: Object.values(completedModules).filter(v=>v===true).length
             });
-            const score = Math.round((correctCount / mod.quiz.length) * 100);
-            const passed = score >= 70;
-            // Update enrollment
-            const completedModules = enrollment.completedModules ? [...enrollment.completedModules] : [];
-            if (passed && !completedModules.includes(mod.id)) completedModules.push(mod.id);
-            const quizResults = enrollment.quizResults || {};
-            quizResults[mod.id] = { score, total: mod.quiz.length, passed };
-            const progress = Math.round((completedModules.length / modules.length) * 100);
-            await updateDoc(doc(db, 'course_enrollments', enrollment.id), {
-                completedModules,
-                quizResults,
-                progress,
-                status: completedModules.length === modules.length ? 'completed' : 'active',
-                completedAt: completedModules.length === modules.length ? serverTimestamp() : null
-            });
-            document.getElementById('quiz-result').innerHTML = passed
-                ? `<span style="color:var(--success);">✅ Passed! Score: ${score}%</span>`
-                : `<span style="color:var(--danger);">❌ Failed. Score: ${score}% (need 70%). You can try again.</span>`;
-            if (passed) {
-                // Regenerate certificate if all modules done
-                if (completedModules.length === modules.length) {
-                    await generateCertificate();
-                }
-                // Refresh UI
-                renderModuleList();
-                document.getElementById('quiz-section').style.display = 'none';
-            }
-            // Reset selected answers
-            selectedAnswers = {};
-            document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('selected'));
-        };
-
-        function checkCompletion() {
-            if (enrollment.status === 'completed') {
-                document.getElementById('certificate-section').style.display = 'block';
-                displayCertificate();
-            }
+            showToast('Module completed!','success');
+            closeReader();
+            // Refresh local state and re-render
+            enrollmentData.completedModules = completedModules;
+            enrollmentData.quizResults = quizResults;
+            renderClassroom();
+        } catch(e) {
+            showToast('Error saving progress.','error');
         }
+    };
 
-        async function generateCertificate() {
-            // Create certificate in Firestore
-            const certNumber = 'TBC-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random()*10000)).padStart(4,'0');
-            const courseDoc = await getDoc(doc(db, 'courses', courseId));
-            const course = courseDoc.data();
-            const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-            const userName = userDoc.exists() ? userDoc.data().name : 'Teacher';
-            await setDoc(doc(db, 'certificates', enrollment.id), {
-                userId: currentUser.uid,
-                courseId,
-                enrollmentId: enrollment.id,
-                issuedAt: serverTimestamp(),
-                certificateNumber: certNumber,
-                courseName: course.title,
-                userName,
-                // certificateUrl can be empty (we render inline)
-                certificateUrl: ''
-            });
-            document.getElementById('cert-name').textContent = userName;
-            document.getElementById('cert-course').textContent = course.title;
-            document.getElementById('cert-date').textContent = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
-            document.getElementById('cert-number').textContent = certNumber;
-            document.getElementById('certificate-section').style.display = 'block';
+    window.closeReader = function() {
+        document.getElementById('readerModal').classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    // ── Attachment preview (same logic as admin) ──
+    window.previewAttachment = function(url, driveId, isImage) {
+        url = decodeURIComponent(url);
+        const displayUrl = getDisplayableImageUrl(url, driveId);
+        if (isImage && displayUrl) {
+            openImageModal(displayUrl, url || displayUrl);
+        } else if (driveId) {
+            openPreviewModal(`https://drive.google.com/file/d/${driveId}/preview`, 'Attachment Preview');
+        } else if (url) {
+            openPreviewModal(url, 'Attachment Preview');
         }
+    };
 
-        function displayCertificate() {
-            // Fetch certificate data
-            getDoc(doc(db, 'certificates', enrollment.id)).then(certSnap => {
-                if (certSnap.exists()) {
-                    const cert = certSnap.data();
-                    document.getElementById('cert-name').textContent = cert.userName || 'Teacher';
-                    document.getElementById('cert-course').textContent = cert.courseName || 'Course';
-                    document.getElementById('cert-date').textContent = cert.issuedAt ? cert.issuedAt.toDate().toLocaleDateString('en-US') : '';
-                    document.getElementById('cert-number').textContent = cert.certificateNumber || '';
-                }
-            });
+    function openImageModal(imageUrl, downloadUrl) {
+        const img = document.getElementById('imageModalImg');
+        const spinner = document.getElementById('imgSpinner');
+        spinner.style.display = 'block';
+        img.style.display = 'none';
+        img.src = imageUrl;
+        document.getElementById('imgDownload').href = downloadUrl;
+        document.getElementById('imageModal').style.display = 'flex';
+    }
+    window.closeImageModal = () => document.getElementById('imageModal').style.display = 'none';
+
+    function openPreviewModal(url, title) {
+        document.getElementById('previewModalTitle').innerText = title;
+        document.getElementById('previewIframe').src = url;
+        document.getElementById('previewModal').style.display = 'flex';
+    }
+    window.closePreviewModal = () => {
+        document.getElementById('previewIframe').src = '';
+        document.getElementById('previewModal').style.display = 'none';
+    };
+
+    // ── Certificate ──
+    function showCertificateInput() {
+        const section = document.getElementById('certificateSection');
+        section.innerHTML = `
+        <div class="cert-name-input">
+            <h3>🎓 Congratulations!</h3>
+            <p>You've completed all modules. Enter your name for the certificate.</p>
+            <input type="text" id="certFullName" placeholder="Your Full Name" required>
+            <button class="btn btn-primary" style="width:100%;" onclick="generateCertificate()">Generate Certificate</button>
+        </div>`;
+    }
+
+    window.generateCertificate = async function() {
+        const name = document.getElementById('certFullName').value.trim();
+        if (!name) { showToast('Please enter your name.','error'); return; }
+        const date = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+        const certNum = 'TBC-' + new Date().getFullYear() + '-' + Math.floor(1000+Math.random()*9000);
+        const certData = { name, date, number: certNum, issuedAt: new Date() };
+
+        try {
+            await updateDoc(doc(db, 'course_enrollments', enrollmentData.id), { certificate: certData });
+            enrollmentData.certificate = certData;
+            showCertificate(certData);
+            showToast('Certificate saved!','success');
+        } catch(e) {
+            showToast('Error saving certificate.','error');
         }
+    };
 
-        window.navigateModule = (direction) => {
-            const newIndex = currentModuleIndex + direction;
-            if (newIndex >= 0 && newIndex < modules.length) {
-                showModule(newIndex);
-            }
-        };
+    function showCertificate(cert) {
+        const section = document.getElementById('certificateSection');
+        section.innerHTML = `
+        <div class="certificate-preview">
+            <div class="cert-logo"><span class="blue">Teacher Bee</span><span class="bee">🐝</span> <span class="orange">Connect</span></div>
+            <div class="cert-heading">Certificate of Completion</div>
+            <div class="cert-subtitle">This certifies that</div>
+            <div class="cert-name">${escapeHTML(cert.name)}</div>
+            <div>has successfully completed the course</div>
+            <div class="cert-course">${escapeHTML(courseData.title)}</div>
+            <div class="cert-details">
+                <div><strong>Certificate No:</strong> ${cert.number}</div>
+                <div><strong>Date:</strong> ${cert.date}</div>
+            </div>
+            <div class="cert-footer">Teacher Bee Connect · Empowering Educators Worldwide</div>
+            <button class="btn btn-primary print-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Certificate</button>
+        </div>`;
+    }
 
-        function showToast(msg, type='info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = msg;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
+    // ── Auth ──
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) { window.location.href = 'login.html'; return; }
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists() || userDoc.data().role !== 'teacher') {
+            window.location.href = 'login.html';
+            return;
         }
+        currentUser = user;
+        initClassroom();
+    });
 
-        function escapeHTML(str) {
-            const div = document.createElement('div');
-            div.textContent = str || '';
-            return div.innerHTML;
-        }
-
-        window.showToast = showToast;
-    </script>
+    // Close modals on overlay click
+    document.getElementById('readerModal').addEventListener('click', function(e) { if (e.target === this) closeReader(); });
+</script>
 </body>
 </html>
