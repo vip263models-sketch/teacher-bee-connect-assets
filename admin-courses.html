@@ -12,7 +12,6 @@
             --bg-surface: #FFFFFF;
             --bg-input: #F1F3F7;
             --bg-hover: #F7F8FB;
-            --bg-active: #EEF1F8;
             --primary: #0A2540;
             --primary-light: #15355A;
             --accent: #F5A623;
@@ -39,7 +38,6 @@
             --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             --transition: 0.2s ease;
         }
-
         *,
         *::before,
         *::after {
@@ -47,7 +45,6 @@
             margin: 0;
             padding: 0;
         }
-
         html,
         body {
             font-family: var(--font);
@@ -58,14 +55,11 @@
             line-height: 1.5;
             font-size: 1rem;
         }
-
         .app-wrapper {
             max-width: 1440px;
             margin: 0 auto;
             padding: 1.5rem 1.25rem 2.5rem;
         }
-
-        /* ── HEADER ── */
         .page-header {
             display: flex;
             align-items: center;
@@ -101,8 +95,6 @@
         .page-title span {
             color: var(--accent);
         }
-
-        /* ── TABS ── */
         .tabs-nav {
             display: flex;
             gap: 0.4rem;
@@ -163,8 +155,6 @@
         .tab-content-panel.active {
             display: block;
         }
-
-        /* ── BUTTONS ── */
         .btn {
             font-family: var(--font);
             padding: 0.6rem 1.2rem;
@@ -261,8 +251,6 @@
             color: var(--text-primary);
             border-color: var(--border-strong);
         }
-
-        /* ── COURSE GRID ── */
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -299,10 +287,21 @@
         }
         .course-card-banner {
             width: 100%;
-            height: 160px;
+            height: 180px;
             object-fit: cover;
             display: block;
-            background: #E8ECF2;
+            background: linear-gradient(135deg, #E8ECF2, #D5DAE3);
+            position: relative;
+        }
+        .course-card-banner-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #E8ECF2, #D5DAE3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 2.2rem;
         }
         .course-card-body {
             padding: 1.25rem 1.35rem 1.35rem;
@@ -356,8 +355,6 @@
             gap: 0.5rem;
             flex-wrap: wrap;
         }
-
-        /* ── MODAL ── */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -427,8 +424,6 @@
             margin-bottom: 1.5rem;
             letter-spacing: -0.2px;
         }
-
-        /* ── FORM ── */
         .form-group {
             margin-bottom: 1.15rem;
         }
@@ -476,8 +471,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        /* ── UPLOAD ZONE (Banner) ── */
         .upload-zone {
             border: 2px dashed var(--border-strong);
             border-radius: var(--radius-xs);
@@ -584,8 +577,6 @@
         .upload-progress-text i {
             margin-right: 4px;
         }
-
-        /* ── MODULE LIST ── */
         .module-list {
             display: flex;
             flex-direction: column;
@@ -623,8 +614,6 @@
             gap: 0.4rem;
             flex-wrap: wrap;
         }
-
-        /* ── ATTACHMENT ROW ── */
         .attachment-manager {
             display: flex;
             flex-direction: column;
@@ -667,8 +656,6 @@
             gap: 3px;
             flex-shrink: 0;
         }
-
-        /* ── EDITOR ── */
         .editor-toolbar {
             display: flex;
             gap: 0.3rem;
@@ -706,8 +693,6 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.05);
         }
-
-        /* ── QUIZ BUILDER ── */
         .quiz-section {
             background: #FAFBFC;
             border: 1px solid var(--border-light);
@@ -773,13 +758,12 @@
         .quiz-option-row.correct .quiz-correct-indicator {
             display: inline;
         }
-
-        /* ── PAYMENTS ── */
         .filters-row {
             display: flex;
             gap: 0.75rem;
             margin-bottom: 1.25rem;
             flex-wrap: wrap;
+            align-items: center;
         }
         .filters-row select {
             padding: 0.55rem 0.9rem;
@@ -869,8 +853,6 @@
             background: #FEE2E2;
             color: #991B1B;
         }
-
-        /* ── PAYMENTS MOBILE CARDS ── */
         .payments-mobile-list {
             display: none;
             flex-direction: column;
@@ -923,8 +905,6 @@
                 font-size: 1.1rem;
             }
         }
-
-        /* ── PREVIEW MODALS ── */
         .preview-modal {
             display: none;
             position: fixed;
@@ -1070,18 +1050,6 @@
             background: rgba(255, 255, 255, 0.22);
             border-color: rgba(255, 255, 255, 0.5);
         }
-
-        /* ── COURSE PREVIEW BANNER ── */
-        .preview-course-banner {
-            width: 100%;
-            max-height: 600px;
-            object-fit: contain;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            background: #E8ECF2;
-            display: block;
-            box-shadow: var(--shadow-md);
-        }
         .preview-course-banner-wrapper {
             text-align: center;
             background: #F5F6F9;
@@ -1091,16 +1059,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 300px;
+            min-height: 200px;
+            position: relative;
         }
         .preview-course-banner-wrapper img {
             max-width: 100%;
-            max-height: 580px;
+            max-height: 500px;
             object-fit: contain;
             border-radius: 10px;
+            display: block;
+            box-shadow: var(--shadow-md);
         }
-
-        /* ── TOAST ── */
+        .preview-banner-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            gap: 0.5rem;
+        }
+        .preview-banner-placeholder i {
+            font-size: 3rem;
+            color: #D5DCE6;
+        }
         .toast-container {
             position: fixed;
             top: 20px;
@@ -1135,11 +1115,43 @@
             background: var(--primary);
         }
         @keyframes slideInToast {
-            from { transform: translateX(40px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
         .hidden {
             display: none !important;
+        }
+        .img-load-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #E2E8F0;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .refresh-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .refresh-indicator:hover {
+            color: var(--primary);
         }
     </style>
 </head>
@@ -1157,14 +1169,14 @@
         </div>
     </div>
 
-    <!-- Image Preview Modal (FIXED) -->
+    <!-- Image Preview Modal -->
     <div id="imageModal" class="image-modal" onclick="if(event.target===this)closeImageModal()">
         <button class="image-modal-close-bg" onclick="closeImageModal()" title="Close"><i class="fa-solid fa-times"></i></button>
         <div class="image-modal-img-wrapper">
             <div class="image-modal-spinner" id="imageModalSpinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
-            <img id="imageModalImg" class="image-modal-img" src="" alt="" 
-                 onload="document.getElementById('imageModalSpinner').classList.add('hidden'); this.style.display='block';" 
-                 onerror="handleImageModalError()" style="display:none;" />
+            <img id="imageModalImg" class="image-modal-img" src="" alt=""
+            onload="document.getElementById('imageModalSpinner').classList.add('hidden'); this.style.display='block';"
+            onerror="handleImageModalError()" style="display:none;" />
         </div>
         <div class="image-modal-actions">
             <a id="imageModalDownload" class="btn btn-accent" href="#" download><i class="fa-solid fa-download"></i> Download</a>
@@ -1172,7 +1184,7 @@
         </div>
     </div>
 
-    <!-- Course Preview Modal (with square banner) -->
+    <!-- Course Preview Modal -->
     <div class="modal-overlay" id="course-preview-modal">
         <div class="modal-dialog wide">
             <div class="modal-header-bar"></div>
@@ -1227,18 +1239,23 @@
         <div class="tab-content-panel" id="content-payments">
             <div class="section-header">
                 <h2>Course Payments</h2>
+                <span class="refresh-indicator" onclick="manualRefreshPayments()" title="Refresh payments">
+                    <i class="fa-solid fa-rotate"></i> Refresh
+                </span>
             </div>
             <div class="filters-row">
                 <select id="filter-type" onchange="renderPayments()">
                     <option value="all">All Types</option>
                     <option value="workshop">Workshop</option>
                     <option value="tefl">TEFL</option>
+                    <option value="course">Course (Legacy)</option>
                 </select>
                 <select id="filter-status" onchange="renderPayments()">
                     <option value="pending" selected>Pending</option>
                     <option value="all">All Status</option>
                     <option value="approved">Approved</option>
                     <option value="rejected">Rejected</option>
+                    <option value="cancelled">Cancelled</option>
                 </select>
             </div>
             <div class="payments-table-wrap">
@@ -1285,7 +1302,7 @@
                                 <div class="upload-zone-placeholder">
                                     <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.6rem;color:var(--text-muted);"></i>
                                     <p style="font-size:0.85rem;color:var(--text-muted);">Click to select banner</p>
-                                    <p style="font-size:0.7rem;color:var(--text-muted);">Recommended: square image (1080×1080)</p>
+                                    <p style="font-size:0.7rem;color:var(--text-muted);">Recommended: 1080×1080 or 16:9</p>
                                 </div>
                                 <img id="banner-preview-img" class="upload-banner-preview" src="" alt="Banner Preview" />
                                 <div class="upload-progress-overlay" id="banner-progress-overlay">
@@ -1344,7 +1361,22 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, collection, addDoc, query, getDocs, orderBy, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            deleteDoc,
+            serverTimestamp,
+            collection,
+            addDoc,
+            query,
+            getDocs,
+            orderBy,
+            where,
+            onSnapshot
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
@@ -1357,7 +1389,8 @@
         const fbApp = initializeApp(firebaseConfig);
         const auth = getAuth(fbApp);
         const db = getFirestore(fbApp);
-        const GAS_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+        const GAS_UPLOAD_URL =
+            "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
 
         let currentAdmin = null;
         let allCourses = [];
@@ -1368,14 +1401,38 @@
         let allPayments = [];
         const courseNameCache = {};
         const userCache = {};
+        let paymentsUnsubscribe = null;
 
+        // ── Helper: convert Google Drive URLs to displayable image URLs ──
+        function getDisplayableImageUrl(url, driveId) {
+            if (!url && !driveId) return null;
+            // If we have a driveId, construct a proper thumbnail URL
+            if (driveId) {
+                return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
+            }
+            // If the URL is already a direct image URL, return it
+            if (url && (url.startsWith('data:') || url.match(/\.(jpg|jpeg|png|gif|webp|svg)($|\?)/i) ||
+                    url.includes('googleusercontent.com') || url.includes('firebasestorage.googleapis.com'))) {
+                return url;
+            }
+            // Try to extract drive ID from Google Drive URL
+            const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+            if (driveMatch) {
+                return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1200`;
+            }
+            // Return original URL as fallback
+            return url;
+        }
+
+        // ── Auth guard ──
         onAuthStateChanged(auth, async (user) => {
             if (!user) { window.location.href = 'admin.html'; return; }
             const adminDoc = await getDoc(doc(db, 'admins', user.uid));
-            if (!adminDoc.exists()) { await signOut(auth); window.location.href = 'admin.html'; return; }
+            if (!adminDoc.exists()) { await signOut(auth);
+                window.location.href = 'admin.html'; return; }
             currentAdmin = user;
             loadCourses();
-            listenForPayments();
+            startPaymentsListener();
         });
 
         window.switchTab = (tabName) => {
@@ -1390,11 +1447,13 @@
         };
         document.querySelectorAll('.tab-btn').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
 
+        // ── Toast ──
         function showToast(msg, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icon = type === 'error' ? 'fa-circle-exclamation' : type === 'success' ? 'fa-circle-check' : 'fa-circle-notch fa-spin';
+            const icon = type === 'error' ? 'fa-circle-exclamation' : type === 'success' ? 'fa-circle-check' :
+                'fa-circle-notch fa-spin';
             toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${msg}`;
             container.appendChild(toast);
             setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
@@ -1403,19 +1462,27 @@
 
         window.closeModal = (modalId) => document.getElementById(modalId).classList.remove('active');
 
+        // ── File upload helper ──
         function uploadFileWithToast(file) {
             return new Promise((resolve, reject) => {
                 const toastEl = showToast(`Uploading ${file.name}…`, 'info');
                 const reader = new FileReader();
                 reader.onload = async (e) => {
-                    const payload = { action: 'uploadCertificate', fileName: file.name, mimeType: file.type || 'application/octet-stream', file: e.target.result };
+                    const payload = { action: 'uploadCertificate', fileName: file.name, mimeType: file.type ||
+                            'application/octet-stream', file: e.target.result };
                     try {
-                        const res = await fetch(GAS_UPLOAD_URL, { method: 'POST', body: JSON.stringify(payload) });
+                        const res = await fetch(GAS_UPLOAD_URL, { method: 'POST', body: JSON.stringify(
+                                payload) });
                         const data = await res.json();
                         if (toastEl.parentNode) toastEl.remove();
                         if (data.status === 'success' && data.certificates?.length > 0) {
                             const cert = data.certificates[data.certificates.length - 1];
-                            resolve({ url: cert.fileUrl || cert.url, driveId: cert.id, name: file.name, isImage: cert.isImage || file.type.startsWith('image/') });
+                            resolve({
+                                url: cert.fileUrl || cert.url,
+                                driveId: cert.id,
+                                name: file.name,
+                                isImage: cert.isImage || file.type.startsWith('image/')
+                            });
                         } else {
                             reject(new Error(data.message || 'Upload failed'));
                         }
@@ -1424,18 +1491,18 @@
                         reject(err);
                     }
                 };
-                reader.onerror = () => { if (toastEl.parentNode) toastEl.remove(); reject(new Error('Read error')); };
+                reader.onerror = () => { if (toastEl.parentNode) toastEl.remove();
+                    reject(new Error('Read error')); };
                 reader.readAsDataURL(file);
             });
         }
 
+        // ── Banner ──
         window.removeBanner = () => {
             document.getElementById('banner-url').value = '';
-            const preview = document.getElementById('banner-preview-img');
-            preview.src = '';
-            preview.style.display = 'none';
-            const zone = document.getElementById('banner-upload-zone');
-            zone.classList.remove('has-banner');
+            document.getElementById('banner-preview-img').src = '';
+            document.getElementById('banner-preview-img').style.display = 'none';
+            document.getElementById('banner-upload-zone').classList.remove('has-banner');
             showToast('Banner removed.', 'info');
         };
 
@@ -1448,8 +1515,11 @@
             try {
                 const uploaded = await uploadFileWithToast(file);
                 document.getElementById('banner-url').value = uploaded.url;
+                // Also store driveId as a data attribute for later retrieval
+                document.getElementById('banner-url').setAttribute('data-drive-id', uploaded.driveId || '');
                 const preview = document.getElementById('banner-preview-img');
-                preview.src = uploaded.url;
+                const displayUrl = getDisplayableImageUrl(uploaded.url, uploaded.driveId);
+                preview.src = displayUrl;
                 preview.style.display = 'block';
                 zone.classList.add('has-banner');
                 showToast('Banner uploaded!', 'success');
@@ -1461,6 +1531,7 @@
             input.value = '';
         };
 
+        // ── Module attachments ──
         window.uploadModuleFile = async (input) => {
             const files = input.files;
             if (!files.length) return;
@@ -1484,7 +1555,7 @@
             container.innerHTML = tempAttachments.map((att, i) => `
             <div class="attachment-row">
               <input type="text" class="att-name-input" value="${escapeHTML(att.name)}" placeholder="File name" onchange="updateAttachmentField(${i},'name',this.value)" />
-              <input type="text" class="att-instruction-input" value="${escapeHTML(att.instructions || '')}" placeholder="Instructions (e.g. Watch this video)" onchange="updateAttachmentField(${i},'instructions',this.value)" />
+              <input type="text" class="att-instruction-input" value="${escapeHTML(att.instructions || '')}" placeholder="Instructions" onchange="updateAttachmentField(${i},'instructions',this.value)" />
               <div class="att-actions">
                 <button type="button" class="btn-icon" title="Preview" onclick="previewAttachment(${i})"><i class="fa-solid fa-eye"></i></button>
                 <button type="button" class="btn-icon" title="Remove" onclick="removeTempAttachment(${i})" style="color:var(--danger);"><i class="fa-solid fa-trash-can"></i></button>
@@ -1493,22 +1564,17 @@
           `).join('');
         }
 
-        window.updateAttachmentField = (index, field, value) => {
-            if (tempAttachments[index]) tempAttachments[index][field] = value;
-        };
-        window.removeTempAttachment = (index) => {
-            tempAttachments.splice(index, 1);
-            renderTempAttachments();
-        };
+        window.updateAttachmentField = (index, field, value) => { if (tempAttachments[index]) tempAttachments[index][
+                field
+            ] = value; };
+        window.removeTempAttachment = (index) => { tempAttachments.splice(index, 1);
+            renderTempAttachments(); };
 
         window.previewAttachment = (index) => {
             const att = tempAttachments[index];
             if (!att) return;
             if (att.isImage && att.url) {
-                let displayUrl = att.url;
-                if (att.driveId) {
-                    displayUrl = `https://drive.google.com/thumbnail?id=${att.driveId}&sz=w1200`;
-                }
+                const displayUrl = getDisplayableImageUrl(att.url, att.driveId);
                 openImageModal(att.url, displayUrl);
             } else if (att.driveId) {
                 openPreviewModal(`https://drive.google.com/file/d/${att.driveId}/preview`, att.name);
@@ -1527,27 +1593,21 @@
             document.getElementById('previewModal').classList.remove('active');
         };
 
-        // ---------- FIXED IMAGE MODAL FUNCTIONS ----------
+        // ── Image modal ──
         window.openImageModal = (downloadUrl, imageUrl) => {
             const img = document.getElementById('imageModalImg');
             const spinner = document.getElementById('imageModalSpinner');
             const downloadLink = document.getElementById('imageModalDownload');
-
             if (img._loadTimeout) clearTimeout(img._loadTimeout);
             img._errorHandled = false;
-
             img.style.display = 'none';
             spinner.classList.remove('hidden');
             img.src = '';
             downloadLink.href = downloadUrl || imageUrl;
             document.getElementById('imageModal').classList.add('active');
-
             img._loadTimeout = setTimeout(() => {
-                if (!img._errorHandled && img.style.display === 'none' && img.src) {
-                    handleImageModalError();
-                }
+                if (!img._errorHandled && img.style.display === 'none' && img.src) handleImageModalError();
             }, 12000);
-
             img.src = imageUrl;
         };
 
@@ -1556,10 +1616,7 @@
             if (img._errorHandled) return;
             img._errorHandled = true;
             if (img._loadTimeout) clearTimeout(img._loadTimeout);
-
-            const spinner = document.getElementById('imageModalSpinner');
-            spinner.classList.add('hidden');
-
+            document.getElementById('imageModalSpinner').classList.add('hidden');
             const downloadLink = document.getElementById('imageModalDownload');
             const fallbackUrl = downloadLink.href || img.src;
             closeImageModal();
@@ -1581,23 +1638,44 @@
             document.getElementById('imageModal').classList.remove('active');
         };
 
-        // ---------- FIXED COURSE PREVIEW (square banner) ----------
+        // ── Course Preview (FIXED BANNER DISPLAY) ──
         window.previewCourse = (courseId) => {
             const course = allCourses.find(c => c.id === courseId);
             if (!course) return;
-            const startDateStr = course.startDate ? new Date(course.startDate).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : 'Flexible';
-            const statusBadge = course.status === 'published' ? 'status-approved' : course.status === 'draft' ? 'status-pending' : 'status-rejected';
+            const startDateStr = course.startDate ? new Date(course.startDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) : 'Flexible';
+            const statusBadge = course.status === 'published' ? 'status-approved' : course.status === 'draft' ?
+                'status-pending' : 'status-rejected';
             const statusText = course.status.charAt(0).toUpperCase() + course.status.slice(1);
-            
-            const bannerSection = course.thumbnailUrl ? `
-                <div style="text-align:center; margin-bottom:1.5rem;">
-                    <div style="width:100%; max-width:600px; aspect-ratio:1/1; margin:0 auto; background:#F5F6F9; border-radius:12px; 
-                                display:flex; align-items:center; justify-content:center; overflow:hidden; box-shadow: var(--shadow-md);">
-                        <img src="${course.thumbnailUrl}" alt="Course Banner" 
-                             style="max-width:100%; max-height:100%; object-fit:contain;" 
-                             onerror="this.parentElement.style.display='none';" />
-                    </div>
-                </div>` : '';
+
+            // Build banner section with proper URL conversion
+            let bannerSection = '';
+            if (course.thumbnailUrl) {
+                const displayUrl = getDisplayableImageUrl(course.thumbnailUrl, course.thumbnailDriveId || null);
+                bannerSection = `
+                <div class="preview-course-banner-wrapper">
+                  <img src="${displayUrl}" alt="Course Banner"
+                       style="max-width:100%;max-height:500px;object-fit:contain;border-radius:10px;display:block;box-shadow:var(--shadow-md);"
+                       onerror="this.style.display='none';this.parentElement.querySelector('.preview-banner-placeholder').style.display='flex';"
+                       onload="this.style.display='block';" />
+                  <div class="preview-banner-placeholder" style="display:none;">
+                    <i class="fa-solid fa-image"></i>
+                    <span>Banner preview unavailable</span>
+                    <a href="${course.thumbnailUrl}" target="_blank" style="font-size:0.8rem;color:var(--primary);">Open original image</a>
+                  </div>
+                </div>`;
+            } else {
+                bannerSection = `
+                <div class="preview-course-banner-wrapper">
+                  <div class="preview-banner-placeholder" style="display:flex;">
+                    <i class="fa-solid fa-image"></i>
+                    <span>No banner set for this course</span>
+                  </div>
+                </div>`;
+            }
 
             const html = `
                 ${bannerSection}
@@ -1617,7 +1695,7 @@
             document.getElementById('course-preview-modal').classList.add('active');
         };
 
-        // ---- rest of the script remains identical ----
+        // ── Load courses ──
         async function loadCourses() {
             const q = query(collection(db, 'courses'), orderBy('createdAt', 'desc'));
             const snap = await getDocs(q);
@@ -1636,9 +1714,10 @@
             empty.classList.add('hidden');
             grid.innerHTML = allCourses.map(c => {
                 const catCls = c.category === 'tefl' ? 'cat-tefl' : 'cat-workshop';
-                const bannerHtml = c.thumbnailUrl ?
-                    `<img src="${c.thumbnailUrl}" class="course-card-banner" alt="" onerror="this.style.display='none';" />` :
-                    `<div class="course-card-banner" style="background:linear-gradient(135deg,#E8ECF2,#D5DAE3);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:2rem;"><i class="fa-solid fa-image"></i></div>`;
+                const displayUrl = getDisplayableImageUrl(c.thumbnailUrl, c.thumbnailDriveId || null);
+                const bannerHtml = displayUrl ?
+                    `<img src="${displayUrl}" class="course-card-banner" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><div class="course-card-banner-placeholder" style="display:none;"><i class="fa-solid fa-image"></i></div>` :
+                    `<div class="course-card-banner-placeholder"><i class="fa-solid fa-image"></i></div>`;
                 return `
               <div class="course-card">
                 ${bannerHtml}
@@ -1677,12 +1756,19 @@
             document.getElementById('course-price').value = course.price || 0;
             document.getElementById('course-description').value = course.description || '';
             document.getElementById('course-status').value = course.status || 'published';
-            document.getElementById('course-start-date').value = course.startDate ? course.startDate.toDate().toISOString().split('T')[0] : '';
+            document.getElementById('course-start-date').value = course.startDate ? course.startDate.toDate()
+                .toISOString().split('T')[0] : '';
             document.getElementById('banner-url').value = course.thumbnailUrl || '';
+            if (course.thumbnailDriveId) {
+                document.getElementById('banner-url').setAttribute('data-drive-id', course.thumbnailDriveId);
+            } else {
+                document.getElementById('banner-url').removeAttribute('data-drive-id');
+            }
             const preview = document.getElementById('banner-preview-img');
             const zone = document.getElementById('banner-upload-zone');
             if (course.thumbnailUrl) {
-                preview.src = course.thumbnailUrl;
+                const displayUrl = getDisplayableImageUrl(course.thumbnailUrl, course.thumbnailDriveId || null);
+                preview.src = displayUrl;
                 preview.style.display = 'block';
                 zone.classList.add('has-banner');
             } else {
@@ -1697,6 +1783,7 @@
             document.getElementById('course-form').reset();
             document.getElementById('course-id').value = '';
             document.getElementById('banner-url').value = '';
+            document.getElementById('banner-url').removeAttribute('data-drive-id');
             document.getElementById('banner-preview-img').style.display = 'none';
             document.getElementById('banner-preview-img').src = '';
             document.getElementById('banner-upload-zone').classList.remove('has-banner');
@@ -1711,8 +1798,19 @@
             const status = document.getElementById('course-status').value;
             const startDate = document.getElementById('course-start-date').value;
             const thumbnailUrl = document.getElementById('banner-url').value;
+            const thumbnailDriveId = document.getElementById('banner-url').getAttribute('data-drive-id') || null;
             if (!title || isNaN(price)) { showToast('Title and price are required', 'error'); return; }
-            const courseData = { title, category, price, description, thumbnailUrl, status, startDate: startDate ? new Date(startDate) : null, updatedAt: serverTimestamp() };
+            const courseData = {
+                title,
+                category,
+                price,
+                description,
+                thumbnailUrl,
+                thumbnailDriveId,
+                status,
+                startDate: startDate ? new Date(startDate) : null,
+                updatedAt: serverTimestamp()
+            };
             const courseId = document.getElementById('course-id').value;
             try {
                 if (courseId) {
@@ -1784,11 +1882,13 @@
             const mod = modules.find(m => m.id === moduleId);
             if (!mod) return;
             let html = `<h2>${escapeHTML(mod.title)}</h2>`;
-            html += `<div style="font-size:0.95rem;line-height:1.6;margin:1rem 0;padding:1rem;background:#FAFBFC;border-radius:8px;">${mod.content || '<p style="color:var(--text-muted);">No content</p>'}</div>`;
+            html +=
+                `<div style="font-size:0.95rem;line-height:1.6;margin:1rem 0;padding:1rem;background:#FAFBFC;border-radius:8px;">${mod.content || '<p style="color:var(--text-muted);">No content</p>'}</div>`;
             if (mod.attachments && mod.attachments.length) {
                 html += '<h4 style="margin-top:1rem;">Attachments</h4>';
                 mod.attachments.forEach(att => {
-                    html += `<div style="display:flex;align-items:center;gap:0.5rem;background:#F8FAFC;padding:0.5rem 0.8rem;border-radius:6px;margin:0.3rem 0;border:1px solid var(--border-light);"><i class="fa-solid fa-paperclip"></i> <strong>${escapeHTML(att.name)}</strong> ${att.instructions ? `<span style="color:var(--text-muted);">– ${escapeHTML(att.instructions)}</span>` : ''}</div>`;
+                    html +=
+                        `<div style="display:flex;align-items:center;gap:0.5rem;background:#F8FAFC;padding:0.5rem 0.8rem;border-radius:6px;margin:0.3rem 0;border:1px solid var(--border-light);"><i class="fa-solid fa-paperclip"></i> <strong>${escapeHTML(att.name)}</strong> ${att.instructions ? `<span style="color:var(--text-muted);">– ${escapeHTML(att.instructions)}</span>` : ''}</div>`;
                 });
             }
             if (mod.quiz && mod.quiz.length) {
@@ -1796,7 +1896,8 @@
                 mod.quiz.forEach((q, qi) => {
                     html += `<p><strong>${qi+1}. ${escapeHTML(q.question)}</strong></p>`;
                     q.options.forEach((opt, oi) => {
-                        html += `<p style="margin-left:1.5rem;">${String.fromCharCode(65+oi)}) ${escapeHTML(opt)}</p>`;
+                        html +=
+                            `<p style="margin-left:1.5rem;">${String.fromCharCode(65+oi)}) ${escapeHTML(opt)}</p>`;
                     });
                     html += '<br/>';
                 });
@@ -1820,7 +1921,8 @@
                     document.getElementById('module-title').value = mod.title || '';
                     document.getElementById('module-content').innerHTML = mod.content || '';
                     if (mod.attachments) {
-                        tempAttachments = mod.attachments.map(a => ({ ...a, instructions: a.instructions || '', isImage: a.type === 'image' || (a.url && a.url.match(/\.(jpg|jpeg|png|gif|webp)($|\?)/i)) }));
+                        tempAttachments = mod.attachments.map(a => ({ ...a, instructions: a.instructions || '',
+                            isImage: a.type === 'image' || (a.url && a.url.match(/\.(jpg|jpeg|png|gif|webp)($|\?)/i)) }));
                         renderTempAttachments();
                     }
                     if (mod.quiz) mod.quiz.forEach((q, qi) => renderQuizQuestion(q, qi));
@@ -1831,9 +1933,11 @@
 
         window.editModule = (moduleId) => openModuleModal(moduleId);
 
-        window.formatDoc = (cmd) => { document.execCommand(cmd, false, null); document.getElementById('module-content').focus(); };
+        window.formatDoc = (cmd) => { document.execCommand(cmd, false, null);
+            document.getElementById('module-content').focus(); };
 
-        window.addQuizQuestion = () => renderQuizQuestion({ question: '', options: [''], correctIndex: 0 }, document.querySelectorAll('#quiz-questions .quiz-question-block').length);
+        window.addQuizQuestion = () => renderQuizQuestion({ question: '', options: [''], correctIndex: 0 }, document
+            .querySelectorAll('#quiz-questions .quiz-question-block').length);
 
         function renderQuizQuestion(q, index) {
             const container = document.getElementById('quiz-questions');
@@ -1904,7 +2008,8 @@
                 const optionInputs = [...qDiv.querySelectorAll('.quiz-opt-input')].map(inp => inp.value.trim());
                 const correctRadio = qDiv.querySelector('input[type="radio"]:checked');
                 if (question && optionInputs.length > 0) {
-                    quizQuestions.push({ question, options: optionInputs, correctIndex: correctRadio ? parseInt(correctRadio.value) : 0 });
+                    quizQuestions.push({ question, options: optionInputs, correctIndex: correctRadio ? parseInt(
+                            correctRadio.value) : 0 });
                 }
             });
             const moduleData = { title, content, attachments: tempAttachments, quiz: quizQuestions, order: modules.length };
@@ -1928,36 +2033,147 @@
             showToast('Module deleted.', 'info');
         };
 
-        function listenForPayments() {
-            const q = query(collection(db, 'payments'), where('type', 'in', ['workshop', 'tefl']), orderBy('createdAt', 'desc'));
-            onSnapshot(q, async (snap) => {
-                allPayments = [];
-                let pendingCount = 0;
-                for (let docSnap of snap.docs) {
-                    const data = docSnap.data();
-                    if (!data.courseName && data.itemId) {
-                        if (!courseNameCache[data.itemId]) {
-                            const courseSnap = await getDoc(doc(db, 'courses', data.itemId));
-                            courseNameCache[data.itemId] = courseSnap.exists() ? courseSnap.data().title : 'Unknown';
-                        }
-                        data.courseName = courseNameCache[data.itemId];
-                    }
-                    if (data.customer && data.customer.uid && !data.customer.avatarUrl && !userCache[data.customer.uid]) {
-                        try {
-                            const userSnap = await getDoc(doc(db, 'users', data.customer.uid));
-                            if (userSnap.exists()) {
-                                userCache[data.customer.uid] = userSnap.data();
-                                data.customer.avatarUrl = userSnap.data().avatarUrl || null;
-                            }
-                        } catch (e) {}
-                    }
-                    allPayments.push({ id: docSnap.id, ...data });
-                    if (data.status === 'pending') pendingCount++;
+        // ── PAYMENTS ──
+        function startPaymentsListener() {
+            // Fetch all course-related payments: workshop, tefl, and course types
+            // We use separate queries and merge results for maximum compatibility
+            if (paymentsUnsubscribe) paymentsUnsubscribe();
+
+            const typesToFetch = ['workshop', 'tefl', 'course'];
+            const unsubscribers = [];
+
+            typesToFetch.forEach(typeVal => {
+                try {
+                    const q = query(
+                        collection(db, 'payments'),
+                        where('type', '==', typeVal),
+                        orderBy('createdAt', 'desc')
+                    );
+                    const unsub = onSnapshot(q, (snap) => {
+                        handlePaymentSnapshot(snap, typeVal);
+                    }, (error) => {
+                        console.warn(`⚠️ Listener for type "${typeVal}" failed (may need index):`, error.message);
+                        // Fallback: fetch once without real-time
+                        fetchPaymentsFallback(typeVal);
+                    });
+                    unsubscribers.push(unsub);
+                } catch (e) {
+                    console.warn(`Could not set up listener for type "${typeVal}":`, e.message);
+                    fetchPaymentsFallback(typeVal);
                 }
-                updateBadges(pendingCount);
-                if (document.getElementById('content-payments').classList.contains('active')) renderPayments();
             });
+
+            paymentsUnsubscribe = () => unsubscribers.forEach(u => { try { u(); } catch (e) {} });
         }
+
+        // Track payments by type for merging
+        const paymentsByType = { workshop: [], tefl: [], course: [] };
+
+        function handlePaymentSnapshot(snap, typeVal) {
+            const payments = [];
+            snap.forEach(docSnap => {
+                payments.push({ id: docSnap.id, ...docSnap.data(), _type: typeVal });
+            });
+            paymentsByType[typeVal] = payments;
+            mergeAndUpdateAllPayments();
+        }
+
+        async function fetchPaymentsFallback(typeVal) {
+            try {
+                const q = query(
+                    collection(db, 'payments'),
+                    where('type', '==', typeVal),
+                    orderBy('createdAt', 'desc')
+                );
+                const snap = await getDocs(q);
+                const payments = [];
+                snap.forEach(docSnap => {
+                    payments.push({ id: docSnap.id, ...docSnap.data(), _type: typeVal });
+                });
+                paymentsByType[typeVal] = payments;
+                mergeAndUpdateAllPayments();
+            } catch (e) {
+                console.warn(`Fallback fetch for type "${typeVal}" also failed:`, e.message);
+                // Try without orderBy as last resort
+                try {
+                    const simpleQuery = query(collection(db, 'payments'), where('type', '==', typeVal));
+                    const snap = await getDocs(simpleQuery);
+                    const payments = [];
+                    snap.forEach(docSnap => {
+                        payments.push({ id: docSnap.id, ...docSnap.data(), _type: typeVal });
+                    });
+                    // Sort manually
+                    payments.sort((a, b) => {
+                        const aTime = a.createdAt?.toMillis?.() || 0;
+                        const bTime = b.createdAt?.toMillis?.() || 0;
+                        return bTime - aTime;
+                    });
+                    paymentsByType[typeVal] = payments;
+                    mergeAndUpdateAllPayments();
+                } catch (e2) {
+                    console.error(`All fetch attempts for type "${typeVal}" failed:`, e2.message);
+                }
+            }
+        }
+
+        async function mergeAndUpdateAllPayments() {
+            // Merge all payments from different types
+            const merged = [
+                ...(paymentsByType.workshop || []),
+                ...(paymentsByType.tefl || []),
+                ...(paymentsByType.course || [])
+            ];
+            // Sort by createdAt descending
+            merged.sort((a, b) => {
+                const aTime = a.createdAt?.toMillis?.() || 0;
+                const bTime = b.createdAt?.toMillis?.() || 0;
+                return bTime - aTime;
+            });
+            // Deduplicate by ID
+            const seen = new Set();
+            allPayments = merged.filter(p => {
+                if (seen.has(p.id)) return false;
+                seen.add(p.id);
+                return true;
+            });
+
+            // Enrich with course names and user avatars
+            let pendingCount = 0;
+            for (let p of allPayments) {
+                if (p.status === 'pending') pendingCount++;
+                if (!p.courseName && p.itemId) {
+                    if (!courseNameCache[p.itemId]) {
+                        try {
+                            const courseSnap = await getDoc(doc(db, 'courses', p.itemId));
+                            courseNameCache[p.itemId] = courseSnap.exists() ? courseSnap.data().title : 'Unknown Course';
+                        } catch (e) {
+                            courseNameCache[p.itemId] = 'Unknown Course';
+                        }
+                    }
+                    p.courseName = courseNameCache[p.itemId];
+                }
+                if (p.customer && p.customer.uid && !p.customer.avatarUrl && !userCache[p.customer.uid]) {
+                    try {
+                        const userSnap = await getDoc(doc(db, 'users', p.customer.uid));
+                        if (userSnap.exists()) {
+                            userCache[p.customer.uid] = userSnap.data();
+                            p.customer.avatarUrl = userSnap.data().avatarUrl || null;
+                        }
+                    } catch (e) {}
+                }
+            }
+            updateBadges(pendingCount);
+            if (document.getElementById('content-payments').classList.contains('active')) renderPayments();
+        }
+
+        window.manualRefreshPayments = async () => {
+            showToast('Refreshing payments…', 'info');
+            // Re-fetch all types
+            for (const typeVal of ['workshop', 'tefl', 'course']) {
+                await fetchPaymentsFallback(typeVal);
+            }
+            showToast('Payments refreshed!', 'success');
+        };
 
         function updateBadges(pendingCount) {
             ['payments-badge', 'courses-badge'].forEach(id => {
@@ -1973,7 +2189,7 @@
             const type = document.getElementById('filter-type').value;
             const status = document.getElementById('filter-status').value;
             let filtered = allPayments;
-            if (type !== 'all') filtered = filtered.filter(p => p.type === type);
+            if (type !== 'all') filtered = filtered.filter(p => p.type === type || p._type === type);
             if (status !== 'all') filtered = filtered.filter(p => p.status === status);
 
             const tbody = document.getElementById('payments-tbody');
@@ -1996,8 +2212,11 @@
                 const invId = p.id.substring(0, 8).toUpperCase();
                 const cust = p.customer || {};
                 const avatarUrl = cust.avatarUrl || null;
-                const initials = (cust.name || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
-                const avatarHTML = avatarUrl ? `<img src="${avatarUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<span>${initials}</span>';" />` : `<span>${initials}</span>`;
+                const initials = (cust.name || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() ||
+                    '?';
+                const avatarHTML = avatarUrl ?
+                    `<img src="${avatarUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<span>${initials}</span>';" />` :
+                    `<span>${initials}</span>`;
                 return `
               <tr>
                 <td><strong>#${invId}</strong></td>
@@ -2010,7 +2229,7 @@
                     </div>
                   </div>
                 </td>
-                <td>${escapeHTML(p.courseName || 'Loading...')}</td>
+                <td>${escapeHTML(p.courseName || p.itemTitle || 'Loading...')}</td>
                 <td><strong>$${p.amount || 0}</strong></td>
                 <td><span class="status-pill status-${p.status}">${p.status}</span></td>
                 <td style="white-space:nowrap;">
@@ -2025,8 +2244,11 @@
                 const invId = p.id.substring(0, 8).toUpperCase();
                 const cust = p.customer || {};
                 const avatarUrl = cust.avatarUrl || null;
-                const initials = (cust.name || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
-                const avatarHTML = avatarUrl ? `<img src="${avatarUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<span>${initials}</span>';" />` : `<span>${initials}</span>`;
+                const initials = (cust.name || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() ||
+                    '?';
+                const avatarHTML = avatarUrl ?
+                    `<img src="${avatarUrl}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<span>${initials}</span>';" />` :
+                    `<span>${initials}</span>`;
                 return `
               <div class="payment-mobile-card">
                 <div class="pmc-row"><span class="pmc-label">Invoice</span><span class="pmc-value">#${invId}</span></div>
@@ -2037,7 +2259,7 @@
                     ${escapeHTML(cust.name || 'N/A')}
                   </span>
                 </div>
-                <div class="pmc-row"><span class="pmc-label">Course</span><span class="pmc-value">${escapeHTML(p.courseName || 'Loading...')}</span></div>
+                <div class="pmc-row"><span class="pmc-label">Course</span><span class="pmc-value">${escapeHTML(p.courseName || p.itemTitle || 'Loading...')}</span></div>
                 <div class="pmc-row"><span class="pmc-label">Amount</span><span class="pmc-value">$${p.amount || 0}</span></div>
                 <div class="pmc-row"><span class="pmc-label">Status</span><span class="status-pill status-${p.status}">${p.status}</span></div>
                 <div style="display:flex;gap:0.4rem;margin-top:0.5rem;flex-wrap:wrap;">
@@ -2054,31 +2276,68 @@
             try {
                 const payment = allPayments.find(p => p.id === paymentId);
                 if (!payment) return;
-                await updateDoc(doc(db, 'payments', paymentId), { status: 'approved', approvedBy: currentAdmin.uid, approvedAt: serverTimestamp() });
-                const enrollmentQuery = query(collection(db, 'course_enrollments'), where('paymentId', '==', paymentId));
+                await updateDoc(doc(db, 'payments', paymentId), {
+                    status: 'approved',
+                    approvedBy: currentAdmin.uid,
+                    approvedAt: serverTimestamp()
+                });
+                // Update course enrollment
+                const enrollmentQuery = query(collection(db, 'course_enrollments'), where('paymentId', '==',
+                    paymentId));
                 const enrollSnap = await getDocs(enrollmentQuery);
-                enrollSnap.forEach(async (enrollmentDoc) => await updateDoc(doc(db, 'course_enrollments', enrollmentDoc.id), { status: 'active', activatedAt: serverTimestamp() }));
+                enrollSnap.forEach(async (enrollmentDoc) => {
+                    await updateDoc(doc(db, 'course_enrollments', enrollmentDoc.id), {
+                        status: 'active',
+                        activatedAt: serverTimestamp()
+                    });
+                });
+                // Increment enrolled count on the course
                 if (payment.itemId) {
                     const courseRef = doc(db, 'courses', payment.itemId);
                     const courseSnap = await getDoc(courseRef);
-                    if (courseSnap.exists()) await updateDoc(courseRef, { enrolledCount: (courseSnap.data().enrolledCount || 0) + 1 });
+                    if (courseSnap.exists()) {
+                        await updateDoc(courseRef, { enrolledCount: (courseSnap.data().enrolledCount || 0) + 1 });
+                        // Refresh courses in memory
+                        const updatedCourse = allCourses.find(c => c.id === payment.itemId);
+                        if (updatedCourse) updatedCourse.enrolledCount = (updatedCourse.enrolledCount || 0) + 1;
+                    }
                 }
-                showToast('Payment approved!', 'success');
+                showToast('Payment approved! Enrollment activated.', 'success');
             } catch (e) { showToast('Error: ' + e.message, 'error'); }
         };
 
         window.rejectPayment = async (paymentId) => {
             if (!confirm('Reject this payment?')) return;
             try {
-                await updateDoc(doc(db, 'payments', paymentId), { status: 'rejected', rejectedBy: currentAdmin.uid, rejectedAt: serverTimestamp() });
+                await updateDoc(doc(db, 'payments', paymentId), {
+                    status: 'rejected',
+                    rejectedBy: currentAdmin.uid,
+                    rejectedAt: serverTimestamp()
+                });
+                // Also update enrollment status to rejected
+                const enrollmentQuery = query(collection(db, 'course_enrollments'), where('paymentId', '==',
+                    paymentId));
+                const enrollSnap = await getDocs(enrollmentQuery);
+                enrollSnap.forEach(async (enrollmentDoc) => {
+                    await updateDoc(doc(db, 'course_enrollments', enrollmentDoc.id), { status: 'rejected' });
+                });
                 showToast('Payment rejected.', 'info');
             } catch (e) { showToast('Error: ' + e.message, 'error'); }
         };
 
         window.deletePayment = async (paymentId) => {
-            if (!confirm('Delete this invoice?')) return;
-            await deleteDoc(doc(db, 'payments', paymentId));
-            showToast('Invoice deleted.', 'success');
+            if (!confirm('Delete this invoice? This will also remove the associated enrollment.')) return;
+            try {
+                // Delete associated enrollment
+                const enrollmentQuery = query(collection(db, 'course_enrollments'), where('paymentId', '==',
+                    paymentId));
+                const enrollSnap = await getDocs(enrollmentQuery);
+                enrollSnap.forEach(async (enrollmentDoc) => {
+                    await deleteDoc(doc(db, 'course_enrollments', enrollmentDoc.id));
+                });
+                await deleteDoc(doc(db, 'payments', paymentId));
+                showToast('Invoice and enrollment deleted.', 'success');
+            } catch (e) { showToast('Error: ' + e.message, 'error'); }
         };
 
         function escapeHTML(str) {
@@ -2090,6 +2349,8 @@
         window.addEventListener('resize', () => {
             if (document.getElementById('content-payments').classList.contains('active')) renderPayments();
         });
+
+        console.log('✅ Course Manager ready – payment listener active for workshop, tefl & course types.');
     </script>
 </body>
-</html>
+    </html>
