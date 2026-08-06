@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
     <title>TeacherBee · Recruiter Inbox</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <style>
-        /* ── GLOBAL VARIABLES (original inbox) ── */
         :root {
             --bg-page: #F0F2F7;
             --bg-surface: #FFFFFF;
@@ -53,189 +52,8 @@
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            /* Push body content down to avoid overlap with fixed smart header */
-            margin-top: 60px;
-        }
-        @media (min-width: 768px) {
-            body { margin-top: 68px; }
         }
 
-        /* ── SMART HEADER & DRAWER STYLES ── */
-        .smart-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            z-index: 99990;
-            box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(13,64,84,0.05);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .smart-header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            height: 60px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .smart-logo {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            letter-spacing: -0.3px;
-            gap: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .smart-logo-blue { color: #0D4054; }
-        .smart-logo-orange { color: #F5A623; }
-        .smart-logo-emoji {
-            font-size: 1.3rem;
-            margin-left: 5px;
-            animation: beeWiggle 3s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-        @keyframes beeWiggle {
-            0%,100% { transform: rotate(0deg) translateY(0); }
-            15% { transform: rotate(-5deg) translateY(-2px); }
-            30% { transform: rotate(5deg) translateY(-1px); }
-            45% { transform: rotate(-3deg) translateY(0); }
-            60% { transform: rotate(0deg) translateY(0); }
-        }
-
-        .smart-hamburger {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-            color: #0D4054;
-            position: relative;
-            flex-shrink: 0;
-        }
-        .smart-hamburger:hover { background: rgba(13,64,84,0.06); }
-        .smart-hamburger:active svg { transform: scale(0.9); }
-        .smart-hamburger-dot {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 8px;
-            height: 8px;
-            background: #E53E3E;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            animation: pulseDot 2s ease-in-out infinite;
-        }
-        @keyframes pulseDot {
-            0%,100% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.6); opacity: 0.4; }
-        }
-
-        /* Menu Overlay & Drawer */
-        .smart-menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(10,10,20,0.6);
-            z-index: 99999;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-        }
-        .smart-menu-overlay.open { opacity: 1; visibility: visible; }
-        .smart-menu-drawer {
-            position: absolute;
-            top: 0;
-            right: -100%;
-            width: 85%;
-            max-width: 360px;
-            height: 100%;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            transition: right 0.4s cubic-bezier(0.25,1,0.5,1);
-            box-shadow: -10px 0 40px rgba(0,0,0,0.25);
-            border-radius: 24px 0 0 24px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .smart-menu-overlay.open .smart-menu-drawer { right: 0; }
-        .smart-menu-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 24px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .smart-menu-links {
-            display: flex;
-            flex-direction: column;
-            padding: 12px 0;
-            overflow-y: auto;
-            flex: 1;
-        }
-        .smart-menu-links a {
-            padding: 16px 24px;
-            color: #0D4054;
-            text-decoration: none;
-            font-size: 1.05rem;
-            font-weight: 600;
-            border-bottom: 1px solid #f9f9f9;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .smart-menu-links a:hover {
-            color: #F5A623;
-            background: rgba(245,166,35,0.04);
-            padding-left: 30px;
-        }
-        .smart-menu-links a i {
-            width: 20px;
-            text-align: center;
-            font-size: 0.95rem;
-            color: #718691;
-            transition: color 0.2s ease;
-        }
-        .smart-menu-links a:hover i { color: #F5A623; }
-        .smart-menu-close {
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            color: #0D4054;
-        }
-        .smart-menu-close:hover { background: rgba(0,0,0,0.05); }
-
-        /* Ensure toast container appears above header if needed */
-        #toast-container {
-            z-index: 99998 !important;
-        }
-
-        /* ── ORIGINAL INBOX LAYOUT STYLES ── */
         .app-wrapper {
             display: flex;
             align-items: center;
@@ -889,7 +707,7 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 99998 !important;
+            z-index: 9999;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -1498,7 +1316,6 @@
             apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
             authDomain: "teacherbee-connect.firebaseapp.com",
             projectId: "teacherbee-connect",
-            storageBucket: "teacherbee-connect.firebasestorage.app",
             messagingSenderId: "345613317767",
             appId: "1:345613317767:web:555713e479f9837e84aa22"
         };
@@ -1546,60 +1363,6 @@
     </script>
 </head>
 <body>
-
-    <!-- Smart Header -->
-    <header class="smart-header" id="smartHeader">
-        <div class="smart-header-inner">
-            <a href="index.html" class="smart-logo">
-                <span class="smart-logo-blue">Teacher Bee</span>
-                <span class="smart-logo-orange">Connect</span>
-                <span class="smart-logo-emoji">🐝</span>
-            </a>
-            <button class="smart-hamburger" id="smartMenuBtn" aria-label="Menu">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-                <span class="smart-hamburger-dot"></span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Menu Overlay & Drawer -->
-    <div class="smart-menu-overlay" id="smartMenuOverlay">
-        <div class="smart-menu-drawer">
-            <div class="smart-menu-header">
-                <span class="smart-logo" style="font-size:1.2rem;">
-                    <span class="smart-logo-blue">Teacher Bee</span><span class="smart-logo-orange">Connect</span><span class="smart-logo-emoji" style="font-size:1.1rem;">🐝</span>
-                </span>
-                <button class="smart-menu-close" id="smartCloseBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            <div class="smart-menu-links">
-                <a href="about.html"><i class="fa-solid fa-circle-info"></i> About Us</a>
-                <a href="services.html"><i class="fa-solid fa-briefcase"></i> Our Services</a>
-                <a href="contact.html"><i class="fa-solid fa-envelope"></i> Contact Us</a>
-                <a href="index.html"><i class="fa-solid fa-user"></i> My Account</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Smart menu toggle script -->
-    <script>
-        (function() {
-            const overlay = document.getElementById('smartMenuOverlay');
-            const menuBtn = document.getElementById('smartMenuBtn');
-            const closeBtn = document.getElementById('smartCloseBtn');
-            menuBtn.addEventListener('click', () => overlay.classList.add('open'));
-            closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
-            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
-        })();
-    </script>
 
     <div id="toast-container"></div>
 
@@ -1886,6 +1649,7 @@
                 snapshot.forEach((docSnap) => {
                     window.allThreads.push({ id: docSnap.id, ...docSnap.data() });
                 });
+                // Sort by updatedAt descending
                 window.allThreads.sort((a, b) => {
                     const aTime = a.updatedAt ? (a.updatedAt.toDate ? a.updatedAt.toDate().getTime() : new Date(
                         a.updatedAt).getTime()) : 0;
@@ -2466,3 +2230,5 @@
     </script>
 </body>
 </html>
+
+Put header 
