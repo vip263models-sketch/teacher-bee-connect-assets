@@ -60,89 +60,191 @@
             line-height: 1.5;
         }
 
-        /* ── NAVIGATION BAR ── */
-        .nav-bar {
-            background: #fff;
-            border-bottom: 1px solid var(--border-light);
-            padding: 0 24px;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
+        /* Smart Header pushes body down */
+        body {
+            margin-top: 60px;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                margin-top: 68px;
+            }
+        }
+
+        /* ── SMART HEADER STYLES ── */
+        .smart-header {
+            position: fixed;
             top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow-xs);
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            z-index: 99990;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 24px rgba(13,64,84,0.05);
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        .nav-brand {
+        .smart-header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .smart-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
             display: flex;
             align-items: center;
-            gap: 10px;
             text-decoration: none;
-            color: var(--primary);
+            letter-spacing: -0.3px;
+            gap: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .nav-brand-icon {
-            width: 34px;
-            height: 34px;
-            background: var(--primary);
-            border-radius: 9px;
+        .smart-logo-blue { color: #0D4054; }
+        .smart-logo-orange { color: #F5A623; }
+        .smart-logo-emoji {
+            font-size: 1.3rem;
+            margin-left: 5px;
+            animation: beeWiggle 3s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes beeWiggle {
+            0%,100% { transform: rotate(0deg) translateY(0); }
+            15% { transform: rotate(-5deg) translateY(-2px); }
+            30% { transform: rotate(5deg) translateY(-1px); }
+            45% { transform: rotate(-3deg) translateY(0); }
+            60% { transform: rotate(0deg) translateY(0); }
+        }
+
+        .smart-hamburger {
+            background: transparent;
+            border: none;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            font-size: 0.8rem;
-            font-weight: 700;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            color: #0D4054;
+            position: relative;
             flex-shrink: 0;
-            letter-spacing: -0.5px;
         }
-        .nav-brand-text {
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: -0.3px;
+        .smart-hamburger:hover { background: rgba(13,64,84,0.06); }
+        .smart-hamburger:active svg { transform: scale(0.9); }
+        .smart-hamburger-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #E53E3E;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            animation: pulseDot 2s ease-in-out infinite;
         }
-        .nav-brand-text span {
-            color: var(--accent);
-        }
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .nav-link {
-            padding: 7px 14px;
-            border-radius: var(--radius-full);
-            font-size: 0.78rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            color: var(--text-secondary);
-            border: 1px solid transparent;
-            background: transparent;
-            font-family: var(--font);
-            letter-spacing: -0.01em;
-            white-space: nowrap;
-        }
-        .nav-link:hover {
-            background: var(--bg-hover);
-            color: var(--text-primary);
-        }
-        .nav-link.active {
-            background: var(--accent-soft);
-            color: var(--accent);
-            font-weight: 700;
-        }
-        .nav-link.inbox-btn {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-        .nav-link.inbox-btn:hover {
-            background: var(--accent-hover);
-            border-color: var(--accent-hover);
+        @keyframes pulseDot {
+            0%,100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.6); opacity: 0.4; }
         }
 
-        /* ── PAGE LAYOUT ── */
+        /* Menu Overlay & Drawer */
+        .smart-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10,10,20,0.6);
+            z-index: 99999;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .smart-menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .smart-menu-drawer {
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 360px;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.4s cubic-bezier(0.25,1,0.5,1);
+            box-shadow: -10px 0 40px rgba(0,0,0,0.25);
+            border-radius: 24px 0 0 24px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .smart-menu-overlay.open .smart-menu-drawer { right: 0; }
+        .smart-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .smart-menu-links {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .smart-menu-links a {
+            padding: 16px 24px;
+            color: #0D4054;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-bottom: 1px solid #f9f9f9;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .smart-menu-links a:hover {
+            color: #F5A623;
+            background: rgba(245,166,35,0.04);
+            padding-left: 30px;
+        }
+        .smart-menu-links a i {
+            width: 20px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #718691;
+            transition: color 0.2s ease;
+        }
+        .smart-menu-links a:hover i { color: #F5A623; }
+        .smart-menu-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            color: #0D4054;
+        }
+        .smart-menu-close:hover { background: rgba(0,0,0,0.05); }
+
+        /* Original page content now starts without its own nav */
         .page-wrapper {
             max-width: 1100px;
             margin: 0 auto;
@@ -216,26 +318,11 @@
             justify-content: center;
             font-size: 0.9rem;
         }
-        .contact-card .card-icon.phone {
-            background: #ECFDF5;
-            color: #059669;
-        }
-        .contact-card .card-icon.email {
-            background: #EEF1FE;
-            color: #4F6EF7;
-        }
-        .contact-card .card-icon.location {
-            background: #FFF7ED;
-            color: #EA580C;
-        }
-        .contact-card .card-icon.clock {
-            background: #FDF2F8;
-            color: #BE185D;
-        }
-        .contact-card .card-info {
-            flex: 1;
-            min-width: 0;
-        }
+        .contact-card .card-icon.phone { background: #ECFDF5; color: #059669; }
+        .contact-card .card-icon.email { background: #EEF1FE; color: #4F6EF7; }
+        .contact-card .card-icon.location { background: #FFF7ED; color: #EA580C; }
+        .contact-card .card-icon.clock { background: #FDF2F8; color: #BE185D; }
+        .contact-card .card-info { flex: 1; min-width: 0; }
         .contact-card .card-label {
             font-size: 0.66rem;
             text-transform: uppercase;
@@ -260,9 +347,7 @@
             color: var(--accent);
             text-decoration: none;
         }
-        .contact-card a.card-value:hover {
-            text-decoration: underline;
-        }
+        .contact-card a.card-value:hover { text-decoration: underline; }
 
         /* ── MAIN CONTENT GRID ── */
         .content-grid {
@@ -273,9 +358,7 @@
         }
 
         @media (max-width: 768px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
+            .content-grid { grid-template-columns: 1fr; }
         }
 
         /* ── QUERY FORM CARD ── */
@@ -296,10 +379,7 @@
             align-items: center;
             gap: 8px;
         }
-        .form-card h2 i {
-            color: var(--accent);
-            font-size: 0.95rem;
-        }
+        .form-card h2 i { color: var(--accent); font-size: 0.95rem; }
         .form-card .form-subtitle {
             font-size: 0.78rem;
             color: var(--text-muted);
@@ -320,10 +400,7 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
-        .form-group label .required {
-            color: var(--error);
-            margin-left: 2px;
-        }
+        .form-group label .required { color: var(--error); margin-left: 2px; }
         .form-group select,
         .form-group textarea,
         .form-group input[type="text"] {
@@ -370,25 +447,15 @@
             background: var(--bg-input);
             position: relative;
         }
-        .file-upload-area:hover {
-            border-color: var(--accent);
-            background: #FAFBFF;
-        }
+        .file-upload-area:hover { border-color: var(--accent); background: #FAFBFF; }
         .file-upload-area i {
             font-size: 1.3rem;
             color: var(--text-muted);
             margin-bottom: 4px;
             display: block;
         }
-        .file-upload-area .upload-text {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        .file-upload-area .upload-hint {
-            font-size: 0.66rem;
-            color: var(--text-placeholder);
-        }
+        .file-upload-area .upload-text { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
+        .file-upload-area .upload-hint { font-size: 0.66rem; color: var(--text-placeholder); }
         .file-upload-area input[type="file"] {
             position: absolute;
             inset: 0;
@@ -407,9 +474,7 @@
             color: var(--accent);
             font-weight: 500;
         }
-        .file-preview-bar.show {
-            display: flex;
-        }
+        .file-preview-bar.show { display: flex; }
         .file-preview-bar .remove-file-btn {
             margin-left: auto;
             cursor: pointer;
@@ -423,10 +488,7 @@
             font-size: 0.9rem;
             line-height: 1;
         }
-        .file-preview-bar .remove-file-btn:hover {
-            color: var(--error);
-            background: #FEE8E8;
-        }
+        .file-preview-bar .remove-file-btn:hover { color: var(--error); background: #FEE8E8; }
 
         .btn-submit {
             width: 100%;
@@ -452,13 +514,8 @@
             box-shadow: 0 4px 16px rgba(79, 110, 247, 0.3);
             transform: translateY(-1px);
         }
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-        .btn-submit:disabled {
-            opacity: 0.6;
-            pointer-events: none;
-        }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled { opacity: 0.6; pointer-events: none; }
 
         /* ── INFO SIDEBAR ── */
         .info-card {
@@ -480,15 +537,8 @@
             align-items: center;
             gap: 7px;
         }
-        .info-card h3 i {
-            color: var(--warning);
-            font-size: 0.85rem;
-        }
-        .info-card .info-item {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
+        .info-card h3 i { color: var(--warning); font-size: 0.85rem; }
+        .info-card .info-item { display: flex; gap: 10px; align-items: flex-start; }
         .info-card .info-item .info-dot {
             width: 8px;
             height: 8px;
@@ -503,19 +553,9 @@
             line-height: 1.5;
             letter-spacing: -0.01em;
         }
-        .info-card .info-item p strong {
-            color: var(--text-primary);
-        }
-        .divider-light {
-            border: none;
-            border-top: 1px solid var(--border-light);
-            margin: 2px 0;
-        }
-        .quick-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
+        .info-card .info-item p strong { color: var(--text-primary); }
+        .divider-light { border: none; border-top: 1px solid var(--border-light); margin: 2px 0; }
+        .quick-actions { display: flex; flex-direction: column; gap: 7px; }
         .quick-action-btn {
             display: flex;
             align-items: center;
@@ -534,17 +574,8 @@
             text-align: left;
             text-decoration: none;
         }
-        .quick-action-btn:hover {
-            background: #fff;
-            border-color: var(--border-strong);
-            color: var(--text-primary);
-        }
-        .quick-action-btn i {
-            width: 18px;
-            text-align: center;
-            color: var(--accent);
-            font-size: 0.75rem;
-        }
+        .quick-action-btn:hover { background: #fff; border-color: var(--border-strong); color: var(--text-primary); }
+        .quick-action-btn i { width: 18px; text-align: center; color: var(--accent); font-size: 0.75rem; }
 
         /* ── SUCCESS OVERLAY ── */
         .success-overlay {
@@ -559,18 +590,8 @@
             flex-direction: column;
             gap: 16px;
         }
-        .success-overlay.active {
-            display: flex;
-            animation: fadeIn 0.25s ease;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
+        .success-overlay.active { display: flex; animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .success-card {
             background: #fff;
             border-radius: var(--radius);
@@ -626,11 +647,7 @@
             box-shadow: 0 4px 16px rgba(79, 110, 247, 0.3);
             transform: translateY(-1px);
         }
-        .success-card .countdown-text {
-            font-size: 0.7rem;
-            color: var(--text-placeholder);
-            margin-top: 10px;
-        }
+        .success-card .countdown-text { font-size: 0.7rem; color: var(--text-placeholder); margin-top: 10px; }
 
         /* ── TOAST ── */
         #toast-container {
@@ -659,131 +676,40 @@
             pointer-events: auto;
             letter-spacing: -0.01em;
         }
-        .toast.success {
-            background: #10B981;
-        }
-        .toast.error {
-            background: #EF4444;
-        }
-        .toast.info {
-            background: #4F6EF7;
-        }
-        .toast i {
-            font-size: 0.95rem;
-        }
-        @keyframes slideIn {
-            from {
-                transform: translateX(40px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
+        .toast.success { background: #10B981; }
+        .toast.error { background: #EF4444; }
+        .toast.info { background: #4F6EF7; }
+        .toast i { font-size: 0.95rem; }
+        @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .hidden { display: none !important; }
 
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
-            .page-wrapper {
-                padding: 16px 12px 40px;
-                gap: 18px;
-            }
-            .contact-cards-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .contact-card {
-                padding: 14px 15px;
-                gap: 10px;
-            }
-            .contact-card .card-icon {
-                width: 34px;
-                height: 34px;
-                font-size: 0.7rem;
-            }
-            .contact-card .card-label {
-                font-size: 0.6rem;
-            }
-            .contact-card .card-value {
-                font-size: 0.76rem;
-            }
-            .form-card {
-                padding: 16px 18px;
-            }
-            .form-card h2 {
-                font-size: 0.92rem;
-            }
-            .btn-submit {
-                padding: 10px 16px;
-                font-size: 0.78rem;
-            }
-            .nav-bar {
-                padding: 0 12px;
-                height: 50px;
-            }
-            .nav-brand-text {
-                font-size: 0.85rem;
-            }
-            .nav-brand-icon {
-                width: 28px;
-                height: 28px;
-                font-size: 0.65rem;
-                border-radius: 7px;
-            }
-            .nav-link {
-                font-size: 0.68rem;
-                padding: 5px 10px;
-            }
-            .page-header h1 {
-                font-size: 1.15rem;
-            }
-            .page-header p {
-                font-size: 0.78rem;
-            }
-            .success-card {
-                padding: 24px 18px;
-            }
-            .success-card .check-circle {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-            }
-            .success-card h2 {
-                font-size: 1rem;
-            }
+            .page-wrapper { padding: 16px 12px 40px; gap: 18px; }
+            .contact-cards-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .contact-card { padding: 14px 15px; gap: 10px; }
+            .contact-card .card-icon { width: 34px; height: 34px; font-size: 0.7rem; }
+            .contact-card .card-label { font-size: 0.6rem; }
+            .contact-card .card-value { font-size: 0.76rem; }
+            .form-card { padding: 16px 18px; }
+            .form-card h2 { font-size: 0.92rem; }
+            .btn-submit { padding: 10px 16px; font-size: 0.78rem; }
+            .page-header h1 { font-size: 1.15rem; }
+            .page-header p { font-size: 0.78rem; }
+            .success-card { padding: 24px 18px; }
+            .success-card .check-circle { width: 50px; height: 50px; font-size: 1.2rem; }
+            .success-card h2 { font-size: 1rem; }
         }
 
         @media (max-width: 420px) {
-            .contact-cards-grid {
-                grid-template-columns: 1fr;
-                gap: 6px;
-            }
-            .contact-card {
-                padding: 12px 14px;
-            }
-            .form-card {
-                padding: 12px 14px;
-            }
-            .form-group label {
-                font-size: 0.68rem;
-            }
+            .contact-cards-grid { grid-template-columns: 1fr; gap: 6px; }
+            .contact-card { padding: 12px 14px; }
+            .form-card { padding: 12px 14px; }
+            .form-group label { font-size: 0.68rem; }
             .form-group select,
-            .form-group textarea {
-                font-size: 0.76rem;
-                padding: 8px 10px;
-            }
-            .btn-submit {
-                font-size: 0.73rem;
-                padding: 9px 14px;
-            }
-            .nav-link {
-                font-size: 0.6rem;
-                padding: 4px 8px;
-            }
-        }
-
-        .hidden {
-            display: none !important;
+            .form-group textarea { font-size: 0.76rem; padding: 8px 10px; }
+            .btn-submit { font-size: 0.73rem; padding: 9px 14px; }
         }
     </style>
 </head>
@@ -791,19 +717,47 @@
 
     <div id="toast-container"></div>
 
-    <!-- ── NAVIGATION ── -->
-    <nav class="nav-bar">
-        <a href="#" class="nav-brand">
-            <div class="nav-brand-icon">TB</div>
-            <span class="nav-brand-text">Teacher<span>Bee</span></span>
-        </a>
-        <div class="nav-links">
-            <a href="#" class="nav-link active">Submit Query</a>
-            <a href="recruiterinbox.html" class="nav-link inbox-btn">
-                <i class="fa-solid fa-inbox"></i> My Inbox
+    <!-- ── SMART HEADER ── -->
+    <header class="smart-header" id="smartHeader">
+        <div class="smart-header-inner">
+            <a href="index.html" class="smart-logo">
+                <span class="smart-logo-blue">Teacher Bee</span>
+                <span class="smart-logo-orange">Connect</span>
+                <span class="smart-logo-emoji">🐝</span>
             </a>
+            <button class="smart-hamburger" id="smartMenuBtn" aria-label="Menu">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+                <span class="smart-hamburger-dot"></span>
+            </button>
         </div>
-    </nav>
+    </header>
+
+    <!-- Menu Overlay & Drawer -->
+    <div class="smart-menu-overlay" id="smartMenuOverlay">
+        <div class="smart-menu-drawer">
+            <div class="smart-menu-header">
+                <span class="smart-logo" style="font-size:1.2rem;">
+                    <span class="smart-logo-blue">Teacher Bee</span><span class="smart-logo-orange">Connect</span><span class="smart-logo-emoji" style="font-size:1.1rem;">🐝</span>
+                </span>
+                <button class="smart-menu-close" id="smartCloseBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="smart-menu-links">
+                <a href="about.html"><i class="fa-solid fa-circle-info"></i> About Us</a>
+                <a href="services.html"><i class="fa-solid fa-briefcase"></i> Our Services</a>
+                <a href="contact.html"><i class="fa-solid fa-envelope"></i> Contact Us</a>
+                <a href="index.html"><i class="fa-solid fa-user"></i> My Account</a>
+            </div>
+        </div>
+    </div>
 
     <!-- ── SUCCESS OVERLAY ── -->
     <div class="success-overlay" id="success-overlay">
@@ -822,7 +776,6 @@
 
     <!-- ── PAGE CONTENT ── -->
     <div class="page-wrapper">
-        <!-- Page Header -->
         <div class="page-header">
             <div class="icon-circle">
                 <i class="fa-solid fa-headset"></i>
@@ -831,12 +784,9 @@
             <p>Need help? Fill out the form below and our support team will get back to you as soon as possible.</p>
         </div>
 
-        <!-- Contact Cards -->
         <div class="contact-cards-grid">
             <div class="contact-card">
-                <div class="card-icon phone">
-                    <i class="fa-solid fa-phone"></i>
-                </div>
+                <div class="card-icon phone"><i class="fa-solid fa-phone"></i></div>
                 <div class="card-info">
                     <div class="card-label">Phone</div>
                     <div class="card-value">+61 2 1234 5678</div>
@@ -844,9 +794,7 @@
                 </div>
             </div>
             <div class="contact-card">
-                <div class="card-icon email">
-                    <i class="fa-solid fa-envelope"></i>
-                </div>
+                <div class="card-icon email"><i class="fa-solid fa-envelope"></i></div>
                 <div class="card-info">
                     <div class="card-label">Email</div>
                     <a href="mailto:support@teacherbee.com.au" class="card-value">support@teacherbee.com.au</a>
@@ -854,9 +802,7 @@
                 </div>
             </div>
             <div class="contact-card">
-                <div class="card-icon location">
-                    <i class="fa-solid fa-location-dot"></i>
-                </div>
+                <div class="card-icon location"><i class="fa-solid fa-location-dot"></i></div>
                 <div class="card-info">
                     <div class="card-label">Office</div>
                     <div class="card-value">123 Education Lane</div>
@@ -864,9 +810,7 @@
                 </div>
             </div>
             <div class="contact-card">
-                <div class="card-icon clock">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
+                <div class="card-icon clock"><i class="fa-solid fa-clock"></i></div>
                 <div class="card-info">
                     <div class="card-label">Working Hours</div>
                     <div class="card-value">Mon – Fri</div>
@@ -875,13 +819,10 @@
             </div>
         </div>
 
-        <!-- Main Content: Form + Info Sidebar -->
         <div class="content-grid">
-            <!-- Query Form -->
             <div class="form-card" id="query-form-card">
                 <h2><i class="fa-solid fa-pen-to-square"></i> Your Query</h2>
                 <p class="form-subtitle">All fields marked with <span style="color:var(--error);">*</span> are required.</p>
-
                 <form id="query-form" onsubmit="handleSubmitQuery(event)">
                     <div class="form-group">
                         <label for="query-subject">Subject <span class="required">*</span></label>
@@ -896,12 +837,10 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="query-message">Message <span class="required">*</span></label>
                         <textarea id="query-message" placeholder="Describe your issue or question in detail…" required></textarea>
                     </div>
-
                     <div class="form-group">
                         <label>Attachment (optional)</label>
                         <div class="file-upload-area" id="file-upload-area">
@@ -918,42 +857,36 @@
                             </button>
                         </div>
                     </div>
-
                     <button type="submit" class="btn-submit" id="btn-submit-query">
                         <i class="fa-solid fa-paper-plane"></i> Submit Query
                     </button>
                 </form>
             </div>
-
-            <!-- Info Sidebar -->
             <div class="info-card">
                 <h3><i class="fa-solid fa-circle-info"></i> What Happens Next?</h3>
-                <div class="info-item">
-                    <div class="info-dot"></div>
-                    <p><strong>We review your query</strong> — Our support team reads every submission carefully.</p>
-                </div>
-                <div class="info-item">
-                    <div class="info-dot"></div>
-                    <p><strong>You get a response</strong> — We'll reply directly in your <strong>Recruiter Inbox</strong> within 1 business day.</p>
-                </div>
-                <div class="info-item">
-                    <div class="info-dot"></div>
-                    <p><strong>Track the conversation</strong> — All replies are saved in your inbox so you can follow up anytime.</p>
-                </div>
+                <div class="info-item"><div class="info-dot"></div><p><strong>We review your query</strong> — Our support team reads every submission carefully.</p></div>
+                <div class="info-item"><div class="info-dot"></div><p><strong>You get a response</strong> — We'll reply directly in your <strong>Recruiter Inbox</strong> within 1 business day.</p></div>
+                <div class="info-item"><div class="info-dot"></div><p><strong>Track the conversation</strong> — All replies are saved in your inbox so you can follow up anytime.</p></div>
                 <hr class="divider-light" />
                 <div class="quick-actions">
-                    <a href="recruiterinbox.html" class="quick-action-btn">
-                        <i class="fa-solid fa-inbox"></i> Open My Inbox
-                    </a>
-                    <a href="mailto:support@teacherbee.com.au" class="quick-action-btn">
-                        <i class="fa-solid fa-envelope"></i> Email Us Directly
-                    </a>
+                    <a href="recruiterinbox.html" class="quick-action-btn"><i class="fa-solid fa-inbox"></i> Open My Inbox</a>
+                    <a href="mailto:support@teacherbee.com.au" class="quick-action-btn"><i class="fa-solid fa-envelope"></i> Email Us Directly</a>
                 </div>
             </div>
         </div>
     </div>
 
     <script type="module">
+        // ── SMART MENU TOGGLE ──
+        (function() {
+            const overlay = document.getElementById('smartMenuOverlay');
+            const menuBtn = document.getElementById('smartMenuBtn');
+            const closeBtn = document.getElementById('smartCloseBtn');
+            menuBtn.addEventListener('click', () => overlay.classList.add('open'));
+            closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+        })();
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import {
@@ -970,11 +903,11 @@
             limit
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // ── FIREBASE CONFIG ──
         const firebaseConfig = {
             apiKey: "AIzaSyBMKjt1RUZXVxTmadiCqKhNbzSPsNUDxV8",
             authDomain: "teacherbee-connect.firebaseapp.com",
             projectId: "teacherbee-connect",
+            storageBucket: "teacherbee-connect.firebasestorage.app",
             messagingSenderId: "345613317767",
             appId: "1:345613317767:web:555713e479f9837e84aa22"
         };
@@ -983,16 +916,13 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const WEB_APP_URL =
-            "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
 
-        // ── STATE ──
         let currentUser = null;
         let adminUserId = null;
         let queryAttachmentData = null;
         let isSubmitting = false;
 
-        // ── TOAST ──
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -1004,7 +934,6 @@
             return toast;
         }
 
-        // ── AUTH CHECK ──
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = 'login.html';
@@ -1018,7 +947,6 @@
             const data = userDoc.data();
             currentUser = { uid: user.uid, ...data };
 
-            // Admins shouldn't use this page
             if (data.role === 'admin' || data.role?.toLowerCase().includes('admin')) {
                 showToast('Admins should use the Admin Inbox instead.', 'info');
                 setTimeout(() => window.location.href = 'admin-inbox.html', 2000);
@@ -1034,70 +962,33 @@
             }
         });
 
-        // ── FIND ADMIN USER ──
         async function findAdminUser() {
             try {
-                // 1. Check the admins collection
                 const adminsSnap = await getDocs(collection(db, 'admins'));
-                if (!adminsSnap.empty) {
-                    adminUserId = adminsSnap.docs[0].id;
-                    console.log('✅ Admin found via /admins:', adminUserId);
-                    return;
-                }
-
-                // 2. Check users collection for role='admin'
-                const adminQuery = query(
-                    collection(db, 'users'),
-                    where('role', '==', 'admin'),
-                    limit(1)
-                );
+                if (!adminsSnap.empty) { adminUserId = adminsSnap.docs[0].id; return; }
+                const adminQuery = query(collection(db, 'users'), where('role', '==', 'admin'), limit(1));
                 const snap = await getDocs(adminQuery);
-                if (!snap.empty) {
-                    adminUserId = snap.docs[0].id;
-                    console.log('✅ Admin found via /users role:', adminUserId);
-                    return;
-                }
-
-                // 3. Loose fallback scan
+                if (!snap.empty) { adminUserId = snap.docs[0].id; return; }
                 const allUsersSnap = await getDocs(collection(db, 'users'));
                 allUsersSnap.forEach(d => {
                     const d2 = d.data();
-                    if (d2.role && d2.role.toLowerCase().includes('admin') && !adminUserId) {
-                        adminUserId = d.id;
-                    }
+                    if (d2.role && d2.role.toLowerCase().includes('admin') && !adminUserId) { adminUserId = d.id; }
                 });
-                if (adminUserId) {
-                    console.log('✅ Admin found (case-insensitive):', adminUserId);
-                } else {
-                    console.warn('⚠️ No admin user found.');
-                }
-            } catch (e) {
-                console.error('Error finding admin:', e);
-            }
+                if (adminUserId) console.log('✅ Admin found (case-insensitive):', adminUserId);
+                else console.warn('⚠️ No admin user found.');
+            } catch (e) { console.error('Error finding admin:', e); }
         }
 
-        // ── FILE HANDLING (with spinner and completion) ──
         window.handleFileSelect = function(input) {
             const file = input.files[0];
             if (!file) return;
-
-            if (file.size > 10 * 1024 * 1024) {
-                showToast('File is too large. Maximum size is 10MB.', 'error');
-                input.value = '';
-                return;
-            }
-
+            if (file.size > 10 * 1024 * 1024) { showToast('File is too large. Maximum size is 10MB.', 'error'); input.value = ''; return; }
             const previewBar = document.getElementById('file-preview-bar');
             const previewName = document.getElementById('file-preview-name');
             const previewIcon = previewBar.querySelector('i');
-
             previewBar.classList.add('show');
             previewName.textContent = `Uploading ${file.name}…`;
-            if (previewIcon) {
-                previewIcon.className = 'fa-solid fa-spinner fa-spin';
-                previewIcon.style.color = 'var(--accent)';
-            }
-
+            if (previewIcon) { previewIcon.className = 'fa-solid fa-spinner fa-spin'; previewIcon.style.color = 'var(--accent)'; }
             uploadAndPreviewFile(file, previewBar, previewName, previewIcon);
         };
 
@@ -1105,18 +996,12 @@
             try {
                 const uploaded = await uploadFileToDrive(file);
                 previewName.textContent = file.name;
-                if (previewIcon) {
-                    previewIcon.className = 'fa-solid fa-circle-check';
-                    previewIcon.style.color = 'var(--success)';
-                }
+                if (previewIcon) { previewIcon.className = 'fa-solid fa-circle-check'; previewIcon.style.color = 'var(--success)'; }
                 queryAttachmentData = uploaded;
                 showToast('Attachment ready to send', 'success');
             } catch (err) {
                 previewName.textContent = `Failed: ${file.name}`;
-                if (previewIcon) {
-                    previewIcon.className = 'fa-solid fa-circle-exclamation';
-                    previewIcon.style.color = 'var(--error)';
-                }
+                if (previewIcon) { previewIcon.className = 'fa-solid fa-circle-exclamation'; previewIcon.style.color = 'var(--error)'; }
                 showToast('Upload failed. Please try again.', 'error');
                 clearQueryFile();
             }
@@ -1128,10 +1013,7 @@
             const previewBar = document.getElementById('file-preview-bar');
             previewBar.classList.remove('show');
             const previewIcon = previewBar.querySelector('i');
-            if (previewIcon) {
-                previewIcon.className = 'fa-solid fa-paperclip';
-                previewIcon.style.color = '';
-            }
+            if (previewIcon) { previewIcon.className = 'fa-solid fa-paperclip'; previewIcon.style.color = ''; }
             document.getElementById('file-preview-name').textContent = '';
         };
 
@@ -1139,135 +1021,59 @@
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = async (e) => {
-                    const payload = {
-                        action: 'uploadCertificate',
-                        fileName: file.name,
-                        mimeType: file.type || 'application/octet-stream',
-                        file: e.target.result
-                    };
+                    const payload = { action: 'uploadCertificate', fileName: file.name, mimeType: file.type || 'application/octet-stream', file: e.target.result };
                     try {
                         const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
                         const data = await res.json();
                         if (data.status === 'success' && data.certificates?.length > 0) {
                             const lastCert = data.certificates[data.certificates.length - 1];
-                            resolve({
-                                fileName: file.name,
-                                downloadUrl: lastCert.fileUrl || lastCert.url,
-                                imagePreviewUrl: lastCert.isImage ? (lastCert.url || lastCert.fileUrl) : null,
-                                driveId: lastCert.id || '',
-                                previewUrl: lastCert.id ? `https://drive.google.com/file/d/${lastCert.id}/preview` : '',
-                                mediaType: file.type || 'application/octet-stream'
-                            });
-                        } else {
-                            reject(new Error(data.message || 'Upload failed — no file returned'));
-                        }
-                    } catch (err) {
-                        reject(new Error('Network error during file upload'));
-                    }
+                            resolve({ fileName: file.name, downloadUrl: lastCert.fileUrl || lastCert.url, imagePreviewUrl: lastCert.isImage ? (lastCert.url || lastCert.fileUrl) : null, driveId: lastCert.id || '', previewUrl: lastCert.id ? `https://drive.google.com/file/d/${lastCert.id}/preview` : '', mediaType: file.type || 'application/octet-stream' });
+                        } else { reject(new Error(data.message || 'Upload failed — no file returned')); }
+                    } catch (err) { reject(new Error('Network error during file upload')); }
                 };
                 reader.onerror = () => reject(new Error('Failed to read file'));
                 reader.readAsDataURL(file);
             });
         }
 
-        // ── SUBMIT QUERY ──
         window.handleSubmitQuery = async function(event) {
             event.preventDefault();
-
             if (isSubmitting) return;
-            if (!currentUser) {
-                showToast('Please log in to submit a query.', 'error');
-                return;
-            }
-            if (!adminUserId) {
-                showToast(
-                    'Support system is temporarily unavailable. Please try again later or email us directly.',
-                    'error');
-                return;
-            }
-
+            if (!currentUser) { showToast('Please log in to submit a query.', 'error'); return; }
+            if (!adminUserId) { showToast('Support system is temporarily unavailable. Please try again later or email us directly.', 'error'); return; }
             const subject = document.getElementById('query-subject').value.trim();
             const message = document.getElementById('query-message').value.trim();
-            const attach = queryAttachmentData;
-
-            if (!subject || !message) {
-                showToast('Please fill in both the subject and message.', 'error');
-                return;
-            }
+            if (!subject || !message) { showToast('Please fill in both the subject and message.', 'error'); return; }
 
             isSubmitting = true;
             const submitBtn = document.getElementById('btn-submit-query');
             const originalBtnHTML = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML =
-                '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Submitting…';
+            submitBtn.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Submitting…';
 
             try {
                 let fullMessageText = `📋 **Query: ${subject}**\n\n${message}`;
-                if (attach) {
-                    fullMessageText += `\n\n📎 Attachment: ${attach.fileName}`;
-                }
+                if (queryAttachmentData) fullMessageText += `\n\n📎 Attachment: ${queryAttachmentData.fileName}`;
 
-                // Check for existing thread between recruiter and admin
                 let existingThreadId = null;
-                const threadsSnap = await getDocs(
-                    query(
-                        collection(db, 'threads'),
-                        where('participants', 'array-contains', currentUser.uid)
-                    )
-                );
-                threadsSnap.forEach(docSnap => {
-                    const t = docSnap.data();
-                    if (t.participants.includes(adminUserId) && !existingThreadId) {
-                        existingThreadId = docSnap.id;
-                    }
-                });
+                const threadsSnap = await getDocs(query(collection(db, 'threads'), where('participants', 'array-contains', currentUser.uid)));
+                threadsSnap.forEach(docSnap => { const t = docSnap.data(); if (t.participants.includes(adminUserId) && !existingThreadId) existingThreadId = docSnap.id; });
 
                 let threadId;
-                if (existingThreadId) {
-                    threadId = existingThreadId;
-                    console.log('📬 Using existing thread:', threadId);
-                } else {
-                    const threadData = {
-                        participants: [currentUser.uid, adminUserId],
-                        jobTitle: `Query: ${subject}`,
-                        createdAt: serverTimestamp(),
-                        updatedAt: serverTimestamp(),
-                        lastMessageText: fullMessageText.substring(0, 80)
-                    };
+                if (existingThreadId) { threadId = existingThreadId; }
+                else {
+                    const threadData = { participants: [currentUser.uid, adminUserId], jobTitle: `Query: ${subject}`, createdAt: serverTimestamp(), updatedAt: serverTimestamp(), lastMessageText: fullMessageText.substring(0, 80) };
                     const docRef = await addDoc(collection(db, 'threads'), threadData);
                     threadId = docRef.id;
-                    console.log('📬 New thread created:', threadId);
                 }
 
-                const msgData = {
-                    senderId: currentUser.uid,
-                    text: fullMessageText,
-                    timestamp: serverTimestamp(),
-                    isSystem: false,
-                    downloadUrl: attach?.downloadUrl || null,
-                    imagePreviewUrl: attach?.imagePreviewUrl || null,
-                    driveId: attach?.driveId || null,
-                    previewUrl: attach?.previewUrl || null,
-                    fileName: attach?.fileName || null,
-                    mediaType: attach?.mediaType || null
-                };
+                const msgData = { senderId: currentUser.uid, text: fullMessageText, timestamp: serverTimestamp(), isSystem: false, downloadUrl: queryAttachmentData?.downloadUrl || null, imagePreviewUrl: queryAttachmentData?.imagePreviewUrl || null, driveId: queryAttachmentData?.driveId || null, previewUrl: queryAttachmentData?.previewUrl || null, fileName: queryAttachmentData?.fileName || null, mediaType: queryAttachmentData?.mediaType || null };
                 await addDoc(collection(db, `threads/${threadId}/messages`), msgData);
-
-                const previewText = `Query: ${subject} - ${message.substring(0, 50)}${message.length > 50 ? '…' : ''}`;
-                await updateDoc(doc(db, 'threads', threadId), {
-                    updatedAt: serverTimestamp(),
-                    lastMessageText: previewText.substring(0, 80),
-                    jobTitle: `Query: ${subject}`
-                });
-
-                console.log('✅ Query submitted successfully!');
+                await updateDoc(doc(db, 'threads', threadId), { updatedAt: serverTimestamp(), lastMessageText: fullMessageText.substring(0, 80), jobTitle: `Query: ${subject}` });
 
                 document.getElementById('query-form').reset();
                 clearQueryFile();
-
                 showSuccessOverlay();
-
             } catch (err) {
                 console.error('❌ Error submitting query:', err);
                 showToast('Failed to submit query. Please try again.', 'error');
@@ -1277,39 +1083,23 @@
             }
         };
 
-        // ── SUCCESS OVERLAY ──
         function showSuccessOverlay() {
             const overlay = document.getElementById('success-overlay');
             const countdownEl = document.getElementById('countdown-text');
             overlay.classList.add('active');
-
             let countdown = 3;
             countdownEl.textContent = `Redirecting in ${countdown} seconds…`;
-
             const interval = setInterval(() => {
                 countdown--;
-                if (countdown <= 0) {
-                    clearInterval(interval);
-                    window.location.href = 'recruiterinbox.html';
-                } else {
-                    countdownEl.textContent = `Redirecting in ${countdown} seconds…`;
-                }
+                if (countdown <= 0) { clearInterval(interval); window.location.href = 'recruiterinbox.html'; }
+                else { countdownEl.textContent = `Redirecting in ${countdown} seconds…`; }
             }, 1000);
-
-            document.querySelector('.btn-go-inbox').addEventListener('click', () => {
-                clearInterval(interval);
-                window.location.href = 'recruiterinbox.html';
-            });
+            document.querySelector('.btn-go-inbox').addEventListener('click', () => { clearInterval(interval); window.location.href = 'recruiterinbox.html'; });
         }
 
-        // ── Spinner animation ──
         const styleSpinner = document.createElement('style');
-        styleSpinner.textContent = `
-            @keyframes spin { to { transform: rotate(360deg); } }
-        `;
+        styleSpinner.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
         document.head.appendChild(styleSpinner);
-
-        console.log('✅ Recruiter Query Page ready.');
     </script>
 </body>
-  </html>
+</html>
