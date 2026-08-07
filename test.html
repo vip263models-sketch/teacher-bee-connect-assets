@@ -405,7 +405,7 @@
             height: 100%;
             background: linear-gradient(90deg, var(--primary), #818CF8);
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.2s ease;
             border-radius: var(--radius-full);
         }
 
@@ -511,6 +511,24 @@
 
         .section-subheader { display: flex; justify-content: space-between; align-items: center; margin: 1.75rem 0 0.75rem 0; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
         .section-subheader h4 { margin: 0; font-size: 0.95rem; color: var(--text-main); font-weight: 700; letter-spacing: -0.01em; }
+
+        /* Video embed container */
+        .video-embed-wrapper {
+            margin: 1rem 0 0.5rem;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: #000;
+            display: none;
+        }
+        .video-embed-wrapper iframe, .video-embed-wrapper video {
+            width: 100%;
+            height: 360px;
+            border: none;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .video-embed-wrapper iframe, .video-embed-wrapper video { height: 240px; }
+        }
 
         /* Preview modals */
         .preview-modal {
@@ -794,6 +812,7 @@
                                 <div class="progress-bar-fill" id="video-progress-fill"></div>
                             </div>
                             <span id="video-upload-spinner" style="display:none; margin-left:0.5rem; font-size:0.9rem; color:var(--primary);"><i class="fa-solid fa-spinner fa-spin"></i> Uploading...</span>
+                            <span id="video-upload-percent" style="display:none; margin-left:0.5rem; font-size:0.8rem; color:var(--text-muted);"></span>
                         </div>
 
                         <!-- Link Block -->
@@ -804,6 +823,10 @@
                             </div>
                         </div>
 
+                        <!-- Embedded Video Player -->
+                        <div id="video-embed-container" class="video-embed-wrapper"></div>
+
+                        <!-- Action Buttons -->
                         <div id="video-preview-link" style="margin-top: 10px;"></div>
                     </div>
                     <div class="grid-2-col">
@@ -995,42 +1018,61 @@
             }
         };
 
-        // ── UPLOAD TO GOOGLE DRIVE ──
-        window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
+        // ── UPLOAD TO GOOGLE DRIVE (REAL‑TIME PROGRESS) ──
+        window.uploadToGoogleDrive = function(fileOrBlob, fileName, folder = "/", onProgress = null) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = async (e) => {
+                reader.onload = function(e) {
                     const action = folder.includes('avatars') ? 'uploadProfile' : 'uploadCertificate';
-                    const payload = { action, fileName, mimeType: fileOrBlob.type || "application/octet-stream", file: e.target.result };
-                    let progressInterval;
+                    const payload = {
+                        action,
+                        fileName,
+                        mimeType: fileOrBlob.type || "application/octet-stream",
+                        file: e.target.result
+                    };
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', WEB_APP_URL, true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+
                     if (onProgress) {
-                        let percent = 0;
-                        progressInterval = setInterval(() => { percent += Math.floor(Math.random() * 10) + 5; if (percent >= 90) percent = 90; onProgress(percent); }, 400);
+                        xhr.upload.addEventListener('progress', (event) => {
+                            if (event.lengthComputable) {
+                                const percent = Math.round((event.loaded / event.total) * 100);
+                                onProgress(percent);
+                            }
+                        });
                     }
-                    try {
-                        const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
-                        const data = await response.json();
-                        if (progressInterval) { clearInterval(progressInterval); if (onProgress) onProgress(100); }
-                        if (data.status === "success") {
-                            if (action === 'uploadProfile' && data.profilePic?.url) {
-                                resolve({ downloadUrl: data.profilePic.url });
-                            } else if (data.certificates?.length > 0) {
-                                const cert = data.certificates[data.certificates.length - 1];
-                                const downloadUrl = cert.fileUrl || cert.url;
-                                const isImage = cert.isImage || false;
-                                const driveId = cert.id || '';
-                                const previewUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : (cert.previewUrl || '');
-                                resolve({ downloadUrl, isImage, driveId, previewUrl });
-                            } else {
-                                reject(new Error("Drive Error: " + (data.message || "Unknown error")));
+
+                    xhr.onload = function() {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try {
+                                const data = JSON.parse(xhr.responseText);
+                                if (data.status === "success") {
+                                    if (action === 'uploadProfile' && data.profilePic?.url) {
+                                        resolve({ downloadUrl: data.profilePic.url });
+                                    } else if (data.certificates?.length > 0) {
+                                        const cert = data.certificates[data.certificates.length - 1];
+                                        const downloadUrl = cert.fileUrl || cert.url;
+                                        const isImage = cert.isImage || false;
+                                        const driveId = cert.id || '';
+                                        const previewUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : (cert.previewUrl || '');
+                                        resolve({ downloadUrl, isImage, driveId, previewUrl });
+                                    } else {
+                                        reject(new Error("Drive Error: " + (data.message || "Unknown error")));
+                                    }
+                                } else {
+                                    reject(new Error("Drive Error: " + (data.message || "Unknown error")));
+                                }
+                            } catch (err) {
+                                reject(new Error("Invalid server response"));
                             }
                         } else {
-                            reject(new Error("Drive Error: " + (data.message || "Unknown error")));
+                            reject(new Error(`HTTP Error ${xhr.status}`));
                         }
-                    } catch (error) {
-                        if (progressInterval) clearInterval(progressInterval);
-                        reject(new Error("Network error during upload."));
-                    }
+                    };
+                    xhr.onerror = () => reject(new Error("Network error during upload."));
+                    xhr.send(JSON.stringify(payload));
                 };
                 reader.onerror = () => reject(new Error("Browser failed to read file."));
                 reader.readAsDataURL(fileOrBlob);
@@ -1043,10 +1085,12 @@
             if (!file || !window.auth.currentUser) return;
             const pContainer = document.getElementById(`${type}-progress-bar`), pFill = document.getElementById(`${type}-progress-fill`);
             pContainer.style.display = 'block'; pFill.style.width = '0%';
-            const uploadingToast = showToast('Uploading resume... Please wait', 'info');
+            const uploadingToast = showToast('Uploading resume...', 'info');
             try {
                 const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-                const result = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, `/resumes`, (pct) => { pFill.style.width = `${pct}%`; });
+                const result = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, `/resumes`, (pct) => {
+                    pFill.style.width = `${pct}%`;
+                });
                 window.currentUser.resumeUrl = result.downloadUrl;
                 window.currentUser.resumePreviewUrl = result.previewUrl || '';
                 window.currentUser.resumeIsImage = result.isImage || false;
@@ -1093,13 +1137,11 @@
             }
         };
 
-        // ── VIDEO SECTION (UPLOAD & LINK) ──
+        // ── VIDEO SECTION (UPLOAD, LINK & EMBED) ──
         window.toggleVideoSource = function() {
             const uploadRadio = document.querySelector('input[name="videoSource"][value="upload"]');
-            const linkRadio = document.querySelector('input[name="videoSource"][value="link"]');
             const uploadBlock = document.getElementById('video-upload-block');
             const linkBlock = document.getElementById('video-link-block');
-
             if (uploadRadio.checked) {
                 uploadBlock.style.display = 'block';
                 linkBlock.style.display = 'none';
@@ -1112,17 +1154,23 @@
         window.handleVideoUpload = async function(input) {
             const file = input.files[0];
             if (!file || !window.auth.currentUser) return;
-            if (file.size > 60 * 1024 * 1024) { // 60MB
+            if (file.size > 60 * 1024 * 1024) {
                 showToast("Video exceeds the 60MB limit.", "error"); input.value = ''; return;
             }
             const pContainer = document.getElementById('video-progress-bar'), pFill = document.getElementById('video-progress-fill');
             const spinner = document.getElementById('video-upload-spinner');
+            const percentLabel = document.getElementById('video-upload-percent');
             pContainer.style.display = 'block'; pFill.style.width = '0%';
             spinner.style.display = 'inline-block';
-            const uploadingToast = showToast('Uploading video... Please wait', 'info');
+            percentLabel.style.display = 'inline-block';
+            percentLabel.textContent = '0%';
+            const uploadingToast = showToast('Uploading video...', 'info');
             try {
                 const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-                const result = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, `/videos`, (pct) => { pFill.style.width = `${pct}%`; });
+                const result = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, `/videos`, (pct) => {
+                    pFill.style.width = `${pct}%`;
+                    percentLabel.textContent = `${pct}%`;
+                });
                 window.currentUser.videoUrl = result.downloadUrl;
                 updateVideoPreviewUI();
                 hasUnsavedChanges = true; document.getElementById('sticky-save').classList.add('visible');
@@ -1135,6 +1183,7 @@
             } finally {
                 pContainer.style.display = 'none';
                 spinner.style.display = 'none';
+                percentLabel.style.display = 'none';
                 input.value = '';
             }
         };
@@ -1142,11 +1191,7 @@
         window.setVideoLink = function() {
             const urlInput = document.getElementById('prof-video-url');
             const url = urlInput.value.trim();
-            if (!url) {
-                showToast('Please paste a valid Google Drive or YouTube URL.', 'error');
-                return;
-            }
-            // basic validation: must contain drive.google.com or youtube.com / youtu.be
+            if (!url) { showToast('Paste a valid Google Drive or YouTube URL.', 'error'); return; }
             if (!url.includes('drive.google.com') && !url.includes('youtube.com') && !url.includes('youtu.be')) {
                 showToast('Only Google Drive or YouTube links are supported.', 'error');
                 return;
@@ -1156,20 +1201,51 @@
             hasUnsavedChanges = true;
             document.getElementById('sticky-save').classList.add('visible');
             showToast('Video link set. Remember to save changes!', 'success');
-            urlInput.value = ''; // clear after setting
+            urlInput.value = '';
         };
 
-        function updateVideoPreviewUI() {
-            const container = document.getElementById('video-preview-link');
-            if (!window.currentUser.videoUrl) {
-                container.innerHTML = '';
-                return;
+        function getVideoEmbedInfo(url) {
+            const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (driveMatch) {
+                return { embedUrl: `https://drive.google.com/file/d/${driveMatch[1]}/preview`, type: 'drive' };
             }
-            container.innerHTML = `
-                <a href="${window.currentUser.videoUrl}" target="_blank" class="btn btn-secondary btn-small"><i class="fa-solid fa-play"></i> Watch Video</a>
-                <button type="button" class="btn btn-danger btn-small" onclick="deleteVideo()"><i class="fa-solid fa-trash-can"></i> Delete</button>
-            `;
+            const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+            if (ytMatch) {
+                return { embedUrl: `https://www.youtube.com/embed/${ytMatch[1]}`, type: 'youtube' };
+            }
+            if (/\.(mp4|webm|ogg)$/i.test(url)) {
+                return { embedUrl: url, type: 'direct' };
+            }
+            return { embedUrl: null, type: 'other' };
         }
+
+        function updateVideoPreviewUI() {
+            const embedContainer = document.getElementById('video-embed-container');
+            const linkContainer = document.getElementById('video-preview-link');
+            embedContainer.style.display = 'none';
+            embedContainer.innerHTML = '';
+
+            if (window.currentUser.videoUrl) {
+                const { embedUrl, type } = getVideoEmbedInfo(window.currentUser.videoUrl);
+                if (embedUrl) {
+                    let playerHTML = '';
+                    if (type === 'drive' || type === 'youtube') {
+                        playerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+                    } else if (type === 'direct') {
+                        playerHTML = `<video controls src="${embedUrl}"></video>`;
+                    }
+                    embedContainer.innerHTML = playerHTML;
+                    embedContainer.style.display = 'block';
+                }
+                linkContainer.innerHTML = `
+                    <a href="${window.currentUser.videoUrl}" target="_blank" class="btn btn-secondary btn-small"><i class="fa-solid fa-play"></i> Watch in New Tab</a>
+                    <button type="button" class="btn btn-danger btn-small" onclick="deleteVideo()"><i class="fa-solid fa-trash-can"></i> Delete</button>
+                `;
+            } else {
+                linkContainer.innerHTML = '';
+            }
+        }
+
         window.deleteVideo = function() {
             if (confirm("Remove this video?")) {
                 window.currentUser.videoUrl = '';
@@ -1224,7 +1300,7 @@
             showToast("Added successfully. Remember to Save Changes!", "success");
         };
 
-        // ── RENDER DOCUMENT LISTS (PREVIEW ONLY, DELETE BUTTON) ──
+        // ── RENDER DOCUMENT LISTS ──
         window.renderDocList = function(arrayName) {
             const container = document.getElementById(`container-${arrayName}`);
             container.innerHTML = '';
@@ -1327,14 +1403,13 @@
             ['subjects', 'gradeLevels', 'languages', 'skills'].forEach(renderTagList);
             ['quals', 'certs'].forEach(renderDocList);
             renderReferenceList();
-            // update video preview on load if videoUrl exists
             if (window.currentUser.videoUrl) updateVideoPreviewUI();
         };
 
         window.toggleForm = (id) => { const f = document.getElementById(id); f.style.display = f.style.display === 'none' || f.style.display === '' ? 'block' : 'none'; };
         window.handleFileSelect = (inp, titleId) => { if (inp.files[0] && !document.getElementById(titleId).value) document.getElementById(titleId).value = inp.files[0].name.replace(/\.[^/.]+$/, ""); };
 
-        // ── SIMPLER CROPPER ──
+        // ── CROPPER ──
         window.openCropperModal = function(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
