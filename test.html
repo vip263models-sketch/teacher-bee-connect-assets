@@ -574,38 +574,6 @@
         }
         .btn-modal-close:hover { background: rgba(255,255,255,0.35); }
 
-        /* Video upload progress modal */
-        .video-progress-box {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-xl);
-            max-width: 360px;
-            width: 100%;
-        }
-        .video-progress-box .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 1.25rem auto;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .video-progress-box .progress-percent {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-        .video-progress-box .progress-label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-        }
-
         @media (max-width: 1024px) { .content-area { padding: 1.5rem 1.5rem 7rem 1.5rem; } .page-header h1 { font-size: 1.4rem; } }
         @media (max-width: 768px) {
             .content-area { padding: 1.25rem 1rem 7rem 1rem; }
@@ -697,10 +665,7 @@
 
                     updateResumePreviewUI();
                     if (data.videoUrl) {
-                        document.getElementById('video-preview-link').innerHTML = `
-                            <a href="${data.videoUrl}" target="_blank" class="btn btn-secondary btn-small"><i class="fa-solid fa-play"></i> View Uploaded Video</a>
-                            <button type="button" class="btn btn-danger btn-small" onclick="deleteVideo()"><i class="fa-solid fa-trash-can"></i> Delete</button>
-                        `;
+                        updateVideoPreviewUI();
                     }
 
                     const fields = ['age','gender','experience','headline','city','country','employmentStatus','curriculum','bio','privacySetting'];
@@ -757,19 +722,6 @@
         </div>
     </div>
 
-    <!-- Video Upload Progress Modal -->
-    <div class="modal-overlay" id="video-upload-modal">
-        <div class="video-progress-box">
-            <div class="spinner" id="video-spinner"></div>
-            <div class="progress-percent" id="video-progress-percent">0%</div>
-            <div class="progress-label" id="video-progress-label">Preparing upload…</div>
-            <div class="progress-bar-container" style="display:block; margin-top:1rem;" id="video-progress-bar-modal">
-                <div class="progress-bar-fill" id="video-progress-fill-modal" style="width:0%;"></div>
-            </div>
-            <button type="button" class="btn btn-secondary btn-small" style="margin-top:1.25rem;" onclick="cancelVideoUpload()">Cancel</button>
-        </div>
-    </div>
-
     <!-- Main Content -->
     <main class="content-area" id="app-content">
         <div class="page-header">
@@ -822,9 +774,36 @@
                 <div class="details-content">
                     <div class="form-group"><label class="form-label">Professional Summary (Bio)</label><textarea id="prof-bio" class="form-textarea" placeholder="Introduce yourself to recruiters..."></textarea></div>
                     <div class="form-group upload-zone">
-                        <label class="form-label"><i class="fa-solid fa-video" style="color: var(--primary);"></i> Introduction Video Upload</label>
-                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Upload a short 1–8 minute intro video. <strong>Max Size: 60MB</strong> (will be compressed if needed).</p>
-                        <input type="file" id="prof-video-file" accept="video/mp4,video/webm,video/ogg" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem; background: var(--surface);">
+                        <label class="form-label"><i class="fa-solid fa-video" style="color: var(--primary);"></i> Introduction Video</label>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Upload or link a 6–8 minute introduction video. <strong>Max file size: 60MB</strong></p>
+
+                        <!-- Toggle Upload vs Link -->
+                        <div style="display:flex; gap:1rem; margin-bottom:0.75rem;">
+                            <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
+                                <input type="radio" name="videoSource" value="upload" checked onchange="toggleVideoSource()"> Upload File
+                            </label>
+                            <label style="display:flex; align-items:center; gap:0.3rem; cursor:pointer;">
+                                <input type="radio" name="videoSource" value="link" onchange="toggleVideoSource()"> Provide Link (Google Drive / YouTube)
+                            </label>
+                        </div>
+
+                        <!-- Upload Block -->
+                        <div id="video-upload-block">
+                            <input type="file" id="prof-video-file" accept="video/mp4,video/webm,video/ogg" onchange="handleVideoUpload(this)" class="form-input" style="padding: 0.5rem; background: var(--surface);">
+                            <div class="progress-bar-container" id="video-progress-bar">
+                                <div class="progress-bar-fill" id="video-progress-fill"></div>
+                            </div>
+                            <span id="video-upload-spinner" style="display:none; margin-left:0.5rem; font-size:0.9rem; color:var(--primary);"><i class="fa-solid fa-spinner fa-spin"></i> Uploading...</span>
+                        </div>
+
+                        <!-- Link Block -->
+                        <div id="video-link-block" style="display:none;">
+                            <div class="input-with-btn">
+                                <input type="text" id="prof-video-url" class="form-input" placeholder="Paste Google Drive share link or YouTube URL">
+                                <button type="button" class="btn btn-secondary btn-small" onclick="setVideoLink()">Set Link</button>
+                            </div>
+                        </div>
+
                         <div id="video-preview-link" style="margin-top: 10px;"></div>
                     </div>
                     <div class="grid-2-col">
@@ -845,6 +824,7 @@
                         <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Upload your latest resume (PDF or Word).</p>
                         <input type="file" id="prof-resume-file" accept=".pdf,.doc,.docx" onchange="handleFileUpload(this, 'resume'); previewSelectedImage(this, 'resume-instant-preview');" class="form-input" style="padding: 0.5rem; background: var(--surface);">
                         <img id="resume-instant-preview" class="instant-preview-thumb" alt="Preview">
+                        <div class="progress-bar-container" id="resume-progress-bar"><div class="progress-bar-fill" id="resume-progress-fill"></div></div>
                         <div id="resume-preview-link" style="margin-top: 10px;"></div>
                     </div>
 
@@ -949,10 +929,6 @@
         </div>
     </div>
 
-    <!-- FFmpeg.wasm for video compression -->
-    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
-    <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
-
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwNnQ_Z0j9L5KU12ONFIsRVA2NnFDEna6TU4_-Tr1WaZQmNIdT0WL0A5WC0gsLxqvlj/exec";
 
@@ -963,8 +939,6 @@
         };
         let currentCropper = null;
         let hasUnsavedChanges = false;
-        let videoUploadAbortController = null;   // for canceling upload
-        let pendingVideoUrl = null;              // temporary storage after upload
 
         window.showToast = function(message, type = 'info') {
             const container = document.getElementById('toast-container');
@@ -1022,33 +996,21 @@
         };
 
         // ── UPLOAD TO GOOGLE DRIVE ──
-        window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null, signal = null) {
+        window.uploadToGoogleDrive = async function(fileOrBlob, fileName, folder = "/", onProgress = null) {
             return new Promise((resolve, reject) => {
-                if (signal && signal.aborted) return reject(new Error('Upload canceled'));
                 const reader = new FileReader();
                 reader.onload = async (e) => {
-                    if (signal && signal.aborted) return reject(new Error('Upload canceled'));
                     const action = folder.includes('avatars') ? 'uploadProfile' : 'uploadCertificate';
                     const payload = { action, fileName, mimeType: fileOrBlob.type || "application/octet-stream", file: e.target.result };
                     let progressInterval;
                     if (onProgress) {
                         let percent = 0;
-                        progressInterval = setInterval(() => { 
-                            if (signal && signal.aborted) return;
-                            percent += Math.floor(Math.random() * 10) + 5; 
-                            if (percent >= 90) percent = 90; 
-                            onProgress(percent); 
-                        }, 400);
+                        progressInterval = setInterval(() => { percent += Math.floor(Math.random() * 10) + 5; if (percent >= 90) percent = 90; onProgress(percent); }, 400);
                     }
                     try {
-                        const response = await fetch(WEB_APP_URL, { 
-                            method: 'POST', 
-                            body: JSON.stringify(payload),
-                            signal: signal   // pass abort signal
-                        });
+                        const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
                         const data = await response.json();
-                        if (progressInterval) { clearInterval(progressInterval); if (onProgress && !(signal && signal.aborted)) onProgress(100); }
-                        if (signal && signal.aborted) return reject(new Error('Upload canceled'));
+                        if (progressInterval) { clearInterval(progressInterval); if (onProgress) onProgress(100); }
                         if (data.status === "success") {
                             if (action === 'uploadProfile' && data.profilePic?.url) {
                                 resolve({ downloadUrl: data.profilePic.url });
@@ -1067,7 +1029,6 @@
                         }
                     } catch (error) {
                         if (progressInterval) clearInterval(progressInterval);
-                        if (signal && signal.aborted) return reject(new Error('Upload canceled'));
                         reject(new Error("Network error during upload."));
                     }
                 };
@@ -1132,175 +1093,87 @@
             }
         };
 
-        // ── VIDEO COMPRESSION ENGINE ──
-        let ffmpeg = null;
-        async function getFFmpeg() {
-            if (ffmpeg) return ffmpeg;
-            showToast('Loading video compressor (one-time) ...', 'info');
-            const { FFmpeg } = FFmpegWASM;
-            ffmpeg = new FFmpeg();
-            await ffmpeg.load({
-                coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
-                wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
-            });
-            return ffmpeg;
-        }
+        // ── VIDEO SECTION (UPLOAD & LINK) ──
+        window.toggleVideoSource = function() {
+            const uploadRadio = document.querySelector('input[name="videoSource"][value="upload"]');
+            const linkRadio = document.querySelector('input[name="videoSource"][value="link"]');
+            const uploadBlock = document.getElementById('video-upload-block');
+            const linkBlock = document.getElementById('video-link-block');
 
-        async function compressVideo(file) {
-            const ffmpeg = await getFFmpeg();
-            const inputName = 'input' + (file.name.endsWith('.mp4') ? '.mp4' : '.mp4');
-            const outputName = 'compressed.mp4';
-
-            const data = await fetch(URL.createObjectURL(file)).then(r => r.arrayBuffer());
-            await ffmpeg.writeFile(inputName, new Uint8Array(data));
-
-            const duration = await new Promise((resolve, reject) => {
-                const video = document.createElement('video');
-                video.preload = 'metadata';
-                video.onloadedmetadata = () => resolve(video.duration);
-                video.onerror = reject;
-                video.src = URL.createObjectURL(file);
-            });
-
-            const maxDuration = Math.max(duration, 1);
-            const targetBitrate = Math.floor((12 * 8 * 1024 * 1024) / maxDuration / 1000);
-            const videoBitrate = Math.max(300, targetBitrate - 64);
-
-            await ffmpeg.exec([
-                '-i', inputName,
-                '-c:v', 'libx264',
-                '-preset', 'veryfast',
-                '-crf', '30',
-                '-maxrate', `${videoBitrate}k`,
-                '-bufsize', `${videoBitrate * 2}k`,
-                '-vf', 'scale=-2:480',
-                '-c:a', 'aac',
-                '-b:a', '64k',
-                '-movflags', '+faststart',
-                outputName
-            ]);
-
-            const outputData = await ffmpeg.readFile(outputName);
-            const blob = new Blob([outputData.buffer], { type: 'video/mp4' });
-
-            await ffmpeg.deleteFile(inputName);
-            await ffmpeg.deleteFile(outputName);
-
-            return blob;
-        }
-
-        // ── VIDEO UPLOAD WITH SPINNER AND SAVE BUTTON ──
-        window.cancelVideoUpload = function() {
-            if (videoUploadAbortController) {
-                videoUploadAbortController.abort();
-                videoUploadAbortController = null;
+            if (uploadRadio.checked) {
+                uploadBlock.style.display = 'block';
+                linkBlock.style.display = 'none';
+            } else {
+                uploadBlock.style.display = 'none';
+                linkBlock.style.display = 'block';
             }
-            document.getElementById('video-upload-modal').classList.remove('active');
-            document.getElementById('prof-video-file').value = '';
         };
 
         window.handleVideoUpload = async function(input) {
-            const originalFile = input.files[0];
-            if (!originalFile || !window.auth.currentUser) return;
-            if (originalFile.size > 60 * 1024 * 1024) {
-                showToast("Video exceeds the 60MB limit.", "error");
-                input.value = '';
-                return;
+            const file = input.files[0];
+            if (!file || !window.auth.currentUser) return;
+            if (file.size > 60 * 1024 * 1024) { // 60MB
+                showToast("Video exceeds the 60MB limit.", "error"); input.value = ''; return;
             }
-
-            // Show spinner modal
-            const modal = document.getElementById('video-upload-modal');
-            const percentEl = document.getElementById('video-progress-percent');
-            const labelEl = document.getElementById('video-progress-label');
-            const barFill = document.getElementById('video-progress-fill-modal');
-            modal.classList.add('active');
-            percentEl.textContent = '0%';
-            labelEl.textContent = 'Preparing…';
-            barFill.style.width = '0%';
-            
-            videoUploadAbortController = new AbortController();
-            const signal = videoUploadAbortController.signal;
-
-            let fileToUpload = originalFile;
-
-            // Compression if needed
-            if (originalFile.size > 16 * 1024 * 1024) {
-                labelEl.textContent = 'Compressing video…';
-                try {
-                    fileToUpload = await compressVideo(originalFile);
-                } catch (err) {
-                    console.error(err);
-                    showToast('Compression failed. Try a smaller file.', 'error');
-                    modal.classList.remove('active');
-                    input.value = '';
-                    videoUploadAbortController = null;
-                    return;
-                }
-            }
-
-            // Upload with progress
-            labelEl.textContent = 'Uploading…';
+            const pContainer = document.getElementById('video-progress-bar'), pFill = document.getElementById('video-progress-fill');
+            const spinner = document.getElementById('video-upload-spinner');
+            pContainer.style.display = 'block'; pFill.style.width = '0%';
+            spinner.style.display = 'inline-block';
+            const uploadingToast = showToast('Uploading video... Please wait', 'info');
             try {
-                const safeName = originalFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-                const uploadName = fileToUpload === originalFile ? safeName : `compressed_${Date.now()}.mp4`;
-                const result = await uploadToGoogleDrive(
-                    fileToUpload, 
-                    uploadName, 
-                    `/videos`,
-                    (pct) => {
-                        percentEl.textContent = `${pct}%`;
-                        barFill.style.width = `${pct}%`;
-                    },
-                    signal
-                );
-
-                // Upload complete – hide modal
-                modal.classList.remove('active');
-                videoUploadAbortController = null;
-                pendingVideoUrl = result.downloadUrl;
-
-                // Show Save Video button
-                document.getElementById('video-preview-link').innerHTML = `
-                    <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem;">
-                        <span style="color:var(--success); font-weight:600;"><i class="fa-solid fa-circle-check"></i> Video ready</span>
-                        <button type="button" class="btn btn-primary btn-small" onclick="savePendingVideo()"><i class="fa-solid fa-floppy-disk"></i> Save Video</button>
-                        <button type="button" class="btn btn-danger btn-small" onclick="discardPendingVideo()"><i class="fa-solid fa-xmark"></i> Discard</button>
-                    </div>
-                `;
-                input.value = '';
+                const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                const result = await uploadToGoogleDrive(file, `${Date.now()}_${safeName}`, `/videos`, (pct) => { pFill.style.width = `${pct}%`; });
+                window.currentUser.videoUrl = result.downloadUrl;
+                updateVideoPreviewUI();
+                hasUnsavedChanges = true; document.getElementById('sticky-save').classList.add('visible');
+                uploadingToast.remove();
+                showToast('Video uploaded successfully.', 'success');
             } catch (err) {
                 console.error(err);
-                modal.classList.remove('active');
-                videoUploadAbortController = null;
-                if (err.message !== 'Upload canceled') {
-                    showToast(err.message, "error");
-                }
+                uploadingToast.remove();
+                showToast(err.message, "error");
+            } finally {
+                pContainer.style.display = 'none';
+                spinner.style.display = 'none';
                 input.value = '';
             }
         };
 
-        window.savePendingVideo = function() {
-            if (!pendingVideoUrl) return;
-            window.currentUser.videoUrl = pendingVideoUrl;
-            pendingVideoUrl = null;
+        window.setVideoLink = function() {
+            const urlInput = document.getElementById('prof-video-url');
+            const url = urlInput.value.trim();
+            if (!url) {
+                showToast('Please paste a valid Google Drive or YouTube URL.', 'error');
+                return;
+            }
+            // basic validation: must contain drive.google.com or youtube.com / youtu.be
+            if (!url.includes('drive.google.com') && !url.includes('youtube.com') && !url.includes('youtu.be')) {
+                showToast('Only Google Drive or YouTube links are supported.', 'error');
+                return;
+            }
+            window.currentUser.videoUrl = url;
+            updateVideoPreviewUI();
             hasUnsavedChanges = true;
             document.getElementById('sticky-save').classList.add('visible');
-            document.getElementById('video-preview-link').innerHTML = `
-                <a href="${window.currentUser.videoUrl}" target="_blank" class="btn btn-secondary btn-small"><i class="fa-solid fa-play"></i> View Uploaded Video</a>
+            showToast('Video link set. Remember to save changes!', 'success');
+            urlInput.value = ''; // clear after setting
+        };
+
+        function updateVideoPreviewUI() {
+            const container = document.getElementById('video-preview-link');
+            if (!window.currentUser.videoUrl) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = `
+                <a href="${window.currentUser.videoUrl}" target="_blank" class="btn btn-secondary btn-small"><i class="fa-solid fa-play"></i> Watch Video</a>
                 <button type="button" class="btn btn-danger btn-small" onclick="deleteVideo()"><i class="fa-solid fa-trash-can"></i> Delete</button>
             `;
-            showToast('Video saved. Remember to save your profile changes!', 'success');
-        };
-
-        window.discardPendingVideo = function() {
-            pendingVideoUrl = null;
-            document.getElementById('video-preview-link').innerHTML = '';
-        };
-
+        }
         window.deleteVideo = function() {
-            if (confirm("Delete intro video?")) {
+            if (confirm("Remove this video?")) {
                 window.currentUser.videoUrl = '';
-                document.getElementById('video-preview-link').innerHTML = '';
+                updateVideoPreviewUI();
                 hasUnsavedChanges = true; document.getElementById('sticky-save').classList.add('visible');
                 showToast('Video removed. Save changes to confirm.', 'info');
             }
@@ -1351,7 +1224,7 @@
             showToast("Added successfully. Remember to Save Changes!", "success");
         };
 
-        // ── RENDER DOCUMENT LISTS ──
+        // ── RENDER DOCUMENT LISTS (PREVIEW ONLY, DELETE BUTTON) ──
         window.renderDocList = function(arrayName) {
             const container = document.getElementById(`container-${arrayName}`);
             container.innerHTML = '';
@@ -1454,6 +1327,8 @@
             ['subjects', 'gradeLevels', 'languages', 'skills'].forEach(renderTagList);
             ['quals', 'certs'].forEach(renderDocList);
             renderReferenceList();
+            // update video preview on load if videoUrl exists
+            if (window.currentUser.videoUrl) updateVideoPreviewUI();
         };
 
         window.toggleForm = (id) => { const f = document.getElementById(id); f.style.display = f.style.display === 'none' || f.style.display === '' ? 'block' : 'none'; };
@@ -1660,7 +1535,7 @@
                     hasUnsavedChanges = true; document.getElementById('sticky-save').classList.add('visible');
                 });
             });
-            window.addEventListener('beforeunload', (e) => { if (hasUnsavedChanges || videoUploadAbortController) { e.preventDefault(); e.returnValue = ''; } });
+            window.addEventListener('beforeunload', (e) => { if (hasUnsavedChanges) { e.preventDefault(); e.returnValue = ''; } });
         };
         window.markSaved = function() { hasUnsavedChanges = false; document.getElementById('sticky-save').classList.remove('visible'); };
     </script>
