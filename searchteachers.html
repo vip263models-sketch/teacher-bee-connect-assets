@@ -279,6 +279,28 @@
             gap: 0.5rem;
         }
 
+        /* VIDEO EMBED IN MODAL */
+        .video-embed-container {
+            width: 100%;
+            background: #000;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        .video-embed-container iframe,
+        .video-embed-container video {
+            width: 100%;
+            height: 360px;
+            border: none;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .video-embed-container iframe,
+            .video-embed-container video {
+                height: 240px;
+            }
+        }
+
         /* MODAL STYLING */
         .modal-overlay {
             position: fixed;
@@ -316,7 +338,6 @@
             position: relative;
             flex-shrink: 0;
         }
-        /* CLOSE BUTTON - now fixed position relative to viewport to stay always visible */
         .close-modal {
             position: fixed;
             top: 1.5rem;
@@ -344,7 +365,6 @@
             transform: scale(1.08);
         }
 
-        /* Profile header outside scroll area */
         .modal-profile-header {
             display: flex;
             align-items: flex-end;
@@ -592,12 +612,11 @@
         </div>
     </div>
 
-    <!-- LINKEDIN-STYLE TEACHER PROFILE MODAL -->
+    <!-- TEACHER PROFILE MODAL WITH EMBEDDED VIDEO -->
     <div class="modal-overlay" id="teacher-modal">
         <div class="modal-content">
             <div class="modal-header-banner"></div>
 
-            <!-- Profile header outside scroll area -->
             <div class="modal-profile-header">
                 <img id="tm-avatar" src="" alt="Teacher Avatar">
                 <div class="modal-profile-info">
@@ -610,9 +629,10 @@
                 <div class="section-title">Professional Summary</div>
                 <p id="tm-bio" style="color:var(--text-main); font-size:0.95rem; line-height:1.6; margin-bottom:1rem;"></p>
 
+                <!-- EMBEDDED VIDEO PLAYER (replaces raw <video> with iframe/embedded logic) -->
                 <div id="tm-video-section" style="display:none; margin-bottom:1rem;">
                     <div class="section-title">Video Introduction</div>
-                    <video id="tm-video" controls style="width:100%; border-radius:var(--radius-md); background:#000; max-height:360px;"></video>
+                    <div class="video-embed-container" id="tm-video-container"></div>
                 </div>
 
                 <div class="section-title">Professional Details & Qualifications</div>
@@ -627,7 +647,6 @@
                 </div>
             </div>
         </div>
-        <!-- Fixed close button outside modal-content so it's always on top -->
         <button class="close-modal" id="close-modal-btn" title="Close profile">&times;</button>
     </div>
 
@@ -636,7 +655,7 @@
         let currentTeacherContext = null;
 
         // ──────────────────────────────────────────────
-        // SENSITIVE FIELD DETECTION (unchanged logic)
+        // SENSITIVE FIELD DETECTION
         // ──────────────────────────────────────────────
         const SENSITIVE_EXACT_MATCH = [
             'uid', 'id', 'role', 'avatarurl', 'videourl', 'name', 'bio',
@@ -658,6 +677,54 @@
             if (cleanKey.includes('passcode')) return true;
             if (cleanKey.startsWith('pass') && cleanKey !== 'passport' && cleanKey !== 'passportnumber') return true;
             return false;
+        }
+
+        // ──────────────────────────────────────────────
+        // HELPER: extract embeddable URL (Google Drive / YouTube / direct)
+        // ──────────────────────────────────────────────
+        function getEmbeddableVideoUrl(url) {
+            if (!url) return null;
+
+            // Google Drive file ID extraction
+            const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (driveMatch) {
+                // Return Google Drive preview URL (hides the Drive interface as much as possible)
+                return {
+                    type: 'drive',
+                    embedUrl: `https://drive.google.com/file/d/${driveMatch[1]}/preview`,
+                    originalUrl: url
+                };
+            }
+
+            // YouTube extraction
+            const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+            if (ytMatch) {
+                return {
+                    type: 'youtube',
+                    embedUrl: `https://www.youtube.com/embed/${ytMatch[1]}`,
+                    originalUrl: url
+                };
+            }
+
+            // Direct video file (mp4, webm, ogg)
+            if (/\.(mp4|webm|ogg)$/i.test(url)) {
+                return {
+                    type: 'direct',
+                    embedUrl: url,
+                    originalUrl: url
+                };
+            }
+
+            // Fallback: try as direct embed (might be Google Drive preview link already)
+            if (url.includes('drive.google.com') || url.includes('preview')) {
+                return {
+                    type: 'drive',
+                    embedUrl: url,
+                    originalUrl: url
+                };
+            }
+
+            return null;
         }
 
         // ──────────────────────────────────────────────
@@ -787,11 +854,14 @@
 
         function openModal() {
             modal.classList.add('active');
-            // Push a new state to enable back button closing
             history.pushState({ modalOpen: true }, '', '#teacher-profile');
         }
 
         function closeModal(suppressHistory = false) {
+            // Stop any playing video when closing
+            const videoContainer = document.getElementById('tm-video-container');
+            videoContainer.innerHTML = '';
+
             modal.classList.remove('active');
             if (!suppressHistory && history.state && history.state.modalOpen) {
                 history.back();
@@ -800,6 +870,8 @@
 
         window.addEventListener('popstate', (event) => {
             if (modal.classList.contains('active')) {
+                const videoContainer = document.getElementById('tm-video-container');
+                videoContainer.innerHTML = '';
                 modal.classList.remove('active');
             }
         });
@@ -834,7 +906,7 @@
         }
 
         // ──────────────────────────────────────────────
-        // OPEN TEACHER PROFILE MODAL
+        // OPEN TEACHER PROFILE MODAL (WITH EMBEDDED VIDEO)
         // ──────────────────────────────────────────────
         window.openTeacherProfile = function(tid) {
             const t = allTeachers.find(x => x.id === tid);
@@ -854,15 +926,35 @@
                 `<span class="badge badge-navy"><i class="fa-solid fa-location-dot"></i> ${t.country || t.location}</span>`;
             document.getElementById('tm-badges').innerHTML = badges;
 
+            // ── EMBEDDED VIDEO LOGIC ──
             const vidSec = document.getElementById('tm-video-section');
+            const videoContainer = document.getElementById('tm-video-container');
+            videoContainer.innerHTML = '';
+
             if (t.videoUrl) {
-                vidSec.style.display = 'block';
-                document.getElementById('tm-video').src = t.videoUrl;
+                const embedInfo = getEmbeddableVideoUrl(t.videoUrl);
+                if (embedInfo) {
+                    vidSec.style.display = 'block';
+                    if (embedInfo.type === 'drive' || embedInfo.type === 'youtube') {
+                        // Use iframe for Google Drive preview and YouTube (hides Drive interface)
+                        videoContainer.innerHTML = `<iframe src="${embedInfo.embedUrl}" allowfullscreen allow="autoplay"></iframe>`;
+                    } else if (embedInfo.type === 'direct') {
+                        // Native video player for direct mp4/webm links
+                        videoContainer.innerHTML = `<video controls src="${embedInfo.embedUrl}"></video>`;
+                    } else {
+                        // Fallback iframe
+                        videoContainer.innerHTML = `<iframe src="${embedInfo.embedUrl}" allowfullscreen></iframe>`;
+                    }
+                } else {
+                    // If we can't parse the URL, still try to embed it as a fallback
+                    vidSec.style.display = 'block';
+                    videoContainer.innerHTML = `<iframe src="${t.videoUrl}" allowfullscreen></iframe>`;
+                }
             } else {
                 vidSec.style.display = 'none';
-                document.getElementById('tm-video').src = "";
             }
 
+            // ── REST OF PROFILE DETAILS ──
             const detailsContainer = document.getElementById('tm-dynamic-details');
             const tagsContainer = document.getElementById('tm-dynamic-tags');
             detailsContainer.innerHTML = '';
@@ -937,7 +1029,6 @@
         // HANDLE INVITE (SUBSCRIPTION CHECK)
         // ──────────────────────────────────────────────
         window.handleInvite = async function() {
-            // Close modal first
             if (modal.classList.contains('active')) {
                 if (history.state && history.state.modalOpen) {
                     history.back();
@@ -946,7 +1037,6 @@
                 }
             }
 
-            // Check subscription
             const isSubscribed = await checkSubscriptionStatus(window.currentUser.uid);
             if (!isSubscribed) {
                 showToast("You need an active subscription to invite teachers. Redirecting...", "error");
@@ -956,7 +1046,6 @@
                 return;
             }
 
-            // Proceed with invitation
             try {
                 const threadData = {
                     participants: [currentTeacherContext.id, window.currentUser.uid],
