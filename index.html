@@ -22,9 +22,10 @@
             --radius-xl: 24px;
             --radius-lg: 18px;
             --radius-md: 12px;
-            --shadow-card: 0 8px 30px rgba(13,64,84,0.07);
+            --shadow-card: 0 8px 30px rgba(13, 64, 84, 0.07);
             --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -91,7 +92,7 @@
         .stat-card .stat-number { font-size:1.6rem; font-weight:800; color:var(--navy); }
         .stat-card .stat-label { font-size:0.75rem; color:var(--blue-gray); text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
 
-        .section-header { display:flex; justify-content:space-between; align-items:center; }
+        .section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
         .section-header h4 { font-weight:700; color:var(--navy); }
         .section-header a { font-size:0.8rem; font-weight:700; color:var(--orange); text-decoration:none; }
 
@@ -131,11 +132,11 @@
     <div class="auth-card" id="reset-password-panel" style="display:none;">
         <div class="auth-welcome"><div class="auth-welcome-icon"><i class="fa-solid fa-lock"></i></div><h2>New Password</h2></div>
         <form onsubmit="handleNewPasswordSubmit(event)">
-            <div class="form-group"><label class="form-label">New Password</label><input type="password" id="new-reset-pass" class="form-input" required></div>
-            <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" id="confirm-reset-pass" class="form-input" required></div>
+            <div class="form-group"><label class="form-label">New Password</label><input type="password" id="new-reset-pass" class="form-input" required minlength="6"></div>
+            <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" id="confirm-reset-pass" class="form-input" required minlength="6"></div>
             <button type="submit" class="btn btn-primary btn-block">Update Password</button>
         </form>
-        <a class="back-link" onclick="goBackToLogin()" style="display:block; text-align:center; margin-top:1rem; color:var(--navy); cursor:pointer;">← Back to Sign In</a>
+        <a class="back-link" onclick="goBackToLogin()" style="display:block; text-align:center; margin-top:1rem; color:var(--navy); cursor:pointer;"><i class="fa-solid fa-arrow-left"></i> Back to Sign In</a>
     </div>
 
     <!-- Auth Panel -->
@@ -201,34 +202,40 @@
     window.db = getFirestore(app);
     window.fb = { doc, setDoc, getDoc, serverTimestamp, collection, query, where, orderBy, limit, getDocs, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, confirmPasswordReset, signOut, onAuthStateChanged };
     setPersistence(window.auth, browserLocalPersistence);
-</script>
 
-<script>
     window.activeRole = 'teacher';
     const BASE = "https://vip263models-sketch.github.io/teacher-bee-connect-assets/";
-    let loginInProgress = false; // prevent duplicate login submission
 
     const countries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Democratic Republic of the Congo","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Ivory Coast","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Western Sahara","Yemen","Zambia","Zimbabwe"];
 
-    // Populate country dropdown
-    (function(){
+    // Populate country dropdown (immediate, no DOMContentLoaded needed)
+    (function populateCountries() {
         const sel = document.getElementById('reg-country');
-        if(sel) countries.forEach(c => { const o = document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o); });
+        if (sel) {
+            countries.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                sel.appendChild(opt);
+            });
+        }
     })();
 
+    // Sanitize errors - no Firestore references
     function sanitizeError(err) {
         const msg = (err?.message || '').toLowerCase();
         if (msg.includes('invalid-credential') || msg.includes('wrong-password')) return 'Incorrect email or password.';
         if (msg.includes('email-already-in-use')) return 'Email already registered.';
-        if (msg.includes('weak-password')) return 'Password too weak.';
-        if (msg.includes('too-many-requests')) return 'Too many attempts. Try later.';
+        if (msg.includes('weak-password')) return 'Password too weak. Use at least 6 characters.';
+        if (msg.includes('too-many-requests')) return 'Too many attempts. Try again later.';
         if (msg.includes('network')) return 'Connection error. Check your internet.';
         return 'An error occurred. Please try again.';
     }
 
     window.showToast = (msg, type='info') => {
         const container = document.getElementById('toast-container');
-        const t = document.createElement('div'); t.className = `toast ${type}`;
+        const t = document.createElement('div');
+        t.className = `toast ${type}`;
         t.innerHTML = `<i class="fa-solid ${type==='success'?'fa-circle-check':type==='error'?'fa-circle-exclamation':'fa-circle-info'}"></i> ${msg}`;
         container.appendChild(t);
         setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 4000);
@@ -245,7 +252,8 @@
         document.getElementById('role-recruiter').classList.toggle('active', role==='recruiter');
     };
 
-    // Double-submit guard for login
+    let loginInProgress = false;
+
     window.handleLogin = async (e) => {
         e.preventDefault();
         if (loginInProgress) return;
@@ -256,13 +264,11 @@
         const pass = document.getElementById('login-password').value;
         try {
             const cred = await window.fb.signInWithEmailAndPassword(window.auth, email, pass);
-            const userDoc = await window.fb.getDoc(window.fb.doc(window.db, "users", cred.user.uid));
-            const data = userDoc.exists() ? userDoc.data() : {};
-            window.activeRole = data.role || 'teacher';
-            showToast('Login successful!','success');
-            showDashboard(data);
+            // User data will be fetched by onAuthStateChanged, which shows dashboard without toast
+            // We still show a success toast here for the manual login action
+            showToast('Login successful!', 'success');
         } catch(err) {
-            showToast(sanitizeError(err),'error');
+            showToast(sanitizeError(err), 'error');
         } finally {
             btn.disabled = false;
             loginInProgress = false;
@@ -274,35 +280,35 @@
         const name = document.getElementById('reg-name').value.trim();
         const email = document.getElementById('reg-email').value.trim();
         const pass = document.getElementById('reg-password').value;
-        const confirm = document.getElementById('reg-confirm-password').value;
+        const confirmPass = document.getElementById('reg-confirm-password').value;
         const country = document.getElementById('reg-country').value;
-        if (pass !== confirm) { showToast("Passwords don't match",'error'); return; }
+        if (pass !== confirmPass) { showToast("Passwords don't match",'error'); return; }
         try {
             const cred = await window.fb.createUserWithEmailAndPassword(window.auth, email, pass);
             await window.fb.sendEmailVerification(cred.user);
             const userData = { uid: cred.user.uid, name, email, country, role: window.activeRole, createdAt: window.fb.serverTimestamp(), qualifications:[] };
             await window.fb.setDoc(window.fb.doc(window.db, "users", cred.user.uid), userData);
-            showToast('Account created!','success');
-            showDashboard(userData);
-        } catch(err) { showToast(sanitizeError(err),'error'); }
+            showToast('Account created!', 'success');
+            // onAuthStateChanged will show dashboard
+        } catch(err) { showToast(sanitizeError(err), 'error'); }
     };
 
     window.handleForgotPassword = () => {
         const email = document.getElementById('login-email').value.trim();
-        if (!email) { showToast('Enter your email first.','error'); return; }
+        if (!email) { showToast('Enter your email first.', 'error'); return; }
         window.fb.sendPasswordResetEmail(window.auth, email)
             .then(() => showToast('Check your inbox or spam folder for the reset link.', 'success'))
-            .catch(err => showToast(sanitizeError(err),'error'));
+            .catch(err => showToast(sanitizeError(err), 'error'));
     };
 
     window.handleNewPasswordSubmit = (e) => {
         e.preventDefault();
         const pass = document.getElementById('new-reset-pass').value;
         const confirm = document.getElementById('confirm-reset-pass').value;
-        if (pass !== confirm) { showToast("Passwords don't match",'error'); return; }
+        if (pass !== confirm) { showToast("Passwords don't match", 'error'); return; }
         window.fb.confirmPasswordReset(window.auth, window.resetOobCode, pass)
-            .then(() => { showToast('Password updated!','success'); setTimeout(()=>window.location.href='index.html',2000); })
-            .catch(err => showToast(sanitizeError(err),'error'));
+            .then(() => { showToast('Password updated!', 'success'); setTimeout(()=>window.location.href='index.html',2000); })
+            .catch(err => showToast(sanitizeError(err), 'error'));
     };
 
     window.goBackToLogin = () => {
@@ -312,7 +318,7 @@
         window.resetOobCode = null;
     };
 
-    window.handleGlobalSignOut = () => { window.fb.signOut(window.auth).then(()=>{ showToast('Signed out.','info'); hideDashboard(); }); };
+    window.handleGlobalSignOut = () => { window.fb.signOut(window.auth).then(()=>{ showToast('Signed out.', 'info'); hideDashboard(); }); };
 
     function showDashboard(userData) {
         document.getElementById('auth-panel').style.display = 'none';
@@ -326,35 +332,23 @@
         badge.innerText = isRec ? 'Employer' : 'Job Seeker';
         badge.className = `role-badge ${isRec ? 'badge-recruiter' : 'badge-seeker'}`;
 
-        // Build clickable stat cards
+        // Clickable stat cards
         const statsRow = document.getElementById('dash-stats-row');
         if (isRec) {
             statsRow.innerHTML = `
-                <a href="${BASE}postjobs.html" class="stat-card" id="stat-jobs-card">
-                    <i class="fa-solid fa-briefcase"></i><div class="stat-number" id="stat-jobs">-</div><div class="stat-label">Active Jobs</div>
-                </a>
-                <a href="${BASE}searchteachers.html" class="stat-card" id="stat-teachers-card">
-                    <i class="fa-solid fa-user-graduate"></i><div class="stat-number" id="stat-teachers">-</div><div class="stat-label">Teachers</div>
-                </a>
-                <a href="${BASE}recruiterinbox.html" class="stat-card" id="stat-unread-card">
-                    <i class="fa-solid fa-envelope"></i><div class="stat-number" id="stat-unread">-</div><div class="stat-label">Unread</div>
-                </a>
+                <a href="${BASE}postjobs.html" class="stat-card"><i class="fa-solid fa-briefcase"></i><div class="stat-number" id="stat-jobs">-</div><div class="stat-label">Active Jobs</div></a>
+                <a href="${BASE}searchteachers.html" class="stat-card"><i class="fa-solid fa-user-graduate"></i><div class="stat-number" id="stat-teachers">-</div><div class="stat-label">Teachers</div></a>
+                <a href="${BASE}recruiterinbox.html" class="stat-card"><i class="fa-solid fa-envelope"></i><div class="stat-number" id="stat-unread">-</div><div class="stat-label">Unread</div></a>
             `;
         } else {
             statsRow.innerHTML = `
-                <a href="${BASE}jobs.html" class="stat-card" id="stat-jobs-card">
-                    <i class="fa-solid fa-briefcase"></i><div class="stat-number" id="stat-jobs">-</div><div class="stat-label">Open Jobs</div>
-                </a>
-                <a href="${BASE}inbox.html" class="stat-card" id="stat-applications-card">
-                    <i class="fa-solid fa-paper-plane"></i><div class="stat-number" id="stat-applications">-</div><div class="stat-label">Applications</div>
-                </a>
-                <a href="${BASE}inbox.html" class="stat-card" id="stat-unread-card">
-                    <i class="fa-solid fa-envelope"></i><div class="stat-number" id="stat-unread">-</div><div class="stat-label">Unread</div>
-                </a>
+                <a href="${BASE}jobs.html" class="stat-card"><i class="fa-solid fa-briefcase"></i><div class="stat-number" id="stat-jobs">-</div><div class="stat-label">Open Jobs</div></a>
+                <a href="${BASE}inbox.html" class="stat-card"><i class="fa-solid fa-paper-plane"></i><div class="stat-number" id="stat-applications">-</div><div class="stat-label">Applications</div></a>
+                <a href="${BASE}inbox.html" class="stat-card"><i class="fa-solid fa-envelope"></i><div class="stat-number" id="stat-unread">-</div><div class="stat-label">Unread</div></a>
             `;
         }
 
-        // Fetch data and update stats
+        // Fetch dynamic data
         if (isRec) {
             fetchRecruiterActiveJobs();
             fetchRecentTeachers();
@@ -495,7 +489,7 @@
         nav.appendChild(logout);
     }
 
-    // Auth state observer (does not show toast, only dashboard)
+    // Auth observer - updates dashboard without toast
     window.fb.onAuthStateChanged(window.auth, async (user) => {
         if (user) {
             const userDoc = await window.fb.getDoc(window.fb.doc(window.db, "users", user.uid));
@@ -511,7 +505,7 @@
     });
 
     // Password reset check
-    (function(){
+    (function() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('mode') === 'resetPassword' && params.get('oobCode')) {
             document.getElementById('auth-panel').style.display = 'none';
