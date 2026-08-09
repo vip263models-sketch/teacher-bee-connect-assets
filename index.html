@@ -206,22 +206,22 @@
     window.activeRole = 'teacher';
     const BASE = "https://vip263models-sketch.github.io/teacher-bee-connect-assets/";
 
+    // Complete country list
     const countries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Democratic Republic of the Congo","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Ivory Coast","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Western Sahara","Yemen","Zambia","Zimbabwe"];
 
-    // Populate country dropdown (immediate, no DOMContentLoaded needed)
-    (function populateCountries() {
+    // Populate country dropdown reliably
+    document.addEventListener('DOMContentLoaded', () => {
         const sel = document.getElementById('reg-country');
-        if (sel) {
-            countries.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c;
-                opt.textContent = c;
-                sel.appendChild(opt);
-            });
-        }
-    })();
+        if (!sel) return;
+        countries.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            sel.appendChild(opt);
+        });
+    });
 
-    // Sanitize errors - no Firestore references
+    // Sanitize error messages - no Firestore references
     function sanitizeError(err) {
         const msg = (err?.message || '').toLowerCase();
         if (msg.includes('invalid-credential') || msg.includes('wrong-password')) return 'Incorrect email or password.';
@@ -263,10 +263,9 @@
         const email = document.getElementById('login-email').value.trim();
         const pass = document.getElementById('login-password').value;
         try {
-            const cred = await window.fb.signInWithEmailAndPassword(window.auth, email, pass);
-            // User data will be fetched by onAuthStateChanged, which shows dashboard without toast
-            // We still show a success toast here for the manual login action
+            await window.fb.signInWithEmailAndPassword(window.auth, email, pass);
             showToast('Login successful!', 'success');
+            // No further action - onAuthStateChanged will handle dashboard display
         } catch(err) {
             showToast(sanitizeError(err), 'error');
         } finally {
@@ -289,7 +288,6 @@
             const userData = { uid: cred.user.uid, name, email, country, role: window.activeRole, createdAt: window.fb.serverTimestamp(), qualifications:[] };
             await window.fb.setDoc(window.fb.doc(window.db, "users", cred.user.uid), userData);
             showToast('Account created!', 'success');
-            // onAuthStateChanged will show dashboard
         } catch(err) { showToast(sanitizeError(err), 'error'); }
     };
 
@@ -489,7 +487,7 @@
         nav.appendChild(logout);
     }
 
-    // Auth observer - updates dashboard without toast
+    // Auth observer - does NOT show toast, only updates dashboard
     window.fb.onAuthStateChanged(window.auth, async (user) => {
         if (user) {
             const userDoc = await window.fb.getDoc(window.fb.doc(window.db, "users", user.uid));
@@ -504,7 +502,7 @@
         }
     });
 
-    // Password reset check
+    // Password reset mode check
     (function() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('mode') === 'resetPassword' && params.get('oobCode')) {
